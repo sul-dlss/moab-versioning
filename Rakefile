@@ -33,6 +33,7 @@ end
 
 task :clean do
   puts 'Cleaning old coverage'
+  FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
   FileUtils.rm_r('coverage') if(File.exists? 'coverage')
   puts 'Cleaning .yardoc and doc folders'
   FileUtils.rm_r('.yardoc') if(File.exists? '.yardoc')
