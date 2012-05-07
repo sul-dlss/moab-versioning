@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
+   <mods:titleInfo>
+      <mods:nonSort>The</mods:nonSort>
+      <mods:title>poems of Robert Burns</mods:title>
+      <mods:subTitle>A new edition</mods:subTitle>
+   </mods:titleInfo>
+   <mods:name type="personal">
+      <mods:namePart>Burns, Robert</mods:namePart>
+      <mods:namePart type="date">1759-1796</mods:namePart>
+      <mods:role>
+         <mods:roleTerm authority="marcrelator" type="text">creator</mods:roleTerm>
+      </mods:role>
+   </mods:name>
+   <mods:typeOfResource>text</mods:typeOfResource>
+   <mods:originInfo>
+      <mods:place>
+         <mods:placeTerm type="code" authority="marccountry">stk</mods:placeTerm>
+      </mods:place>
+      <mods:place>
+         <mods:placeTerm type="text">Edinburgh</mods:placeTerm>
+      </mods:place>
+      <mods:publisher>Printed by Oliver &amp; Co.</mods:publisher>
+      <mods:dateIssued>1806</mods:dateIssued>
+      <mods:dateIssued encoding="marc" keyDate="yes">1806</mods:dateIssued>
+      <mods:issuance>monographic</mods:issuance>
+   </mods:originInfo>
+   <mods:language>
+      <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+   </mods:language>
+   <mods:relatedItem type="original">
+      <mods:physicalDescription>
+         <mods:form authority="marcform">print</mods:form>
+         <mods:extent>1 p.  ., [5]-196 p. 12 cm.</mods:extent>
+      </mods:physicalDescription>
+      <mods:recordInfo>
+         <mods:recordContentSource authority="marcorg"/>
+         <mods:recordCreationDate encoding="marc">910108</mods:recordCreationDate>
+         <mods:recordChangeDate encoding="iso8601">19910108124826.0</mods:recordChangeDate>
+         <mods:recordIdentifier source="SUL catalog key">587254</mods:recordIdentifier>
+         <mods:recordIdentifier source="oclc">22934044</mods:recordIdentifier>
+      </mods:recordInfo>
+   </mods:relatedItem>
+   <mods:physicalDescription>
+      <mods:form authority="marcform">electronic</mods:form>
+      <mods:reformattingQuality>preservation</mods:reformattingQuality>
+      <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+   </mods:physicalDescription>
+   <mods:note>Title vignette.</mods:note>
+   <mods:recordInfo>
+      <mods:recordContentSource>DOR_MARC2MODS3-3.xsl Revision 1.1</mods:recordContentSource>
+      <mods:recordCreationDate encoding="iso8601">2011-08-25T08:39:54.573-07:00</mods:recordCreationDate>
+      <mods:recordIdentifier source="Data Provider Digital Object Identifier">36105024276136</mods:recordIdentifier>
+   </mods:recordInfo>
+   <mods:identifier type="local" displayLabel="SUL Resource ID">druid:jq937jp0017</mods:identifier>
+   <mods:location>
+      <mods:physicalLocation>Stanford University Libraries</mods:physicalLocation>
+      <mods:url>http://purl.stanford.edu/jq937jp0017</mods:url>
+   </mods:location>
+</mods:mods>

@@ -1,0 +1,326 @@
+require 'spec_helper'
+
+# Unit tests for class {Moab::FileGroup}
+describe 'Moab::FileGroup' do
+  
+  describe '=========================== CONSTRUCTOR ===========================' do
+    
+    # Unit test for constructor: {Moab::FileGroup#initialize}
+    # Which returns an instance of: [Moab::FileGroup]
+    # For input parameters:
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    specify 'Moab::FileGroup#initialize' do
+       
+      # test initialization with required parameters (if any)
+      opts = {}
+      file_group = FileGroup.new(opts)
+      file_group.should be_instance_of(FileGroup)
+       
+      # test initialization of arrays and hashes
+      file_group.files.should be_kind_of(Array)
+      file_group.signature_hash.should be_kind_of(Hash)
+       
+      # test initialization with options hash
+      opts = OrderedHash.new
+      opts[:group_id] = 'Test group_id'
+      opts[:data_source] = 'Test data_source'
+      file_group = FileGroup.new(opts)
+      file_group.group_id.should == opts[:group_id]
+      file_group.data_source.should == opts[:data_source]
+      file_group.file_count.should == 0
+      file_group.byte_count.should == 0
+      file_group.block_count.should == 0
+      file_group.files.should == []
+
+      # def initialize(opts={})
+      #   @signature_hash = OrderedHash.new
+      #   @data_source = ""
+      #   super(opts)
+      # end
+    end
+  
+  end
+  
+  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
+    
+    before(:all) do
+      @file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1'),recursive=true)
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#group_id}
+    # Which stores: [String] \@groupId = The name of the file group
+    specify 'Moab::FileGroup#group_id' do
+      value = 'Test group_id'
+      @file_group.group_id= value
+      @file_group.group_id.should == value
+       
+      # attribute :group_id, String, :tag => 'groupId', :key => true
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#data_source}
+    # Which stores: [String] \@dataSource = The directory location or other source of this groups file data
+    specify 'Moab::FileGroup#data_source' do
+      value = 'Test data_source'
+      @file_group.data_source= value
+      @file_group.data_source.should == value
+       
+      # attribute :data_source, String, :tag => 'dataSource'
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#file_count}
+    # Which stores: [Integer] \@fileCount = The total number of data files
+    specify 'Moab::FileGroup#file_count' do
+       @file_group.file_count.should == 11
+       
+      # attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|i| i.to_s}
+       
+      # def file_count
+      #   files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
+      # end
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#byte_count}
+    # Which stores: [Integer] \@byteCount = The total size (in bytes) of all data files
+    specify 'Moab::FileGroup#byte_count' do
+      @file_group.byte_count.should == 229690
+       
+      # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
+       
+      # def byte_count
+      #   files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
+      # end
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#block_count}
+    # Which stores: [Integer] \@blockCount The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    specify 'Moab::FileGroup#block_count' do
+      @file_group.block_count.should == 228
+       
+      # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|i| i.to_s}
+       
+      # def block_count
+      #   files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
+      # end
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#files}
+    # Which stores: [Array<FileManifestation>] \[<file>] = The set of files comprising the group
+    specify 'Moab::FileGroup#files' do
+      @file_group.files.size.should == 11
+       
+      # def files=(manifestiation_array)
+      #   manifestiation_array.each do |manifestiation|
+      #     add_file(manifestiation)
+      #  end
+      # end
+       
+      # def files
+      #   @signature_hash.values
+      # end
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#signature_hash}
+    # Which stores: [OrderedHash<FileSignature, FileManifestation>] The actual in-memory store for the collection of {FileManifestation} objects that are contained in this file group.
+    specify 'Moab::FileGroup#signature_hash' do
+      @file_group.signature_hash.size.should == 11
+       
+      # def signature_hash=(value)
+      #   @signature_hash = value
+      # end
+       
+      # def signature_hash
+      #   @signature_hash
+      # end
+    end
+    
+    # Unit test for attribute: {Moab::FileGroup#base_directory}
+    # Which stores: [Pathname] The full path used as the basis of the relative paths reported in {FileInstance} objects that are children of the {FileManifestation} objects contained in this file group
+    specify 'Moab::FileGroup#base_directory' do
+      @file_group.base_directory.to_s.should include('data/jq937jp0017/v1')
+       
+      # def base_directory=(basepath)
+      #   @base_directory = Pathname.new(basepath).realpath
+      # end
+       
+      # def base_directory
+      #   @base_directory
+      # end
+    end
+  
+  end
+  
+  describe '=========================== INSTANCE METHODS ===========================' do
+    
+    before(:each) do
+      @v1_file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1/content'),recursive=true)
+      @new_file_group = FileGroup.new
+    end
+    
+    # Unit test for method: {Moab::FileGroup#path_hash}
+    # Which returns: [OrderedHash<String,FileSignature>] An index of file paths, used to test for existence of a filename in this file group
+    # For input parameters: (None)
+    specify 'Moab::FileGroup#path_hash' do
+       @v1_file_group.path_hash().keys.should ==
+           ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+       
+      # def path_hash
+      #   path_hash = OrderedHash.new
+      #   @signature_hash.each do |signature,manifestation|
+      #     manifestation.instances.each do |instance|
+      #       path_hash[instance.path] = signature
+      #     end
+      #   end
+      #   path_hash
+      # end
+    end
+    
+    # Unit test for method: {Moab::FileGroup#add_file}
+    # Which returns: [void] Add a single {FileManifestation} object to this group
+    # For input parameters:
+    # * manifestation [FileManifestation] = The file manifestation to be added 
+    specify 'Moab::FileGroup#add_file' do
+      manifestation = @v1_file_group.files[0] 
+      @new_file_group.add_file(manifestation)
+      @new_file_group.files[0].should == manifestation
+       
+      # def add_file(manifestation)
+      #   manifestation.instances.each do |instance|
+      #     add_file_instance(manifestation.signature, instance)
+      #   end
+      # end
+    end
+    
+    # Unit test for method: {Moab::FileGroup#add_file_instance}
+    # Which returns: [void] Add a single {FileSignature},{FileInstance} key/value pair to this group. Data is actually stored in the {#signature_hash}
+    # For input parameters:
+    # * signature [FileSignature] = The signature of the file instance to be added 
+    # * instance [FileInstance] = The pathname and datetime of the file instance to be added 
+    specify 'Moab::FileGroup#add_file_instance' do
+      manifestation = @v1_file_group.files[0] 
+      manifestation.instances.each do |instance|
+        @new_file_group.add_file_instance(manifestation.signature, instance)
+      end
+      @new_file_group.files[0].should == manifestation
+
+      # add a second file instance to an existing manifestation
+      new_instance = FileInstance.new(:path => "/my/path")
+      @new_file_group.add_file_instance(manifestation.signature, new_instance)
+      manifestation.instances.size.should == 2
+             
+      # def add_file_instance(signature,instance)
+      #   if @signature_hash.has_key?(signature)
+      #     manifestation = @signature_hash[signature]
+      #   else
+      #     manifestation = FileManifestation.new
+      #     manifestation.signature = signature
+      #     @signature_hash[signature] = manifestation
+      #   end
+      #   manifestation.instances << instance
+      # end
+    end
+    
+    # Unit test for method: {Moab::FileGroup#is_descendent_of_base?}
+    # Which returns: [Boolean] Test whether the given path is contained within the {#base_directory}
+    # For input parameters:
+    # * pathname [Pathname] = The file path to be tested 
+    specify 'Moab::FileGroup#is_descendent_of_base?' do
+      @new_file_group.base_directory=@fixtures.join('data')
+      pathname = @fixtures.join('data/jq937jp0017/v1')
+      @new_file_group.is_descendent_of_base?(pathname).should == true
+      pathname = @fixtures.join('derivatives/manifests')
+      lambda{@new_file_group.is_descendent_of_base?(pathname)}.should raise_exception
+       
+      # def is_descendent_of_base?(pathname)
+      #   raise("base_directory has not been set") if @base_directory.nil?
+      #   is_descendent = false
+      #   pathname.realpath.ascend {|ancestor| is_descendent ||= (ancestor == @base_directory)}
+      #   raise("#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
+      #   is_descendent
+      # end
+    end
+    
+    # Unit test for method: {Moab::FileGroup#group_from_directory}
+    # Which returns: [FileGroup] Harvest a directory and add all files to the file group
+    # For input parameters:
+    # * directory [Pathname, String] = The location of the files to harvest 
+    # * recursive [Boolean] = if true, descend into child directories
+    specify 'Moab::FileGroup#group_from_directory' do
+      directory = @fixtures.join('data/jq937jp0017/v1/content')
+      recursive = true
+      group = FileGroup.new
+      group.should_receive(:harvest_directory).with(directory, recursive)
+      group= group.group_from_directory(directory, recursive)
+      group.should be_instance_of(FileGroup)
+      group.base_directory.should == directory.realpath
+      group.data_source.should == directory.realpath.to_s
+
+      # def group_from_directory(directory, recursive=true)
+      #   self.base_directory = directory
+      #   @data_source = @base_directory.to_s
+      #   harvest_directory(directory, recursive)
+      #   self
+      # end
+    end
+
+    # Unit test for method: {Moab::FileGroup#harvest_directory}
+    # Which returns: [void] Traverse a directory tree and add all files to the file group Note that unlike Find.find and Dir.glob, Pathname passes through symbolic links
+    # For input parameters:
+    # * path [Pathname, String] = pathname of the directory to be harvested
+    # * recursive [Boolean] = if true, also harvest subdirectories
+    # * validated [Boolean] = if true, path is verified to be descendant of (#base_directory)
+    specify 'Moab::FileGroup#harvest_directory' do
+      path = @fixtures.join('derivatives/manifests')
+      file_group = FileGroup.new
+      file_group.base_directory=path
+      file_group.harvest_directory(path,recursive=true)
+      file_group.file_count=0
+
+      path = @fixtures.join('derivatives/packages/v1')
+      second_group = FileGroup.new
+      second_group.base_directory=path
+      second_group.harvest_directory(path,recursive=false)
+      second_group.file_count=0
+
+      # def harvest_directory(path, recursive, validated=nil)
+      #   pathname=Pathname.new(path).realpath
+      #   validated ||= is_descendent_of_base?(pathname)
+      #   pathname.children.each do |child|
+      #     if child.basename.to_s == ".DS_Store"
+      #       next
+      #     elsif child.directory?
+      #       harvest_directory(child,recursive, validated) if recursive
+      #     else
+      #       add_physical_file(child, validated)
+      #     end
+      #   end
+      #   nil
+      # end
+    end
+
+    # Unit test for method: {Moab::FileGroup#add_physical_file}
+    # Which returns: [void] Add a single physical file's data to the array of files in this group
+    # For input parameters:
+    # * pathname [Pathname, String] = The location of the file to be added 
+    # * validated [Boolean] = if true, path is verified to be descendant of (#base_directory)
+    specify 'Moab::FileGroup#add_physical_file' do
+      pathname = @fixtures.join('data/jq937jp0017/v1/content/title.jpg')
+      group = FileGroup.new
+      group.base_directory = @fixtures.join('data/jq937jp0017/v1/content')
+      group.add_physical_file(pathname)
+      group.files.size.should == 1
+      group.files[0].signature.should == FileSignature.new(
+          :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      group.files[0].instances[0].path.should == 'title.jpg'
+
+      # def add_physical_file(path, validated=nil)
+      #   pathname=Pathname.new(path).realpath
+      #   validated ||= is_descendent_of_base?(pathname)
+      #   instance = FileInstance.new.instance_from_file(pathname, @base_directory)
+      #   signature = FileSignature.new.signature_from_file(pathname)
+      #   add_file_instance(signature,instance)
+      # end
+    end
+  
+  end
+
+end

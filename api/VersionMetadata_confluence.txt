@@ -1,0 +1,94 @@
+h2. Component VersionMetadata
+
+h4. Data Model
+
+* *[#VersionMetadata] = descriptive information about a digital object's versions*
+** [#VersionMetadataEntry] \[1..\*] = attributes of a digital object version
+*** [#VersionMetadataEvent] \[1..\*] = object version lifecycle events with timestamps
+
+
+h4. Description
+
+The descriptive information about a digital object's collection of versions
+
+
+h4. XML Example
+{code:lang=xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<versionMetadata objectId="druid:ab123cd4567">
+  <version versionId="1" significance="major">
+    <reason>Please preserve my digital object</reason>
+    <note>Initial object submission</note>
+    <event type="submit" datetime="2012-01-01T12:01:01Z"/>
+    <event type="accession" datetime="2012-01-12T12:01:12Z"/>
+  </version>
+  <version versionId="2" significance="minor">
+    <reason>Editing page-1 and removing intro files</reason>
+    <note>content change</note>
+    <fileGroupDifference groupId="content" differenceCount="3" identical="3" renamed="0" modified="1" deleted="2" added="0"/>
+    <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
+    <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
+    <event type="submit" datetime="2012-02-01T12:01:01Z"/>
+    <event type="accession" datetime="2012-02-12T12:01:12Z"/>
+  </version>
+  <version versionId="3" significance="minor">
+    <reason>Inserting new page-2, with renames of pages 2-3 to 3-4</reason>
+    <note>content change</note>
+    <fileGroupDifference groupId="content" differenceCount="3" identical="2" renamed="2" modified="0" deleted="0" added="1"/>
+    <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
+    <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
+    <event type="submit" datetime="2012-02-01T12:01:01Z"/>
+    <event type="accession" datetime="2012-02-12T12:01:12Z"/>
+  </version>
+</versionMetadata>
+{code}
+
+h4. XML Nodes
+\\
+||XML Element||Ruby Class||Inherits From||
+|<versionMetadata>|[#VersionMetadata]|Manifest|
+\\
+||XML Child Node||Ruby Attribute||Data Type||Description||
+|@objectId|digital_object_id|String|The digital object identifier|
+|<version> \[1..\*]|versions|Array<VersionMetadataEntry>|An array of version metadata entries, one per version|
+\\
+||XML Element||Ruby Class||Inherits From||
+|<version>|[#VersionMetadataEntry]|Serializable|
+\\
+||XML Child Node||Ruby Attribute||Data Type||Description||
+|@versionId|version_id|Integer|The object version number (A sequential integer)|
+|@significance|significance|String|"major\\|minor"|
+|<reason>|reason|String|A free text description of why the version was submitted (optional)|
+|<note>|note|String|A system generated annotation summarizing the changes (optional)|
+|<fileGroupDifference>|content_changes|FileGroupDifference|Summary of content file differences since previous version|
+|<fileGroupDifference>|metadata_changes|FileGroupDifference|Summary of metadata file differences since previous version|
+|<event> \[1..\*]|events|Array<VersionMetadataEvent>|Array of events with timestamps that track lifecycle stages|
+\\
+||XML Element||Ruby Class||Inherits From||
+|<event>|[#VersionMetadataEvent]|Serializable|
+\\
+||XML Child Node||Ruby Attribute||Data Type||Description||
+|@type|type|String|The type of event|
+|@datetime|datetime|Time|The date and time of an event|
+
+{anchor:VersionMetadata}
+h3. Class Moab::VersionMetadata
+
+
+{anchor:VersionMetadataEntry}
+h3. Class Moab::VersionMetadataEntry
+
+h4. Description
+
+The descriptive attributes of a digital object version.
+
+
+
+{anchor:VersionMetadataEvent}
+h3. Class Moab::VersionMetadataEvent
+
+h4. Description
+
+A container element to record object version lifecycle events with timestamps
+
+
