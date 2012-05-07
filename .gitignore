@@ -1,0 +1,7 @@
+.bundler/
+.idea/
+.yardoc/
+coverage/
+coverage.data
+doc/
+spec/fixtures/derivatives
