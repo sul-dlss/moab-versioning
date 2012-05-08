@@ -53,6 +53,7 @@ Require the following:
   require 'moab'
 
 == Releases
+- <b>0.1</b> Initial Release
 
 
 == License
