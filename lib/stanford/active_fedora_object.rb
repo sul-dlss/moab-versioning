@@ -1,3 +1,5 @@
+require 'moab_stanford'
+
 module Stanford
 
   # Utility Class for extracting content or other information from a Fedora Instance

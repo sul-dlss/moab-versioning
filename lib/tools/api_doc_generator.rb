@@ -4,9 +4,7 @@ require 'hashery/orderedhash'
 require 'pathname'
 require 'yard'
 include YARD
-require 'serializer'
-require 'moab'
-require 'stanford'
+require 'moab_stanford'
 include Serializer
 include Moab
 include Stanford

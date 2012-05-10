@@ -5,9 +5,8 @@ require 'rubygems'
 require 'spec'
 require 'spec/autorun'
 require 'equivalent-xml'
-require 'moab'
-require "moab_config"
-require 'stanford'
+require 'moab_stanford'
+require 'spec_config'
 require 'ap'
 
 include Stanford

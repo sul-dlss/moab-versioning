@@ -1,6 +1,4 @@
-require 'moab'
-
-include Moab
+require 'moab_stanford'
 
 module Stanford
 

@@ -1,4 +1,4 @@
-require 'stanford'
+require 'moab_stanford'
 
 module Stanford
 
@@ -11,13 +11,9 @@ module Stanford
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository
 
-    # @return [Pathname] The location of the root directory of the repository storage node
-    attr_accessor :repository_home
-
-    # @param repository_home [Pathname,String] The location of the root directory of the repository storage node
-    # @return [StorageRepository]
-    def initialize(repository_home=Moab::Config.repository_home)
-      @repository_home = Pathname.new(repository_home)
+   # @return [Pathname] The location of the root directory of the repository storage node
+    def repository_home
+      Pathname.new(Moab::Config.repository_home)
     end
 
     # @param object_id [String] The identifier of the digital object whose version is desired
@@ -38,9 +34,9 @@ module Stanford
     def storage_object_pathname(object_id)
       case Moab::Config.path_method
         when :druid_tree
-          @repository_home.join(druid_tree(object_id))
+          repository_home.join(druid_tree(object_id))
         when :druid
-          @repository_home.join(object_id.split(/:/)[-1])
+          repository_home.join(object_id.split(/:/)[-1])
       end
     end
 
@@ -56,7 +52,7 @@ module Stanford
       # where 'a' is an alphabetic character
       # where 'n' is a numeric character
       if identifier =~ /^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/
-        return File.join(namespace, $1, $2, $3, $4)
+        return File.join( $1, $2, $3, $4, identifier)
       else
         raise syntax_msg
       end
