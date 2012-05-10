@@ -2,7 +2,7 @@ require 'moab'
 
 module Moab
 
-  # A class to represent a version subdirectory with an object's home directory in preservation storage
+  # A class to represent a version subdirectory within an object's home directory in preservation storage
   #
   # ====Data Model
   # * {StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods

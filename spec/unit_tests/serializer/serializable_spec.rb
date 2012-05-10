@@ -97,6 +97,9 @@ describe 'Moab::Serializable' do
         }
       })
 
+      lambda{Serializable.deep_diff(hash1)}.should raise_exception
+
+
       # def Serializable.deep_diff(*hashes)
       #   diff = OrderedHash.new
       #   case hashes.length

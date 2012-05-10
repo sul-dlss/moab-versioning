@@ -1,6 +1,9 @@
 require 'moab'
 include Moab
+require 'stanford/content_inventory'
 require 'stanford/dor_metadata'
+require 'stanford/storage_repository'
+require 'stanford/storage_services'
 require 'stanford/active_fedora_object'
 
 # Stanford is a module that isolates classes specific to the Stanford Digital Repository

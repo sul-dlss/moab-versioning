@@ -13,9 +13,9 @@ feature "Feature: File Inventory Serialization" do
     output_dir.mkpath
     inventory_object.write_xml_file(output_dir,'version')
     inventory_pathname = output_dir.join('versionInventory.xml')
-    inventory_pathname.read.should be_equivalent_to(<<EOF
+    inventory_pathname.read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<EOF
     <?xml version="1.0" encoding="UTF-8"?>
-    <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1" inventoryDatetime="2012-04-19T12:12:47Z" fileCount="11" byteCount="229690" blockCount="228">
+    <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="229690" blockCount="228">
       <fileGroup groupId="content" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/fixtures/data/jq937jp0017/v1/content" fileCount="6" byteCount="206432" blockCount="203">
         <file>
           <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>

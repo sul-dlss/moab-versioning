@@ -101,8 +101,12 @@ class SpecGenerator
         mhash[:constructor] = member
       elsif cls.class_attributes[attr_symbol]
         mhash[:class_attributes][attr_symbol] = cls.class_attributes[attr_symbol]
+      elsif member.name.to_s[0..1] == '@@'
+        #mhash[:class_attributes][attr_symbol] = cls.class_attributes[attr_symbol]
       elsif cls.instance_attributes[attr_symbol]
         mhash[:instance_attributes][attr_symbol] = cls.instance_attributes[attr_symbol]
+      elsif not member.respond_to?(:scope)
+        #puts 'huh?'
       elsif member.scope == :class
         mhash[:class_methods] << member
       elsif member.scope == :instance
@@ -210,6 +214,9 @@ class SpecGenerator
     end
 
     attributes.values.each do |attribute|
+      if attribute.nil?
+        puts "huh?"
+      end
       write = attribute[:write]
       read = attribute[:read]
       return_tag = read.docstring.tag(:return)

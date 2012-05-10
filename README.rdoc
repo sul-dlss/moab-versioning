@@ -54,6 +54,7 @@ Require the following:
 
 == Releases
 - <b>0.1</b> Initial Release
+- <b>0.2</b> Add support for RESTful service interface to storage, add config data
 
 
 == License

@@ -13,7 +13,7 @@
 module Serializer
 end
 
-require "nokogiri"
+require 'nokogiri'
 require 'happymapper'
 require 'hashery/orderedhash'
 require 'json'

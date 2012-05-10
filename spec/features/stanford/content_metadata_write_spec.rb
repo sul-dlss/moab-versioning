@@ -14,8 +14,7 @@ feature "Write contentMetadata datastream" do
     group= FileGroup.new.group_from_directory(directory, recursive)
     digital_object_id = @obj
     version_id = 2
-    dor_metadata = DorMetadata.new(digital_object_id, version_id)
-    cm = dor_metadata.generate_content_metadata(group)
+    cm = ContentInventory.new.generate_content_metadata(group,digital_object_id, version_id)
     cm.should be_equivalent_to(<<EOF
 <?xml version="1.0"?>
 <contentMetadata objectId="jq937jp0017" type="sample">

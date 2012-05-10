@@ -391,6 +391,7 @@ apis << 'FileInventoryDifference'
 apis << 'VersionMetadata'
 apis << 'Serializable'
 apis << 'StorageObject'
+apis << 'StorageRepository'
 apis << 'DorMetadata'
 
 sg = DocGenerator.new(File.expand_path(File.join(File.dirname(__FILE__), '..', '..')))

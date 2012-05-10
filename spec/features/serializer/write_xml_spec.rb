@@ -13,9 +13,9 @@ feature "Feature: Manifest Serialization" do
     catalog_object = SignatureCatalog.read_xml_file(@manifests.join("v1"))
     catalog_object.write_xml_file(output_dir)
     catalog_pathname = output_dir.join('signatureCatalog.xml')
-    catalog_pathname.read.should be_equivalent_to( <<EOF
+    catalog_pathname.read.gsub(/catalogDatetime=".*?"/,'').should be_equivalent_to( <<EOF
     <?xml version="1.0" encoding="UTF-8"?>
-    <signatureCatalog objectId="druid:jq937jp0017" versionId="1" catalogDatetime="2012-04-19T12:12:48Z" fileCount="11" byteCount="229690" blockCount="228">
+    <signatureCatalog objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="229690" blockCount="228">
       <entry originalVersion="1" groupId="content" storagePath="intro-1.jpg">
         <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
       </entry>

@@ -12,8 +12,7 @@ feature "Process contentMetadata datastream" do
     digital_object_id = @obj
     version_id = 2
     content_metadata = @data.join('v2/metadata/contentMetadata.xml')
-    dor_metadata = DorMetadata.new(digital_object_id, version_id)
-    group = dor_metadata.group_from_file(content_metadata)
+    group = ContentInventory.new.group_from_cm(content_metadata)
     group.should be_instance_of(FileGroup)
     group.data_source.should == "contentMetadata"
   end

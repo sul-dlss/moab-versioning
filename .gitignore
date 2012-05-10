@@ -4,4 +4,6 @@
 coverage/
 coverage.data
 doc/
-spec/fixtures/derivatives
+spec/fixtures/derivatives/
+spec/temp/
+pkg/

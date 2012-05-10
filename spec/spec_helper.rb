@@ -5,6 +5,8 @@ require 'rubygems'
 require 'spec'
 require 'spec/autorun'
 require 'equivalent-xml'
+require 'moab'
+require "moab_config"
 require 'stanford'
 require 'ap'
 

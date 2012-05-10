@@ -370,6 +370,34 @@ describe 'Moab::StorageObject' do
       #   true
       # end
     end
+
+    # Unit test for method: {Moab::StorageObject#storage_object_version}
+    # Which returns: [StorageObjectVersion] The representation of the subdirectory for the specified version
+    # For input parameters:
+    # * version_id [Integer] = The version to return.  If nil, return latest version
+    specify 'Moab::StorageObject#storage_object_version' do
+      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+
+      version_2 = storage_object.storage_object_version(2)
+      version_2.should be_instance_of(StorageObjectVersion)
+      version_2.version_id.should == 2
+      version_2.version_name.should == 'v0002'
+      version_2.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0002/
+
+      version_latest = storage_object.storage_object_version()
+      version_latest.should be_instance_of(StorageObjectVersion)
+      version_latest.version_id.should == 3
+      version_latest.version_name.should == 'v0003'
+      version_latest.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0003/
+
+      # def storage_object_version(version_id=nil)
+      #   if version_id
+      #     StorageObjectVersion.new(self,version_id)
+      #   else
+      #     StorageObjectVersion.new(self,current_version_id)
+      #   end
+      # end
+    end
   
   end
 

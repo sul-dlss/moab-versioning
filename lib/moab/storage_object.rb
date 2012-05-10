@@ -99,6 +99,17 @@ module Moab
       true
     end
 
+    # @api external
+    # @param version_id [Integer] The version to return.  If nil, return latest version
+    # @return [StorageObjectVersion] The representation of the subdirectory for the specified version
+    def storage_object_version(version_id=nil)
+      if version_id
+        StorageObjectVersion.new(self,version_id)
+      else
+        StorageObjectVersion.new(self,current_version_id)
+      end
+    end
+
 
   end
 

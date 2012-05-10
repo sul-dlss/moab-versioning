@@ -4,16 +4,17 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "moab-versioning"
-  s.version     = "0.1"
+  s.version     = "0.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Richard Anderson", "Lynn McRae", "Hannah Frost"]
   s.email       = ["rnanders@stanford.edu"]
   s.summary     = "Ruby implmentation of digital object versioning toolkit used by the SULAIR Digital Library"
-  s.description = "Contains classes to create, serialize and utilize version metadata"
+  s.description = "Contains classes to process digital object version content and metadata"
 
   s.required_rubygems_version = ">= 1.3.6"
 
   # Runtime dependencies
+  s.add_dependency "confstruct"
   s.add_dependency "nokogiri"
   s.add_dependency "hashery"
   s.add_dependency "json"
