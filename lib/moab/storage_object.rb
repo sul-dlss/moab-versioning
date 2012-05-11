@@ -45,13 +45,36 @@ module Moab
       current_version = StorageObjectVersion.new(self,current_version_id)
       current_inventory = current_version.file_inventory('version')
       new_version = StorageObjectVersion.new(self,current_version_id + 1)
-      new_inventory = FileInventory.read_xml_file(bag_dir,'version')
+      if FileInventory.xml_pathname_exist?(bag_dir,'version')
+        new_inventory = FileInventory.read_xml_file(bag_dir,'version')
+      elsif current_version.version_id == 0
+        new_inventory = versionize_bag(bag_dir,current_version,new_version)
+      end
       validate_new_inventory(new_inventory)
       new_version.ingest_bag_data(bag_dir)
       new_version.update_catalog(current_version.signature_catalog,new_inventory)
       new_version.generate_differences_report(current_inventory,new_inventory)
       new_version.inventory_manifests
       #update_tagmanifests(new_catalog_pathname)
+    end
+
+    # @api internal
+    # @param bag_dir [Pathname] The location of the bag to be ingested
+    # @param current_version[StorageObjectVersion] The current latest version of the object
+    # @param new_version [StorageObjectVersion] The version to be added
+    # @return [FileInventory] The file inventory of the specified type for this version
+    def versionize_bag(bag_dir,current_version,new_version)
+      new_inventory = FileInventory.new(
+          :type=>'version',
+          :digital_object_id=>@digital_object_id,
+          :version_id=>new_version.version_id,
+          :inventory_datetime => Time.now
+      )
+      new_inventory.inventory_from_directory(bag_dir.join('data'))
+      new_inventory.write_xml_file(bag_dir)
+      version_additions = current_version.signature_catalog.version_additions(new_inventory)
+      version_additions.write_xml_file(bag_dir)
+      new_inventory
     end
 
     # @api external

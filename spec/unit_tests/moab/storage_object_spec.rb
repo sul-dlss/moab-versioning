@@ -215,20 +215,173 @@ describe 'Moab::StorageObject' do
           "ingests/jq937jp0017/v0003/versionInventory.xml"
       ]
 
+      ingests_dir.rmtree if ingests_dir.exist?
+      object_dir = ingests_dir.join(@obj)
+      object_dir.mkpath
+      bag_dir = @temp.join('plain_bag')
+      bag_dir.rmtree if bag_dir.exist?
+      FileUtils.cp_r(@packages.join(@vname[1]).to_s,bag_dir.to_s,{:preserve => true})
+      bag_dir.join('versionInventory.xml').delete
+      bag_dir.join('versionAdditions.xml').delete
+      bag_dir.join('versionInventory.xml').exist?.should == false
+      bag_dir.join('versionAdditions.xml').exist?.should == false
+      StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
+      bag_dir.join('versionInventory.xml').exist?.should == true
+      bag_dir.join('versionAdditions.xml').exist?.should == true
 
       ingests_dir.rmtree if ingests_dir.exist?
 
       # def ingest_bag(bag_dir)
       #   current_version = StorageObjectVersion.new(self,current_version_id)
+      #   current_inventory = current_version.file_inventory('version')
       #   new_version = StorageObjectVersion.new(self,current_version_id + 1)
+      #   if FileInventory.xml_pathname_exist?(bag_dir,'version')
       #   new_inventory = FileInventory.read_xml_file(bag_dir,'version')
+      #   else
+      #     new_inventory = versionize_bag(bag_dir,current_version,new_version)
+      #   end
       #   validate_new_inventory(new_inventory)
       #   new_version.ingest_bag_data(bag_dir)
       #   new_version.update_catalog(current_version.signature_catalog,new_inventory)
+      #   new_version.generate_differences_report(current_inventory,new_inventory)
       #   new_version.inventory_manifests
       # end
     end
     
+    # Unit test for method: {Moab::StorageObject#versionize_bag}
+    # Which returns: [FileInventory] The file inventory of the specified type for this version
+    # For input parameters:
+    # * bag_dir [Pathname] = The location of the bag to be ingested
+    # * current_version [StorageObjectVersion] = The current latest version of the object
+    # * new_version [StorageObjectVersion] = The version to be added
+    specify 'Moab::StorageObject#versionize_bag' do
+      bag_dir = @temp.join('plain_bag')
+      bag_dir.rmtree if bag_dir.exist?
+      FileUtils.cp_r(@packages.join(@vname[1]).to_s,bag_dir.to_s,{:preserve => true})
+      bag_dir.join('versionInventory.xml').rename(bag_dir.join('vi.save'))
+      bag_dir.join('versionAdditions.xml').rename(bag_dir.join('va.save'))
+      current_version = @storage_object.storage_object_version(0)
+      new_version = @storage_object.storage_object_version(1)
+      new_inventory = @storage_object.versionize_bag(bag_dir, current_version, new_version)
+      new_inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+        <fileInventory type="version" objectId="jq937jp0017" versionId="1" fileCount="11" byteCount="229690" blockCount="228">
+          <fileGroup groupId="content" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
+            <file>
+              <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
+              <fileInstance path="intro-1.jpg" datetime="2012-03-26T14:20:35Z"/>
+            </file>
+            <file>
+              <fileSignature size="39850" md5="77f1a4efdcea6a476505df9b9fba82a7" sha1="a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"/>
+              <fileInstance path="intro-2.jpg" datetime="2012-03-26T14:19:30Z"/>
+            </file>
+            <file>
+              <fileSignature size="25153" md5="3dee12fb4f1c28351c7482b76ff76ae4" sha1="906c1314f3ab344563acbbbe2c7930f08429e35b"/>
+              <fileInstance path="page-1.jpg" datetime="2012-03-26T15:59:14Z"/>
+            </file>
+            <file>
+              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+              <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
+            </file>
+            <file>
+              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+              <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
+            </file>
+            <file>
+              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+              <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
+            </file>
+          </fileGroup>
+          <fileGroup groupId="metadata" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/plain_bag/data/metadata" fileCount="5" byteCount="23258" blockCount="25">
+            <file>
+              <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
+              <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
+            </file>
+            <file>
+              <fileSignature size="3046" md5="a60bb487db6a1ceb5e0b5bb3cae2dfa2" sha1="edefc0e1d7cffd5bd3c7db6a393ab7632b70dc2d"/>
+              <fileInstance path="descMetadata.xml" datetime="2012-03-26T17:43:49Z"/>
+            </file>
+            <file>
+              <fileSignature size="12903" md5="ccb5bf2ae0c2c6ad0b89692fa1e10145" sha1="3badb0d06aef40f14e4664d2594c6060b9e9716b"/>
+              <fileInstance path="identityMetadata.xml" datetime="2012-03-26T17:44:48Z"/>
+            </file>
+            <file>
+              <fileSignature size="5306" md5="17193dbf595571d728ba59aa31638db9" sha1="c8b91eacf9ad7532a42dc52b3c9cf03b4ad2c7f6"/>
+              <fileInstance path="provenanceMetadata.xml" datetime="2012-03-26T17:46:44Z"/>
+            </file>
+            <file>
+              <fileSignature size="384" md5="f16a2564fae2706a8c82cda6dccdb4d9" sha1="7aaf84f63a1db803d272352f03935d303f066560"/>
+              <fileInstance path="versionMetadata.xml" datetime="2012-04-11T16:10:00Z"/>
+            </file>
+          </fileGroup>
+        </fileInventory>
+        EOF
+      )
+      bag_dir.join('versionAdditions.xml').read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+        <fileInventory type="additions" objectId="jq937jp0017" versionId="1" fileCount="11" byteCount="229690" blockCount="228">
+          <fileGroup groupId="content" dataSource="" fileCount="6" byteCount="206432" blockCount="203">
+            <file>
+              <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
+              <fileInstance path="intro-1.jpg" datetime="2012-03-26T14:20:35Z"/>
+            </file>
+            <file>
+              <fileSignature size="39850" md5="77f1a4efdcea6a476505df9b9fba82a7" sha1="a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"/>
+              <fileInstance path="intro-2.jpg" datetime="2012-03-26T14:19:30Z"/>
+            </file>
+            <file>
+              <fileSignature size="25153" md5="3dee12fb4f1c28351c7482b76ff76ae4" sha1="906c1314f3ab344563acbbbe2c7930f08429e35b"/>
+              <fileInstance path="page-1.jpg" datetime="2012-03-26T15:59:14Z"/>
+            </file>
+            <file>
+              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+              <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
+            </file>
+            <file>
+              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+              <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
+            </file>
+            <file>
+              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+              <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
+            </file>
+          </fileGroup>
+          <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="23258" blockCount="25">
+            <file>
+              <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
+              <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
+            </file>
+            <file>
+              <fileSignature size="3046" md5="a60bb487db6a1ceb5e0b5bb3cae2dfa2" sha1="edefc0e1d7cffd5bd3c7db6a393ab7632b70dc2d"/>
+              <fileInstance path="descMetadata.xml" datetime="2012-03-26T17:43:49Z"/>
+            </file>
+            <file>
+              <fileSignature size="12903" md5="ccb5bf2ae0c2c6ad0b89692fa1e10145" sha1="3badb0d06aef40f14e4664d2594c6060b9e9716b"/>
+              <fileInstance path="identityMetadata.xml" datetime="2012-03-26T17:44:48Z"/>
+            </file>
+            <file>
+              <fileSignature size="5306" md5="17193dbf595571d728ba59aa31638db9" sha1="c8b91eacf9ad7532a42dc52b3c9cf03b4ad2c7f6"/>
+              <fileInstance path="provenanceMetadata.xml" datetime="2012-03-26T17:46:44Z"/>
+            </file>
+            <file>
+              <fileSignature size="384" md5="f16a2564fae2706a8c82cda6dccdb4d9" sha1="7aaf84f63a1db803d272352f03935d303f066560"/>
+              <fileInstance path="versionMetadata.xml" datetime="2012-04-11T16:10:00Z"/>
+            </file>
+          </fileGroup>
+        </fileInventory>
+      EOF
+    )
+
+      bag_dir.rmtree if bag_dir.exist?
+
+      # def versionize_bag(bag_dir,current_version,new_version)
+      #   new_inventory = FileInventory.new(:type=>'version',:digital_object_id=>object_id,:version=>new_version.version_id)
+      #   new_inventory.inventory_from_directory(bag_dir.join('data'))
+      #   new_inventory.write_xml_file(bag_dir)
+      #   version_additions = current_version.signature_catalog.version_additions(new_inventory)
+      #   version_additions.write_xml_file(bag_dir)
+      #   new_inventory
+      # end
+    end
+
     # Unit test for method: {Moab::StorageObject#reconstruct_version}
     # Which returns: [void] Reconstruct an object version and package it in a bag for dissemination
     # For input parameters:

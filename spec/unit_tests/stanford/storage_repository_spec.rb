@@ -63,6 +63,14 @@ describe 'Stanford::StorageRepository' do
     # For input parameters:
     # * object_id [String] = The identifier of the digital object whose version is desired 
     specify 'Stanford::StorageRepository#storage_object_pathname' do
+      Moab::Config.configure do
+        path_method :druid_tree
+      end
+      @storage_repository.storage_object_pathname(@object_id).to_s.should =~ /ingests\/jq\/937\/jp\/0017\/jq937jp0017/
+
+      Moab::Config.configure do
+        path_method :druid
+      end
       @storage_repository.storage_object_pathname(@object_id).to_s.should =~ /ingests\/jq937jp0017/
 
       # def storage_object_pathname(object_id)
@@ -76,6 +84,8 @@ describe 'Stanford::StorageRepository' do
     # * object_id [String] = The identifier of the digital object whose path is requested 
     specify 'Stanford::StorageRepository#druid_tree' do
       @storage_repository.druid_tree(@object_id).should == "jq/937/jp/0017/jq937jp0017"
+
+      lambda{@storage_repository.druid_tree('123cd456nm')}.should raise_exception
        
       # def druid_tree(object_id)
       #   syntax_msg = "Identifier has invalid suri syntax: #{object_id}"
