@@ -33,6 +33,10 @@ module Moab
     # @return [Integer] How many files were changed
     attribute :count, Integer, :on_save => Proc.new { |n| n.to_s }
 
+    def count
+      files.size
+    end
+
     # @attribute
     # @return [Array<FileInstanceDifference>] The set of file instances having this type of change
     has_many :files, FileInstanceDifference, :tag=>'file'

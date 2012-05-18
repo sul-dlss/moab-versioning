@@ -137,7 +137,7 @@ describe 'Moab::FileInventoryDifference' do
     # For input parameters:
     # * basis_inventory [FileInventory] = The inventory that is the basis of the comparison 
     # * other_inventory [FileInventory] = The inventory that is compared against the basis inventory 
-    specify 'Moab::FileInventoryDifference#compare' do
+      specify 'Moab::FileInventoryDifference#compare' do
       basis_inventory = @v1_inventory
       other_inventory = @v2_inventory
       diff = @file_inventory_difference.compare(basis_inventory, other_inventory)

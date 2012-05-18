@@ -45,10 +45,10 @@ module Stanford
     def druid_tree(object_id)
       syntax_msg = "Identifier has invalid suri syntax: #{object_id}"
       raise syntax_msg + "nil or empty" if object_id.to_s.empty?
-      namespace,identifier = object_id.split(':')
-      raise syntax_msg if (namespace.to_s.empty? || identifier.to_s.empty?)
+      identifier = object_id.split(':')[-1]
+      raise syntax_msg if  identifier.to_s.empty?
       # The object identifier must be in the SURI format, otherwise an exception is raised:
-      # e.g. druid:aannnaannnn
+      # e.g. druid:aannnaannnn or aannnaannnn
       # where 'a' is an alphabetic character
       # where 'n' is a numeric character
       if identifier =~ /^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/

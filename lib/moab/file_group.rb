@@ -86,6 +86,20 @@ module Moab
       path_hash
     end
 
+    # @api internal
+    # @param signature_subset [Array<FileSignature>] The signatures used to select the entries to return
+    # @return [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
+    def path_hash_subset(signature_subset)
+      path_hash = OrderedHash.new
+      signature_subset.each do |signature|
+        manifestation = @signature_hash[signature]
+        manifestation.instances.each do |instance|
+          path_hash[instance.path] = signature
+        end
+      end
+      path_hash
+    end
+
     # @param manifestiation_array [Array<FileManifestation>] The collection of {FileManifestation} objects
     #    that are to be added to this file group.  Used by HappyMapper when deserializing a {FileInventory} file
     # Add the array of {FileManifestation} objects to this file group.

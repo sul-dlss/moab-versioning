@@ -84,7 +84,6 @@ describe 'Stanford::StorageRepository' do
     # * object_id [String] = The identifier of the digital object whose path is requested 
     specify 'Stanford::StorageRepository#druid_tree' do
       @storage_repository.druid_tree(@object_id).should == "jq/937/jp/0017/jq937jp0017"
-
       lambda{@storage_repository.druid_tree('123cd456nm')}.should raise_exception
        
       # def druid_tree(object_id)

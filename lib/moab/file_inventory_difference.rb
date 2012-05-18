@@ -119,6 +119,15 @@ module Moab
       end
     end
 
+    def verify_content(version_inventory, version_additions, data_dir)
+      file_inventory = FileInventory.new.inventory_from_directory(data_dir,group_id='content')
+      # compare new versionInventory to an inventory derived from the workspace home directory
+      inv_directory_diff =  Moab::FileInventoryDifference.new.compare(version_inventory, file_inventory)
+      # compare version_additions received against the workspace directory
+      adds_directory_diff =  Moab::FileInventoryDifference.new.compare(version_additions, file_inventory)
+      # analyze the diff file (no method for this yet in the toolkit)  - I could work on a convenience method for all of the above
+    end
+
   end
 
 end

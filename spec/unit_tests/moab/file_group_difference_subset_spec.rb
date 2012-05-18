@@ -23,10 +23,9 @@ describe 'Moab::FileGroupDifferenceSubset' do
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:change] = 'Test change'
-      opts[:count] = 42
       file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
       file_group_difference_subset.change.should == opts[:change]
-      file_group_difference_subset.count.should == opts[:count]
+      file_group_difference_subset.count.should == 0
 
       # def initialize(opts={})
       #   @files = Array.new
@@ -58,7 +57,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     specify 'Moab::FileGroupDifferenceSubset#count' do
       value = 52
       @file_group_difference_subset.count= value
-      @file_group_difference_subset.count.should == value
+      @file_group_difference_subset.count.should == 0
        
       # attribute :count, Integer, :on_save => Proc.new { |n| n.to_s }
     end

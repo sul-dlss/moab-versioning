@@ -52,7 +52,7 @@ module Moab
 
     # @attribute
     # @return [Integer] the total number of differences found between the two inventories that were compared  (dynamically calculated)
-    attribute :difference_count, Integer, :tag=> 'differenceCount',:on_save => Proc.new {|i| i.to_s}
+    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
 
     def difference_count
       @renamed + @modified + @deleted +@added
@@ -60,23 +60,23 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were unchanged
-    attribute :identical, Integer, :on_save => Proc.new {|n| n.to_s}
+    attribute :identical, Integer, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [Integer] How many files were renamed
-    attribute :renamed, Integer, :on_save => Proc.new {|n| n.to_s}
+    attribute :renamed, Integer, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [Integer] How many files were modified
-    attribute :modified, Integer, :on_save => Proc.new {|n| n.to_s}
+    attribute :modified, Integer, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [Integer] How many files were deleted
-    attribute :deleted, Integer, :on_save => Proc.new {|n| n.to_s}
+    attribute :deleted, Integer, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [Integer] How many files were added
-    attribute :added, Integer, :on_save => Proc.new {|n| n.to_s}
+    attribute :added, Integer, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type),
@@ -133,150 +133,156 @@ module Moab
     # @param (see #compare_file_groups)
     # @return [void] For signatures that are present in both groups,
     #   report which file instances are identical or renamed
-    def compare_matching_signatures(basis_group,other_group)
-      @subsets << unchanged_subset = FileGroupDifferenceSubset.new(:change => 'identical')
-      @subsets << renamed_subset = FileGroupDifferenceSubset.new(:change => 'renamed')
-      matching_keys(basis_group.signature_hash, other_group.signature_hash).each do |signature|
-        basis_paths = basis_group.signature_hash[signature].paths
-        other_paths = other_group.signature_hash[signature].paths
-        unchanged_subset.files.concat(tabulate_unchanged_files(signature,basis_paths, other_paths))
-        renamed_subset.files.concat(tabulate_renamed_files(signature,basis_paths, other_paths))
-      end
-      @identical = unchanged_subset.count = unchanged_subset.files.size
-      @renamed = renamed_subset.count = renamed_subset.files.size
+    def compare_matching_signatures(basis_group, other_group)
+      matching_signatures = matching_keys(basis_group.signature_hash, other_group.signature_hash)
+      tabulate_unchanged_files(matching_signatures, basis_group.signature_hash, other_group.signature_hash)
+      tabulate_renamed_files(matching_signatures, basis_group.signature_hash, other_group.signature_hash)
     end
 
     # @api internal
     # @param (see #compare_file_groups)
-    # @return [void] For signatures that are present in only one group,
+    # @return [void] For signatures that are present in only one or the other group,
     #   report which file instances are modified, deleted, or added
     def compare_non_matching_signatures(basis_group, other_group)
-      @subsets << modified_subset = FileGroupDifferenceSubset.new(:change => 'modified')
-      @subsets << deleted_subset = FileGroupDifferenceSubset.new(:change => 'deleted')
-      @subsets << added_subset = FileGroupDifferenceSubset.new(:change => 'added')
-      basis_only_keys(basis_group.signature_hash, other_group.signature_hash).each do |signature|
-        basis_paths = basis_group.signature_hash[signature].paths
-        other_path_hash = other_group.path_hash
-        modified_subset.files.concat(tabulate_modified_files(signature,basis_paths, other_path_hash))
-        deleted_subset.files.concat(tabulate_deleted_files(signature,basis_paths, other_path_hash))
-      end
-      other_only_keys(basis_group.signature_hash, other_group.signature_hash).each do |signature|
-        other_paths = other_group.signature_hash[signature].paths
-        added_subset.files.concat(tabulate_added_files(signature, other_paths, modified_subset))
-      end
-      @modified = modified_subset.count = modified_subset.files.size
-      @deleted = deleted_subset.count = deleted_subset.files.size
-      @added = added_subset.count = added_subset.files.size
+      basis_only_signatures = basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+      other_only_signatures = other_only_keys(basis_group.signature_hash, other_group.signature_hash)
+      basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
+      other_path_hash = other_group.path_hash_subset(other_only_signatures)
+      tabulate_modified_files(basis_path_hash, other_path_hash)
+      tabulate_deleted_files(basis_path_hash, other_path_hash)
+      tabulate_added_files(basis_path_hash, other_path_hash)
     end
 
     # @api internal
-    # @param signature [FileSignature] The file signature of the file manifestations being compared
-    # @param basis_paths [Array] The file paths of the file manifestation for this signature in the basis group
-    # @param other_paths [Array] The file paths of the file manifestation for this signature in the other group
-    # @return [Array<FileInstanceDifference>] Detail comparison output for file manifestations
-    #   having the same signature and identical filenames in both groups
-    def tabulate_unchanged_files(signature, basis_paths, other_paths)
+    # @param matching_signatures [Array<FileSignature>] The file signature of the file manifestations being compared
+    # @param basis_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    #   Signature to file path mapping from the file group that is the basis of the comparison
+    # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    #   Signature to file path mapping from the file group that is the being compared to the basis group
+    # @return [FileGroupDifferenceSubset]
+    #   Container for reporting the set of file-level differences of type 'identical'
+    def tabulate_unchanged_files(matching_signatures, basis_signature_hash, other_signature_hash)
       unchanged_files = Array.new
-      matching_paths = basis_paths & other_paths
-      matching_paths.each do |path|
-        fid = FileInstanceDifference.new(:change => 'identical')
-        fid.basis_path = path
-        fid.other_path = "same"
-        fid.signatures << signature
-        unchanged_files << fid
-      end
-      unchanged_files
-    end
-
-    # @api internal
-    # @param (see #tabulate_unchanged_files)
-    # @return [Array<FileInstanceDifference>] Detail comparison output for file manifestations
-    #   having the same signature, but different filenames in the two groups
-    def tabulate_renamed_files(signature, basis_paths, other_paths)
-      renamed_files = Array.new
-      basis_only_paths = basis_paths - other_paths
-      other_only_paths = other_paths - basis_paths
-      maxsize = [basis_only_paths.size,other_only_paths.size].max
-      (0..maxsize-1).each do |n|
-        fid = FileInstanceDifference.new(:change => 'renamed')
-        fid.basis_path = basis_only_paths[n]
-        fid.other_path = other_only_paths[n]
-        fid.signatures << signature
-        renamed_files << fid
-      end
-      renamed_files
-    end
-
-    # @api internal
-    # @param signature (see #tabulate_unchanged_files)
-    # @param basis_paths (see #tabulate_unchanged_files)
-    # @param other_path_hash [OrderedHash<String,FileSignature>] An index of file paths,
-    #   used to test for existence of a filename in the otner file group
-    # @return [Array<FileInstanceDifference>] Detail comparison output for file manifestations
-    #   having the same filename, but different signatures in the two groups
-    def tabulate_modified_files(signature, basis_paths, other_path_hash)
-      modified_files = Array.new
-      basis_paths.each do |path|
-        if other_path_hash.has_key?(path)
-          fid = FileInstanceDifference.new(:change => 'modified')
+      matching_signatures.each do |signature|
+        basis_paths = basis_signature_hash[signature].paths
+        other_paths = other_signature_hash[signature].paths
+        matching_paths = basis_paths & other_paths
+        matching_paths.each do |path|
+          fid = FileInstanceDifference.new(:change => 'identical')
           fid.basis_path = path
           fid.other_path = "same"
           fid.signatures << signature
-          fid.signatures << other_path_hash[path]
-          modified_files << fid
+          unchanged_files << fid
         end
       end
-      modified_files
+      unchanged_subset = FileGroupDifferenceSubset.new(:change => 'identical')
+      unchanged_subset.files = unchanged_files
+      @subsets << unchanged_subset
+      @identical = unchanged_subset.count
+      unchanged_subset
+    end
+
+
+    # @api internal
+    # @param matching_signatures [Array<FileSignature>] The file signature of the file manifestations being compared
+    # @param basis_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    #   Signature to file path mapping from the file group that is the basis of the comparison
+    # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    #   Signature to file path mapping from the file group that is the being compared to the basis group
+    # @return [FileGroupDifferenceSubset]
+    #   Container for reporting the set of file-level differences of type 'renamed'
+    def tabulate_renamed_files(matching_signatures, basis_signature_hash, other_signature_hash)
+      renamed_files = Array.new
+      matching_signatures.each do |signature|
+        basis_paths = basis_signature_hash[signature].paths
+        other_paths = other_signature_hash[signature].paths
+        basis_only_paths = basis_paths - other_paths
+        other_only_paths = other_paths - basis_paths
+        maxsize = [basis_only_paths.size, other_only_paths.size].max
+        (0..maxsize-1).each do |n|
+          fid = FileInstanceDifference.new(:change => 'renamed')
+          fid.basis_path = basis_only_paths[n]
+          fid.other_path = other_only_paths[n]
+          fid.signatures << signature
+          renamed_files << fid
+        end
+      end
+      renamed_subset = FileGroupDifferenceSubset.new(:change => 'renamed')
+      renamed_subset.files = renamed_files
+      @subsets << renamed_subset
+      @renamed = renamed_subset.count
+      renamed_subset
+    end
+
+
+    # @api internal
+    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the basis group
+    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the other group
+    # @return [FileGroupDifferenceSubset]
+    #   Container for reporting the set of file-level differences of type 'modified'
+    def tabulate_modified_files(basis_path_hash, other_path_hash)
+      modified_files = Array.new
+      matching_keys(basis_path_hash, other_path_hash).each do |path|
+        fid = FileInstanceDifference.new(:change => 'modified')
+        fid.basis_path = path
+        fid.other_path = "same"
+        fid.signatures << basis_path_hash[path]
+        fid.signatures << other_path_hash[path]
+        modified_files << fid
+      end
+      modified_subset = FileGroupDifferenceSubset.new(:change => 'modified')
+      modified_subset.files = modified_files
+      @subsets << modified_subset
+      @modified = modified_subset.count
+      modified_subset
     end
 
     # @api internal
-    # @param signature (see #tabulate_unchanged_files)
-    # @param basis_paths (see #tabulate_unchanged_files)
-    # @param other_path_hash [OrderedHash<String,FileSignature>] An index of file paths,
-    #   used to test for existence of a filename in the otner file group
-    # @return [Array<FileInstanceDifference>] Detail comparison output for file manifestations
-    #   having a filename and signature that only appears in the basis group
-    def tabulate_deleted_files(signature, basis_paths, other_path_hash)
+    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the basis group
+    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the other group
+    # @return [FileGroupDifferenceSubset]
+    #   Container for reporting the set of file-level differences of type 'deleted'
+    def tabulate_deleted_files(basis_path_hash, other_path_hash)
       deleted_files = Array.new
-      basis_paths.each do |path|
-        unless other_path_hash.has_key?(path)
-          fid = FileInstanceDifference.new(:change => 'deleted')
-          fid.basis_path = path
-          fid.other_path = ""
-          fid.signatures << signature
-          deleted_files << fid
-        end
+      basis_only_keys(basis_path_hash, other_path_hash).each do |path|
+        fid = FileInstanceDifference.new(:change => 'deleted')
+        fid.basis_path = path
+        fid.other_path = ""
+        fid.signatures << basis_path_hash[path]
+        deleted_files << fid
       end
-      deleted_files
+      deleted_subset = FileGroupDifferenceSubset.new(:change => 'deleted')
+      deleted_subset.files = deleted_files
+      @subsets << deleted_subset
+      @deleted = deleted_subset.count
+      deleted_subset
     end
 
     # @api internal
-    # @param signature (see #tabulate_unchanged_files)
-    # @param other_paths (see #tabulate_unchanged_files)
-    # @param modified_subset [FileGroupDifferenceSubset] The set of files that are reported as modified
-    # @return [Array<FileInstanceDifference>] Detail comparison output for file manifestations
-    #   having a signature that only appears in the other group,
-    #   unless the filename was already tallied as modified
-    def tabulate_added_files(signature, other_paths, modified_subset)
+    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the basis group
+    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the other group
+    # @return [FileGroupDifferenceSubset]
+    #   Container for reporting the set of file-level differences of type 'added'
+    def tabulate_added_files(basis_path_hash, other_path_hash)
       added_files = Array.new
-      other_paths.each do |path|
-        unless subset_contains_path?(modified_subset,path)
-          fid = FileInstanceDifference.new(:change => 'added')
-          fid.basis_path = ""
-          fid.other_path = path
-          fid.signatures << signature
-          added_files << fid
-        end
+      other_only_keys(basis_path_hash, other_path_hash).each do |path|
+        fid = FileInstanceDifference.new(:change => 'added')
+        fid.basis_path = ""
+        fid.other_path = path
+        fid.signatures << other_path_hash[path]
+        added_files << fid
       end
-      added_files
-    end
-
-    # @api internal
-    # @param subset [FileGroupDifferenceSubset] The subset of changes to examine
-    # @param path [String] The path to look for
-    # @return [Boolean] true if the path is found in the subset's file array
-    def subset_contains_path?(subset, path)
-      (subset.files.collect{ |file| file.basis_path }).include?(path)
+      added_subset = FileGroupDifferenceSubset.new(:change => 'added')
+      added_subset.files = added_files
+      @subsets << added_subset
+      @added = added_subset.count
+      added_subset
     end
 
   end
