@@ -9,9 +9,11 @@ module Moab
   # * disseminating a bag containing a reconstructed object version
   #
   # ====Data Model
-  # * <b>{StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods</b>
-  #   * {StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory
-  #     * {Bagger} [1] = utility for creating bagit packages for ingest or dissemination
+  # * {StorageRepository} = represents a digital object repository storage node
+  #   * {StorageServices} = supports application layer access to the repository's objects, data, and metadata
+  #   * <b>{StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods</b>
+  #     * {StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory
+  #       * {Bagger} [1] = utility for creating bagit packages for ingest or dissemination
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.

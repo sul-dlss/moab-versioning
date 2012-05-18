@@ -52,4 +52,6 @@ require 'moab/version_metadata'
 require 'moab/bagger'
 require 'moab/storage_object'
 require 'moab/storage_object_version'
+require 'moab/storage_repository'
+require 'moab/storage_services'
 

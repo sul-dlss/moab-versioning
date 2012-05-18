@@ -56,7 +56,7 @@ Require the following:
 - <b>0.1</b> Initial Release
 - <b>0.2</b> Add support for RESTful service interface to storage, add config data
 - <b>0.3</b> Revise configuration invocation and repository_home usage
-
+- <b>0.4</b> Revise group differences methods, refactor storage repository & services, add service methods
 
 == License
 

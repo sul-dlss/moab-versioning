@@ -5,9 +5,11 @@ module Moab
   # A class to represent a version subdirectory within an object's home directory in preservation storage
   #
   # ====Data Model
-  # * {StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods
-  #   * <b>{StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory</b>
-  #     * {Bagger} [1] = utility for creating bagit packages for ingest or dissemination
+  # * {StorageRepository} = represents a digital object repository storage node
+  #   * {StorageServices} = supports application layer access to the repository's objects, data, and metadata
+  #   * {StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods
+  #     * <b>{StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory</b>
+  #       * {Bagger} [1] = utility for creating bagit packages for ingest or dissemination
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
@@ -34,6 +36,20 @@ module Moab
       @storage_object=storage_object
     end
 
+  # @param [Symbol] file_category The category of file (:content, :metdata, or :manifest)
+  # @param [String] file_path The path of the file (relative to the appropriate home directory)
+  # @return [Pathname] Pathname object containing the full path for the specified file
+    def file_pathname(file_category, file_path)
+      case file_category
+        when :content
+          @version_pathname.join('data','content',file_path)
+        when :metadata
+          @version_pathname.join('data','metadata',file_path)
+        when :manifest
+          @version_pathname.join(file_path)
+      end
+    end
+
     # @api external
     # @param type [String] The type of inventory to return (version|additions|manifests)
     # @return [FileInventory] The file inventory of the specified type for this version
@@ -49,7 +65,6 @@ module Moab
             :version_id => @version_id,
             :groups => groups
         )
-
       end
     end
 

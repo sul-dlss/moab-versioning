@@ -9,9 +9,11 @@ module Moab
   # * In <b>:reconstructor</b> mode, the version inventory and signature catalog are used together to regenerate the complete set of files for the version.
   #
   # ====Data Model
-  # * {StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods
-  #   * {StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory
-  #     * <b>{Bagger} [1] = utility for creating bagit packages for ingest or dissemination</b>
+  # * {StorageRepository} = represents a digital object repository storage node
+  #   * {StorageServices} = supports application layer access to the repository's objects, data, and metadata
+  #   * {StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods
+  #     * {StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory
+  #       * <b>{Bagger} [1] = utility for creating bagit packages for ingest or dissemination</b>
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
