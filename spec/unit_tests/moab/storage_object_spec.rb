@@ -6,7 +6,7 @@ describe 'Moab::StorageObject' do
   describe '=========================== CLASS METHODS ===========================' do
 
     # Unit test for method: {Moab::StorageObject.version_dirname}
-    # Which returns: [String] The directory name of the version, relative to the digital object home directory
+    # Which returns: [String] The directory name of the version, relative to the digital object home directory (e.g v0002)
     # For input parameters:
     # * version_id [Integer] = The version identifier of an object version 
     specify 'Moab::StorageObject.version_dirname' do
@@ -48,10 +48,10 @@ describe 'Moab::StorageObject' do
       storage_object.digital_object_id.should == object_id
       storage_object.object_pathname.to_s.should include('temp/ingests/jq937jp0017')
 
-      # def initialize(object_id, object_dir)
+      # def initialize(object_id, object_dir, mkpath=false)
       #   @digital_object_id = object_id
       #   @object_pathname = Pathname.new(object_dir)
-      #   initialize_storage unless @object_pathname.exist?
+      #   initialize_storage if mkpath
       # end
     end
   
@@ -71,7 +71,7 @@ describe 'Moab::StorageObject' do
     end
     
     # Unit test for attribute: {Moab::StorageObject#digital_object_id}
-    # Which stores: [String] \@objectId = The digital object ID (druid)
+    # Which stores: [String] The digital object ID (druid)
     specify 'Moab::StorageObject#digital_object_id' do
       value = 'Test digital_object_id'
       @storage_object.digital_object_id= value
@@ -232,12 +232,13 @@ describe 'Moab::StorageObject' do
       ingests_dir.rmtree if ingests_dir.exist?
 
       # def ingest_bag(bag_dir)
+      #   bag_dir = Pathname.new(bag_dir)
       #   current_version = StorageObjectVersion.new(self,current_version_id)
       #   current_inventory = current_version.file_inventory('version')
       #   new_version = StorageObjectVersion.new(self,current_version_id + 1)
       #   if FileInventory.xml_pathname_exist?(bag_dir,'version')
       #   new_inventory = FileInventory.read_xml_file(bag_dir,'version')
-      #   else
+      #   elsif current_version.version_id == 0
       #     new_inventory = versionize_bag(bag_dir,current_version,new_version)
       #   end
       #   validate_new_inventory(new_inventory)
@@ -245,6 +246,7 @@ describe 'Moab::StorageObject' do
       #   new_version.update_catalog(current_version.signature_catalog,new_inventory)
       #   new_version.generate_differences_report(current_inventory,new_inventory)
       #   new_version.inventory_manifests
+      #   #update_tagmanifests(new_catalog_pathname)
       # end
     end
     
@@ -263,9 +265,11 @@ describe 'Moab::StorageObject' do
       current_version = @storage_object.storage_object_version(0)
       new_version = @storage_object.storage_object_version(1)
       new_inventory = @storage_object.versionize_bag(bag_dir, current_version, new_version)
-      new_inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-        <fileInventory type="version" objectId="jq937jp0017" versionId="1" fileCount="11" byteCount="229690" blockCount="228">
-          <fileGroup groupId="content" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
+      new_inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').
+          gsub(/dataSource=".*moab-versioning/,'dataSource="moab-versioning').
+          should be_equivalent_to(<<-EOF
+        <fileInventory type="version" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217719" blockCount="216">
+          <fileGroup groupId="content" dataSource="moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
             <file>
               <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
               <fileInstance path="intro-1.jpg" datetime="2012-03-26T14:20:35Z"/>
@@ -291,7 +295,7 @@ describe 'Moab::StorageObject' do
               <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
             </file>
           </fileGroup>
-          <fileGroup groupId="metadata" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/plain_bag/data/metadata" fileCount="5" byteCount="23258" blockCount="25">
+          <fileGroup groupId="metadata" dataSource="moab-versioning/spec/temp/plain_bag/data/metadata" fileCount="5" byteCount="11287" blockCount="13">
             <file>
               <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
               <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
@@ -301,8 +305,8 @@ describe 'Moab::StorageObject' do
               <fileInstance path="descMetadata.xml" datetime="2012-03-26T17:43:49Z"/>
             </file>
             <file>
-              <fileSignature size="12903" md5="ccb5bf2ae0c2c6ad0b89692fa1e10145" sha1="3badb0d06aef40f14e4664d2594c6060b9e9716b"/>
-              <fileInstance path="identityMetadata.xml" datetime="2012-03-26T17:44:48Z"/>
+              <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e"/>
+              <fileInstance path="identityMetadata.xml" datetime="2012-05-23T19:38:35Z"/>
             </file>
             <file>
               <fileSignature size="5306" md5="17193dbf595571d728ba59aa31638db9" sha1="c8b91eacf9ad7532a42dc52b3c9cf03b4ad2c7f6"/>
@@ -317,7 +321,7 @@ describe 'Moab::StorageObject' do
         EOF
       )
       bag_dir.join('versionAdditions.xml').read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-        <fileInventory type="additions" objectId="jq937jp0017" versionId="1" fileCount="11" byteCount="229690" blockCount="228">
+        <fileInventory type="additions" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217719" blockCount="216">
           <fileGroup groupId="content" dataSource="" fileCount="6" byteCount="206432" blockCount="203">
             <file>
               <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
@@ -344,7 +348,7 @@ describe 'Moab::StorageObject' do
               <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
             </file>
           </fileGroup>
-          <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="23258" blockCount="25">
+          <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="11287" blockCount="13">
             <file>
               <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
               <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
@@ -354,8 +358,8 @@ describe 'Moab::StorageObject' do
               <fileInstance path="descMetadata.xml" datetime="2012-03-26T17:43:49Z"/>
             </file>
             <file>
-              <fileSignature size="12903" md5="ccb5bf2ae0c2c6ad0b89692fa1e10145" sha1="3badb0d06aef40f14e4664d2594c6060b9e9716b"/>
-              <fileInstance path="identityMetadata.xml" datetime="2012-03-26T17:44:48Z"/>
+              <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e"/>
+              <fileInstance path="identityMetadata.xml" datetime="2012-05-23T19:38:35Z"/>
             </file>
             <file>
               <fileSignature size="5306" md5="17193dbf595571d728ba59aa31638db9" sha1="c8b91eacf9ad7532a42dc52b3c9cf03b4ad2c7f6"/>
@@ -373,7 +377,12 @@ describe 'Moab::StorageObject' do
       bag_dir.rmtree if bag_dir.exist?
 
       # def versionize_bag(bag_dir,current_version,new_version)
-      #   new_inventory = FileInventory.new(:type=>'version',:digital_object_id=>object_id,:version=>new_version.version_id)
+      #   new_inventory = FileInventory.new(
+      #       :type=>'version',
+      #       :digital_object_id=>@digital_object_id,
+      #       :version_id=>new_version.version_id,
+      #       :inventory_datetime => Time.now
+      #   )
       #   new_inventory.inventory_from_directory(bag_dir.join('data'))
       #   new_inventory.write_xml_file(bag_dir)
       #   version_additions = current_version.signature_catalog.version_additions(new_inventory)
@@ -478,6 +487,24 @@ describe 'Moab::StorageObject' do
       # end
     end
     
+    # Unit test for method: {Moab::StorageObject#storage_filepath}
+    # Which returns: [Pathname] The absolute storage path of the file, including the object's home directory
+    # For input parameters:
+    # * catalog_filepath [String] = The object-relative path of the file
+    specify 'Moab::StorageObject#storage_filepath' do
+      catalog_filepath = 'v0001/data/content/intro-1.jpg'
+      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+      filepath = storage_object.storage_filepath(catalog_filepath)
+      filepath.to_s.include?('ingests/jq937jp0017/v0001/data/content/intro-1.jpg').should == true
+      lambda{storage_object.storage_filepath('dummy')}.should raise_exception
+
+      # def storage_filepath(catalog_filepath)
+      #   storage_filepath = @object_pathname.join(catalog_filepath)
+      #   raise "#{catalog_filepath} missing from storage location #{storage_filepath}" unless storage_filepath.exist?
+      #   storage_filepath
+      # end
+    end
+
     # Unit test for method: {Moab::StorageObject#current_version_id}
     # Which returns: [Integer] The identifier of the latest version of this object
     # For input parameters: (None)

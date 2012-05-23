@@ -56,7 +56,7 @@ describe 'Moab::FileInventoryDifference' do
       end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#digital_object_id}
-    # Which stores: [String] \@objectId = The digital object ID (druid)
+    # Which stores: [String] The digital object ID (druid)
     specify 'Moab::FileInventoryDifference#digital_object_id' do
       @file_inventory_difference.digital_object_id.should == "druid:jq937jp0017"
        
@@ -64,7 +64,7 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#difference_count}
-    # Which stores: [Integer] the number of differences found between the two inventories that were compared
+    # Which stores: [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
     specify 'Moab::FileInventoryDifference#difference_count' do
       @file_inventory_difference.difference_count.should == 6
        
@@ -76,7 +76,7 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#basis}
-    # Which stores: [String] \@basis = Id information from the version inventory used as the basis for comparison
+    # Which stores: [String] Id information from the version inventory used as the basis for comparison
     specify 'Moab::FileInventoryDifference#basis' do
       @file_inventory_difference.basis.should == "v1"
        
@@ -84,7 +84,7 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#other}
-    # Which stores: [String] \@other = Id information about the version inventory compared to the basis
+    # Which stores: [String] Id information about the version inventory compared to the basis
     specify 'Moab::FileInventoryDifference#other' do
       @file_inventory_difference.other.should == "v2"
 
@@ -92,7 +92,7 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#report_datetime}
-    # Which stores: [Time] \@reportDatetime = The datetime at which the report was run
+    # Which stores: [Time] The datetime at which the report was run
     specify 'Moab::FileInventoryDifference#report_datetime' do
       Time.parse(@file_inventory_difference.report_datetime).should be_instance_of(Time)
       @file_inventory_difference.report_datetime = "Apr 12 19:36:07 UTC 2012"
@@ -108,7 +108,7 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#group_differences}
-    # Which stores: [Array<FileGroupDifference>] \[<fileGroupDifference>] = The set of data groups comprising the version
+    # Which stores: [Array<FileGroupDifference>] The set of data groups comprising the version
     specify 'Moab::FileInventoryDifference#group_differences' do
       @file_inventory_difference.group_differences.size.should == 2
        
@@ -189,9 +189,9 @@ describe 'Moab::FileInventoryDifference' do
     # Unit test for method: {Moab::FileInventoryDifference#verify_against_directory}
     # Which returns: [Boolean] Returns true if the manifest file accurately represents the contents of the data directory
     # For input parameters:
-    # * data_directory [Pathname, String] = location of the directory to compare against the inventory 
-    # * basis_inventory [FileInventory] = The inventory that is the basis of the comparison 
-    # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories 
+    # * basis_inventory [FileInventory] = The inventory that is the basis of the comparison
+    # * data_directory [Pathname, String] = location of the directory to compare against the inventory
+    # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories
     specify 'Moab::FileInventoryDifference#verify_against_directory' do
       @file_inventory_difference.verify_against_directory(@v1_inventory,@v1_data_directory).should == true
 

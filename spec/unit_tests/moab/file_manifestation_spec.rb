@@ -41,7 +41,7 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for attribute: {Moab::FileManifestation#signature}
-    # Which stores: [FileSignature] \@signature = The fixity data of the file instance
+    # Which stores: [FileSignature] The fixity data of the file instance
     specify 'Moab::FileManifestation#signature' do
       value = mock(FileSignature.name)
       @file_manifestation.signature= value
@@ -59,7 +59,7 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for attribute: {Moab::FileManifestation#instances}
-    # Which stores: [FileInstance] \[<fileInstance>] = The location(s) of the file manifestation's file instances
+    # Which stores: [Array<FileInstance>] The location(s) of the file manifestation's file instances
     specify 'Moab::FileManifestation#instances' do
       value = mock(FileInstance.name)
       @file_manifestation.instances= value
@@ -91,7 +91,7 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for method: {Moab::FileManifestation#paths}
-    # Which returns: [Array<String>] Create an arry from all the file paths of the child {FileInstance} objects
+    # Which returns: [Array<String>] Create an array from all the file paths of the child {FileInstance} objects
     # For input parameters: (None)
     specify 'Moab::FileManifestation#paths' do
       @file_manifestation.paths().should == ["title.jpg", "page-1.jpg"]
@@ -133,6 +133,19 @@ describe 'Moab::FileManifestation' do
       #   block_size=1024
       #   instance_blocks = (signature.size.to_i + block_size - 1)/block_size
       #   file_count * instance_blocks
+      # end
+    end
+
+    # Unit test for method: {Moab::FileManifestation#==}
+    # Which returns: [Boolean] True if {FileManifestation} objects have same content
+    # For input parameters:
+    # * other [FileManifestation] = The {FileManifestation} object to compare with self
+    specify 'Moab::FileManifestation#==' do
+      other = @file_manifestation
+      @file_manifestation.==(other).should == true
+
+      # def ==(other)
+      #   (self.signature == other.signature) && (self.instances == other.instances)
       # end
     end
   

@@ -54,7 +54,7 @@ module Moab
     end
 
     # @attribute
-    # @return [Integer] \@blockCount The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
     attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|i| i.to_s}
 
     def block_count
@@ -175,7 +175,7 @@ module Moab
     def harvest_directory(path, recursive, validated=nil)
       pathname=Pathname.new(path).realpath
       validated ||= is_descendent_of_base?(pathname)
-      pathname.children.each do |child|
+      pathname.children.sort.each do |child|
         if child.basename.to_s == ".DS_Store"
           next
         elsif child.directory?

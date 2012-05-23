@@ -36,19 +36,30 @@ module Moab
       @storage_object=storage_object
     end
 
-  # @param [Symbol] file_category The category of file (:content, :metdata, or :manifest)
-  # @param [String] file_path The path of the file (relative to the appropriate home directory)
+  # @param [String] file_category The category of file (:content, :metdata, or :manifest)
+  # @param [String] file_id The relative path of the file (relative to the appropriate home directory)
   # @return [Pathname] Pathname object containing the full path for the specified file
-    def file_pathname(file_category, file_path)
+    def find_filepath(file_category, file_id)
+      this_version_filepath = file_pathname(file_category, file_id)
+      return this_version_filepath if this_version_filepath.exist?
+      raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == :manifest
+      file_signature = file_inventory('version').file_signature(file_category, file_id)
+      catalog_filepath = signature_catalog.catalog_filepath(file_signature)
+      @storage_object.storage_filepath(catalog_filepath)
+    end
+
+  # @param [String] file_category The category of file ('content', 'metdata', or 's')
+  # @param [String] file_id The relative path of the file (relative to the appropriate home directory)
+  # @return [Pathname] Pathname object containing this version's storage path for the specified file
+    def file_pathname(file_category, file_id)
       case file_category
-        when :content
-          @version_pathname.join('data','content',file_path)
-        when :metadata
-          @version_pathname.join('data','metadata',file_path)
-        when :manifest
-          @version_pathname.join(file_path)
+        when 'manifest'
+          @version_pathname.join(file_id)
+        else
+          @version_pathname.join('data',file_category, file_id)
       end
     end
+
 
     # @api external
     # @param type [String] The type of inventory to return (version|additions|manifests)

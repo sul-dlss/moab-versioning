@@ -27,7 +27,7 @@ module Moab
     # @param [String] object_id The digital object identifier of the object
     # @return [Pathname] Pathname object containing the full path for the specified file
     def self.version_metadata(object_id)
-      self.retrieve_file(:metadata, 'versionMetadata.xml', object_id)
+      self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
     end
 
     # @param [Symbol] file_category The category of file (:content, :metdata, or :manifest)
@@ -40,6 +40,10 @@ module Moab
       file_pathname = storage_object_version.file_pathname(file_category, file_path)
     end
 
+    # @param [String] object_id The digital object identifier of the object
+    # @param [Object] base_version_id The identifier of the base version to be compared
+    # @param [Object] compare_version_id The identifier of the version to be compared to the base version
+    # @return [FileInventoryDifference] The report of the version differences
     def self.version_differences(object_id, base_version_id,compare_version_id)
       base_version = @@repository.storage_object_version(object_id,base_version_id)
       compare_version = @@repository.storage_object_version(object_id,compare_version_id)

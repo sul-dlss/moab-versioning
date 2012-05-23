@@ -59,7 +59,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#difference_count}
-    # Which stores: [Integer] \@differenceCount = the total number of differences found between the two inventories that were compared
+    # Which stores: [Integer] the total number of differences found between the two inventories that were compared  (dynamically calculated)
     specify 'Moab::FileGroupDifference#difference_count' do
       @file_group_difference.difference_count.should == 6
        
@@ -71,7 +71,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#identical}
-    # Which stores: [Integer] \@identical = How many files were unchanged
+    # Which stores: [Integer] How many files were unchanged
     specify 'Moab::FileGroupDifference#identical' do
       @file_group_difference.identical.should == 1
 
@@ -79,7 +79,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#renamed}
-    # Which stores: [Integer] \@renamed = How many files were renamed
+    # Which stores: [Integer] How many files were renamed
     specify 'Moab::FileGroupDifference#renamed' do
       @file_group_difference.renamed.should == 2
 
@@ -87,7 +87,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#modified}
-    # Which stores: [Integer] \@modified = How many files were modified
+    # Which stores: [Integer] How many files were modified
     specify 'Moab::FileGroupDifference#modified' do
       @file_group_difference.modified.should == 1
 
@@ -95,7 +95,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#deleted}
-    # Which stores: [Integer] \@deleted = How many files were deleted
+    # Which stores: [Integer] How many files were deleted
     specify 'Moab::FileGroupDifference#deleted' do
       @file_group_difference.deleted.should == 2
 
@@ -103,7 +103,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#added}
-    # Which stores: [Integer] \@added = How many files were added
+    # Which stores: [Integer] How many files were added
     specify 'Moab::FileGroupDifference#added' do
       @file_group_difference.added.should == 1
        
@@ -111,7 +111,7 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#subsets}
-    # Which stores: [Array<FileGroupDifferenceSubset>] \[<FileGroupDifferenceSubset>] = A set of Arrays (one for each change type), each of which contains an collection of file-level differences having that change type.
+    # Which stores: [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type), each of which contains an collection of file-level differences having that change type.
     specify 'Moab::FileGroupDifference#subsets' do
       @file_group_difference.subsets.size.should == 5
        
@@ -504,7 +504,6 @@ describe 'Moab::FileGroupDifference' do
     # For input parameters:
     # * basis_path_hash [OrderedHash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
     # * other_path_hash [OrderedHash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
-    # * modified_subset [FileGroupDifferenceSubset] = The set of files that are reported as modified
     specify 'Moab::FileGroupDifference#tabulate_added_files' do
       basis_group = @v1_content
       other_group = @v3_content

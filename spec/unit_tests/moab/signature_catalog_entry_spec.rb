@@ -43,7 +43,7 @@ describe 'Moab::SignatureCatalogEntry' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#version_id}
-    # Which stores: [Integer] \@originalVersion = The ordinal version number
+    # Which stores: [Integer] The ordinal version number
     specify 'Moab::SignatureCatalogEntry#version_id' do
       value = 8
       @signature_catalog_entry.version_id= value
@@ -53,7 +53,7 @@ describe 'Moab::SignatureCatalogEntry' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#group_id}
-    # Which stores: [String] \@groupId = The name of the file group
+    # Which stores: [String] The name of the file group
     specify 'Moab::SignatureCatalogEntry#group_id' do
       value = 'Test group_id'
       @signature_catalog_entry.group_id= value
@@ -63,7 +63,7 @@ describe 'Moab::SignatureCatalogEntry' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#path}
-    # Which stores: [String] \@storagePath = The id is the filename path, relative to the file group's base directory
+    # Which stores: [String] The id is the filename path, relative to the file group's base directory
     specify 'Moab::SignatureCatalogEntry#path' do
       value = 'Test path'
       @signature_catalog_entry.path= value
@@ -73,7 +73,7 @@ describe 'Moab::SignatureCatalogEntry' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#signature}
-    # Which stores: [FileSignature] \<signature> = The fixity data of the file instance
+    # Which stores: [FileSignature] The fixity data of the file instance
     specify 'Moab::SignatureCatalogEntry#signature' do
       value = mock(FileSignature.name)
       @signature_catalog_entry.signature= value

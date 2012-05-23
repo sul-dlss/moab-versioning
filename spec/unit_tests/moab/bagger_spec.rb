@@ -390,7 +390,8 @@ describe 'Moab::Bagger' do
       #         target = payload_pathname.join(relative_path)
       #         target.parent.mkpath
       #         target.make_link(source)
-      #         target.utime(instance.datetime, instance.datetime)
+      #         datetime = Time.parse(instance.datetime)
+      #         target.utime(datetime, datetime)
       #       end
       #     end
       #   end
@@ -430,8 +431,8 @@ describe 'Moab::Bagger' do
       #       file.instances.each do |instance|
       #         signature = file.signature
       #         relative_path = File.join(group.group_id, instance.path)
-      #         md5.puts("#{signature.md5}  #{relative_path}")
-      #         sha1.puts("#{signature.sha1}  #{relative_path}")
+      #         md5.puts("#{signature.md5} *#{relative_path}")
+      #         sha1.puts("#{signature.sha1} *#{relative_path}")
       #       end
       #     end
       #   end
@@ -518,8 +519,8 @@ describe 'Moab::Bagger' do
       #   @bag_pathname.children.each do |file|
       #     unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
       #       signature = FileSignature.new.signature_from_file(file.realpath)
-      #       md5.puts("#{signature.md5}  #{file.basename}")
-      #       sha1.puts("#{signature.sha1}  #{file.basename}")
+      #       md5.puts("#{signature.md5} *#{file.basename}")
+      #       sha1.puts("#{signature.sha1} *#{file.basename}")
       #     end
       #   end
       # ensure

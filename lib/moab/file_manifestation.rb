@@ -77,7 +77,7 @@ module Moab
     # @param other [FileManifestation] The {FileManifestation} object to compare with self
     # @return [Boolean] True if {FileManifestation} objects have same content
     def ==(other)
-      (self.signature = other.signature) && (self.instances = other.instances)
+      (self.signature == other.signature) && (self.instances == other.instances)
     end
 
   end

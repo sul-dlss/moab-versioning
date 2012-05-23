@@ -133,16 +133,72 @@ describe 'Moab::StorageObjectVersion' do
       @temp_ingests.rmtree if @temp_ingests.exist?
     end
 
-    # Unit test for method: {Moab::StorageObjectVersion#version_inventory}
-    # Which returns: [FileInventory] The manifest of the specified type for this version
+    # Unit test for method: {Moab::StorageObjectVersion#find_filepath}
+    # Which returns: [Pathname] Pathname object containing the full path for the specified file
     # For input parameters:
-    # * type [String] = The type of manifest to return (version|additions|manifests)
+    # * file_category [String] = The category of file (:content, :metdata, or :manifest)
+    # * file_id [String] = The relative path of the file (relative to the appropriate home directory)
+    specify 'Moab::StorageObjectVersion#find_filepath' do
+      pathname = @existing_storage_object_version.find_filepath('content', 'title.jpg')
+      pathname.to_s.include?('ingests/jq937jp0017/v0001/data/content/title.jpg').should == true
+      pathname = @existing_storage_object_version.find_filepath('content', 'page-1.jpg')
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/page-1.jpg').should == true
+      pathname = @existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/versionInventory.xml').should == true
+      lambda{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.should raise_exception
+      # def find_filepath(file_category, file_id)
+      #   this_version_filepath = file_pathname(file_category, file_id)
+      #   return this_version_filepath if this_version_filepath.exist?
+      #   raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == :manifest
+      #   file_signature = file_inventory('version').file_signature(file_category, file_id)
+      #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)
+      #   @storage_object.storage_filepath(catalog_filepath)
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObjectVersion#file_pathname}
+    # Which returns: [Pathname] Pathname object containing this version's storage path for the specified file
+    # For input parameters:
+    # * file_category [String] = The category of file ('content', 'metdata', or 's')
+    # * file_id [String] = The relative path of the file (relative to the appropriate home directory)
+    specify 'Moab::StorageObjectVersion#file_pathname' do
+      pathname = @existing_storage_object_version.file_pathname('content','title.jpg')
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/title.jpg').should == true
+      pathname = @existing_storage_object_version.file_pathname('metadata','descMetadata.xml')
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/metadata/descMetadata.xml').should == true
+      pathname= @existing_storage_object_version.file_pathname('manifest','signatureCatalog.xml')
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/signatureCatalog.xml').should == true
+
+      # def file_pathname(file_category, file_id)
+      #   case file_category
+      #     when 'manifest'
+      #       @version_pathname.join(file_id)
+      #     else
+      #       @version_pathname.join('data',file_category, file_id)
+      #   end
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObjectVersion#file_inventory}
+    # Which returns: [FileInventory] The file inventory of the specified type for this version
+    # For input parameters:
+    # * type [String] = The type of inventory to return (version|additions|manifests)
     specify 'Moab::StorageObjectVersion#version_inventory' do
       type = 'version'
       @existing_storage_object_version.file_inventory(type).should be_an_instance_of(FileInventory)
 
       # def version_inventory(type)
+      #   if version_id > 0
       #   FileInventory.read_xml_file(@version_pathname, type)
+      #   else
+      #     groups = ['content','metadata'].collect { |id| FileGroup.new(:group_id=>id)}
+      #     FileInventory.new(
+      #         :type=>'version',
+      #         :digital_object_id => @storage_object.digital_object_id,
+      #         :version_id => @version_id,
+      #         :groups => groups
+      #     )
+      #   end
       # end
     end
 
@@ -305,6 +361,26 @@ describe 'Moab::StorageObjectVersion' do
       # def update_catalog(signature_catalog,new_inventory)
       #   signature_catalog.update(new_inventory)
       #   signature_catalog.write_xml_file(@version_pathname)
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObjectVersion#generate_differences_report}
+    # Which returns: [void] generate a file inventory differences report and save to disk
+    # For input parameters:
+    # * old_inventory [FileInventory] = The old version's inventory
+    # * new_inventory [FileInventory] = The new version's inventory
+    specify 'Moab::StorageObjectVersion#generate_differences_report' do
+      old_inventory = mock(FileInventory.name)
+      new_inventory = mock(FileInventory.name)
+      mock_fid = mock(FileInventoryDifference.name)
+      FileInventoryDifference.should_receive(:new).and_return(mock_fid)
+      mock_fid.should_receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
+      mock_fid.should_receive(:write_xml_file)
+      @existing_storage_object_version.generate_differences_report(old_inventory, new_inventory)
+
+      # def generate_differences_report(old_inventory,new_inventory)
+      #   differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
+      #   differences.write_xml_file(@version_pathname)
       # end
     end
 

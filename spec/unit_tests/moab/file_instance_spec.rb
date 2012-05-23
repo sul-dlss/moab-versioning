@@ -86,7 +86,7 @@ describe 'Moab::FileInstance' do
     specify 'Moab::FileInstance#instance_from_file' do
       file_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
       file_instance.path.should == "title.jpg"
-      file_instance.datetime.should == "2012-03-26T14:15:11Z"
+      file_instance.datetime.should =~ /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/
        
       # def instance_from_file(pathname, base_directory)
       #   @path = pathname.realpath.relative_path_from(base_directory.realpath).to_s

@@ -132,7 +132,7 @@ describe 'Moab::FileInventory' do
     # Unit test for attribute: {Moab::FileInventory#byte_count}
     # Which stores: [Integer] \@byteCount = The total number of bytes in all files of all files in the inventory
     specify 'Moab::FileInventory#byte_count' do
-      @file_inventory.byte_count.should == 229690
+      @file_inventory.byte_count.should == 217719
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -144,7 +144,7 @@ describe 'Moab::FileInventory' do
     # Unit test for attribute: {Moab::FileInventory#block_count}
     # Which stores: [Integer] \@blockCount = The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
     specify 'Moab::FileInventory#block_count' do
-      @file_inventory.block_count.should == 228
+      @file_inventory.block_count.should == 216
        
       # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -170,6 +170,43 @@ describe 'Moab::FileInventory' do
       @file_inventory = FileInventory.parse(@v1_version_inventory.read)
     end
     
+    # Unit test for method: {Moab::FileInventory#group}
+    # Which returns: [FileGroup] The file group in this inventory for the specified group_id
+    # For input parameters:
+    # * group_id [String] = The identifer of the group to be selected
+    specify 'Moab::FileInventory#group' do
+      group_id = 'content'
+      group = @file_inventory.group(group_id)
+      group.group_id.should == group_id
+      lambda{@file_inventory.group('dummy')}.should raise_exception
+
+      # def group(group_id)
+      #   @groups.each do |group|
+      #     return group if group.group_id == group_id
+      #   end
+      #   raise "group #{group_id} not found in file inventory for #{@digital_object_id} - #{@version_id}"
+      # end
+    end
+
+    # Unit test for method: {Moab::FileInventory#file_signature}
+    # Which returns: [FileSignature] The signature of the specified file
+    # For input parameters:
+    # * group_id [String] = The identifer of the group to be selected
+    # * file_id [String] = The group-relative path of the file (relative to the appropriate home directory)
+    specify 'Moab::FileInventory#file_signature' do
+      group_id = 'content'
+      file_id = 'title.jpg'
+      signature = @file_inventory.file_signature(group_id, file_id)
+      signature.fixity.should == ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]
+
+      # def file_signature(group_id, file_id)
+      #   file_group = group(group_id)
+      #   file_signature = file_group.path_hash[file_id]
+      #   raise "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
+      #   file_signature
+      # end
+    end
+
     # Unit test for method: {Moab::FileInventory#copy_ids}
     # Which returns: [void] Copy objectId and versionId values from another class instance into this instance
     # For input parameters:
@@ -221,7 +258,7 @@ describe 'Moab::FileInventory' do
     # Unit test for method: {Moab::FileInventory#inventory_from_directory}
     # Which returns: [FileInventory] Traverse a directory and return an inventory of the files it contains
     # For input parameters:
-    # * data_dir [String or Pathname] =  
+    # * data_dir [Pathname, String] = The location of files to be inventoried
     # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories 
     specify 'Moab::FileInventory#inventory_from_directory' do
       data_dir_1 = @fixtures.join('data/jq937jp0017/v1/metadata')
@@ -254,7 +291,7 @@ describe 'Moab::FileInventory' do
     # Which returns: [String] The total size of the inventory expressed in KB, MB, GB or TB, depending on the magnitutde of the value
     # For input parameters: (None)
     specify 'Moab::FileInventory#human_size' do
-      @file_inventory.human_size().should == "224.31 KB"
+      @file_inventory.human_size().should == "212.62 KB"
        
       # def human_size
       #   count = 0

@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::Manifest}
-describe 'Moab::Serializable' do
+# Unit tests for class {Serializer::Manifest}
+describe 'Serializer::Manifest' do
 
 
   describe '=========================== CLASS METHODS ===========================' do
 
-    # Unit test for method: {Moab::Manifest.xml_filename}
+    # Unit test for method: {Serializer::Manifest.xml_filename}
     # Which returns: [String] Returns the standard filename (derived from the class name) to be used for serializing an object
     # For input parameters:
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest.xml_filename' do
+    specify 'Serializer::Manifest.xml_filename' do
 
       SignatureCatalog.xml_filename().should == "signatureCatalog.xml"
       SignatureCatalog.xml_filename("dummy").should == "dummy"
@@ -25,12 +25,12 @@ describe 'Moab::Serializable' do
       # end
     end
 
-    # Unit test for method: {Moab::Manifest.xml_pathname}
+    # Unit test for method: {Serializer::Manifest.xml_pathname}
     # Which returns: [Pathname] The location of the xml file
     # For input parameters:
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest.xml_pathname' do
+    specify 'Serializer::Manifest.xml_pathname' do
       parent_dir = Pathname.new("/test/parent_dir")
       SignatureCatalog.xml_pathname(parent_dir).should == Pathname("/test/parent_dir/signatureCatalog.xml")
       SignatureCatalog.xml_pathname(parent_dir, "dummy").should == Pathname("/test/parent_dir/dummy")
@@ -40,12 +40,12 @@ describe 'Moab::Serializable' do
       # end
     end
 
-    # Unit test for method: {Moab::Manifest.xml_pathname_exist?}
+    # Unit test for method: {Serializer::Manifest.xml_pathname_exist?}
     # Which returns: [Boolean] Returns true if the xml file exists
     # For input parameters:
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest.xml_pathname_exist?' do
+    specify 'Serializer::Manifest.xml_pathname_exist?' do
       Manifest.xml_pathname_exist?("/test/parent_dir", "dummy").should == false
       SignatureCatalog.xml_pathname_exist?(@manifests.join("v1")).should == true
 
@@ -54,12 +54,12 @@ describe 'Moab::Serializable' do
       # end
     end
 
-    # Unit test for method: {Moab::Manifest.read_xml_file}
-    # Which returns: [Manifest] Read the xml file and return the parsed XML
+    # Unit test for method: {Serializer::Manifest.read_xml_file}
+    # Which returns: [Serializable] Read the xml file and return the parsed XML
     # For input parameters:
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest.read_xml_file' do
+    specify 'Serializer::Manifest.read_xml_file' do
       parent_dir = @manifests.join("v1")
       mock_pathname = mock(Pathname.name)
       mock_xml = mock("xml")
@@ -73,13 +73,13 @@ describe 'Moab::Serializable' do
       # end
     end
 
-    # Unit test for method: {Moab::Manifest.write_xml_file}
+    # Unit test for method: {Serializer::Manifest.write_xml_file}
     # Which returns: [void] Serializize the in-memory object to a xml file instance
     # For input parameters:
-    # * xml_object [Manifest] =
+    # * xml_object [Serializable] =
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest.write_xml_file' do
+    specify 'Serializer::Manifest.write_xml_file' do
       xml_object = SignatureCatalog.read_xml_file(@manifests.join("v1"))
       #xml_object.should_receive(:to_xml)
       output_dir = @temp
@@ -108,12 +108,12 @@ describe 'Moab::Serializable' do
       @v3_content = @v3_inventory.groups[0]
     end
 
-    # Unit test for method: {Moab::Manifest#write_xml_file}
+    # Unit test for method: {Serializer::Manifest#write_xml_file}
     # Which returns: [void] Serializize the in-memory object to a xml file instance
     # For input parameters:
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
-    specify 'Moab::Manifest#write_xml_file' do
+    specify 'Serializer::Manifest#write_xml_file' do
       output_dir = "/my/temp"
       FileInventory.should_receive(:write_xml_file).with(@v1_inventory, output_dir, "version")
       @v1_inventory.write_xml_file(output_dir)

@@ -94,6 +94,25 @@ module Moab
     # @return [Array<FileGroup>] The set of data groups comprising the version
     has_many :groups, FileGroup, :tag => 'fileGroup'
 
+    # @param [String] group_id The identifer of the group to be selected
+    # @return [FileGroup] The file group in this inventory for the specified group_id
+    def group(group_id)
+      @groups.each do |group|
+        return group if group.group_id == group_id
+      end
+      raise "group #{group_id} not found in file inventory for #{@digital_object_id} - #{@version_id}"
+    end
+
+    # @param [String] group_id The identifer of the group to be selected
+    # @param [String] file_id The group-relative path of the file (relative to the appropriate home directory)
+    # @return [FileSignature] The signature of the specified file
+    def file_signature(group_id, file_id)
+      file_group = group(group_id)
+      file_signature = file_group.path_hash[file_id]
+      raise "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
+      file_signature
+    end
+
     # @api internal
     # @param other [FileInventory] another instance of this class from which to clone identity values
     # @return [void] Copy objectId and versionId values from another class instance into this instance
@@ -120,7 +139,7 @@ module Moab
     end
 
     # @api external
-    # @param data_dir [Pathname,String]
+    # @param data_dir [Pathname,String] The location of files to be inventoried
     # @param group_id [String] if specified, is used to set the group ID of the FileGroup created from the directory
     #   if nil, then the directory is assumed to contain both content and metadata subdirectories
     # @return [FileInventory] Traverse a directory and return an inventory of the files it contains

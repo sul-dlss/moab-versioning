@@ -48,7 +48,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#group_id}
-    # Which stores: [String] \@groupId = The name of the file group
+    # Which stores: [String] The name of the file group
     specify 'Moab::FileGroup#group_id' do
       value = 'Test group_id'
       @file_group.group_id= value
@@ -58,7 +58,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#data_source}
-    # Which stores: [String] \@dataSource = The directory location or other source of this groups file data
+    # Which stores: [String] The directory location or other source of this groups file data
     specify 'Moab::FileGroup#data_source' do
       value = 'Test data_source'
       @file_group.data_source= value
@@ -68,7 +68,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#file_count}
-    # Which stores: [Integer] \@fileCount = The total number of data files
+    # Which stores: [Integer] The total number of data files (dynamically calculated)
     specify 'Moab::FileGroup#file_count' do
        @file_group.file_count.should == 11
        
@@ -80,9 +80,9 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#byte_count}
-    # Which stores: [Integer] \@byteCount = The total size (in bytes) of all data files
+    # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::FileGroup#byte_count' do
-      @file_group.byte_count.should == 229690
+      @file_group.byte_count.should == 217719
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -92,9 +92,9 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#block_count}
-    # Which stores: [Integer] \@blockCount The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    # Which stores: [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
     specify 'Moab::FileGroup#block_count' do
-      @file_group.block_count.should == 228
+      @file_group.block_count.should == 216
        
       # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -104,7 +104,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#files}
-    # Which stores: [Array<FileManifestation>] \[<file>] = The set of files comprising the group
+    # Which stores: [Array<FileManifestation>] The set of files comprising the group
     specify 'Moab::FileGroup#files' do
       @file_group.files.size.should == 11
        
@@ -174,6 +174,31 @@ describe 'Moab::FileGroup' do
       # end
     end
     
+    # Unit test for method: {Moab::FileGroup#path_hash_subset}
+    # Which returns: [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
+    # For input parameters:
+    # * signature_subset [Array<FileSignature>] = The signatures used to select the entries to return
+    specify 'Moab::FileGroup#path_hash_subset' do
+      files = @v1_file_group.files
+      signature_subset = Array.new
+      (0..2).each do |index|
+        signature_subset << files[index].signature
+      end
+      subset = @v1_file_group.path_hash_subset(signature_subset)
+      subset.size.should == 3
+
+      # def path_hash_subset(signature_subset)
+      #   path_hash = OrderedHash.new
+      #   signature_subset.each do |signature|
+      #     manifestation = @signature_hash[signature]
+      #     manifestation.instances.each do |instance|
+      #       path_hash[instance.path] = signature
+      #     end
+      #   end
+      #   path_hash
+      # end
+    end
+
     # Unit test for method: {Moab::FileGroup#add_file}
     # Which returns: [void] Add a single {FileManifestation} object to this group
     # For input parameters:
@@ -205,7 +230,7 @@ describe 'Moab::FileGroup' do
       # add a second file instance to an existing manifestation
       new_instance = FileInstance.new(:path => "/my/path")
       @new_file_group.add_file_instance(manifestation.signature, new_instance)
-      manifestation.instances.size.should == 2
+      @new_file_group.files[0].instances.size.should == 2
              
       # def add_file_instance(signature,instance)
       #   if @signature_hash.has_key?(signature)

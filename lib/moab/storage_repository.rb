@@ -34,9 +34,13 @@ module Moab
     end
 
     # @param object_id [String] The identifier of the digital object whose version is desired
-    # @return [Pathname] The location of the desired object's home directory
+    # @return [Pathname] The location of the desired object's home directory (default=pairtree)
     def storage_object_pathname(object_id)
-      #todo This method must be customized, or overrided in a superclass
+      #todo This method should be customized, or overridden in a subclass
+      # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
+      path_segments = object_id.scan(/..?/) << object_id
+      object_path = path_segments.join(File::SEPARATOR).gsub(/:/,'_')
+      repository_home.join(object_path)
     end
 
   end

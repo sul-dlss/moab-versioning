@@ -43,7 +43,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#change}
-    # Which stores: [String] \@change = The type of change (identical|renamed|modified|deleted|added)
+    # Which stores: [String] The type of change (identical|renamed|modified|deleted|added)
     specify 'Moab::FileGroupDifferenceSubset#change' do
       value = 'Test change'
       @file_group_difference_subset.change= value
@@ -53,7 +53,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#count}
-    # Which stores: [Integer] \@count = How many files were changed
+    # Which stores: [Integer] How many files were changed
     specify 'Moab::FileGroupDifferenceSubset#count' do
       value = 52
       @file_group_difference_subset.count= value
@@ -63,7 +63,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#files}
-    # Which stores: [Array<FileInstanceDifference>] \[<file>] = The set of file instances having this type of change
+    # Which stores: [Array<FileInstanceDifference>] The set of file instances having this type of change
     specify 'Moab::FileGroupDifferenceSubset#files' do
       @file_group_difference_subset.files.size.should == 0
        

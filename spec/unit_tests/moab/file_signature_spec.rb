@@ -41,7 +41,7 @@ describe 'Moab::FileSignature' do
     end
     
     # Unit test for attribute: {Moab::FileSignature#size}
-    # Which stores: [Integer] \@size = The size of the file in bytes
+    # Which stores: [Integer] The size of the file in bytes
     specify 'Moab::FileSignature#size' do
       value = 19
       @file_signature.size= value
@@ -51,7 +51,7 @@ describe 'Moab::FileSignature' do
     end
     
     # Unit test for attribute: {Moab::FileSignature#md5}
-    # Which stores: [String] \@md5 = The MD5 checksum value of the file
+    # Which stores: [String] The MD5 checksum value of the file
     specify 'Moab::FileSignature#md5' do
       value = 'Test md5'
       @file_signature.md5= value
@@ -61,7 +61,7 @@ describe 'Moab::FileSignature' do
     end
     
     # Unit test for attribute: {Moab::FileSignature#sha1}
-    # Which stores: [String] \@sha1 = The SHA1 checksum value of the file
+    # Which stores: [String] The SHA1 checksum value of the file
     specify 'Moab::FileSignature#sha1' do
       value = 'Test sha1'
       @file_signature.sha1= value

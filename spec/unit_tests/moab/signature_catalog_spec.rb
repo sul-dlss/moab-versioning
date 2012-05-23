@@ -49,7 +49,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#digital_object_id}
-    # Which stores: [String] \@objectId = The object ID (druid)
+    # Which stores: [String] The object ID (druid)
     specify 'Moab::SignatureCatalog#digital_object_id' do
       @signature_catalog.digital_object_id.should == 'druid:jq937jp0017'
        
@@ -57,7 +57,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#version_id}
-    # Which stores: [Integer] \@versionId = The ordinal version number
+    # Which stores: [Integer] The ordinal version number
     specify 'Moab::SignatureCatalog#version_id' do
       @signature_catalog.version_id.should == 1
        
@@ -65,7 +65,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#catalog_datetime}
-    # Which stores: [Time] \@catalogDatetime = The datetime at which the catalog was updated
+    # Which stores: [Time] The datetime at which the catalog was updated
     specify 'Moab::SignatureCatalog#catalog_datetime' do
       Time.parse(@signature_catalog.catalog_datetime).should be_instance_of(Time)
       @signature_catalog.catalog_datetime= "Apr 12 19:36:07 UTC 2012"
@@ -84,7 +84,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#file_count}
-    # Which stores: [Integer] \@fileCount = The total number of data files
+    # Which stores: [Integer] The total number of data files (dynamically calculated)
     specify 'Moab::SignatureCatalog#file_count' do
       @signature_catalog.file_count.should == 11
        
@@ -96,9 +96,9 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#byte_count}
-    # Which stores: [Integer] \@byteCount = The total size (in bytes) of all data files
+    # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::SignatureCatalog#byte_count' do
-      @signature_catalog.byte_count.should == 229690
+      @signature_catalog.byte_count.should == 217719
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -108,9 +108,9 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#block_count}
-    # Which stores: [Integer] \@blockCount = The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    # Which stores: [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
     specify 'Moab::SignatureCatalog#block_count' do
-      @signature_catalog.block_count.should == 228
+      @signature_catalog.block_count.should == 216
        
       # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -121,7 +121,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#entries}
-    # Which stores: [Array<SignatureCatalogEntry>] \[<entry>] = The set of data groups comprising the version
+    # Which stores: [Array<SignatureCatalogEntry>] The set of data groups comprising the version
     specify 'Moab::SignatureCatalog#entries' do
       @signature_catalog.entries.size.should == 11
        
@@ -177,6 +177,24 @@ describe 'Moab::SignatureCatalog' do
       # end
     end
     
+    # Unit test for method: {Moab::SignatureCatalog#catalog_filepath}
+    # Which returns: [String] The object-relative path of the file having the specified signature
+    # For input parameters:
+    # * file_signature [FileSignature] = The signature of the file whose path is sought
+    specify 'Moab::SignatureCatalog#catalog_filepath' do
+      file_signature = @signature_catalog.entries[0].signature
+      filepath = @signature_catalog.catalog_filepath(file_signature)
+      filepath.should == 'v0001/data/content/intro-1.jpg'
+      file_signature.size = 0
+      lambda{@signature_catalog.catalog_filepath(file_signature)}.should raise_exception
+
+      # def catalog_filepath(file_signature)
+      #   catalog_entry = @signature_hash[file_signature]
+      #   raise "catalog entry not found for #{file_signature.fixity} in #{@digital_object_id} - #{@version_id}" if catalog_entry.nil?
+      #   catalog_entry.storage_path
+      # end
+    end
+
     # Unit test for method: {Moab::SignatureCatalog#update}
     # Which returns: [void] Compares the {FileSignature} entries in the new versions {FileInventory} against the signatures in this catalog and create new {SignatureCatalogEntry} addtions to the catalog
     # For input parameters:

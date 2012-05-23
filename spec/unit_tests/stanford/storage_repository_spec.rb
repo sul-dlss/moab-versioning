@@ -26,37 +26,7 @@ describe 'Stanford::StorageRepository' do
       @object_id = @druid
 
     end
-    
-    # Unit test for method: {Stanford::StorageRepository#storage_object_version}
-    # Which returns: [StorageObjectVersion] The representation of the desired object version's storage directory
-    # For input parameters:
-    # * object_id [String] = The identifier of the digital object whose version is desired 
-    # * version_id [Integer] = The desired version 
-    specify 'Stanford::StorageRepository#storage_object_version' do
-      version_id = 2
-      version = @storage_repository.storage_object_version(@object_id, version_id)
-      version.should be_instance_of(StorageObjectVersion)
-      version.version_id.should == version_id
-      version.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0002/
 
-      # def storage_object_version(object_id, version_id=nil)
-      #   storage_object(object_id).storage_object_version(version_id)
-      # end
-    end
-    
-    # Unit test for method: {Stanford::StorageRepository#storage_object}
-    # Which returns: [StorageObject] The representation of the desired object storage directory
-    # For input parameters:
-    # * object_id [String] = The identifier of the digital object whose version is desired 
-    specify 'Stanford::StorageRepository#storage_object' do
-      so = @storage_repository.storage_object(@object_id)
-      so.digital_object_id.should == "druid:jq937jp0017"
-      so.object_pathname.to_s.should =~ /ingests\/jq937jp0017/
-       
-      # def storage_object(object_id)
-      #   StorageObject.new(object_id, storage_object_pathname(object_id))
-      # end
-    end
     
     # Unit test for method: {Stanford::StorageRepository#storage_object_pathname}
     # Which returns: [Pathname] The location of the desired object's home directory
@@ -74,7 +44,12 @@ describe 'Stanford::StorageRepository' do
       @storage_repository.storage_object_pathname(@object_id).to_s.should =~ /ingests\/jq937jp0017/
 
       # def storage_object_pathname(object_id)
-      #   @repository_home.join(druid_tree(object_id))
+      #   case Moab::Config.path_method
+      #     when :druid_tree
+      #       repository_home.join(druid_tree(object_id))
+      #     when :druid
+      #       repository_home.join(object_id.split(/:/)[-1])
+      # end
       # end
     end
     
@@ -89,14 +64,14 @@ describe 'Stanford::StorageRepository' do
       # def druid_tree(object_id)
       #   syntax_msg = "Identifier has invalid suri syntax: #{object_id}"
       #   raise syntax_msg + "nil or empty" if object_id.to_s.empty?
-      #   namespace,identifier = object_id.split(':')
-      #   raise syntax_msg if (namespace.to_s.empty? || identifier.to_s.empty?)
+      #   identifier = object_id.split(':')[-1]
+      #   raise syntax_msg if  identifier.to_s.empty?
       #   # The object identifier must be in the SURI format, otherwise an exception is raised:
-      #   # e.g. druid:aannnaannnn
+      #   # e.g. druid:aannnaannnn or aannnaannnn
       #   # where 'a' is an alphabetic character
       #   # where 'n' is a numeric character
-      #   if(identifier =~ /^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/ )
-      #     return File.join(namespace, $1, $2, $3, $4)
+      #   if identifier =~ /^([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/
+      #     return File.join( $1, $2, $3, $4, identifier)
       #   else
       #     raise syntax_msg
       #   end

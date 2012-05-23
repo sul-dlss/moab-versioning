@@ -44,6 +44,7 @@ module Moab
     # @return [void] Ingest a new object version contained in a bag into this objects storage area
     # @example {include:file:spec/features/storage/ingest_spec.rb}
     def ingest_bag(bag_dir)
+      bag_dir = Pathname.new(bag_dir)
       current_version = StorageObjectVersion.new(self,current_version_id)
       current_inventory = current_version.file_inventory('version')
       new_version = StorageObjectVersion.new(self,current_version_id + 1)
@@ -90,6 +91,14 @@ module Moab
       signature_catalog = storage_version.signature_catalog
       bagger = Bagger.new(version_inventory, signature_catalog, @object_pathname, bag_dir)
       bagger.fill_bag(:reconstructor)
+    end
+
+    # @param [String] catalog_filepath The object-relative path of the file
+    # @return [Pathname] The absolute storage path of the file, including the object's home directory
+    def storage_filepath(catalog_filepath)
+      storage_filepath = @object_pathname.join(catalog_filepath)
+      raise "#{catalog_filepath} missing from storage location #{storage_filepath}" unless storage_filepath.exist?
+      storage_filepath
     end
 
     # @api external
