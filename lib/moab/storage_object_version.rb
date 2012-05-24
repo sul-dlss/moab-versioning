@@ -36,8 +36,20 @@ module Moab
       @storage_object=storage_object
     end
 
-  # @param [String] file_category The category of file (:content, :metdata, or :manifest)
-  # @param [String] file_id The relative path of the file (relative to the appropriate home directory)
+  # @param [String] file_category The category of file ('content', 'metadata', or 'manifest'))
+  # @param [String] file_id The name of the file (path relative to base directory)
+  # @return [FileSignature] signature of the specified file
+    def find_signature(file_category, file_id)
+      case file_category
+        when 'manifest'
+          file_inventory('manifests').file_signature('manifests',file_id)
+        else
+          file_inventory('version').file_signature(file_category, file_id)
+      end
+    end
+
+  # @param [String] file_category The category of file ('content', 'metadata', or 'manifest')
+  # @param [String] file_id The name of the file (path relative to base directory)
   # @return [Pathname] Pathname object containing the full path for the specified file
     def find_filepath(file_category, file_id)
       this_version_filepath = file_pathname(file_category, file_id)
@@ -48,8 +60,8 @@ module Moab
       @storage_object.storage_filepath(catalog_filepath)
     end
 
-  # @param [String] file_category The category of file ('content', 'metdata', or 's')
-  # @param [String] file_id The relative path of the file (relative to the appropriate home directory)
+  # @param [String] file_category The category of file ('content', 'metadata', or 's')
+  # @param [String] file_id The name of the file (path relative to base directory)
   # @return [Pathname] Pathname object containing this version's storage path for the specified file
     def file_pathname(file_category, file_id)
       case file_category
@@ -152,7 +164,7 @@ module Moab
 
     # @api internal
     # @return [void] examine the version's directory and create/serialize a {FileInventory} containing the manifest files
-    def inventory_manifests
+    def generate_manifest_inventory
       manifest_inventory = FileInventory.new(
           :type=>'manifests',
           :digital_object_id=>@storage_object.digital_object_id,

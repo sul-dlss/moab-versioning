@@ -67,8 +67,8 @@ describe 'Moab::StorageServices' do
     # Unit test for method: {Moab::StorageServices.retrieve_file}
     # Which returns: [Pathname] Pathname object containing the full path for the specified file
     # For input parameters:
-    # * file_category [Symbol] = The category of file (:content, :metdata, or :manifest)
-    # * file_path [String] = The path of the file (relative to the appropriate home directory)
+    # * file_category [String] = The category of file ('content', 'metdata', or 'manifest')
+    # * file_id [String] = The name of the file (path relative to base directory)
     # * object_id [String] = The digital object identifier of the object
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file' do
@@ -82,13 +82,40 @@ describe 'Moab::StorageServices' do
       manifest_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/versionAdditions.xml/
       manifest_pathname.exist?.should == true
 
-      # def self.retrieve_file(file_category, file_path, object_id, version_id=nil)
-      #   storage_object_version = @@repository.storage_object_version(object_id,version_id)
-      #   file_pathname = storage_object_version.file_pathname(file_category, file_path)
+      # def self.retrieve_file(file_category, file_id, object_id, version_id=nil)
+      #   storage_object_version = @@repository.find_object_version(object_id,version_id)
+      #   file_pathname = storage_object_version.find_filepath(file_category, file_id)
       # end
     end
 
-    specify "version_differences" do
+    # Unit test for method: {Moab::StorageServices.retrieve_file_signature}
+    # Which returns: [Pathname] Pathname object containing the full path for the specified file
+    # For input parameters:
+    # * file_category [String] = The category of file ('content', 'metdata', or 'manifest')
+    # * file_id [String] = The name of the file (path relative to base directory)
+    # * object_id [String] = The digital object identifier of the object
+    # * version_id [Integer] = The ID of the version, if nil use latest version
+    specify 'Moab::StorageServices.retrieve_file_signature' do
+      content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @digital_object_id, version_id=2)
+      content_signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
+      metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
+      metadata_signature.fixity.should == ["1135", "d74bfa778653b6c1b285b2d0c2f07c5b", "0ee15e133c17ae3312b87247adb310b0327ca3df"]
+      manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
+      manifest_signature.fixity.should == ["1335", "6cf7f4b6e70a5bf7efcd278947064c35", "b0d342e23bcaf929403795e32466ebe7569c6d08"]
+
+      # def self.retrieve_file_signature(file_category, file_id, object_id, version_id=nil)
+      #   storage_object_version = @@repository.find_object_version(object_id,version_id)
+      #   file_pathname = storage_object_version.find_signature(file_category, file_id)
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageServices.version_differences}
+    # Which returns: [FileInventoryDifference] The report of the version differences
+    # For input parameters:
+    # * object_id [String] = The digital object identifier of the object
+    # * base_version_id [Object] = The identifier of the base version to be compared
+    # * compare_version_id [Object] = The identifier of the version to be compared to the base version
+    specify 'Moab::StorageServices.version_differences' do
       differences=Moab::StorageServices.version_differences(@digital_object_id,2,3)
       differences.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="6" basis="v2" other="v3" >

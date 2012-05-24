@@ -57,7 +57,7 @@ module Moab
       new_version.ingest_bag_data(bag_dir)
       new_version.update_catalog(current_version.signature_catalog,new_inventory)
       new_version.generate_differences_report(current_inventory,new_inventory)
-      new_version.inventory_manifests
+      new_version.generate_manifest_inventory
       #update_tagmanifests(new_catalog_pathname)
     end
 
@@ -134,13 +134,30 @@ module Moab
     end
 
     # @api external
-    # @param version_id [Integer] The version to return.  If nil, return latest version
-    # @return [StorageObjectVersion] The representation of the subdirectory for the specified version
-    def storage_object_version(version_id=nil)
+    # @param version_id [Integer] The existing version to return.  If nil, return latest version
+    # @return [StorageObjectVersion] The representation of an existing version's storage area
+    def find_object_version(version_id=nil)
+      current = current_version_id
+      case version_id
+        when nil
+          StorageObjectVersion.new(self,current)
+        when 1..current
+          StorageObjectVersion.new(self,version_id)
+        else
+          raise "Version ID #{version_id} does not exist"
+      end
+    end
+
+    # @api external
+    # @param version_id [Integer] The version to return. OK if version does not exist
+    # @return [StorageObjectVersion] The representation of a specified version.
+    # * Version 0 is a special case used to generate empty manifests
+    # * Current version + 1 is used for creation of a new version
+    def storage_object_version(version_id)
       if version_id
         StorageObjectVersion.new(self,version_id)
       else
-        StorageObjectVersion.new(self,current_version_id)
+        raise "Version ID not specified"
       end
     end
 

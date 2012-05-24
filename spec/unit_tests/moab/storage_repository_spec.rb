@@ -38,23 +38,6 @@ describe 'Moab::StorageRepository' do
       # end
     end
 
-    # Unit test for method: {Moab::StorageRepository#storage_object_version}
-    # Which returns: [StorageObjectVersion] The representation of the desired object version's storage directory
-    # For input parameters:
-    # * object_id [String] = The identifier of the digital object whose version is desired 
-    # * version_id [Integer] = The desired version 
-    specify 'Moab::StorageRepository#storage_object_version' do
-      version_id = 2
-      version = @storage_repository.storage_object_version(@obj, version_id)
-      version.should be_instance_of(StorageObjectVersion)
-      version.version_id.should == version_id
-      version.version_pathname.to_s.include?('ingests/jq/93/7j/p0/01/7/jq937jp0017/v0002').should == true
-
-      # def storage_object_version(object_id, version_id=nil)
-      #   storage_object(object_id).storage_object_version(version_id)
-      # end
-    end
-    
     # Unit test for method: {Moab::StorageRepository#storage_object}
     # Which returns: [StorageObject] The representation of the desired object storage directory
     # For input parameters:

@@ -111,6 +111,7 @@ describe 'Moab::StorageObject' do
       @temp_ingests.rmtree if @temp_ingests.exist?
       @temp_object_dir = @temp_ingests.join(@obj)
       @storage_object = StorageObject.new(@obj,@temp_object_dir)
+      @storage_object.initialize_storage
     end
 
     after(:all) do
@@ -121,6 +122,7 @@ describe 'Moab::StorageObject' do
     # Which returns: [void] Create the directory for the digital object home unless it already exists
     # For input parameters: (None)
     specify 'Moab::StorageObject#initialize_storage' do
+      @temp_object_dir.rmtree if @temp_object_dir.exist?
       @temp_object_dir.exist?.should == false
       @storage_object.initialize_storage()
       @temp_object_dir.exist?.should == true
@@ -148,7 +150,7 @@ describe 'Moab::StorageObject' do
       #new_version.should_receive(:ingest_bag_data).with(bag_dir)
       #current_version.should_receive(:signature_catalog).and_return(signature_catalog)
       #new_version.should_receive(:update_catalog).with(signature_catalog,new_inventory)
-      #new_version.should_receive(:inventory_manifests)
+      #new_version.should_receive(:generate_manifest_inventory)
       #@storage_object.ingest_bag(bag_dir)
 
       ingests_dir = @temp.join('ingests')
@@ -245,7 +247,7 @@ describe 'Moab::StorageObject' do
       #   new_version.ingest_bag_data(bag_dir)
       #   new_version.update_catalog(current_version.signature_catalog,new_inventory)
       #   new_version.generate_differences_report(current_inventory,new_inventory)
-      #   new_version.inventory_manifests
+      #   new_version.generate_manifest_inventory
       #   #update_tagmanifests(new_catalog_pathname)
       # end
     end
@@ -551,10 +553,45 @@ describe 'Moab::StorageObject' do
       # end
     end
 
-    # Unit test for method: {Moab::StorageObject#storage_object_version}
-    # Which returns: [StorageObjectVersion] The representation of the subdirectory for the specified version
+    # Unit test for method: {Moab::StorageObject#find_object_version}
+    # Which returns: [StorageObjectVersion] The representation of an existing version's storage area
     # For input parameters:
-    # * version_id [Integer] = The version to return.  If nil, return latest version
+    # * version_id [Integer] = The existing version to return.  If nil, return latest version
+    specify 'Moab::StorageObject#find_object_version' do
+      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+
+      version_2 = storage_object.find_object_version(2)
+      version_2.should be_instance_of(StorageObjectVersion)
+      version_2.version_id.should == 2
+      version_2.version_name.should == 'v0002'
+      version_2.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0002/
+
+      version_latest = storage_object.find_object_version()
+      version_latest.should be_instance_of(StorageObjectVersion)
+      version_latest.version_id.should == 3
+      version_latest.version_name.should == 'v0003'
+      version_latest.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0003/
+
+      lambda{storage_object.find_object_version(0)}.should raise_exception
+      lambda{storage_object.find_object_version(4)}.should raise_exception
+
+      # def find_object_version(version_id=nil)
+      #   current = current_version_id
+      #   case version_id
+      #     when nil
+      #       StorageObjectVersion.new(self,current)
+      #     when 1..current
+      #       StorageObjectVersion.new(self,version_id)
+      #     else
+      #       raise "Version ID #{version_id} does not exist"
+      #   end
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObject#storage_object_version}
+    # Which returns: [StorageObjectVersion] The representation of a specified version.
+    # For input parameters:
+    # * version_id [Integer] = The version to return. OK if version does not exist
     specify 'Moab::StorageObject#storage_object_version' do
       storage_object = StorageObject.new(@obj,@ingests.join(@obj))
 
@@ -564,21 +601,19 @@ describe 'Moab::StorageObject' do
       version_2.version_name.should == 'v0002'
       version_2.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0002/
 
-      version_latest = storage_object.storage_object_version()
-      version_latest.should be_instance_of(StorageObjectVersion)
-      version_latest.version_id.should == 3
-      version_latest.version_name.should == 'v0003'
-      version_latest.version_pathname.to_s.should =~ /ingests\/jq937jp0017\/v0003/
+      lambda{storage_object.storage_object_version(0)}.should_not raise_exception
+      lambda{storage_object.storage_object_version(4)}.should_not raise_exception
+      lambda{storage_object.storage_object_version(nil)}.should raise_exception
 
-      # def storage_object_version(version_id=nil)
+      # def storage_object_version(version_id)
       #   if version_id
       #     StorageObjectVersion.new(self,version_id)
       #   else
-      #     StorageObjectVersion.new(self,current_version_id)
+      #     raise "Version ID not specified"
       #   end
       # end
     end
-  
+
   end
 
 end

@@ -21,13 +21,6 @@ module Moab
     end
 
     # @param object_id [String] The identifier of the digital object whose version is desired
-    # @param version_id [Integer] The desired version
-    # @return [StorageObjectVersion] The representation of the desired object version's storage directory
-    def storage_object_version(object_id, version_id=nil)
-      storage_object(object_id).storage_object_version(version_id)
-    end
-
-    # @param object_id [String] The identifier of the digital object whose version is desired
     # @return [StorageObject] The representation of the desired object storage directory
     def storage_object(object_id)
       StorageObject.new(object_id, storage_object_pathname(object_id))
