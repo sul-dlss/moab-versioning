@@ -29,31 +29,17 @@ describe 'Moab::StorageServices' do
     # * object_id [String] = The digital object identifier of the object
     specify 'Moab::StorageServices.version_metadata' do
       Moab::StorageServices.version_metadata(@digital_object_id).read.should be_equivalent_to(<<-EOF
-        <?xml version="1.0" encoding="UTF-8"?>
         <versionMetadata objectId="druid:ab123cd4567">
-          <version versionId="1" significance="major">
-            <reason>Please preserve my digital object</reason>
-            <note>Initial object submission</note>
-            <event type="submit" datetime="2012-01-01T12:01:01Z"/>
-            <event type="accession" datetime="2012-01-12T12:01:12Z"/>
+          <version versionId="1" label="1.0" significance="major">
+            <description>Initial version</description>
           </version>
-          <version versionId="2" significance="minor">
-            <reason>Editing page-1 and removing intro files</reason>
+          <version versionId="2" label="2.0" significance="minor">
+            <description>Editing page-1 and removing intro files</description>
             <note>content change</note>
-            <fileGroupDifference groupId="content" differenceCount="3" identical="3" renamed="0" modified="1" deleted="2" added="0"/>
-            <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
-            <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
-            <event type="submit" datetime="2012-02-01T12:01:01Z"/>
-            <event type="accession" datetime="2012-02-12T12:01:12Z"/>
           </version>
-          <version versionId="3" significance="minor">
-            <reason>Inserting new page-2, with renames of pages 2-3 to 3-4</reason>
-            <note>content change</note>
-            <fileGroupDifference groupId="content" differenceCount="3" identical="2" renamed="2" modified="0" deleted="0" added="1"/>
-            <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
-            <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
-            <event type="submit" datetime="2012-02-01T12:01:01Z"/>
-            <event type="accession" datetime="2012-02-12T12:01:12Z"/>
+          <version versionId="3" label="2.1" significance="minor">
+            <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
+            <note>page insertion</note>
           </version>
         </versionMetadata>
         EOF
@@ -101,7 +87,7 @@ describe 'Moab::StorageServices' do
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
       metadata_signature.fixity.should == ["1135", "d74bfa778653b6c1b285b2d0c2f07c5b", "0ee15e133c17ae3312b87247adb310b0327ca3df"]
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
-      manifest_signature.fixity.should == ["1335", "6cf7f4b6e70a5bf7efcd278947064c35", "b0d342e23bcaf929403795e32466ebe7569c6d08"]
+      manifest_signature.fixity.should == ["1335", "ac917b57467fbe7c6aaf00285d1c2a6d", "3d09b4c41bbc5561b4fbdd15623f84a3011f4296"]
 
       # def self.retrieve_file_signature(file_category, file_id, object_id, version_id=nil)
       #   storage_object_version = @@repository.find_object_version(object_id,version_id)
@@ -164,8 +150,8 @@ describe 'Moab::StorageServices' do
                 <fileSignature size="564" md5="17071e4607de4b272f3f06ec76be4c4a" sha1="b796a0b569bde53953ba0835bb47f4009f654349"/>
               </file>
               <file change="modified" basisPath="versionMetadata.xml" otherPath="same">
-                <fileSignature size="970" md5="8a3b0051d89a90a6db90edb7b76ef63f" sha1="7e18ec3a00f7e64d561a9c1c2bc2950ef7deea33"/>
-                <fileSignature size="1571" md5="6ec3d879c5a91922889adc916d991db5" sha1="65c65bedf285fc87c1ea14646bc47e79762359d3"/>
+                <fileSignature size="399" md5="97f5dd88b67cca440ac8949ad5fc6883" sha1="55a22cf78597951eea0b1aec44078e48c0b3c3b9"/>
+                <fileSignature size="589" md5="7de12ae7a10dcdfb69754df7e3cb19d4" sha1="aaab609aa7d5ac5f4e9b9340666c1f1cea46f064"/>
               </file>
             </subset>
             <subset change="deleted" count="0"/>

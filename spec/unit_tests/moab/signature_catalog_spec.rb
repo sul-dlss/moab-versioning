@@ -98,7 +98,7 @@ describe 'Moab::SignatureCatalog' do
     # Unit test for attribute: {Moab::SignatureCatalog#byte_count}
     # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::SignatureCatalog#byte_count' do
-      @signature_catalog.byte_count.should == 217719
+      @signature_catalog.byte_count.should == 217559
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -229,7 +229,7 @@ describe 'Moab::SignatureCatalog' do
       version_additions = @signature_catalog.version_additions(@v2_inventory)
       version_additions.groups.count.should == 2
       version_additions.file_count.should == 4
-      version_additions.byte_count.should == 35584
+      version_additions.byte_count.should == 35013
       version_additions.block_count.should == 37
 
       # def version_additions(version_inventory)

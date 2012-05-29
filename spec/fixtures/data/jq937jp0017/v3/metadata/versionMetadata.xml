@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <versionMetadata objectId="druid:ab123cd4567">
-  <version versionId="1" significance="major">
-    <reason>Please preserve my digital object</reason>
-    <note>Initial object submission</note>
-    <event type="submit" datetime="2012-01-01T12:01:01Z"/>
-    <event type="accession" datetime="2012-01-12T12:01:12Z"/>
+  <version versionId="1" label="1.0" significance="major">
+    <description>Initial version</description>
   </version>
-  <version versionId="2" significance="minor">
-    <reason>Editing page-1 and removing intro files</reason>
+  <version versionId="2" label="2.0" significance="minor">
+    <description>Editing page-1 and removing intro files</description>
     <note>content change</note>
-    <fileGroupDifference groupId="content" differenceCount="3" identical="3" renamed="0" modified="1" deleted="2" added="0"/>
-    <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
-    <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
-    <event type="submit" datetime="2012-02-01T12:01:01Z"/>
-    <event type="accession" datetime="2012-02-12T12:01:12Z"/>
   </version>
-  <version versionId="3" significance="minor">
-    <reason>Inserting new page-2, with renames of pages 2-3 to 3-4</reason>
-    <note>content change</note>
-    <fileGroupDifference groupId="content" differenceCount="3" identical="2" renamed="2" modified="0" deleted="0" added="1"/>
-    <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0"/>
-    <event type="reopen" datetime="2012-02-00T12:00:00Z"/>
-    <event type="submit" datetime="2012-02-01T12:01:01Z"/>
-    <event type="accession" datetime="2012-02-12T12:01:12Z"/>
+  <version versionId="3" label="2.1" significance="minor">
+    <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
+    <note>page insertion</note>
   </version>
 </versionMetadata>

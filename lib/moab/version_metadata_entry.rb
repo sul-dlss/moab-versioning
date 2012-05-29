@@ -1,4 +1,4 @@
-require 'moab'
+  require 'moab'
 
 module Moab
 
@@ -29,15 +29,21 @@ module Moab
     attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
 
     # @attribute
-    # @return [String] "major|minor"
+    # @return [String] "an external version label that increments the most significant digit for major revisions,
+    # second digit for minor revisions, and third for admin? e.g., 1.0, 1.1, 2.0, 2.0.1 etc.
+    # This should be dynamically derivable across the set of versions
     attribute :significance, String
 
     # @attribute
-    # @return [String] A free text description of why the version was submitted (optional)
-    element :reason, String
+    # @return [String] "major|minor|admin"
+    attribute :significance, String
 
     # @attribute
-    # @return [String] A system generated annotation summarizing the changes (optional)
+    # @return [String] A free text external description of why the version was created
+    element :description, String
+
+    # @attribute
+    # @return [String] An internal annotation summarizing the changes (optional)
     element :note, String
 
     # @attribute

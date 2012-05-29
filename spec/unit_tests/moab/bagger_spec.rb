@@ -410,17 +410,17 @@ describe 'Moab::Bagger' do
       md5.exist?.should == true
       md5.readlines.sort.should == [
           "351e4c872148e0bc9dc24874c7ef6c08 *metadata/provenanceMetadata.xml\n",
-          "8a3b0051d89a90a6db90edb7b76ef63f *metadata/versionMetadata.xml\n",
+          "97f5dd88b67cca440ac8949ad5fc6883 *metadata/versionMetadata.xml\n",
           "c1c34634e2f18a354cd3e3e1574c3194 *content/page-1.jpg\n",
           "d74bfa778653b6c1b285b2d0c2f07c5b *metadata/contentMetadata.xml\n"
-      ]
+       ]
       sha1 = bag.bag_pathname.join('manifest-sha1.txt')
       sha1.exist?.should == true
       sha1.readlines.sort.should == [
           "0616a0bd7927328c364b2ea0b4a79c507ce915ed *content/page-1.jpg\n",
           "0ee15e133c17ae3312b87247adb310b0327ca3df *metadata/contentMetadata.xml\n",
-          "565473bbc865b1c6f88efc99b6b5b73fd5cadbc8 *metadata/provenanceMetadata.xml\n",
-          "7e18ec3a00f7e64d561a9c1c2bc2950ef7deea33 *metadata/versionMetadata.xml\n"
+          "55a22cf78597951eea0b1aec44078e48c0b3c3b9 *metadata/versionMetadata.xml\n",
+          "565473bbc865b1c6f88efc99b6b5b73fd5cadbc8 *metadata/provenanceMetadata.xml\n"
       ]
 
       # def create_payload_manifests
@@ -452,8 +452,8 @@ describe 'Moab::Bagger' do
       bag_info.exist?.should == true
       bag_info.readlines.should == [
           "External-Identifier: druid:jq937jp0017-v2\n",
-          "Payload-Oxum: 35584.4\n",
-          "Bag-Size: 34.75 KB\n"
+          "Payload-Oxum: 35013.4\n",
+          "Bag-Size: 34.19 KB\n"
       ]
 
       # def create_bag_info_txt

@@ -144,7 +144,7 @@ describe 'Moab::StorageObjectVersion' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
-      signature.fixity.should == ["2606", "bb816e903003f5e833c2617550097dae", "7c631556029da90b017827fd5dc237ea2c85b846"]
+      signature.fixity.should == ["2606", "c27e5895d97693d52db108b774a78f45", "5c6b03869589a052b9cb0906a9e973ac085c7779"]
       lambda{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.should raise_exception
 
       # def find_signature(file_category, file_id)

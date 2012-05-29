@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <versionMetadata objectId="druid:ab123cd4567">
-  <version versionId="1" significance="major">
-    <reason>Please preserve my digital object</reason>
-    <note>Initial object submission</note>
-    <event type="submit" datetime="2012-01-01T12:01:01Z"/>
-    <event type="accession" datetime="2012-01-12T12:01:12Z"/>
+  <version versionId="1" label="1.0" significance="major">
+    <description>Initial version</description>
   </version>
 </versionMetadata>

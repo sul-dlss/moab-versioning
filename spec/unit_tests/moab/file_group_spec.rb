@@ -82,7 +82,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#byte_count}
     # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::FileGroup#byte_count' do
-      @file_group.byte_count.should == 217719
+      @file_group.byte_count.should == 217559
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
        

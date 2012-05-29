@@ -23,7 +23,7 @@ describe 'Moab::VersionMetadataEntry' do
       opts = OrderedHash.new
       opts[:version_id] = 17
       opts[:significance] = 'Major'
-      opts[:reason] = 'Test reason'
+      opts[:description] = 'Test reason'
       opts[:note] = 'Test note'
       opts[:content_changes] = mock(FileGroupDifference.name)
       opts[:metadata_changes] = mock(FileGroupDifference.name)
@@ -31,7 +31,7 @@ describe 'Moab::VersionMetadataEntry' do
       version_metadata_entry = VersionMetadataEntry.new(opts)
       version_metadata_entry.version_id.should == opts[:version_id]
       version_metadata_entry.significance.should == opts[:significance]
-      version_metadata_entry.reason.should == opts[:reason]
+      version_metadata_entry.description.should == opts[:description]
       version_metadata_entry.note.should == opts[:note]
       version_metadata_entry.content_changes.should == opts[:content_changes]
       version_metadata_entry.metadata_changes.should == opts[:metadata_changes]
@@ -76,8 +76,8 @@ describe 'Moab::VersionMetadataEntry' do
     # Which stores: [String] \@reason = A free text description of why the version was submitted (optional)
     specify 'Moab::VersionMetadataEntry#reason' do
       value = 'Test reason'
-      @version_metadata_entry.reason= value
-      @version_metadata_entry.reason.should == value
+      @version_metadata_entry.description= value
+      @version_metadata_entry.description.should == value
        
       # element :reason, String
     end
