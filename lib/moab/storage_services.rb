@@ -30,6 +30,20 @@ module Moab
       self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
     end
 
+    # @param [String] object_id The digital object identifier of the object
+    # @param [Integer] version_id The ID of the version, if nil use latest version
+    # @return [FileInventory] the file inventory for the specified object version
+    def self.retrieve_file_group(file_category, object_id, version_id=nil)
+      storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
+      if file_category =~ /manifest/
+        inventory_type = file_category = 'manifests'
+      else
+        inventory_type = 'version'
+      end
+      inventory = storage_object_version.file_inventory(inventory_type)
+      inventory.group(file_category)
+    end
+
     # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
     # @param [String] file_id The name of the file (path relative to base directory)
     # @param [String] object_id The digital object identifier of the object
@@ -41,10 +55,20 @@ module Moab
     end
 
     # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
-    # @param [String] file_id The name of the file (path relative to base directory)
+    # @param [FileSignature] file_signature The signature of the file
     # @param [String] object_id The digital object identifier of the object
     # @param [Integer] version_id The ID of the version, if nil use latest version
     # @return [Pathname] Pathname object containing the full path for the specified file
+    def self.retrieve_file_using_signature(file_category, file_signature, object_id, version_id=nil)
+      storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
+      file_pathname = storage_object_version.find_filepath_using_signature(file_category, file_signature)
+    end
+
+    # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
+    # @param [String] file_id The name of the file (path relative to base directory)
+    # @param [String] object_id The digital object identifier of the object
+    # @param [Integer] version_id The ID of the version, if nil use latest version
+    # @return [FileSignature] The signature of the file
     def self.retrieve_file_signature(file_category, file_id, object_id, version_id=nil)
       storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
       file_pathname = storage_object_version.find_signature(file_category, file_id)

@@ -40,11 +40,10 @@ module Moab
   # @param [String] file_id The name of the file (path relative to base directory)
   # @return [FileSignature] signature of the specified file
     def find_signature(file_category, file_id)
-      case file_category
-        when 'manifest'
-          file_inventory('manifests').file_signature('manifests',file_id)
-        else
-          file_inventory('version').file_signature(file_category, file_id)
+      if file_category =~ /manifest/
+        file_inventory('manifests').file_signature('manifests',file_id)
+      else
+        file_inventory('version').file_signature(file_category, file_id)
       end
     end
 
@@ -54,8 +53,16 @@ module Moab
     def find_filepath(file_category, file_id)
       this_version_filepath = file_pathname(file_category, file_id)
       return this_version_filepath if this_version_filepath.exist?
-      raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == :manifest
+      raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == 'manifest'
       file_signature = file_inventory('version').file_signature(file_category, file_id)
+      catalog_filepath = signature_catalog.catalog_filepath(file_signature)
+      @storage_object.storage_filepath(catalog_filepath)
+    end
+
+  # @param [String] file_category The category of file ('content', 'metadata', or 'manifest')
+  # @param [FileSignature] file_signature The signature of the file
+  # @return [Pathname] Pathname object containing the full path for the specified file
+    def find_filepath_using_signature(file_category, file_signature)
       catalog_filepath = signature_catalog.catalog_filepath(file_signature)
       @storage_object.storage_filepath(catalog_filepath)
     end
@@ -64,14 +71,18 @@ module Moab
   # @param [String] file_id The name of the file (path relative to base directory)
   # @return [Pathname] Pathname object containing this version's storage path for the specified file
     def file_pathname(file_category, file_id)
-      case file_category
-        when 'manifest'
-          @version_pathname.join(file_id)
-        else
-          @version_pathname.join('data',file_category, file_id)
-      end
+      file_category_pathname(file_category).join(file_id)
     end
 
+  # @param [String] file_category The category of file ('content', 'metadata', or 's')
+  # @return [Pathname] Pathname object containing this version's storage home for the specified file category
+    def file_category_pathname(file_category)
+      if file_category =~ /manifest/
+        @version_pathname
+      else
+        @version_pathname.join('data',file_category)
+      end
+    end
 
     # @api external
     # @param type [String] The type of inventory to return (version|additions|manifests)

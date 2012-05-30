@@ -144,7 +144,8 @@ describe 'Moab::StorageObjectVersion' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
-      signature.fixity.should == ["2606", "c27e5895d97693d52db108b774a78f45", "5c6b03869589a052b9cb0906a9e973ac085c7779"]
+      signature.size.should == 2606
+
       lambda{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.should raise_exception
 
       # def find_signature(file_category, file_id)
@@ -174,8 +175,25 @@ describe 'Moab::StorageObjectVersion' do
       # def find_filepath(file_category, file_id)
       #   this_version_filepath = file_pathname(file_category, file_id)
       #   return this_version_filepath if this_version_filepath.exist?
-      #   raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == :manifest
+      #   raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == 'manifest'
       #   file_signature = file_inventory('version').file_signature(file_category, file_id)
+      #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)
+      #   @storage_object.storage_filepath(catalog_filepath)
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObjectVersion#find_filepath_using_signature}
+    # Which returns: [Pathname] Pathname object containing the full path for the specified file
+    # For input parameters:
+    # * file_category [String] = The category of file ('content', 'metadata', or 'manifest')
+    # * file_signature [FileSignature] = The signature of the file
+    specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
+      file_category = 'content'
+      file_signature = FileSignature.new(:size=>"40873",:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      @existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
+          to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
+
+      # def find_filepath_using_signature(file_category, file_signature)
       #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)
       #   @storage_object.storage_filepath(catalog_filepath)
       # end
@@ -200,6 +218,31 @@ describe 'Moab::StorageObjectVersion' do
       #       @version_pathname.join(file_id)
       #     else
       #       @version_pathname.join('data',file_category, file_id)
+      #   end
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageObjectVersion#file_category_pathname}
+    # Which returns: [Pathname] Pathname object containing this version's storage home for the specified file category
+    # For input parameters:
+    # * file_category [String] = The category of file ('content', 'metadata', or 's')
+    specify 'Moab::StorageObjectVersion#file_category_pathname' do
+      file_category = 'content'
+      @existing_storage_object_version.file_category_pathname(file_category).
+        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content}
+      file_category = 'metadata'
+      @existing_storage_object_version.file_category_pathname(file_category).
+        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata}
+      file_category = 'manifests'
+      @existing_storage_object_version.file_category_pathname(file_category).
+        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002}
+
+      # def file_category_pathname(file_category)
+      #   case file_category
+      #     when 'manifest'
+      #       @version_pathname
+      #     else
+      #       @version_pathname.join('data',file_category)
       #   end
       # end
     end

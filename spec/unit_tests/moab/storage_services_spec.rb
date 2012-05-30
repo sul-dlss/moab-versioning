@@ -50,6 +50,31 @@ describe 'Moab::StorageServices' do
       # end
     end
 
+    # Unit test for method: {Moab::StorageServices.retrieve_file_group}
+    # Which returns: [FileInventory] the file inventory for the specified object version
+    # For input parameters:
+    # * object_id [String] = The digital object identifier of the object
+    # * version_id [Integer] = The ID of the version, if nil use latest version
+    specify 'Moab::StorageServices.retrieve_file_group' do
+      group = Moab::StorageServices.retrieve_file_group('content', @digital_object_id, version_id=2)
+      group.group_id.should == 'content'
+      group = Moab::StorageServices.retrieve_file_group('metadata', @digital_object_id, version_id=2)
+      group.group_id.should == 'metadata'
+      group = Moab::StorageServices.retrieve_file_group('manifest', @digital_object_id, version_id=2)
+      group.group_id.should == 'manifests'
+
+      # def self.retrieve_file_group(file_category, object_id, version_id=nil)
+      #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
+      #   if file_category =~ /manifest/
+      #     inventory_type = file_category = 'manifests'
+      #   else
+      #     inventory_type = 'version'
+      #   end
+      #   inventory = storage_object_version.file_inventory(inventory_type)
+      #   inventory.group(file_category)
+      # end
+    end
+
     # Unit test for method: {Moab::StorageServices.retrieve_file}
     # Which returns: [Pathname] Pathname object containing the full path for the specified file
     # For input parameters:
@@ -69,13 +94,34 @@ describe 'Moab::StorageServices' do
       manifest_pathname.exist?.should == true
 
       # def self.retrieve_file(file_category, file_id, object_id, version_id=nil)
-      #   storage_object_version = @@repository.find_object_version(object_id,version_id)
+      #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
       #   file_pathname = storage_object_version.find_filepath(file_category, file_id)
       # end
     end
 
-    # Unit test for method: {Moab::StorageServices.retrieve_file_signature}
+    # Unit test for method: {Moab::StorageServices.retrieve_file_using_signature}
     # Which returns: [Pathname] Pathname object containing the full path for the specified file
+    # For input parameters:
+    # * file_category [String] = The category of file ('content', 'metdata', or 'manifest')
+    # * file_signature [FileSignature] = The signature of the file
+    # * object_id [String] = The digital object identifier of the object
+    # * version_id [Integer] = The ID of the version, if nil use latest version
+    specify 'Moab::StorageServices.retrieve_file_using_signature' do
+      file_category = 'content'
+      file_signature = FileSignature.new(:size=>"40873",:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      object_id = @digital_object_id
+      version_id = 2
+      filepath = Moab::StorageServices.retrieve_file_using_signature(file_category, file_signature, object_id, version_id)
+      filepath.to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
+
+      # def self.retrieve_file_using_signature(file_category, file_signature, object_id, version_id=nil)
+      #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
+      #   file_pathname = storage_object_version.find_filepath_using_signature(file_category, file_signature)
+      # end
+    end
+
+    # Unit test for method: {Moab::StorageServices.retrieve_file_signature}
+    # Which returns: [FileSignature] The signature of the file
     # For input parameters:
     # * file_category [String] = The category of file ('content', 'metdata', or 'manifest')
     # * file_id [String] = The name of the file (path relative to base directory)
@@ -87,10 +133,10 @@ describe 'Moab::StorageServices' do
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
       metadata_signature.fixity.should == ["1135", "d74bfa778653b6c1b285b2d0c2f07c5b", "0ee15e133c17ae3312b87247adb310b0327ca3df"]
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
-      manifest_signature.fixity.should == ["1335", "ac917b57467fbe7c6aaf00285d1c2a6d", "3d09b4c41bbc5561b4fbdd15623f84a3011f4296"]
+      manifest_signature.size.should == 1335
 
       # def self.retrieve_file_signature(file_category, file_id, object_id, version_id=nil)
-      #   storage_object_version = @@repository.find_object_version(object_id,version_id)
+      #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
       #   file_pathname = storage_object_version.find_signature(file_category, file_id)
       # end
     end

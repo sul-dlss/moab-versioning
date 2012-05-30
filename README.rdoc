@@ -58,6 +58,7 @@ Require the following:
 - <b>0.3</b> Revise configuration invocation and repository_home usage
 - <b>0.4</b> Revise group differences methods, refactor storage repository & services, add service methods
 - <b>0.5</b> StorageService file retrieval now using the signature catalog.  Added or revised spec tests
+- <b>0.6</b> StorageService now supports retrieving file lists and files by signature
 
 == License
 
