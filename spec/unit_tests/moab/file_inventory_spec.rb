@@ -132,7 +132,7 @@ describe 'Moab::FileInventory' do
     # Unit test for attribute: {Moab::FileInventory#byte_count}
     # Which stores: [Integer] \@byteCount = The total number of bytes in all files of all files in the inventory
     specify 'Moab::FileInventory#byte_count' do
-      @file_inventory.byte_count.should == 217559
+      @file_inventory.byte_count.should == 217811
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -291,7 +291,7 @@ describe 'Moab::FileInventory' do
     # Which returns: [String] The total size of the inventory expressed in KB, MB, GB or TB, depending on the magnitutde of the value
     # For input parameters: (None)
     specify 'Moab::FileInventory#human_size' do
-      @file_inventory.human_size().should == "212.46 KB"
+      @file_inventory.human_size().should == "212.71 KB"
        
       # def human_size
       #   count = 0

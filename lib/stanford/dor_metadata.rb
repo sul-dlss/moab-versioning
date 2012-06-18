@@ -35,7 +35,7 @@ module Stanford
       version_id ||= @version_id
       version_inventory = FileInventory.new(:type=>'version',:digital_object_id=>@digital_object_id, :version_id=>version_id)
       content_metadata = IO.read(File.join(directory,'contentMetadata.xml'))
-      content_group = ContentInventory.new.group_from_cm(content_metadata )
+      content_group = ContentInventory.new.group_from_cm(content_metadata, 'preserve' )
       version_inventory.groups << content_group
       metadata_group = FileGroup.new(:group_id=>'metadata').group_from_directory(directory)
       version_inventory.groups << metadata_group

@@ -32,7 +32,7 @@ module Moab
     # @return [String] "an external version label that increments the most significant digit for major revisions,
     # second digit for minor revisions, and third for admin? e.g., 1.0, 1.1, 2.0, 2.0.1 etc.
     # This should be dynamically derivable across the set of versions
-    attribute :significance, String
+    attribute :label, String
 
     # @attribute
     # @return [String] "major|minor|admin"

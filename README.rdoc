@@ -59,7 +59,7 @@ Require the following:
 - <b>0.4</b> Revise group differences methods, refactor storage repository & services, add service methods
 - <b>0.5</b> StorageService file retrieval now using the signature catalog.  Added or revised spec tests
 - <b>0.6</b> StorageService now supports retrieving file lists and files by signature
-
+- <b>0.7</b> Generation of fileInventory from contentMetadata now utilizes a disposition filter.  Revised test data
 == License
 
 Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.

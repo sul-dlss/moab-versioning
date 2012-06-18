@@ -1,0 +1,68 @@
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
+   <mods:titleInfo>
+      <mods:title>Stories from Thousand and one nights (the Arabian nights' entertainments)</mods:title>
+   </mods:titleInfo>
+   <mods:titleInfo type="uniform">
+      <mods:title>Arabian nights</mods:title>
+   </mods:titleInfo>
+   <mods:name type="personal">
+      <mods:namePart>Lane, Edward William</mods:namePart>
+      <mods:namePart type="date">1801-1876</mods:namePart>
+   </mods:name>
+   <mods:name type="personal">
+      <mods:namePart>Lane-Poole, Stanley</mods:namePart>
+      <mods:namePart type="date">1854-1931</mods:namePart>
+   </mods:name>
+   <mods:typeOfResource>text</mods:typeOfResource>
+   <mods:originInfo>
+      <mods:place>
+         <mods:placeTerm type="code" authority="marccountry">xx</mods:placeTerm>
+      </mods:place>
+      <mods:place>
+         <mods:placeTerm type="text">New York</mods:placeTerm>
+      </mods:place>
+      <mods:publisher>P. F. Collier &amp; Son</mods:publisher>
+      <mods:dateIssued>[c1909]</mods:dateIssued>
+      <mods:dateIssued encoding="marc" keyDate="yes">1909</mods:dateIssued>
+      <mods:issuance>monographic</mods:issuance>
+   </mods:originInfo>
+   <mods:language>
+      <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+   </mods:language>
+   <mods:relatedItem type="original">
+      <mods:physicalDescription>
+         <mods:form authority="marcform">print</mods:form>
+         <mods:extent>1 p. l., 460 p. : front., pl. ; 23 cm.</mods:extent>
+      </mods:physicalDescription>
+      <mods:recordInfo>
+         <mods:recordContentSource authority="marcorg"/>
+         <mods:recordCreationDate encoding="marc">750516</mods:recordCreationDate>
+         <mods:recordChangeDate encoding="iso8601">19900711053842.0</mods:recordChangeDate>
+         <mods:recordIdentifier source="SUL catalog key">88367</mods:recordIdentifier>
+         <mods:recordIdentifier source="oclc">1337200</mods:recordIdentifier>
+      </mods:recordInfo>
+   </mods:relatedItem>
+   <mods:physicalDescription>
+      <mods:form authority="marcform">electronic</mods:form>
+      <mods:reformattingQuality>preservation</mods:reformattingQuality>
+      <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+   </mods:physicalDescription>
+   <mods:note displayLabel="statement of responsibility">translated by Edward William Lane ; revised by Stanley Lane-Poole ; with introduction, notes and illustrations.</mods:note>
+   <mods:classification authority="lcc">PZ8 .A85 26</mods:classification>
+   <mods:relatedItem type="series">
+      <mods:titleInfo>
+         <mods:title>Harvard classics ; v. 16</mods:title>
+      </mods:titleInfo>
+   </mods:relatedItem>
+   <mods:identifier type="lccn">09028199</mods:identifier>
+   <mods:recordInfo>
+      <mods:recordContentSource>DOR_MARC2MODS3-3.xsl Revision 1.1</mods:recordContentSource>
+      <mods:recordCreationDate encoding="iso8601">2011-02-09T01:37:37.911-08:00</mods:recordCreationDate>
+      <mods:recordIdentifier source="Data Provider Digital Object Identifier">36105047816769</mods:recordIdentifier>
+   </mods:recordInfo>
+   <mods:identifier type="local" displayLabel="SUL Resource ID">druid:dd116zh0343</mods:identifier>
+   <mods:location>
+      <mods:physicalLocation>Stanford University Libraries</mods:physicalLocation>
+      <mods:url>http://purl.stanford.edu/dd116zh0343</mods:url>
+   </mods:location>
+</mods:mods>

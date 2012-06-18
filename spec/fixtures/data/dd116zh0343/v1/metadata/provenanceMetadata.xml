@@ -1,0 +1,152 @@
+<provenanceMetadata xmlns:PREMIS="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" objectId="druid:dd116zh0343">
+  <agent name="Google">
+    <PREMIS:premis xmlns:gbs="http://books.google.com/gbs" version="2.0">
+          <PREMIS:object xsi:type="representation">
+            <PREMIS:objectIdentifier>
+              <PREMIS:objectIdentifierType>barcode</PREMIS:objectIdentifierType>
+              <PREMIS:objectIdentifierValue>STANFORD_36105047816769</PREMIS:objectIdentifierValue>
+            </PREMIS:objectIdentifier>
+            <PREMIS:significantProperties>
+              <PREMIS:significantPropertiesType>file count</PREMIS:significantPropertiesType>
+              <PREMIS:significantPropertiesValue>918</PREMIS:significantPropertiesValue>
+            </PREMIS:significantProperties>
+            <PREMIS:significantProperties>
+              <PREMIS:significantPropertiesType>page count</PREMIS:significantPropertiesType>
+              <PREMIS:significantPropertiesValue>458</PREMIS:significantPropertiesValue>
+            </PREMIS:significantProperties>
+          </PREMIS:object>
+          <PREMIS:event xmlID="Google_Scan">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Scan</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Scan</PREMIS:eventType>
+            <PREMIS:eventDateTime>2006-05-17T10:28:52</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Original image capture</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Process">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Process</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Process</PREMIS:eventType>
+            <PREMIS:eventDateTime>2009-10-08T14:20:03</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Refinement and cleaning of raw scanned images using image enhancement techniques</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Analyze">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Analyze</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Analyze</PREMIS:eventType>
+            <PREMIS:eventDateTime>2010-11-22T08:50:01</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Automated quality assessment, extraction of OCR text and metadata, assignment of metadata tags, and page ordering</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Convert">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Convert</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Convert</PREMIS:eventType>
+            <PREMIS:eventDateTime>2011-02-03T17:15:05</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Creation of partner deliverables</PREMIS:eventDetail>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:event xmlID="Google_Rubbish">
+            <PREMIS:eventIdentifier>
+              <PREMIS:eventIdentifierType>Google generated</PREMIS:eventIdentifierType>
+              <PREMIS:eventIdentifierValue>Google_Rubbish</PREMIS:eventIdentifierValue>
+            </PREMIS:eventIdentifier>
+            <PREMIS:eventType>Rubbish</PREMIS:eventType>
+            <PREMIS:eventDateTime>2006-05-17T10:28:52</PREMIS:eventDateTime>
+            <PREMIS:eventDetail>Partial Manual Quality Evaluation</PREMIS:eventDetail>
+            <PREMIS:eventOutcomeInformation>
+              <PREMIS:eventOutcomeDetail>
+                <PREMIS:eventOutcomeDetailExtension>
+                  <gbs:problem_pages>
+                  </gbs:problem_pages>
+                  <gbs:no_problem_pages>
+                    <gbs:page>0</gbs:page>
+                    <gbs:page>12</gbs:page>
+                    <gbs:page>25</gbs:page>
+                    <gbs:page>38</gbs:page>
+                    <gbs:page>49</gbs:page>
+                    <gbs:page>62</gbs:page>
+                    <gbs:page>75</gbs:page>
+                    <gbs:page>86</gbs:page>
+                    <gbs:page>99</gbs:page>
+                    <gbs:page>112</gbs:page>
+                    <gbs:page>123</gbs:page>
+                    <gbs:page>136</gbs:page>
+                    <gbs:page>149</gbs:page>
+                    <gbs:page>160</gbs:page>
+                    <gbs:page>173</gbs:page>
+                    <gbs:page>186</gbs:page>
+                    <gbs:page>199</gbs:page>
+                    <gbs:page>210</gbs:page>
+                    <gbs:page>223</gbs:page>
+                    <gbs:page>236</gbs:page>
+                    <gbs:page>247</gbs:page>
+                    <gbs:page>260</gbs:page>
+                    <gbs:page>273</gbs:page>
+                    <gbs:page>284</gbs:page>
+                    <gbs:page>297</gbs:page>
+                    <gbs:page>310</gbs:page>
+                    <gbs:page>321</gbs:page>
+                    <gbs:page>334</gbs:page>
+                    <gbs:page>347</gbs:page>
+                    <gbs:page>358</gbs:page>
+                    <gbs:page>371</gbs:page>
+                    <gbs:page>384</gbs:page>
+                    <gbs:page>397</gbs:page>
+                    <gbs:page>408</gbs:page>
+                    <gbs:page>421</gbs:page>
+                    <gbs:page>434</gbs:page>
+                    <gbs:page>445</gbs:page>
+                    <gbs:page>457</gbs:page>
+                  </gbs:no_problem_pages>
+                  <gbs:volume_quality>
+                    <gbs:rubbish_result>false</gbs:rubbish_result>
+                    <gbs:errors>
+                    </gbs:errors>
+                  </gbs:volume_quality>
+                </PREMIS:eventOutcomeDetailExtension>
+              </PREMIS:eventOutcomeDetail>
+            </PREMIS:eventOutcomeInformation>
+            <PREMIS:linkingAgentIdentifier>
+              <PREMIS:linkingAgentIdentifierType>AgentID</PREMIS:linkingAgentIdentifierType>
+              <PREMIS:linkingAgentIdentifierValue>Google (Firm)</PREMIS:linkingAgentIdentifierValue>
+            </PREMIS:linkingAgentIdentifier>
+          </PREMIS:event>
+          <PREMIS:agent>
+            <PREMIS:agentIdentifier>
+              <PREMIS:agentIdentifierType>LCNAF</PREMIS:agentIdentifierType>
+              <PREMIS:agentIdentifierValue>Google (Firm)</PREMIS:agentIdentifierValue>
+            </PREMIS:agentIdentifier>
+            <PREMIS:agentType>organization</PREMIS:agentType>
+          </PREMIS:agent>
+        </PREMIS:premis>
+  </agent>
+  <agent name="DOR">
+  <what object="druid:dd116zh0343">
+    <event who="DOR-robot:register-object" when="2011-02-08T22:26:18-0800">Google data received</event>
+    <event who="DOR-robot:google-download" when="2011-02-14T05:17:04-0800">Checksums verified</event>
+    <event who="DOR-robot:process-content" when="2011-02-15T00:56:56-08:00">Image files JHOVE 1.4 validated</event>
+  </what>
+</agent>
+</provenanceMetadata>

@@ -1,0 +1,5 @@
+<rdf:RDF xmlns:fedora-model="info:fedora/fedora-system:def/model#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rel="info:fedora/fedora-system:def/relations-external#">
+  <rdf:Description rdf:about="info:fedora/druid:dd116zh0343">
+    <fedora-model:hasModel rdf:resource="info:fedora/dor:googleScannedBook"/>
+  </rdf:Description>
+</rdf:RDF>

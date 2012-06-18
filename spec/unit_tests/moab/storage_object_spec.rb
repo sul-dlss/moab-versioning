@@ -270,7 +270,7 @@ describe 'Moab::StorageObject' do
       new_inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').
           gsub(/dataSource=".*moab-versioning/,'dataSource="moab-versioning').
           should be_equivalent_to(<<-EOF
-            <fileInventory type="version" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217559" blockCount="216">
+            <fileInventory type="version" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217811" blockCount="216">
               <fileGroup groupId="content" dataSource="moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
                 <file>
                   <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
@@ -297,9 +297,9 @@ describe 'Moab::StorageObject' do
                   <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
                 </file>
               </fileGroup>
-              <fileGroup groupId="metadata" dataSource="moab-versioning/spec/temp/plain_bag/data/metadata" fileCount="5" byteCount="11127" blockCount="13">
+              <fileGroup groupId="metadata" dataSource="moab-versioning/spec/temp/plain_bag/data/metadata" fileCount="5" byteCount="11379" blockCount="13">
                 <file>
-                  <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
+                  <fileSignature size="1871" md5="8cdee9c3470552d258a4351bf4c117e2" sha1="321737e42cc4a3134164539f768514d4f7f6d184"/>
                   <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
                 </file>
                 <file>
@@ -315,7 +315,7 @@ describe 'Moab::StorageObject' do
                   <fileInstance path="provenanceMetadata.xml" datetime="2012-03-26T17:46:44Z"/>
                 </file>
                 <file>
-                  <fileSignature size="224" md5="64e002bea8f3f4bd7e91882aa43d2f1d" sha1="0f344673dc1e51758a4d8ed589630cde6744d4ad"/>
+                  <fileSignature size="224" md5="36e3c1dadad827cb49e521f5d6559127" sha1="af96327b72bf37e3e60cf51c6de4dba1f6dea620"/>
                   <fileInstance path="versionMetadata.xml" datetime="2012-05-29T12:13:07Z"/>
                 </file>
               </fileGroup>
@@ -323,7 +323,7 @@ describe 'Moab::StorageObject' do
         EOF
       )
       bag_dir.join('versionAdditions.xml').read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-        <fileInventory type="additions" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217559" blockCount="216">
+        <fileInventory type="additions" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217811" blockCount="216">
           <fileGroup groupId="content" dataSource="" fileCount="6" byteCount="206432" blockCount="203">
             <file>
               <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178"/>
@@ -350,9 +350,9 @@ describe 'Moab::StorageObject' do
               <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
             </file>
           </fileGroup>
-          <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="11127" blockCount="13">
+          <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="11379" blockCount="13">
             <file>
-              <fileSignature size="1619" md5="b886db0d14508884150a916089da840f" sha1="b2328faaf25caf037cfc0263896ad707fc3a47a7"/>
+              <fileSignature size="1871" md5="8cdee9c3470552d258a4351bf4c117e2" sha1="321737e42cc4a3134164539f768514d4f7f6d184"/>
               <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
             </file>
             <file>
@@ -368,7 +368,7 @@ describe 'Moab::StorageObject' do
               <fileInstance path="provenanceMetadata.xml" datetime="2012-03-26T17:46:44Z"/>
             </file>
             <file>
-              <fileSignature size="224" md5="64e002bea8f3f4bd7e91882aa43d2f1d" sha1="0f344673dc1e51758a4d8ed589630cde6744d4ad"/>
+              <fileSignature size="224" md5="36e3c1dadad827cb49e521f5d6559127" sha1="af96327b72bf37e3e60cf51c6de4dba1f6dea620"/>
               <fileInstance path="versionMetadata.xml" datetime="2012-05-29T12:13:07Z"/>
             </file>
           </fileGroup>

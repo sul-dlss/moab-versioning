@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<contentMetadata type="sample" objectId="druid:dd116zh0343">
+  <resource sequence="1" type="folder" id="folder1PuSu">
+    <file shelve="yes" publish="yes" size="7888" preserve="yes" datetime="2012-06-15T22:57:43Z" id="folder1PuSu/story1u.txt">
+      <checksum type="MD5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
+      <checksum type="SHA-1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="5983" preserve="yes" datetime="2012-06-15T22:58:56Z" id="folder1PuSu/story2rr.txt">
+      <checksum type="MD5">dc2be64ae43f1c1db4a068603465955d</checksum>
+      <checksum type="SHA-1">b8a672c1848fc3d13b5f380e15835690e24600e0</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="5941" preserve="yes" datetime="2012-06-17T11:57:51Z" id="folder1PuSu/story3m.txt">
+      <checksum type="MD5">1e5579b16888678f24a1b7008ba15f75</checksum>
+      <checksum type="SHA-1">045245ae45508f92ef82f03eb54290dce92fca64</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="3614" preserve="yes" datetime="2012-06-15T23:04:04Z" id="folder1PuSu/story5a.txt">
+      <checksum type="MD5">c7535886a1d0e6d226da322b6ef0bc99</checksum>
+      <checksum type="SHA-1">524deed114c5090af42eae42d0adacb4f212a270</checksum>
+    </file>
+   </resource>
+   <resource sequence="2" type="folder" id="folder2PdSa">
+    <file shelve="yes" publish="yes" size="2534" preserve="no" datetime="2012-06-15T23:05:03Z" id="folder2PdSa/story6u.txt">
+      <checksum type="MD5">1f15cc786bfe832b2fa1e6f047c500ba</checksum>
+      <checksum type="SHA-1">bf3af01de2afa15719d8c42a4141e3b43d06fef6</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="17074" preserve="no" datetime="2012-06-15T23:08:35Z" id="folder2PdSa/story7rr.txt">
+      <checksum type="MD5">205271287477c2309512eb664eff9130</checksum>
+      <checksum type="SHA-1">b23aa592ab673030ace6178e29fad3cf6a45bd32</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="5645" preserve="no" datetime="2012-06-17T12:01:12Z" id="folder2PdSa/story8m.txt">
+      <checksum type="MD5">f773d6e161000c5b9f90a96cd071688a</checksum>
+      <checksum type="SHA-1">ed5a5a84d51f94bbd04924bc4c982634ee197a62</checksum>
+    </file>
+    <file shelve="yes" publish="yes" size="10717" preserve="no" datetime="2012-06-17T11:42:19Z" id="folder2PdSa/storyAa.txt">
+      <checksum type="MD5">aeb1721bbf64aebb3ff58cb05d34bd18</checksum>
+      <checksum type="SHA-1">e29f5847ef5645d60e8c0caf99b3fce5e9f645c9</checksum>
+    </file>
+  </resource>
+  <resource sequence="3" type="folder" id="folder3PaSd">
+    <file shelve="no" publish="yes" size="14964" preserve="yes" datetime="2012-06-17T11:42:52Z" id="folder3PaSd/storyBu.txt">
+      <checksum type="MD5">8f0a828f3e63cd18232c191ab0c5805c</checksum>
+      <checksum type="SHA-1">b6cb7aa60dd07b4dcc6ab709437e574912f25f30</checksum>
+    </file>
+    <file shelve="no" publish="yes" size="23485" preserve="yes" datetime="2012-06-17T11:44:14Z" id="folder3PaSd/storyCrr.txt">
+      <checksum type="MD5">3486492e40b4c342b25ae4f9c64f06ee</checksum>
+      <checksum type="SHA-1">a1654e9d3cf80242cc3669f89fb41b2ec5e62cb7</checksum>
+    </file>
+    <file shelve="no" publish="yes" size="25336" preserve="yes" datetime="2012-06-17T11:59:14Z" id="folder3PaSd/storyDm.txt">
+      <checksum type="MD5">90226a21d2dc9185c7b2947cf71c1865</checksum>
+      <checksum type="SHA-1">aae63966b21df4b24cd5cd91021ae55b37811a03</checksum>
+    </file>
+    <file shelve="no" publish="yes" size="28726" preserve="yes" datetime="2012-06-17T11:50:58Z" id="folder3PaSd/storyFa.txt">
+      <checksum type="MD5">4b4879a7e56b447f0c3826c2f64be603</checksum>
+      <checksum type="SHA-1">686ac9a8e7187718dc1e0d3fa65ab906dff6698a</checksum>
+    </file>
+  </resource>
+</contentMetadata>

@@ -1,0 +1,19 @@
+<identityMetadata>
+  <objectId>druid:dd116zh0343</objectId>
+  <objectType>item</objectType>
+  <objectAdminClass>GoogleBooks</objectAdminClass>
+  <objectLabel>Google Scanned Book, barcode 36105047816769</objectLabel>
+  <objectCreator>DOR</objectCreator>
+  <citationTitle>Stories from Thousand and one nights (the Arabian nights'
+        entertainments)</citationTitle>
+  <sourceId source="google">STANFORD_36105047816769</sourceId>
+  <otherId name="catkey">88367</otherId>
+  <otherId name="shelfseq">808.8 .H339 V.000016</otherId>
+  <otherId name="barcode">36105047816769</otherId>
+  <otherId name="callseq">1</otherId>
+  <otherId name="uuid">1ddfa648-79ce-4efa-b8e9-d521b0f07f71</otherId>
+  <agreementId>druid:zn292gq7284</agreementId>
+  <tag>Google Book : GBS VIEW_FULL</tag>
+  <tag>Google Book : Scan source STANFORD</tag>
+  <tag>Remediated By : 3.6.2</tag>
+</identityMetadata>

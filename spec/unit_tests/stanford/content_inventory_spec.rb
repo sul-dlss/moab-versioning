@@ -40,10 +40,10 @@ describe 'Stanford::ContentInventory' do
     # * version_id [Integer] = The ID of the version whosen content metadata is to be transformed
     specify 'Stanford::ContentInventory#inventory_from_cm' do
       version_id = 2
-      inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, version_id)
+      inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
       inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-      <fileInventory type="cm" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
-        <fileGroup groupId="content" dataSource="contentMetadata" fileCount="4" byteCount="132363" blockCount="131">
+      <fileInventory type="contentMetadata" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
+        <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
           <file>
             <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
             <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
@@ -65,6 +65,49 @@ describe 'Stanford::ContentInventory' do
       EOF
       )
 
+      cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v1/metadata/contentMetadata.xml'))
+      version_id = 1
+      inventory = ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
+      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+        <fileInventory type="contentMetadata" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
+          <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
+            <file>
+              <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627"/>
+              <fileInstance path="folder1PuSu/story1u.txt" datetime="2012-06-15T22:57:43Z"/>
+            </file>
+            <file>
+              <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0"/>
+              <fileInstance path="folder1PuSu/story2r.txt" datetime="2012-06-15T22:58:56Z"/>
+            </file>
+            <file>
+              <fileSignature size="5951" md5="3d67f52e032e36b641d0cad40816f048" sha1="548f349c79928b6d0996b7ff45990bdce5ee9753"/>
+              <fileInstance path="folder1PuSu/story3m.txt" datetime="2012-06-15T23:00:43Z"/>
+            </file>
+            <file>
+              <fileSignature size="6307" md5="34f3f646523b0a8504f216483a57bce4" sha1="d498b513add5bb138ed4f6205453a063a2434dc4"/>
+              <fileInstance path="folder1PuSu/story4d.txt" datetime="2012-06-15T23:02:22Z"/>
+            </file>
+            <file>
+              <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6"/>
+              <fileInstance path="folder2PdSa/story6u.txt" datetime="2012-06-15T23:05:03Z"/>
+            </file>
+            <file>
+              <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32"/>
+              <fileInstance path="folder2PdSa/story7r.txt" datetime="2012-06-15T23:08:35Z"/>
+            </file>
+            <file>
+              <fileSignature size="5643" md5="ce474f4c512953f20a8c4c5b92405cf7" sha1="af9cbf5ab4f020a8bb17b180fbd5c41598d89b37"/>
+              <fileInstance path="folder2PdSa/story8m.txt" datetime="2012-06-15T23:09:26Z"/>
+            </file>
+            <file>
+              <fileSignature size="19599" md5="135cb2db6a35afac590687f452053baf" sha1="e74274d7bc06ef44a408a008f5160b3756cb2ab0"/>
+              <fileInstance path="folder2PdSa/story9d.txt" datetime="2012-06-15T23:14:32Z"/>
+            </file>
+          </fileGroup>
+        </fileInventory>
+      EOF
+      )
+
       # def inventory_from_cm(content_metadata, object_id, version_id=nil)
       #   cm_inventory = FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
       #   content_group = group_from_cm(content_metadata )
@@ -78,9 +121,24 @@ describe 'Stanford::ContentInventory' do
     # For input parameters:
     # * content_metadata [String] = The contentMetadata as a string
     specify 'Stanford::ContentInventory#group_from_cm' do
-      group = @content_inventory.group_from_cm(@content_metadata)
+      group = @content_inventory.group_from_cm(@content_metadata,'all')
       group.should be_instance_of(FileGroup)
-      group.data_source.should == "contentMetadata"
+      group.data_source.should == "contentMetadata-all"
+
+      cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v1/metadata/contentMetadata.xml'))
+      group = ContentInventory.new.group_from_cm(cm_with_subsets,"all")
+      group.files.size.should == 12
+
+      group = ContentInventory.new.group_from_cm(cm_with_subsets,"shelve")
+      group.files.size.should == 8
+
+      group = ContentInventory.new.group_from_cm(cm_with_subsets,"publish")
+      group.files.size.should == 12
+
+      group = ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
+      group.files.size.should == 8
+
+      lambda{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.should raise_exception
 
       # def group_from_cm(content_metadata)
       #   content_group = FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')
@@ -149,19 +207,19 @@ describe 'Stanford::ContentInventory' do
       cm.gsub(/datetime=".*Z"/,'').should be_equivalent_to(<<-EOF
         <contentMetadata objectId="jq937jp0017" type="sample">
           <resource type="version" sequence="1" id="version-2">
-            <file size="32915" id="page-1.jpg" >
+            <file  size="32915" shelve="yes" preserve="yes" id="page-1.jpg" publish="yes">
               <checksum type="MD5">c1c34634e2f18a354cd3e3e1574c3194</checksum>
               <checksum type="SHA-1">0616a0bd7927328c364b2ea0b4a79c507ce915ed</checksum>
             </file>
-            <file size="39450" id="page-2.jpg" >
+            <file  size="39450" shelve="yes" preserve="yes" id="page-2.jpg" publish="yes">
               <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
               <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
             </file>
-            <file size="19125" id="page-3.jpg" >
+            <file  size="19125" shelve="yes" preserve="yes" id="page-3.jpg" publish="yes">
               <checksum type="MD5">a5099878de7e2e064432d6df44ca8827</checksum>
               <checksum type="SHA-1">c0ccac433cf02a6cee89c14f9ba6072a184447a2</checksum>
             </file>
-            <file size="40873" id="title.jpg" >
+            <file  size="40873" shelve="yes" preserve="yes" id="title.jpg" publish="yes">
               <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
               <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
             </file>

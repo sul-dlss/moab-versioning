@@ -17,7 +17,7 @@ feature "Determine version's file additions" do
     version_additions = signature_catalog.version_additions(v2_inventory)
     version_additions.groups.count.should == 2
     version_additions.file_count.should == 4
-    version_additions.byte_count.should == 35584
+    version_additions.byte_count.should == 35181
     version_additions.block_count.should == 37
   end
 

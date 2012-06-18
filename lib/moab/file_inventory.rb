@@ -131,10 +131,20 @@ module Moab
     # @api internal
     # @return [String] Returns either the version ID (if inventory is a version manifest) or the name of the directory that was harvested to create the inventory
     def data_source
-      if version_id
-        "v#{version_id.to_s}"
+      data_source = (groups.collect { |g| g.data_source.to_s }).join('|')
+      if data_source.start_with?('contentMetadata')
+        if version_id
+          "v#{version_id.to_s}-#{data_source}"
+        else
+          "new-#{data_source}"
+        end
       else
-        (groups.collect { |g| g.data_source.to_s }).join('|')
+        if version_id
+          "v#{version_id.to_s}"
+        else
+          data_source
+        end
+
       end
     end
 

@@ -29,19 +29,19 @@ describe 'Moab::StorageServices' do
     # * object_id [String] = The digital object identifier of the object
     specify 'Moab::StorageServices.version_metadata' do
       Moab::StorageServices.version_metadata(@digital_object_id).read.should be_equivalent_to(<<-EOF
-        <versionMetadata objectId="druid:ab123cd4567">
-          <version versionId="1" label="1.0" significance="major">
-            <description>Initial version</description>
-          </version>
-          <version versionId="2" label="2.0" significance="minor">
-            <description>Editing page-1 and removing intro files</description>
-            <note>content change</note>
-          </version>
-          <version versionId="3" label="2.1" significance="minor">
-            <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
-            <note>page insertion</note>
-          </version>
-        </versionMetadata>
+          <versionMetadata objectId="druid:jq937jp0017">
+            <version versionId="1" label="1.0" significance="major">
+              <description>Initial version</description>
+            </version>
+            <version versionId="2" label="2.0" significance="minor">
+              <description>Editing page-1 and removing intro files</description>
+              <note>content change</note>
+            </version>
+            <version versionId="3" label="2.1" significance="minor">
+              <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
+              <note>page insertion</note>
+            </version>
+          </versionMetadata>
         EOF
         )
 
@@ -131,7 +131,7 @@ describe 'Moab::StorageServices' do
       content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @digital_object_id, version_id=2)
       content_signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
-      metadata_signature.fixity.should == ["1135", "d74bfa778653b6c1b285b2d0c2f07c5b", "0ee15e133c17ae3312b87247adb310b0327ca3df"]
+      metadata_signature.fixity.should == ["1303", "8672613ac1757cda4e44cc464559cd04", "c3961c0f619a81eaf8779a122219b1f860dbc2f9"]
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
       manifest_signature.size.should == 1335
 
@@ -188,16 +188,16 @@ describe 'Moab::StorageServices' do
             <subset change="renamed" count="0"/>
             <subset change="modified" count="3">
               <file change="modified" basisPath="contentMetadata.xml" otherPath="same">
-                <fileSignature size="1135" md5="d74bfa778653b6c1b285b2d0c2f07c5b" sha1="0ee15e133c17ae3312b87247adb310b0327ca3df"/>
-                <fileSignature size="1376" md5="44caefdbaf92f808c3fd27d693338c40" sha1="eb6f9c6539c90412bb4994d13311cc8dfe37c334"/>
+                <fileSignature size="1303" md5="8672613ac1757cda4e44cc464559cd04" sha1="c3961c0f619a81eaf8779a122219b1f860dbc2f9"/>
+                <fileSignature size="1586" md5="7e551285744fbe06d25c525fe1b6fd3c" sha1="c88408b79cb0fcf4c06ae4e0bd21662e21eee741"/>
               </file>
               <file change="modified" basisPath="provenanceMetadata.xml" otherPath="same">
                 <fileSignature size="564" md5="351e4c872148e0bc9dc24874c7ef6c08" sha1="565473bbc865b1c6f88efc99b6b5b73fd5cadbc8"/>
                 <fileSignature size="564" md5="17071e4607de4b272f3f06ec76be4c4a" sha1="b796a0b569bde53953ba0835bb47f4009f654349"/>
               </file>
               <file change="modified" basisPath="versionMetadata.xml" otherPath="same">
-                <fileSignature size="399" md5="97f5dd88b67cca440ac8949ad5fc6883" sha1="55a22cf78597951eea0b1aec44078e48c0b3c3b9"/>
-                <fileSignature size="589" md5="7de12ae7a10dcdfb69754df7e3cb19d4" sha1="aaab609aa7d5ac5f4e9b9340666c1f1cea46f064"/>
+                <fileSignature size="399" md5="89cfd15470d0accf4ceb4a09fbcb85ab" sha1="65ea161b5bb5578ab4a06c4cd77fe3376f5adfa6"/>
+                <fileSignature size="589" md5="ab28cda36767a2ca0ca7aa8322ee6516" sha1="6fc850a1b106a1b039a597d319e821845150d85a"/>
               </file>
             </subset>
             <subset change="deleted" count="0"/>

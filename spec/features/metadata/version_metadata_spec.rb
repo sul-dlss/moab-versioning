@@ -11,6 +11,7 @@ feature "Build a version metadata datastream" do
 
 
   scenario "test" do
+    pending ("needs a rewrite to eliminate events")
     # given:
     # action:
     # outcome:
@@ -19,7 +20,7 @@ feature "Build a version metadata datastream" do
     vme = VersionMetadataEntry.new
     vme.version_id=1
     vme.significance = 'major'
-    vme.reason = 'Preserve my data please'
+    vme.description = 'Preserve my data please'
     vme.note = 'Initial object submission'
     vme.content_changes = FileGroupDifference.new(
         :group_id => 'content',
