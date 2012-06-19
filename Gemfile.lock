@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    moab-versioning (0.7)
+    moab-versioning (0.8)
       confstruct
       happymapper
-      hashery
+      hashery (>= 2.0.0)
       json
       nokogiri
 
@@ -13,14 +13,12 @@ GEM
   remote: http://sulair-rails-dev.stanford.edu/
   specs:
     awesome_print (1.0.1)
-    blankslate (2.1.2.4)
-    confstruct (0.2.2)
+    confstruct (0.2.3)
     equivalent-xml (0.2.8)
       nokogiri (>= 1.4.3)
     happymapper (0.4.0)
       libxml-ruby (~> 2.0)
-    hashery (1.5.0)
-      blankslate
+    hashery (2.0.0)
     highline (1.6.8)
     i18n (0.6.0)
     json (1.6.3)

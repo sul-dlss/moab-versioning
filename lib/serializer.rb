@@ -15,7 +15,8 @@ end
 
 require 'nokogiri'
 require 'happymapper'
-require 'hashery/orderedhash'
+require 'hashery/ordered_hash'
+include Hashery
 require 'json'
 require 'json/pure'
 require 'pathname'
