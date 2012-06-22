@@ -118,14 +118,47 @@ describe 'Stanford::StorageServices' do
         EOF
       )
 
-
+      druid = "druid:no000non0000"
+      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v2/metadata/contentMetadata.xml'))
+      diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
+      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >
+        <fileGroupDifference groupId="content" differenceCount="8" identical="0" renamed="0" modified="0" deleted="0" added="8">
+          <subset change="identical" count="0"/>
+          <subset change="renamed" count="0"/>
+          <subset change="modified" count="0"/>
+          <subset change="deleted" count="0"/>
+          <subset change="added" count="8">
+            <file change="added" basisPath="" otherPath="folder1PuSu/story1u.txt">
+              <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder1PuSu/story2rr.txt">
+              <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder1PuSu/story3m.txt">
+              <fileSignature size="5941" md5="1e5579b16888678f24a1b7008ba15f75" sha1="045245ae45508f92ef82f03eb54290dce92fca64"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder1PuSu/story5a.txt">
+              <fileSignature size="3614" md5="c7535886a1d0e6d226da322b6ef0bc99" sha1="524deed114c5090af42eae42d0adacb4f212a270"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder2PdSa/story6u.txt">
+              <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder2PdSa/story7rr.txt">
+              <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder2PdSa/story8m.txt">
+              <fileSignature size="5645" md5="f773d6e161000c5b9f90a96cd071688a" sha1="ed5a5a84d51f94bbd04924bc4c982634ee197a62"/>
+            </file>
+            <file change="added" basisPath="" otherPath="folder2PdSa/storyAa.txt">
+              <fileSignature size="10717" md5="aeb1721bbf64aebb3ff58cb05d34bd18" sha1="e29f5847ef5645d60e8c0caf99b3fce5e9f645c9"/>
+            </file>
+          </subset>
+        </fileGroupDifference>
+      </fileInventoryDifference>
+      EOF
+      )
        
-      # def self.compare_cm_to_version_inventory(content_metadata, object_id, version_id=nil)
-      #   cm_inventory = ContentInventory.new.inventory_from_cm(content_metadata, object_id)
-      #   storage_object_version = @@repository.storage_object_version(object_id,version_id)
-      #   version_inventory = storage_object_version.file_inventory('version')
-      #   FileInventoryDifference.new.compare(version_inventory,cm_inventory)
-      # end
     end
     
     # Unit test for method: {Stanford::StorageServices.cm_version_additions}
@@ -151,13 +184,33 @@ describe 'Stanford::StorageServices' do
         </fileInventory>
         EOF
       )
-       
-      # def self.cm_version_additions(content_metadata, object_id, version_id=nil)
-      #   cm_inventory = ContentInventory.new.inventory_from_cm(content_metadata, object_id)
-      #   storage_object_version = @@repository.storage_object_version(object_id,version_id)
-      #   signature_catalog = storage_object_version.signature_catalog
-      #   signature_catalog.version_additions(cm_inventory)
-      # end
+
+      adds = Stanford::StorageServices.cm_version_additions(@content_metadata, "druid:no000non0000", nil)
+      adds.should be_instance_of(FileInventory)
+      adds.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+        <fileInventory type="additions" objectId="druid:no000non0000" versionId=""  fileCount="4" byteCount="132363" blockCount="131">
+          <fileGroup groupId="content" dataSource="" fileCount="4" byteCount="132363" blockCount="131">
+            <file>
+              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+              <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
+            </file>
+            <file>
+              <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
+              <fileInstance path="page-1.jpg" datetime="2012-03-26T15:35:15Z"/>
+            </file>
+            <file>
+              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+              <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
+            </file>
+            <file>
+              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+              <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
+            </file>
+          </fileGroup>
+        </fileInventory>
+        EOF
+      )
+
     end
 
   end

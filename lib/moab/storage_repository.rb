@@ -23,7 +23,12 @@ module Moab
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @return [StorageObject] The representation of the desired object storage directory
     def storage_object(object_id)
-      StorageObject.new(object_id, storage_object_pathname(object_id))
+      object_pathname = storage_object_pathname(object_id)
+      if object_pathname.exist?
+        StorageObject.new(object_id, object_pathname)
+      else
+        raise Moab::ObjectNotFoundException, "No object found for #{object_id} at #{object_pathname}"
+      end
     end
 
     # @param object_id [String] The identifier of the digital object whose version is desired

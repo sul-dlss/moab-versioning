@@ -43,13 +43,13 @@ describe 'Moab::StorageRepository' do
     # For input parameters:
     # * object_id [String] = The identifier of the digital object whose version is desired 
     specify 'Moab::StorageRepository#storage_object' do
-      so = @storage_repository.storage_object(@obj)
-      so.digital_object_id.should == "jq937jp0017"
-      so.object_pathname.to_s.include?('ingests/jq/93/7j/p0/01/7/jq937jp0017').should == true
-       
-      # def storage_object(object_id)
-      #   StorageObject.new(object_id, storage_object_pathname(object_id))
-      # end
+      object_pathname = mock(Pathname)
+      @storage_repository.stub(:storage_object_pathname).and_return(object_pathname)
+      object_pathname.stub(:exist?).and_return(true)
+      StorageObject.should_receive(:new).with(@obj, object_pathname)
+      @storage_repository.storage_object(@obj)
+      object_pathname.stub(:exist?).and_return(false)
+      lambda{@storage_repository.storage_object(@obj)}.should raise_exception(Moab::ObjectNotFoundException)
     end
     
     # Unit test for method: {Moab::StorageRepository#storage_object_pathname}
