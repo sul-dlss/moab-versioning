@@ -77,7 +77,7 @@ describe 'Moab::StorageRepository' do
       storage_object.stub(:object_pathname).and_return(object_pathname)
       object_pathname.should_receive(:mkpath)
       storage_object.should_receive(:ingest_bag).with(bag_pathname)
-      @storage_repository.store_new_version(@druid,bag_pathname)
+      @storage_repository.store_new_object_version(@druid,bag_pathname)
     end
 
     specify "Moab::StorageRepository#verify_version_storage" do

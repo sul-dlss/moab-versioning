@@ -43,17 +43,20 @@ module Moab
 
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
-    def store_new_version(druid, bag_pathname )
+    def store_new_object_version(druid, bag_pathname )
       storage_object = self.storage_object(druid)
       storage_object.object_pathname.mkpath
       storage_object.ingest_bag(bag_pathname)
     end
 
+    # @param [String] druid The object identifier
+    # @param [Integer] version_id the version to be verified, if nil, latest current version will be assumed
+    # @return [Boolean] return true if data files on disk are consistent with inventory files
     def verify_version_storage(druid, version_id=nil)
       storage_object = self.storage_object(druid)
       version_id ||= storage_object.current_version_id
       version = StorageObjectVersion.new(storage_object,version_id )
-      version.verify_version_additions
+      version.verify_version_additions &&
       version.verify_version_inventory
     end
 

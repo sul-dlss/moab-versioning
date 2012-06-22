@@ -63,6 +63,7 @@ Require the following:
 - <b>0.8</b> Upgrade hashery gem to v 2.0.0
 - <b>0.8.1</b> Change Stanford::StorageServices to allow diffing against object not yet ingested
 - <b>0.8.2</b> Added methods for verification of version inventories against the storage files
+- <b>0.8.3</b> Revised methods for verification of version inventories against the storage files
 
 == License
 
