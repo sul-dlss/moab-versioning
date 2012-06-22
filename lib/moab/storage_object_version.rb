@@ -184,6 +184,32 @@ module Moab
       manifest_inventory.write_xml_file(@version_pathname)
     end
 
+    # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
+    def verify_version_additions
+      version_addtions = self.file_inventory('additions')
+      FileInventoryDifference.new.verify_against_directory(version_addtions,@version_pathname.join('data'))
+    end
+
+    # @return [Boolean] returns true if files & signatures listed in version inventory can all be found
+    def verify_version_inventory
+      version_inventory = self.file_inventory('version')
+      signature_catalog =self.signature_catalog
+      object_pathname = self.storage_object.object_pathname
+      version_inventory.groups.each do |group|
+        group.files.each do |file|
+          file.instances.each do |instance|
+            relative_path = File.join(group.group_id, instance.path)
+            catalog_entry = signature_catalog.signature_hash[file.signature]
+            storage_location = object_pathname.join(catalog_entry.storage_path)
+            unless storage_location.exist?
+              raise "Storage location for #{relative_path.to_s} not found at #{storage_location.to_s}"
+            end
+          end
+        end
+      end
+      true
+    end
+
   end
 
 end

@@ -477,6 +477,17 @@ describe 'Moab::StorageObjectVersion' do
       # end
     end
 
+    specify 'Moab::StorageObjectVersion#verify_version_additions' do
+      version = @existing_storage_object_version
+      version.verify_version_additions.should == true
+    end
+
+    specify 'Moab::StorageObjectVersion#verify_version_inventory' do
+      version = @existing_storage_object_version
+      version.verify_version_inventory.should == true
+
+    end
+
   end
 
 end

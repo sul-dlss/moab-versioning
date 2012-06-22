@@ -41,6 +41,22 @@ module Moab
       repository_home.join(object_path)
     end
 
+    # @param druid [String] The object identifier
+    # @return [void] transfer the object to the preservation repository
+    def store_new_version(druid, bag_pathname )
+      storage_object = self.storage_object(druid)
+      storage_object.object_pathname.mkpath
+      storage_object.ingest_bag(bag_pathname)
+    end
+
+    def verify_version_storage(druid, version_id=nil)
+      storage_object = self.storage_object(druid)
+      version_id ||= storage_object.current_version_id
+      version = StorageObjectVersion.new(storage_object,version_id )
+      version.verify_version_additions
+      version.verify_version_inventory
+    end
+
   end
 
 end
