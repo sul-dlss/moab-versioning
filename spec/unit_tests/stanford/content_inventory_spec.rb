@@ -247,6 +247,26 @@ describe 'Stanford::ContentInventory' do
       #   cm.to_xml
       # end
     end
+
+    specify 'Stanford::ContentInventory#validate_content_metadata' do
+      cm = @fixtures.join('data','jq937jp0017','v1','metadata','contentMetadata.xml').read
+      @content_inventory.validate_content_metadata(cm).should == true
+
+      cm = @fixtures.join('bad_data','contentMetadata.xml')
+      lambda{@content_inventory.validate_content_metadata(cm)}.should raise_exception(Moab::InvalidMetadataException)
+    end
+
+    specify 'Stanford::ContentInventory#validate_content_metadata_details' do
+      cm = @fixtures.join('bad_data','contentMetadata.xml').read
+      content_metadata_doc = Nokogiri::XML(cm)
+      result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
+      result.should == [
+          "File node 0 is missing id",
+          "File node having id='page-1.jpg' is missing size",
+          "File node having id='page-2.jpg' is missing md5",
+          "File node having id='page-3.jpg' is missing sha1"
+      ]
+    end
   
   end
 

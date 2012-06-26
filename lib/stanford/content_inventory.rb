@@ -19,7 +19,7 @@ module Stanford
     # @param version_id [Integer] The ID of the version whosen content metadata is to be transformed
     # @return [FileInventory] The versionInventory equivalent of the contentMetadata
     def inventory_from_cm(content_metadata, object_id, subset, version_id=nil)
-      cm_inventory = FileInventory.new(:type=>"contentMetadata",:digital_object_id=>object_id, :version_id=>version_id)
+      cm_inventory = FileInventory.new(:type=>"version",:digital_object_id=>object_id, :version_id=>version_id)
       content_group = group_from_cm(content_metadata, subset)
       cm_inventory.groups << content_group
       cm_inventory
@@ -32,6 +32,7 @@ module Stanford
     # @example {include:file:spec/features/stanford/content_metadata_read_spec.rb}
     def group_from_cm(content_metadata, subset)
       ng_doc = Nokogiri::XML(content_metadata)
+      validate_content_metadata(ng_doc)
       nodeset = case subset.to_s.downcase
         when 'preserve'
           ng_doc.xpath("//file[@preserve='yes']")
@@ -108,6 +109,53 @@ module Stanford
         }
       end
       cm.to_xml
+    end
+
+    # @param content_metadata [String,Nokogiri::XML::Document] The contentMetadata as a string or XML doc
+    # @return [Boolean] True if contentMetadata has essetial file attributes, else raise exception
+    def validate_content_metadata(content_metadata)
+      result = validate_content_metadata_details(content_metadata)
+      raise Moab::InvalidMetadataException, result[0]+" ..." if result.size > 0
+      true
+    end
+
+    # @param content_metadata [String, Nokogiri::XML::Document] The contentMetadata as a string or XML doc
+    # @return [Array<String>] List of problems found
+    def validate_content_metadata_details(content_metadata)
+      result = []
+      content_metadata_doc =
+        case content_metadata.class.name
+          when "String"
+            Nokogiri::XML(content_metadata)
+          when "Pathname"
+            Nokogiri::XML(content_metadata.read)
+          when "Nokogiri::XML::Document"
+            content_metadata
+          else
+            raise Moab::InvalidMetadataException, "Content Metadata is in unrecognized format"
+          end
+      nodeset = content_metadata_doc.xpath("//file")
+      nodeset.each do |file_node|
+        missing = ['id', 'size','md5','sha1']
+        missing.delete('id') if file_node.has_attribute?('id')
+        missing.delete('size') if file_node.has_attribute?('size')
+        checksum_nodes = file_node.xpath('checksum')
+        checksum_nodes.each do |checksum_node|
+          case checksum_node.attributes['type'].content.upcase
+            when 'MD5'
+              missing.delete('md5')
+            when 'SHA1', 'SHA-1'
+              missing.delete('sha1')
+          end
+        end
+        if missing.include?('id')
+          result << "File node #{nodeset.index(file_node)} is missing #{missing.join(',')}"
+        elsif missing.size > 0
+          id = file_node['id']
+          result << "File node having id='#{id}' is missing #{missing.join(',')}"
+        end
+      end
+      result
     end
 
   end
