@@ -65,6 +65,7 @@ Require the following:
 - <b>0.8.2</b> Added methods for verification of version inventories against the storage files
 - <b>0.8.3</b> Revised methods for verification of version inventories against the storage files
 - <b>0.8.4</b> Added validation methods for Stanford's contentMetadata
+- <b>0.8.5</b> Fixed bugs in creation of deposit bag and creation of new version's repository directory
 
 == License
 

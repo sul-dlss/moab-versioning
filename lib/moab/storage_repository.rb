@@ -22,9 +22,12 @@ module Moab
 
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @return [StorageObject] The representation of the desired object storage directory
-    def storage_object(object_id)
+    def storage_object(object_id, create=false)
       object_pathname = storage_object_pathname(object_id)
       if object_pathname.exist?
+        StorageObject.new(object_id, object_pathname)
+      elsif create
+        object_pathname.mkpath
         StorageObject.new(object_id, object_pathname)
       else
         raise Moab::ObjectNotFoundException, "No object found for #{object_id} at #{object_pathname}"
@@ -44,8 +47,7 @@ module Moab
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
     def store_new_object_version(druid, bag_pathname )
-      storage_object = self.storage_object(druid)
-      storage_object.object_pathname.mkpath
+      storage_object = self.storage_object(druid, create=true)
       storage_object.ingest_bag(bag_pathname)
     end
 

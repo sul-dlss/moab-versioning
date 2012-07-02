@@ -14,10 +14,10 @@ module Stanford
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @return [Pathname] The location of the desired object's home directory
     def storage_object_pathname(object_id)
-      case Moab::Config.path_method
-        when :druid_tree
+      case Moab::Config.path_method.to_s
+        when 'druid_tree'
           repository_home.join(druid_tree(object_id))
-        when :druid
+        when 'druid'
           repository_home.join(object_id.split(/:/)[-1])
       end
     end

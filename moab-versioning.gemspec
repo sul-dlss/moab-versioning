@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "moab-versioning"
-  s.version     = "0.8.4"
+  s.version     = "0.8.5"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Richard Anderson", "Lynn McRae", "Hannah Frost"]
   s.email       = ["rnanders@stanford.edu"]

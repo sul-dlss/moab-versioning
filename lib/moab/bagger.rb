@@ -85,7 +85,7 @@ module Moab
         when :reconstructor
           version_dirname = StorageObject.version_dirname(@version_inventory.version_id)
           source_file=FileInventory.xml_pathname(@source_base_pathname.join(version_dirname), 'version')
-          FileUtils.link(source_file.to_s, @bag_pathname.to_s)
+          FileUtils.link(source_file.to_s, @bag_pathname.to_s, :force=>true)
       end
     end
 
@@ -109,9 +109,11 @@ module Moab
             end
             target = payload_pathname.join(relative_path)
             target.parent.mkpath
-            target.make_link(source)
-            datetime = Time.parse(instance.datetime)
-            target.utime(datetime, datetime)
+            FileUtils.link source.to_s, target.to_s, :force=>true
+            if instance.datetime
+              datetime = Time.parse(instance.datetime)
+              target.utime(datetime, datetime)
+            end
           end
         end
       end
@@ -127,9 +129,9 @@ module Moab
         group.files.each do |file|
           file.instances.each do |instance|
             signature = file.signature
-            relative_path = File.join(group.group_id, instance.path)
-            md5.puts("#{signature.md5} *#{relative_path}")
-            sha1.puts("#{signature.sha1} *#{relative_path}")
+            data_path = File.join('data', group.group_id, instance.path)
+            md5.puts("#{signature.md5} #{data_path}")
+            sha1.puts("#{signature.sha1} #{data_path}")
           end
         end
       end
