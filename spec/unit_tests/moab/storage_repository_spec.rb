@@ -73,9 +73,8 @@ describe 'Moab::StorageRepository' do
       bag_pathname = mock("bag_pathname")
       object_pathname = mock("object_pathname")
       storage_object = mock(StorageObject)
-      @storage_repository.should_receive(:storage_object).with(@druid).and_return(storage_object)
+      @storage_repository.should_receive(:storage_object).with(@druid,true).and_return(storage_object)
       storage_object.stub(:object_pathname).and_return(object_pathname)
-      object_pathname.should_receive(:mkpath)
       storage_object.should_receive(:ingest_bag).with(bag_pathname)
       @storage_repository.store_new_object_version(@druid,bag_pathname)
     end
@@ -86,7 +85,7 @@ describe 'Moab::StorageRepository' do
       @storage_repository.should_receive(:storage_object).with(@druid).and_return(storage_object)
       version = mock(StorageObjectVersion)
       StorageObjectVersion.stub(:new).with(storage_object, 3 ).and_return(version)
-      version.should_receive(:verify_version_additions)
+      version.should_receive(:verify_version_additions).and_return(true)
       version.should_receive(:verify_version_inventory)
       @storage_repository.verify_version_storage(@druid)
     end

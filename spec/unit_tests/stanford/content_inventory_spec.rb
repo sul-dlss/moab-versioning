@@ -42,26 +42,26 @@ describe 'Stanford::ContentInventory' do
       version_id = 2
       inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
       inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-      <fileInventory type="contentMetadata" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
-        <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
-          <file>
-            <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
-            <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
-          </file>
-          <file>
-            <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
-            <fileInstance path="page-1.jpg" datetime="2012-03-26T15:35:15Z"/>
-          </file>
-          <file>
-            <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
-            <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
-          </file>
-          <file>
-            <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
-            <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
-          </file>
-        </fileGroup>
-      </fileInventory>
+        <fileInventory type="version" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
+          <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
+            <file>
+              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+              <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
+            </file>
+            <file>
+              <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
+              <fileInstance path="page-1.jpg" datetime="2012-03-26T15:35:15Z"/>
+            </file>
+            <file>
+              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+              <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
+            </file>
+            <file>
+              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+              <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
+            </file>
+          </fileGroup>
+        </fileInventory>
       EOF
       )
 
@@ -69,7 +69,7 @@ describe 'Stanford::ContentInventory' do
       version_id = 1
       inventory = ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
       inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-        <fileInventory type="contentMetadata" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
+        <fileInventory type="version" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
           <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
             <file>
               <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627"/>
