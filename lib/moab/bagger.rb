@@ -167,8 +167,8 @@ module Moab
       @bag_pathname.children.each do |file|
         unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
           signature = FileSignature.new.signature_from_file(file.realpath)
-          md5.puts("#{signature.md5} *#{file.basename}")
-          sha1.puts("#{signature.sha1} *#{file.basename}")
+          md5.puts("#{signature.md5} #{file.basename}")
+          sha1.puts("#{signature.sha1} #{file.basename}")
         end
       end
     ensure
