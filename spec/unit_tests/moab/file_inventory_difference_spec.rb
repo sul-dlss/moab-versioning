@@ -163,6 +163,14 @@ describe 'Moab::FileInventoryDifference' do
       #   end
       #   self
       # end
+      end
+
+    specify 'Moab::FileInventoryDifference#group_difference' do
+      basis_inventory = @v1_inventory
+      other_inventory = @v2_inventory
+      diff = @file_inventory_difference.compare(basis_inventory, other_inventory)
+      group_diff = diff.group_difference("content")
+      group_diff.group_id.should == "content"
     end
     
     # Unit test for method: {Moab::FileInventoryDifference#compare_with_directory}

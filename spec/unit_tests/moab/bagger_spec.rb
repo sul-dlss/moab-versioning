@@ -493,7 +493,7 @@ describe 'Moab::Bagger' do
       bag.fill_bag(:depositor)
       md5 = bag.bag_pathname.join('tagmanifest-md5.txt')
       md5.exist?.should == true
-      (md5.readlines.collect{ |line| line.split(/[*]/)[1] }).should == [
+      (md5.readlines.collect{ |line| line.split(/ /)[1] }).should == [
           "bag-info.txt\n",
           "bagit.txt\n",
           "manifest-md5.txt\n",
@@ -504,7 +504,7 @@ describe 'Moab::Bagger' do
 
       sha1 = bag.bag_pathname.join('tagmanifest-sha1.txt')
       sha1.exist?.should == true
-      (sha1.readlines.collect{ |line| line.split(/[*]/)[1] }).should == [
+      (sha1.readlines.collect{ |line| line.split(/ /)[1] }).should == [
           "bag-info.txt\n",
           "bagit.txt\n",
           "manifest-md5.txt\n",

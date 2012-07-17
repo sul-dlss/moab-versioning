@@ -166,7 +166,33 @@ describe 'Moab::FileGroupDifference' do
       #   )
       # end
     end
-    
+
+    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
+    specify 'Moab::FileGroupDifference#file_deltas' do
+      @diff.compare_file_groups(@v1_content, @v3_content)
+      deltas = @diff.file_deltas
+      deltas[:added].should ==  ["page-2.jpg"]
+      deltas[:deleted].should == ["intro-1.jpg", "intro-2.jpg"]
+      deltas[:modified].should == ["page-1.jpg"]
+      deltas[:copied].should == [
+          {:basis=>["page-2.jpg"], :other=>["page-3.jpg"]},
+          {:basis=>["page-3.jpg"], :other=>["page-4.jpg"]},
+          {:basis=>["title.jpg"], :other=>["title.jpg"]}
+      ]
+      v1 = FileGroup.new.group_from_directory(@fixtures.join('data/duplicates/v1'))
+      v2 = FileGroup.new.group_from_directory(@fixtures.join('data/duplicates/v2'))
+      @diff = FileGroupDifference.new
+      @diff.compare_file_groups(v1,v2)
+      deltas = @diff.file_deltas
+      deltas[:added].should ==  []
+      deltas[:deleted].should == []
+      deltas[:modified].should == []
+      deltas[:copied].should == [
+          {:basis=>["a1.txt", "a2.txt", "a3.txt"], :other=>["a1.txt", "a4.txt", "a5.txt", "a6.txt"]},
+          {:basis=>["b1.txt", "b2.txt"], :other=>["b1.txt"]}
+      ]
+    end
+
     # Unit test for method: {Moab::FileGroupDifference#matching_keys}
     # Which returns: [Array] Compare the keys of two hashes and return the intersection
     # For input parameters:

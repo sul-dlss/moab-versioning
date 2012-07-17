@@ -66,6 +66,15 @@ module Moab
     # @return [Array<FileGroupDifference>] The set of data groups comprising the version
     has_many :group_differences, FileGroupDifference, :tag => 'fileGroupDifference'
 
+    # @param [String] group_id The identifer of the group to be selected
+    # @return [FileGroupDifference] The subset of this report for the specified group_id
+    def group_difference(group_id)
+      @group_differences.each do |group_difference|
+        return group_difference if group_difference.group_id == group_id
+      end
+      raise "group #{group_id} not found in file inventory difference report for #{@digital_object_id}"
+    end
+
     # @api external
     # @param basis_inventory [FileInventory] The inventory that is the basis of the comparison
     # @param other_inventory [FileInventory] The inventory that is compared against the basis inventory

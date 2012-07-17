@@ -96,6 +96,40 @@ module Moab
       )
     end
 
+
+    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
+    def file_deltas()
+      # The hash to be returned
+      deltas = Hash.new
+      # Container for a files whose checksums matched across versions, but may have copies removed, added, or renamed
+      copied = Hash.new {|hash, key| hash[key] = {:basis=>Array.new , :other=>Array.new} }
+      # Capture the filename data
+      @subsets.each  do |subset|
+        case subset.change
+          when "added"
+            deltas[:added] = subset.files.collect {|file| file.other_path}
+          when "deleted"
+            deltas[:deleted] = subset.files.collect {|file| file.basis_path}
+          when "modified"
+            deltas[:modified] = subset.files.collect {|file| file.basis_path}
+          when "identical"
+            subset.files.each  do |instance|
+              signature = instance.signatures[0]
+              copied[signature][:basis] << instance.basis_path
+              copied[signature][:other] << instance.basis_path
+            end
+          when "renamed"
+            subset.files.each  do |instance|
+              signature = instance.signatures[0]
+              copied[signature][:basis] << instance.basis_path unless (instance.basis_path.nil? or instance.basis_path.empty?)
+              copied[signature][:other] << instance.other_path unless (instance.other_path.nil? or instance.other_path.empty?)
+            end
+        end
+      end
+      deltas[:copied] = copied.values
+      deltas
+    end
+
     # @api internal
     # @param basis_hash [Hash] The first hash being compared
     # @param other_hash [Hash] The second hash being compared

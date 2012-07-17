@@ -67,6 +67,7 @@ Require the following:
 - <b>0.8.4</b> Added validation methods for Stanford's contentMetadata
 - <b>0.8.5</b> Fixed bugs in creation of deposit bag and creation of new version's repository directory
 - <b>0.8.6</b> Fixed Unit Tests related to previous release
+- <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
 
 == License
 
