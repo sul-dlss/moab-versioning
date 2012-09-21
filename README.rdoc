@@ -68,6 +68,7 @@ Require the following:
 - <b>0.8.5</b> Fixed bugs in creation of deposit bag and creation of new version's repository directory
 - <b>0.8.6</b> Fixed Unit Tests related to previous release
 - <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
+- <b>0.8.8</b> Permit content directory to be empty when generating a version inventory
 
 == License
 
