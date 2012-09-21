@@ -162,6 +162,9 @@ module Moab
       @data_source = @base_directory.to_s
       harvest_directory(directory, recursive)
       self
+    rescue Exception # Errno::ENOENT
+      @data_source = directory.to_s
+      self
     end
 
     # @api internal
