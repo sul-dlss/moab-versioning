@@ -9,6 +9,7 @@ describe 'Stanford::StorageServices' do
       @digital_object_id = @obj
       @version_id = 2
       @content_metadata = IO.read(@data.join('v2/metadata/contentMetadata.xml'))
+      @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
     end
     
     # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
@@ -160,7 +161,36 @@ describe 'Stanford::StorageServices' do
       )
        
     end
-    
+
+    # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
+    # testing boundary case where all subset attributes ar no (e.g. shelve='no')
+    specify 'Stanford::StorageServices.compare_cm_to_version_inventory with emtpy subset' do
+      inventory_diff = <<-EOF
+        <fileInventoryDifference objectId="druid:ms205ty4764" differenceCount="0" basis="v0" other="new-contentMetadata-xyz" >
+          <fileGroupDifference groupId="content" differenceCount="0" identical="0" renamed="0" modified="0" deleted="0" added="0">
+            <subset change="identical" count="0"/>
+            <subset change="renamed" count="0"/>
+            <subset change="modified" count="0"/>
+            <subset change="deleted" count="0"/>
+            <subset change="added" count="0"/>
+          </fileGroupDifference>
+        </fileInventoryDifference>
+      EOF
+
+      druid = 'druid:ms205ty4764'
+      version_id = 1
+      subset = 'shelve'
+      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
+      diff.should be_instance_of(FileInventoryDifference)
+      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
+      subset = 'publish'
+      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
+      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
+      subset = 'preserve'
+      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
+      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
+    end
+
     # Unit test for method: {Stanford::StorageServices.cm_version_additions}
     # Which returns: [FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
     # For input parameters:

@@ -25,6 +25,7 @@ describe 'Stanford::ContentInventory' do
       @digital_object_id = @obj
       @version_id = 2
       @content_metadata = IO.read(@data.join('v2/metadata/contentMetadata.xml'))
+      @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
       @node = Nokogiri::XML(@content_metadata).xpath('//file').first
    end
 
@@ -114,6 +115,27 @@ describe 'Stanford::ContentInventory' do
       #   cm_inventory.groups << content_group
       #   cm_inventory
       # end
+    end
+
+    # Unit test for method: {Stanford::ContentInventory#inventory_from_cm}
+    # testing boundary case where all subset attributes ar no (e.g. shelve='no')
+    specify 'Stanford::ContentInventory#inventory_from_cm with empty subset' do
+      empty_inventory = <<-EOF
+              <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
+                <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
+              </fileInventory>
+            EOF
+      druid = 'druid:ms205ty4764'
+      version_id = 1
+      subset = 'shelve'
+      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
+      subset = 'publish'
+      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
+      subset = 'preserve'
+      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
     end
 
     # Unit test for method: {Stanford::ContentInventory#group_from_cm}

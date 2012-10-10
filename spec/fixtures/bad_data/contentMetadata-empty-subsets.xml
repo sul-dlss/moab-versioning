@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<contentMetadata type="image" objectId="ms205ty4764">
+  <resource type="image" sequence="1" id="ms205ty4764_1">
+    <label>Item 1</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0365_packflat8.tif" publish="no" mimetype="image/tiff" size="39100812">
+      <checksum type="md5">f3a8a45d5526ca9911b7eea600b2124a</checksum>
+      <checksum type="sha1">d9cbce3070942e63b1e4bebc4e6f8232fceb148a</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="2" id="ms205ty4764_2">
+    <label>Item 2</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0450_packflat8.tif" publish="no" mimetype="image/tiff" size="39100812">
+      <checksum type="md5">af1ae04394731b20a455c3f3b6abc804</checksum>
+      <checksum type="sha1">9b883f6e234ed2a1912722bdee21ac9113530ac2</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="3" id="ms205ty4764_3">
+    <label>Item 3</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0465_packflat8.tif" publish="no" mimetype="image/tiff" size="39100812">
+      <checksum type="md5">5e7a1dbf0f0bed4589ac6096770eb273</checksum>
+      <checksum type="sha1">a098c4a0d00d1ec8c564e266efedc9adfc0dd583</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="4" id="ms205ty4764_4">
+    <label>Item 4</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0505_packflat8.tif" publish="no" mimetype="image/tiff" size="39100812">
+      <checksum type="md5">ec76102b11ae6d1fac1be415150822db</checksum>
+      <checksum type="sha1">85c5c153f1fac6fab28d3ed9bbdb293211b797e6</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="5" id="ms205ty4764_5">
+    <label>Item 5</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0535_packflat8.tif" publish="no" mimetype="image/tiff" size="39100812">
+      <checksum type="md5">992a09c1d74e81309a3bc8b917358bde</checksum>
+      <checksum type="sha1">8326ad353ebcc7231490a0ea6ffc99e4d111f726</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="6" id="ms205ty4764_6">
+    <label>Item 6</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0592_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">356ab0e933e255d9e8b03d4b38d130bc</checksum>
+      <checksum type="sha1">5a66fcb8b7f2b6fe44a2d35a2a4569bf267446ab</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="7" id="ms205ty4764_7">
+    <label>Item 7</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0638_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">850922574425948b7ab20fb488e3c1e7</checksum>
+      <checksum type="sha1">cadacd0323375263c766825309c89274f76dbbe0</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="8" id="ms205ty4764_8">
+    <label>Item 8</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0700_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">deabf40e7b833d74789c8a72673dbe11</checksum>
+      <checksum type="sha1">bf82dfebc41b09d6d871a68af4548514db6e0c40</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="9" id="ms205ty4764_9">
+    <label>Item 9</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0735_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">64d71085f8f267664cbaa5edc00edfc7</checksum>
+      <checksum type="sha1">67e78b4aba26a9f1415b09a34ff5e63e4a2995f6</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="10" id="ms205ty4764_10">
+    <label>Item 10</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0780_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">7c9e40aff717d7a2ed450640189891a1</checksum>
+      <checksum type="sha1">df3d57f6b20ec7d770cc12623a5ff528b1cc3fc4</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="11" id="ms205ty4764_11">
+    <label>Item 11</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0850_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">2c72265c7545ec2da44e18c6aa380579</checksum>
+      <checksum type="sha1">f911416aa7d86b4b87e2fd160d95ed3f64e5bbb7</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="12" id="ms205ty4764_12">
+    <label>Item 12</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_0940_packflat8.tif" publish="no" mimetype="image/tiff" size="39100810">
+      <checksum type="md5">9073ef77f741d8632b13afa4f735313d</checksum>
+      <checksum type="sha1">e6283dfebbe0fe908c97a1d40fd7c646f8330f60</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="13" id="ms205ty4764_13">
+    <label>Item 13</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_RABL_packflat8.tif" publish="no" mimetype="image/tiff" size="39100816">
+      <checksum type="md5">c103a9a925e0dd441c4b1e1dcc06cdff</checksum>
+      <checksum type="sha1">76295f51559205188b3f73d1e1fb8996de391e6c</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="14" id="ms205ty4764_14">
+    <label>Item 14</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_RABR_packflat8.tif" publish="no" mimetype="image/tiff" size="39100816">
+      <checksum type="md5">5f055bef7c864b025738ad9afed182a2</checksum>
+      <checksum type="sha1">31cfdbf4becfe0088a1f11dbefc3f7cbdbf96095</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="15" id="ms205ty4764_15">
+    <label>Item 15</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_RAIL_packflat8.tif" publish="no" mimetype="image/tiff" size="39100820">
+      <checksum type="md5">5939c50a1f2f70ed3f72c55d7fef77ea</checksum>
+      <checksum type="sha1">b5f7dada76645242fcea8d0d017807039ef41b36</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="16" id="ms205ty4764_16">
+    <label>Item 16</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_RAIR_packflat8.tif" publish="no" mimetype="image/tiff" size="39100820">
+      <checksum type="md5">1cdd9f791b911d402a3f9122545eac8f</checksum>
+      <checksum type="sha1">1ffeba60eb434f81ae2547487450f8aeb0fef171</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="17" id="ms205ty4764_17">
+    <label>Item 17</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_color.tif" publish="no" mimetype="image/tiff" size="117206270">
+      <checksum type="md5">ce17ea195a6cae3439a771ee27869967</checksum>
+      <checksum type="sha1">6c90bdcfdf6e0b54e0b991309abed45825647a2f</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="18" id="ms205ty4764_18">
+    <label>Item 18</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_pseudo_0505-0780.tif" publish="no" mimetype="image/tiff" size="117205934">
+      <checksum type="md5">35aeb062d540cc2b5fa6cf471c09e8f6</checksum>
+      <checksum type="sha1">d400d22dddd58d4e7be1c35eac31d175b57b835c</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="19" id="ms205ty4764_19">
+    <label>Item 19</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_raking_irdiff.tif" publish="no" mimetype="image/tiff" size="39099968">
+      <checksum type="md5">4fd03bb56e490cfb9041734aa5ca9b1e</checksum>
+      <checksum type="sha1">a3177a67c92bb5a9d7f2b1808866e8b6c637482e</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="20" id="ms205ty4764_20">
+    <label>Item 20</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_ratio_by_0940.tif" publish="no" mimetype="image/tiff" size="117205960">
+      <checksum type="md5">d0d463788624b743b6aae138cef66fea</checksum>
+      <checksum type="sha1">08f3abdcda678d947f50bf9f66007d7d72c6cf53</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+  <resource type="image" sequence="21" id="ms205ty4764_21">
+    <label>Item 21</label>
+    <file preserve="no" shelve="no" id="DLC1120b_001_001r_0_B_sharpie_0505-0780.tif" publish="no" mimetype="image/tiff" size="39100060">
+      <checksum type="md5">5136c1a8fa98e850602d3af93826a196</checksum>
+      <checksum type="sha1">d2c2e62496f68f3a6b1801d054870646a373cb2d</checksum>
+      <imageData width="7216" height="5412"/>
+    </file>
+  </resource>
+</contentMetadata>
