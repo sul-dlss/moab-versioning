@@ -58,7 +58,7 @@ module Moab
       new_version.update_catalog(current_version.signature_catalog,new_inventory)
       new_version.generate_differences_report(current_inventory,new_inventory)
       new_version.generate_manifest_inventory
-      #update_tagmanifests(new_catalog_pathname)
+      new_version
     end
 
     # @api internal
@@ -73,7 +73,7 @@ module Moab
           :version_id=>new_version.version_id,
           :inventory_datetime => Time.now
       )
-      new_inventory.inventory_from_directory(bag_dir.join('data'))
+      new_inventory.inventory_from_bagit_bag(bag_dir)
       new_inventory.write_xml_file(bag_dir)
       version_additions = current_version.signature_catalog.version_additions(new_inventory)
       version_additions.write_xml_file(bag_dir)

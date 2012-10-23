@@ -244,6 +244,23 @@ describe 'Moab::FileGroup' do
       # end
     end
     
+    # Unit test for method: {Moab::FileGroup#remove_file_having_path}
+    # Which returns: [void] Remove a file from the inventory
+    # For input parameters:
+    # * path [String] = The path of the file to be removed
+    specify 'Moab::FileGroup#remove_file_having_path' do
+      file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1/content'),recursive=true)
+      before_file_count = file_group.file_count
+      file_group.remove_file_having_path("page-1.jpg")
+      after_file_count = file_group.file_count
+      after_file_count.should == before_file_count - 1
+
+      #def remove_file_having_path(path)
+      #  signature = self.path_hash[path]
+      #  @signature_hash.delete(signature)
+      #end
+    end
+
     # Unit test for method: {Moab::FileGroup#is_descendent_of_base?}
     # Which returns: [Boolean] Test whether the given path is contained within the {#base_directory}
     # For input parameters:
@@ -264,6 +281,26 @@ describe 'Moab::FileGroup' do
       # end
     end
     
+    # Unit test for method: {Moab::FileGroup#igroup_from_directory_digests}
+    specify 'Moab::FileGroup#group_from_directory_digests' do
+      directory = 'my_directory'
+      file_digests = 'my_digests'
+      recursive = false
+      file_group = FileGroup.new
+      file_group.should_receive(:group_from_directory).with(directory, recursive)
+      file_group.group_from_directory_digests(directory, file_digests, recursive)
+      file_group.instance_variable_get(:@file_digests).should == file_digests
+
+      #@param  directory [Pathame,String] The directory whose children are to be added to the file group
+      #@param digests [Hash<Pathname,Signature>] The fixity data already calculated for the files
+      #@param recursive [Boolean] if true, descend into child directories
+      # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
+      #def group_from_directory_digests(directory, digests, recursive=true)
+      #  @file_digests = digests
+      #  group_from_directory(directory, recursive)
+      #end
+    end
+
     # Unit test for method: {Moab::FileGroup#group_from_directory}
     # Which returns: [FileGroup] Harvest a directory and add all files to the file group
     # For input parameters:
@@ -337,13 +374,29 @@ describe 'Moab::FileGroup' do
           :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
       group.files[0].instances[0].path.should == 'title.jpg'
 
-      # def add_physical_file(path, validated=nil)
-      #   pathname=Pathname.new(path).realpath
-      #   validated ||= is_descendent_of_base?(pathname)
-      #   instance = FileInstance.new.instance_from_file(pathname, @base_directory)
-      #   signature = FileSignature.new.signature_from_file(pathname)
-      #   add_file_instance(signature,instance)
-      # end
+      signature = mock(FileSignature)
+      FileSignature.stub(:new).and_return(signature)
+      signature.should_receive(:signature_from_file).with(pathname)
+      group.add_physical_file(pathname)
+
+      file_digests = mock(Hash)
+      file_digests.should_receive(:[]).with(pathname).twice.and_return('my digest')
+      group.instance_variable_set(:@file_digests, file_digests)
+      signature.should_receive(:signature_from_file_digest).with(pathname, 'my digest')
+      group.add_physical_file(pathname)
+
+      #def add_physical_file(pathname, validated=nil)
+      #  pathname=Pathname.new(pathname).realpath
+      #  validated ||= is_descendent_of_base?(pathname)
+      #  instance = FileInstance.new.instance_from_file(pathname, @base_directory)
+      #  signature = FileSignature.new
+      #  if @file_digests && @file_digests[pathname]
+      #    signature.signature_from_file_digest(pathname, @file_digests[pathname])
+      #  else
+      #    signature.signature_from_file(pathname)
+      #  end
+      #  add_file_instance(signature,instance)
+      #end
     end
   
   end

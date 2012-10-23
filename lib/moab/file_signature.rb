@@ -111,6 +111,27 @@ module Moab
       self
     end
 
+    # @param pathname [Pathname] The location of the file
+    # @param digest [FileSignature] The checksums extracted from the BagIt manifests (or other fixity data source)
+    # @return [FileSignature] Fixity data (size and checksums) for a file derived from BagIt manifest, if possible
+    def signature_from_file_digest(pathname, digest)
+      if digest.md5 && digest.sha1
+        # for efficiency, use the fixity data we already have
+        @size = pathname.size
+        @md5 = digest.md5
+        @sha1 = digest.sha1
+      else
+        # but if any of the digests are missing, then compute new values and validate against expected
+        self.signature_from_file(pathname)
+        if digest.md5 && @md5 != digest.md5
+          raise "MD5 checksum mismatch for #{pathname} found: #{@md5} expected: #{digest.md5}"
+        elsif digest.sha1 && @sha1 != digest.sha1
+          raise "SHA1 checksum mismatch for #{pathname} found: #{@sha1} expected: #{digest.sha1}"
+        end
+      end
+      self
+    end
+
   end
 
 end

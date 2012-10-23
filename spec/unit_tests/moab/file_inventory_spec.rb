@@ -286,6 +286,70 @@ describe 'Moab::FileInventory' do
       #   self
       # end
     end
+
+    # Unit test for method: {Moab::FileInventory#inventory_from_bagit_bag}
+    # Which returns: [FileInventory] Traverse a BagIt bag and return an inventory of the files it contains
+    # For input parameters:
+    # * bag_dir [Pathname, String] = The location of files to be inventoried
+    specify 'Moab::FileInventory#inventory_from_bagit_bag' do
+      bag_dir = @packages.join('v1')
+      inventory = FileInventory.new.inventory_from_bagit_bag(bag_dir)
+      inventory.groups.size.should == 2
+      inventory.groups[0].group_id.should == 'content'
+      inventory.groups[1].group_id.should == 'metadata'
+      inventory.file_count.should == 11
+
+      #def inventory_from_bagit_bag(bag_dir)
+      #  bag_pathname = Pathname(bag_dir)
+      #  bag_digests = digests_from_bagit_bag(bag_pathname)
+      #  bag_data_subdirs = bag_pathname.join('data').children
+      #  bag_data_subdirs.each do |subdir|
+      #    @groups << FileGroup.new(:group_id=>subdir.basename).group_from_directory_digests(subdir, bag_digests)
+      #  end
+      #  self
+      #end
+    end
+
+    # Unit test for method: {Moab::FileInventory#digests_from_bagit_bag}
+    # Which returns: [FileInventory] Traverse a BagIt bag and return an inventory of the files it contains
+    # For input parameters:
+    # * bag_dir [Pathname, String] = The location of files to be inventoried
+    specify 'Moab::FileInventory#digests_from_bagit_bag' do
+      bag_pathname = @packages.join('v1')
+      digests = FileInventory.new.digests_from_bagit_bag(bag_pathname)
+      digests.size.should == 11
+      digests.keys[0].should == @packages.join('v1/data/content/intro-1.jpg')
+      digests[@packages.join('v1/data/content/page-2.jpg')].md5.should == "82fc107c88446a3119a51a8663d1e955"
+
+      ## @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
+      ## @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files
+      #def digests_from_bagit_bag(bag_pathname)
+      #  bagit_manifests = {
+      #      :md5 => bag_pathname.join('manifest-md5.txt'),
+      #      :sha1 => bag_pathname.join('manifest-sha1.txt')
+      #  }
+      #  digests = OrderedHash.new { |hash,key| hash[key] = FileSignature.new }
+      #  bagit_manifests.each do |checksum_type, manifest|
+      #    if manifest.exist?
+      #      manifest.each_line do |line|
+      #        line.chomp!
+      #        checksum,data_path = line.split(/\s+\**/,2)
+      #        if checksum && data_path
+      #          file_pathname = bag_pathname.join('data').join(data_path)
+      #          case checksum_type
+      #            when :md5
+      #              digests[file_pathname].md5 = checksum
+      #            when :sha1
+      #              digests[file_pathname].sha1 = checksum
+      #          end
+      #        end
+      #      end
+      #    end
+      #  end
+      #  digests
+      #  end
+      end
+
     
     # Unit test for method: {Moab::FileInventory#human_size}
     # Which returns: [String] The total size of the inventory expressed in KB, MB, GB or TB, depending on the magnitutde of the value

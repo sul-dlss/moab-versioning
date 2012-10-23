@@ -184,10 +184,22 @@ module Moab
       manifest_inventory.write_xml_file(@version_pathname)
     end
 
-    # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
-    def verify_version_additions
-      version_addtions = self.file_inventory('additions')
-      FileInventoryDifference.new.verify_against_directory(version_addtions,@version_pathname.join('data'))
+    # @return [Boolean] return true if data files on disk are consistent with inventory files
+    def verify_storage()
+      self.verify_manifest_inventory &&
+          self.verify_version_inventory &&
+          self.verify_version_additions
+    end
+
+    def verify_manifest_inventory
+      # the file to verify
+      manifest_inventory = self.file_inventory('manifests')
+      # recapture the manifest signatures
+      audit_group = FileGroup.new(:group_id=>'audit').group_from_directory(@version_pathname, recursive=false)
+      # the manifest inventory does not contain a file entry for itself
+      audit_group.remove_file_having_path("manifestInventory.xml")
+      group_difference = FileGroupDifference.new.compare_file_groups(manifest_inventory.group('manifests'), audit_group)
+      group_difference.difference_count == 0
     end
 
     # @return [Boolean] returns true if files & signatures listed in version inventory can all be found
@@ -208,6 +220,12 @@ module Moab
         end
       end
       true
+    end
+
+    # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
+    def verify_version_additions
+      version_addtions = self.file_inventory('additions')
+      FileInventoryDifference.new.verify_against_directory(version_addtions,@version_pathname.join('data'))
     end
 
   end

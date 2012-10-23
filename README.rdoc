@@ -69,8 +69,9 @@ Require the following:
 - <b>0.8.6</b> Fixed Unit Tests related to previous release
 - <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
 - <b>0.8.8</b> Permit content directory to be empty when generating a version inventory
+- <b>1.0.0</b> Make ready for production, allow fixity data to be copied from Bagit manifests to inventory
 
 == License
 
 Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
-All rights reserved.  See {file:LICENSE.txt} for details.
+All rights reserved.  See {file:LICENSE.rdoc} for details.

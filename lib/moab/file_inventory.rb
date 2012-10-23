@@ -165,6 +165,46 @@ module Moab
       self
     end
 
+    # @param  bag_dir [Pathname,String] The location of the BagIt bag to be inventoried
+    # @return [FileInventory] Traverse a BagIt bag's payload and return an inventory of the files it contains (using fixity from bag manifest files)
+    def inventory_from_bagit_bag(bag_dir)
+      bag_pathname = Pathname(bag_dir)
+      bag_digests = digests_from_bagit_bag(bag_pathname)
+      bag_data_subdirs = bag_pathname.join('data').children
+      bag_data_subdirs.each do |subdir|
+        @groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_directory_digests(subdir, bag_digests)
+      end
+      self
+    end
+
+    # @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
+    # @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files
+    def digests_from_bagit_bag(bag_pathname)
+      bagit_manifests = {
+          :md5 => bag_pathname.join('manifest-md5.txt'),
+          :sha1 => bag_pathname.join('manifest-sha1.txt')
+      }
+      digests = OrderedHash.new { |hash,key| hash[key] = FileSignature.new }
+      bagit_manifests.each do |checksum_type, manifest|
+        if manifest.exist?
+          manifest.each_line do |line|
+            line.chomp!
+            checksum,data_path = line.split(/\s+\**/,2)
+            if checksum && data_path
+              file_pathname = bag_pathname.join('data').join(data_path)
+              case checksum_type
+                when :md5
+                  digests[file_pathname].md5 = checksum
+                when :sha1
+                  digests[file_pathname].sha1 = checksum
+              end
+            end
+          end
+        end
+      end
+      digests
+    end
+
     # @api internal
     # @return [String] The total size of the inventory expressed in KB, MB, GB or TB, depending on the magnitutde of the value
     def human_size

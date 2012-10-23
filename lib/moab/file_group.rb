@@ -134,6 +134,14 @@ module Moab
       manifestation.instances << instance
     end
 
+    # @param path [String] The path of the file to be removed
+    # @return [void] Remove a file from the inventory
+    # for example, the manifest inventory does not contain a file entry for itself
+    def remove_file_having_path(path)
+      signature = self.path_hash[path]
+      @signature_hash.delete(signature)
+    end
+
     # @return [Pathname] The full path used as the basis of the relative paths reported
     #   in {FileInstance} objects that are children of the {FileManifestation} objects contained in this file group
     attr_accessor :base_directory
@@ -151,6 +159,15 @@ module Moab
       pathname.realpath.ascend {|ancestor| is_descendent ||= (ancestor == @base_directory)}
       raise("#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
       is_descendent
+    end
+
+    # @param  directory [Pathame,String] The directory whose children are to be added to the file group
+    # @param digests [Hash<Pathname,Signature>] The fixity data already calculated for the files
+    # @param recursive [Boolean] if true, descend into child directories
+    # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
+    def group_from_directory_digests(directory, digests, recursive=true)
+      @file_digests = digests
+      group_from_directory(directory, recursive)
     end
 
     # @api internal
@@ -198,7 +215,12 @@ module Moab
       pathname=Pathname.new(pathname).realpath
       validated ||= is_descendent_of_base?(pathname)
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
-      signature = FileSignature.new.signature_from_file(pathname)
+      signature = FileSignature.new
+      if @file_digests && @file_digests[pathname]
+        signature.signature_from_file_digest(pathname, @file_digests[pathname])
+      else
+        signature.signature_from_file(pathname)
+      end
       add_file_instance(signature,instance)
     end
 
