@@ -135,7 +135,7 @@ describe 'Serializer::Serializable' do
     specify 'Serializer::Serializable#variables' do
       FileInstance.new.variables().size.should == 2
       SignatureCatalog.new.variables().size.should == 7
-      FileSignature.new.variables().size.should == 3
+      FileSignature.new.variables().size.should == 4
 
       MyClass.new.variables.size.should == 2
 
@@ -162,7 +162,7 @@ describe 'Serializer::Serializable' do
       FileInstance.new.variable_names().should == ["path", "datetime"]
       SignatureCatalog.new.variable_names().should ==
           ["digital_object_id", "version_id", "catalog_datetime", "file_count", "byte_count", "block_count", "entries"]
-      FileSignature.new.variable_names().should == ["size", "md5", "sha1"]
+      FileSignature.new.variable_names().should == ["size", "md5", "sha1", "sha256"]
 
       # def variable_names
       #   variables.collect { |variable| variable.name}
@@ -254,7 +254,8 @@ describe 'Serializer::Serializable' do
                   "signature" => {
                       "size" => 32915,
                        "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
-                      "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+                      "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                      "sha256" => ""
                   }
               }
           }
@@ -343,7 +344,8 @@ describe 'Serializer::Serializable' do
       "signature": {
         "size": 40873,
         "md5": "1a726cd7963bd6d3ceb10a8c353ec166",
-        "sha1": "583220e0572640abcd3ddd97393d224e8053a6ad"
+        "sha1": "583220e0572640abcd3ddd97393d224e8053a6ad",
+        "sha256": ""
       },
       "instances": {
         "title.jpg": {
@@ -381,6 +383,7 @@ EOF
             - size: 40873
             - md5: 1a726cd7963bd6d3ceb10a8c353ec166
             - sha1: 583220e0572640abcd3ddd97393d224e8053a6ad
+            - sha256: ""
         - instances: !omap
             - title.jpg: !omap
                 - path: title.jpg

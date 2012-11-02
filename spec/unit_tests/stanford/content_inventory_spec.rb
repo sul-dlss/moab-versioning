@@ -46,19 +46,19 @@ describe 'Stanford::ContentInventory' do
         <fileInventory type="version" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
             <file>
-              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+              <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad" sha256=""/>
               <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
             </file>
             <file>
-              <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
+              <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed" sha256=""/>
               <fileInstance path="page-1.jpg" datetime="2012-03-26T15:35:15Z"/>
             </file>
             <file>
-              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+              <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5" sha256=""/>
               <fileInstance path="page-2.jpg" datetime="2012-03-26T15:23:36Z"/>
             </file>
             <file>
-              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+              <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2" sha256=""/>
               <fileInstance path="page-3.jpg" datetime="2012-03-26T15:24:39Z"/>
             </file>
           </fileGroup>
@@ -73,35 +73,35 @@ describe 'Stanford::ContentInventory' do
         <fileInventory type="version" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
           <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
             <file>
-              <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627"/>
+              <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627" sha256=""/>
               <fileInstance path="folder1PuSu/story1u.txt" datetime="2012-06-15T22:57:43Z"/>
             </file>
             <file>
-              <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0"/>
+              <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0" sha256=""/>
               <fileInstance path="folder1PuSu/story2r.txt" datetime="2012-06-15T22:58:56Z"/>
             </file>
             <file>
-              <fileSignature size="5951" md5="3d67f52e032e36b641d0cad40816f048" sha1="548f349c79928b6d0996b7ff45990bdce5ee9753"/>
+              <fileSignature size="5951" md5="3d67f52e032e36b641d0cad40816f048" sha1="548f349c79928b6d0996b7ff45990bdce5ee9753" sha256=""/>
               <fileInstance path="folder1PuSu/story3m.txt" datetime="2012-06-15T23:00:43Z"/>
             </file>
             <file>
-              <fileSignature size="6307" md5="34f3f646523b0a8504f216483a57bce4" sha1="d498b513add5bb138ed4f6205453a063a2434dc4"/>
+              <fileSignature size="6307" md5="34f3f646523b0a8504f216483a57bce4" sha1="d498b513add5bb138ed4f6205453a063a2434dc4" sha256=""/>
               <fileInstance path="folder1PuSu/story4d.txt" datetime="2012-06-15T23:02:22Z"/>
             </file>
             <file>
-              <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6"/>
+              <fileSignature size="2534" md5="1f15cc786bfe832b2fa1e6f047c500ba" sha1="bf3af01de2afa15719d8c42a4141e3b43d06fef6" sha256=""/>
               <fileInstance path="folder2PdSa/story6u.txt" datetime="2012-06-15T23:05:03Z"/>
             </file>
             <file>
-              <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32"/>
+              <fileSignature size="17074" md5="205271287477c2309512eb664eff9130" sha1="b23aa592ab673030ace6178e29fad3cf6a45bd32" sha256=""/>
               <fileInstance path="folder2PdSa/story7r.txt" datetime="2012-06-15T23:08:35Z"/>
             </file>
             <file>
-              <fileSignature size="5643" md5="ce474f4c512953f20a8c4c5b92405cf7" sha1="af9cbf5ab4f020a8bb17b180fbd5c41598d89b37"/>
+              <fileSignature size="5643" md5="ce474f4c512953f20a8c4c5b92405cf7" sha1="af9cbf5ab4f020a8bb17b180fbd5c41598d89b37" sha256=""/>
               <fileInstance path="folder2PdSa/story8m.txt" datetime="2012-06-15T23:09:26Z"/>
             </file>
             <file>
-              <fileSignature size="19599" md5="135cb2db6a35afac590687f452053baf" sha1="e74274d7bc06ef44a408a008f5160b3756cb2ab0"/>
+              <fileSignature size="19599" md5="135cb2db6a35afac590687f452053baf" sha1="e74274d7bc06ef44a408a008f5160b3756cb2ab0" sha256=""/>
               <fileInstance path="folder2PdSa/story9d.txt" datetime="2012-06-15T23:14:32Z"/>
             </file>
           </fileGroup>
@@ -179,7 +179,7 @@ describe 'Stanford::ContentInventory' do
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_signature' do
       @content_inventory.generate_signature(@node).fixity.should ==
-          ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]
+          {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
 
       # def generate_signature(node)
       #   signature = FileSignature.new()

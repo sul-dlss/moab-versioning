@@ -140,9 +140,9 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#find_signature' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
-      signature.fixity.should == ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]
+      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
-      signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
+      signature.fixity.should == {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed"}
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
       signature.size.should == 2606
 
@@ -189,7 +189,7 @@ describe 'Moab::StorageObjectVersion' do
     # * file_signature [FileSignature] = The signature of the file
     specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
       file_category = 'content'
-      file_signature = FileSignature.new(:size=>"40873",:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      file_signature = FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
       @existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
           to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
 

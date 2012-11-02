@@ -35,6 +35,7 @@ module Moab
   # @see http://searchstorage.techtarget.com/feature/The-skinny-on-data-deduplication
   # @see http://www.ibm.com/developerworks/wikis/download/attachments/106987789/TSMDataDeduplication.pdf
   # @see https://www.redlegg.com/pdf_file/3_1320410927_HowDataDedupeWorks_WP_100809.pdf
+  # @see http://www.library.yale.edu/iac/DPC/AN_DPC_FixityChecksFinal11.pdf
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
@@ -56,23 +57,42 @@ module Moab
 
     # @attribute
     # @return [String] The MD5 checksum value of the file
-    attribute :md5, String
+    attribute :md5, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
 
     # @attribute
     # @return [String] The SHA1 checksum value of the file
-    attribute :sha1, String
+    attribute :sha1, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
+
+    # @attribute
+    # @return [String] The SHA256 checksum value of the file
+    attribute :sha256, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
 
     # @api internal
-    # @return [Array<String>] An array of fixity data to be compared for equality
+    # @return [Hash<Symbol,String>] An Hasg of fixity data to be compared for equality
     def fixity
-      [@size.to_s, @md5, @sha1]
+      fixity_hash = { :md5 => @md5, :sha1 => @sha1, :sha256 => @sha256 }
+      fixity_hash.delete_if { |key,value| value.nil? or value.empty?}
+      fixity_hash
     end
 
     # @api internal
     # @param other [FileSignature] The other file signature being compared to this signature
     # @return [Boolean] Returns true if self and other have the same fixity data.
     def eql?(other)
-      self.fixity == other.fixity
+      size_eql?(other) and fixity_eql?(other)
+    end
+
+    def size_eql?(other)
+      self.size.to_i == other.size.to_i
+    end
+
+    def fixity_eql?(other)
+      matching_keys = self.fixity.keys & other.fixity.keys
+      return false if matching_keys.size == 0
+      matching_keys.each do |key|
+        return false if self.fixity[key] != other.fixity[key]
+      end
+      true
     end
 
     # @api internal
@@ -90,7 +110,7 @@ module Moab
     #   * {http://techbot.me/2011/05/ruby-basics-equality-operators-ruby/}
     #   Also overriden is {#==} so that equality tests in other contexts will also return the expected result.
     def hash
-      fixity.hash
+      @size.to_i
     end
 
     # @api internal
@@ -100,14 +120,17 @@ module Moab
       @size = pathname.size
       md5_digest = Digest::MD5.new
       sha1_digest = Digest::SHA1.new
+      sha256_digest = Digest::SHA2.new(256)
       pathname.open("r") do |stream|
         while buffer = stream.read(8192)
           md5_digest.update(buffer)
           sha1_digest.update(buffer)
+          sha256_digest.update(buffer)
         end
       end
       @md5 = md5_digest.hexdigest
       @sha1 = sha1_digest.hexdigest
+      @sha256 = sha256_digest.hexdigest
       self
     end
 
@@ -115,11 +138,12 @@ module Moab
     # @param digest [FileSignature] The checksums extracted from the BagIt manifests (or other fixity data source)
     # @return [FileSignature] Fixity data (size and checksums) for a file derived from BagIt manifest, if possible
     def signature_from_file_digest(pathname, digest)
-      if digest.md5 && digest.sha1
+      if digest.md5 && digest.sha1 && digest.sha256
         # for efficiency, use the fixity data we already have
         @size = pathname.size
         @md5 = digest.md5
         @sha1 = digest.sha1
+        @sha256 = digest.sha256
       else
         # but if any of the digests are missing, then compute new values and validate against expected
         self.signature_from_file(pathname)
@@ -127,6 +151,8 @@ module Moab
           raise "MD5 checksum mismatch for #{pathname} found: #{@md5} expected: #{digest.md5}"
         elsif digest.sha1 && @sha1 != digest.sha1
           raise "SHA1 checksum mismatch for #{pathname} found: #{@sha1} expected: #{digest.sha1}"
+        elsif digest.sha256 && @sha256 != digest.sha256
+          raise "SHA256 checksum mismatch for #{pathname} found: #{@sha256} expected: #{digest.sha256}"
         end
       end
       self

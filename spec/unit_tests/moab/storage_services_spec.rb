@@ -129,9 +129,9 @@ describe 'Moab::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file_signature' do
       content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @digital_object_id, version_id=2)
-      content_signature.fixity.should == ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"]
+      content_signature.fixity.should == {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed"}
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
-      metadata_signature.fixity.should == ["1303", "8672613ac1757cda4e44cc464559cd04", "c3961c0f619a81eaf8779a122219b1f860dbc2f9"]
+      metadata_signature.fixity.should == {:md5=>"8672613ac1757cda4e44cc464559cd04", :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9"}
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
       manifest_signature.size.should == 1335
 
@@ -154,50 +154,50 @@ describe 'Moab::StorageServices' do
           <fileGroupDifference groupId="content" differenceCount="3" identical="2" renamed="2" modified="0" deleted="0" added="1">
             <subset change="identical" count="2">
               <file change="identical" basisPath="page-1.jpg" otherPath="same">
-                <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed"/>
+                <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed" sha256=""/>
               </file>
               <file change="identical" basisPath="title.jpg" otherPath="same">
-                <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad"/>
+                <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad" sha256=""/>
               </file>
             </subset>
             <subset change="renamed" count="2">
               <file change="renamed" basisPath="page-2.jpg" otherPath="page-3.jpg">
-                <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5"/>
+                <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5" sha256=""/>
               </file>
               <file change="renamed" basisPath="page-3.jpg" otherPath="page-4.jpg">
-                <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2"/>
+                <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2" sha256=""/>
               </file>
             </subset>
             <subset change="modified" count="0"/>
             <subset change="deleted" count="0"/>
             <subset change="added" count="1">
               <file change="added" basisPath="" otherPath="page-2.jpg">
-                <fileSignature size="39539" md5="fe6e3ffa1b02ced189db640f68da0cc2" sha1="43ced73681687bc8e6f483618f0dcff7665e0ba7"/>
+                <fileSignature size="39539" md5="fe6e3ffa1b02ced189db640f68da0cc2" sha1="43ced73681687bc8e6f483618f0dcff7665e0ba7" sha256=""/>
               </file>
             </subset>
           </fileGroupDifference>
           <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0">
             <subset change="identical" count="2">
               <file change="identical" basisPath="descMetadata.xml" otherPath="same">
-                <fileSignature size="3046" md5="a60bb487db6a1ceb5e0b5bb3cae2dfa2" sha1="edefc0e1d7cffd5bd3c7db6a393ab7632b70dc2d"/>
+                <fileSignature size="3046" md5="a60bb487db6a1ceb5e0b5bb3cae2dfa2" sha1="edefc0e1d7cffd5bd3c7db6a393ab7632b70dc2d" sha256=""/>
               </file>
               <file change="identical" basisPath="identityMetadata.xml" otherPath="same">
-                <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e"/>
+                <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e" sha256=""/>
               </file>
             </subset>
             <subset change="renamed" count="0"/>
             <subset change="modified" count="3">
               <file change="modified" basisPath="contentMetadata.xml" otherPath="same">
-                <fileSignature size="1303" md5="8672613ac1757cda4e44cc464559cd04" sha1="c3961c0f619a81eaf8779a122219b1f860dbc2f9"/>
-                <fileSignature size="1586" md5="7e551285744fbe06d25c525fe1b6fd3c" sha1="c88408b79cb0fcf4c06ae4e0bd21662e21eee741"/>
+                <fileSignature size="1303" md5="8672613ac1757cda4e44cc464559cd04" sha1="c3961c0f619a81eaf8779a122219b1f860dbc2f9" sha256=""/>
+                <fileSignature size="1586" md5="7e551285744fbe06d25c525fe1b6fd3c" sha1="c88408b79cb0fcf4c06ae4e0bd21662e21eee741" sha256=""/>
               </file>
               <file change="modified" basisPath="provenanceMetadata.xml" otherPath="same">
-                <fileSignature size="564" md5="351e4c872148e0bc9dc24874c7ef6c08" sha1="565473bbc865b1c6f88efc99b6b5b73fd5cadbc8"/>
-                <fileSignature size="564" md5="17071e4607de4b272f3f06ec76be4c4a" sha1="b796a0b569bde53953ba0835bb47f4009f654349"/>
+                <fileSignature size="564" md5="351e4c872148e0bc9dc24874c7ef6c08" sha1="565473bbc865b1c6f88efc99b6b5b73fd5cadbc8" sha256=""/>
+                <fileSignature size="564" md5="17071e4607de4b272f3f06ec76be4c4a" sha1="b796a0b569bde53953ba0835bb47f4009f654349" sha256=""/>
               </file>
               <file change="modified" basisPath="versionMetadata.xml" otherPath="same">
-                <fileSignature size="399" md5="89cfd15470d0accf4ceb4a09fbcb85ab" sha1="65ea161b5bb5578ab4a06c4cd77fe3376f5adfa6"/>
-                <fileSignature size="589" md5="ab28cda36767a2ca0ca7aa8322ee6516" sha1="6fc850a1b106a1b039a597d319e821845150d85a"/>
+                <fileSignature size="399" md5="89cfd15470d0accf4ceb4a09fbcb85ab" sha1="65ea161b5bb5578ab4a06c4cd77fe3376f5adfa6" sha256=""/>
+                <fileSignature size="589" md5="ab28cda36767a2ca0ca7aa8322ee6516" sha1="6fc850a1b106a1b039a597d319e821845150d85a" sha256=""/>
               </file>
             </subset>
             <subset change="deleted" count="0"/>

@@ -335,9 +335,10 @@ describe 'Moab::FileGroupDifference' do
       other_group = @v3_content
       signatures =  @diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
       (signatures.collect { |s| s.fixity}).should == [
-          ["39450", "82fc107c88446a3119a51a8663d1e955", "d0857baa307a2e9efff42467b5abd4e1cf40fcd5"],
-          ["19125", "a5099878de7e2e064432d6df44ca8827", "c0ccac433cf02a6cee89c14f9ba6072a184447a2"],
-          ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]]
+           {:md5=>"82fc107c88446a3119a51a8663d1e955", :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5"},
+           {:md5=>"a5099878de7e2e064432d6df44ca8827", :sha1=>"c0ccac433cf02a6cee89c14f9ba6072a184447a2"},
+           {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}]
+
       unchanged_subset = @diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
       unchanged_subset.should be_instance_of(FileGroupDifferenceSubset)
       unchanged_subset.change.should == 'identical'
@@ -347,7 +348,7 @@ describe 'Moab::FileGroupDifference' do
       file0.change.should == 'identical'
       file0.basis_path.should == 'title.jpg'
       file0.other_path.should == 'same'
-      file0.signatures[0].fixity.should == ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]
+      file0.signatures[0].fixity.should == {:md5=> "1a726cd7963bd6d3ceb10a8c353ec166", :sha1=> "583220e0572640abcd3ddd97393d224e8053a6ad"}
 
       # def tabulate_unchanged_files(signature, basis_paths, other_paths)
       #   unchanged_files = Array.new
@@ -382,9 +383,9 @@ describe 'Moab::FileGroupDifference' do
       other_group = @v3_content
       signatures =  @diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
       (signatures.collect { |s| s.fixity}).should == [
-          ["39450", "82fc107c88446a3119a51a8663d1e955", "d0857baa307a2e9efff42467b5abd4e1cf40fcd5"],
-          ["19125", "a5099878de7e2e064432d6df44ca8827", "c0ccac433cf02a6cee89c14f9ba6072a184447a2"],
-          ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]]
+          {:md5=>"82fc107c88446a3119a51a8663d1e955", :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5"},
+          {:md5=>"a5099878de7e2e064432d6df44ca8827", :sha1=>"c0ccac433cf02a6cee89c14f9ba6072a184447a2"},
+          {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}]
       renamed_subset = @diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
       renamed_subset.should be_instance_of(FileGroupDifferenceSubset)
       renamed_subset.change.should == 'renamed'
@@ -394,12 +395,12 @@ describe 'Moab::FileGroupDifference' do
       file0.change.should == 'renamed'
       file0.basis_path.should == 'page-2.jpg'
       file0.other_path.should == 'page-3.jpg'
-      file0.signatures[0].fixity.should == ["39450", "82fc107c88446a3119a51a8663d1e955", "d0857baa307a2e9efff42467b5abd4e1cf40fcd5"]
+      file0.signatures[0].fixity.should == {:md5=>"82fc107c88446a3119a51a8663d1e955", :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5"}
       file1 = renamed_subset.files[1]
       file1.change.should == 'renamed'
       file1.basis_path.should == 'page-3.jpg'
       file1.other_path.should == 'page-4.jpg'
-      file1.signatures[0].fixity.should == ["19125", "a5099878de7e2e064432d6df44ca8827", "c0ccac433cf02a6cee89c14f9ba6072a184447a2"]
+      file1.signatures[0].fixity.should == {:md5=>"a5099878de7e2e064432d6df44ca8827", :sha1=>"c0ccac433cf02a6cee89c14f9ba6072a184447a2"}
 
       # def tabulate_renamed_files(matching_signatures, basis_signature_hash, other_signature_hash)
       #   renamed_files = Array.new
@@ -437,9 +438,9 @@ describe 'Moab::FileGroupDifference' do
           ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
       signatures =  @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
       (signatures.collect { |s| s.fixity}).should == [
-          ["41981", "915c0305bf50c55143f1506295dc122c", "60448956fbe069979fce6a6e55dba4ce1f915178"],
-          ["39850", "77f1a4efdcea6a476505df9b9fba82a7", "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"],
-          ["25153", "3dee12fb4f1c28351c7482b76ff76ae4", "906c1314f3ab344563acbbbe2c7930f08429e35b"]]
+          {:md5=>"915c0305bf50c55143f1506295dc122c", :sha1=>"60448956fbe069979fce6a6e55dba4ce1f915178"},
+          {:md5=>"77f1a4efdcea6a476505df9b9fba82a7", :sha1=>"a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"},
+          {:md5=>"3dee12fb4f1c28351c7482b76ff76ae4", :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b"}]
       basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
@@ -453,7 +454,7 @@ describe 'Moab::FileGroupDifference' do
       file0.change.should == 'modified'
       file0.basis_path.should == 'page-1.jpg'
       file0.other_path.should == 'same'
-      file0.signatures[0].fixity.should == ["25153", "3dee12fb4f1c28351c7482b76ff76ae4", "906c1314f3ab344563acbbbe2c7930f08429e35b"]
+      file0.signatures[0].fixity.should == {:md5=>"3dee12fb4f1c28351c7482b76ff76ae4", :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b"}
 
       # def tabulate_modified_files(basis_path_hash, other_path_hash)
       #   modified_files = Array.new
@@ -485,9 +486,9 @@ describe 'Moab::FileGroupDifference' do
           ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
       signatures =  @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
       (signatures.collect { |s| s.fixity}).should == [
-          ["41981", "915c0305bf50c55143f1506295dc122c", "60448956fbe069979fce6a6e55dba4ce1f915178"],
-          ["39850", "77f1a4efdcea6a476505df9b9fba82a7", "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"],
-          ["25153", "3dee12fb4f1c28351c7482b76ff76ae4", "906c1314f3ab344563acbbbe2c7930f08429e35b"]]
+          {:md5=>"915c0305bf50c55143f1506295dc122c", :sha1=>"60448956fbe069979fce6a6e55dba4ce1f915178"},
+          {:md5=>"77f1a4efdcea6a476505df9b9fba82a7", :sha1=>"a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"},
+          {:md5=>"3dee12fb4f1c28351c7482b76ff76ae4", :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b"}]
       basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
@@ -501,12 +502,12 @@ describe 'Moab::FileGroupDifference' do
       file0.change.should == 'deleted'
       file0.basis_path.should == 'intro-1.jpg'
       file0.other_path.should == ''
-      file0.signatures[0].fixity.should == ["41981", "915c0305bf50c55143f1506295dc122c", "60448956fbe069979fce6a6e55dba4ce1f915178"]
+      file0.signatures[0].fixity.should == {:md5=>"915c0305bf50c55143f1506295dc122c", :sha1=>"60448956fbe069979fce6a6e55dba4ce1f915178"}
       file1 = deleted_subset.files[1]
       file1.change.should == 'deleted'
       file1.basis_path.should == 'intro-2.jpg'
       file1.other_path.should == ''
-      file1.signatures[0].fixity.should == ["39850", "77f1a4efdcea6a476505df9b9fba82a7", "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"]
+      file1.signatures[0].fixity.should == {:md5=>"77f1a4efdcea6a476505df9b9fba82a7", :sha1=>"a49ae3f3771d99ceea13ec825c9c2b73fc1a9915"}
 
       # def tabulate_deleted_files(basis_path_hash, other_path_hash)
       #   deleted_files = Array.new
@@ -535,8 +536,8 @@ describe 'Moab::FileGroupDifference' do
       other_group = @v3_content
       signatures =  @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       (signatures.collect { |s| s.fixity}).should == [
-          ["32915", "c1c34634e2f18a354cd3e3e1574c3194", "0616a0bd7927328c364b2ea0b4a79c507ce915ed"],
-          ["39539", "fe6e3ffa1b02ced189db640f68da0cc2", "43ced73681687bc8e6f483618f0dcff7665e0ba7"]]
+          {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed"},
+          {:md5=>"fe6e3ffa1b02ced189db640f68da0cc2", :sha1=>"43ced73681687bc8e6f483618f0dcff7665e0ba7"}]
       basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
@@ -550,7 +551,7 @@ describe 'Moab::FileGroupDifference' do
       file0.change.should == 'added'
       file0.basis_path.should == ''
       file0.other_path.should == 'page-2.jpg'
-      file0.signatures[0].fixity.should == ["39539", "fe6e3ffa1b02ced189db640f68da0cc2", "43ced73681687bc8e6f483618f0dcff7665e0ba7"]
+      file0.signatures[0].fixity.should == {:md5=>"fe6e3ffa1b02ced189db640f68da0cc2", :sha1=>"43ced73681687bc8e6f483618f0dcff7665e0ba7"}
 
       # def tabulate_added_files(basis_path_hash, other_path_hash)
       #   added_files = Array.new

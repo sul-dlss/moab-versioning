@@ -91,8 +91,7 @@ describe 'Moab::FileSignature' do
     # For input parameters: (None)
     specify 'Moab::FileSignature#fixity' do
       @title_v1_signature.fixity().should ==
-        ["40873", "1a726cd7963bd6d3ceb10a8c353ec166", "583220e0572640abcd3ddd97393d224e8053a6ad"]
-
+          {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
       # def fixity
       #   [@size.to_s, @md5, @sha1]
       # end
@@ -164,12 +163,14 @@ describe 'Moab::FileSignature' do
 
     specify 'Moab::FileSignature#signature_from_file_digest' do
       pathname = @packages.join('v1/data/content/page-2.jpg')
-      digest = FileSignature.new(:md5 => '012md5', :sha1 => '456sha1')
+      digest = FileSignature.new(:md5 => '123md5', :sha1 => '456sha1', :sha256 => '789sha256')
       signature = FileSignature.new.signature_from_file_digest(pathname, digest)
-      signature.fixity.should == ["39450", "012md5", "456sha1"]
+      signature.fixity.should == {:md5=>"123md5", :sha1=>"456sha1", :sha256=>"789sha256"}
       digest = FileSignature.new(:sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = FileSignature.new.signature_from_file_digest(pathname, digest)
-      signature.fixity.should == ["39450", "82fc107c88446a3119a51a8663d1e955", "d0857baa307a2e9efff42467b5abd4e1cf40fcd5"]
+      signature.fixity.should == {:md5=>"82fc107c88446a3119a51a8663d1e955",
+        :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
+        :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
       digest = FileSignature.new(:sha1 => 'dummy')
       lambda{FileSignature.new.signature_from_file_digest(pathname, digest)}.should raise_exception(/SHA1 checksum mismatch/)
     end
