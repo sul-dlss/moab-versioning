@@ -70,7 +70,8 @@ Require the following:
 - <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
 - <b>0.8.8</b> Permit content directory to be empty when generating a version inventory
 - <b>1.0.0</b> Make ready for production, allow fixity data to be copied from Bagit manifests to inventory
-- <b>1.0.01/b> Added SHA256 to the checksums stored in a FileSignature object
+- <b>1.0.1/b> Added SHA256 to the checksums stored in a FileSignature object
+- <b>1.1.0/b> More SHA256 enhancements plus isolation of manifest files in a separate folder
 
 == License
 
