@@ -44,7 +44,7 @@ describe 'Moab::SignatureCatalog' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
     
     before(:all) do
-      @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/signatureCatalog.xml')
+      @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
       @signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
     end
     
@@ -153,11 +153,11 @@ describe 'Moab::SignatureCatalog' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/signatureCatalog.xml')
+      @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
       @signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
       @original_entry_count = @signature_catalog.entries.count
 
-      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
+      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
       @v2_inventory = FileInventory.parse(@v2_inventory_pathname.read)
     end
     
@@ -200,7 +200,7 @@ describe 'Moab::SignatureCatalog' do
     # For input parameters:
     # * version_inventory [FileInventory] = The complete inventory of the files comprising a digital object version 
     specify 'Moab::SignatureCatalog#update' do
-      @signature_catalog.update(@v2_inventory,@v1_catalog_pathname.parent.join('data'))
+      @signature_catalog.update(@v2_inventory,@v1_catalog_pathname.parent.parent.join('data'))
       @signature_catalog.entries.count.should == @original_entry_count + 4
        
       # def update(version_inventory)

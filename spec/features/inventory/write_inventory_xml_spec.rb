@@ -48,7 +48,7 @@ feature "Feature: File Inventory Serialization" do
           </file>
           <file>
             <fileSignature size="3055" md5="19c96e98dd25dd68c493faa6a0fde4d0" sha1="541d5845cc866d7676fa43c337b3f7a59f597487" sha256="a575d9058a56d77a4e65e2b1bedb619686a03d5f717374bd0df98d422432e1fe"/>
-            <fileInstance path="descMetadata.xml" datetime="2012-03-26T17:43:49Z"/>
+            <fileInstance path="descMetadata.xml" datetime="2012-11-13T19:23:26Z"/>
           </file>
           <file>
             <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e" sha256="f48727374e73776d00517dcdc8af62ec8b18a24cff46c66a5c5f85515144628e"/>

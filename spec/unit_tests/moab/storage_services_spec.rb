@@ -90,7 +90,7 @@ describe 'Moab::StorageServices' do
       metadata_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/metadata\/contentMetadata.xml/
       metadata_pathname.exist?.should == true
       manifest_pathname = Moab::StorageServices.retrieve_file('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
-      manifest_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/versionAdditions.xml/
+      manifest_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/manifests\/versionAdditions.xml/
       manifest_pathname.exist?.should == true
 
       # def self.retrieve_file(file_category, file_id, object_id, version_id=nil)

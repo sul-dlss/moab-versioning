@@ -10,7 +10,7 @@ feature "Compare inventory against directory" do
     # outcome: differences report
 
     v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
+    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = FileInventory.parse(v1_inventory_pathname.read)
     opts = {}
     file_inventory_difference = FileInventoryDifference.new(opts)

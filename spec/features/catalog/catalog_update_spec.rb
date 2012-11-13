@@ -10,12 +10,12 @@ feature "Update the signature catalog" do
     # action: filter the new inventory against the catalog
     # outcome: updated signature catalog
 
-    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/signatureCatalog.xml')
+    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
     signature_catalog = SignatureCatalog.parse(v1_catalog_pathname.read)
-    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
+    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
     original_entry_count = signature_catalog.entries.count
-    signature_catalog.update(v2_inventory,v1_catalog_pathname.parent.join('data'))
+    signature_catalog.update(v2_inventory,v1_catalog_pathname.parent.parent.join('data'))
     signature_catalog.entries.count.should == original_entry_count + 4
   end
 

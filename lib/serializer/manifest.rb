@@ -57,6 +57,7 @@ module Serializer
     # @param filename [String] Optional filename if one wishes to override the default filename
     # @return [void] Serializize the in-memory object to a xml file instance
     def self.write_xml_file(xml_object, parent_dir, filename=nil)
+      parent_dir.mkpath
       self.xml_pathname(parent_dir, filename).open('w') { |f| f << xml_object.to_xml }
       nil
     end

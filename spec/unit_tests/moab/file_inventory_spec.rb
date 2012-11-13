@@ -74,7 +74,7 @@ describe 'Moab::FileInventory' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
     
     before(:all) do
-      @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
+      @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       @file_inventory = FileInventory.parse(@v1_version_inventory.read)
       @file_inventory.inventory_datetime = "2012-04-13T13:16:54Z"
     end
@@ -166,7 +166,7 @@ describe 'Moab::FileInventory' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:all) do
-      @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
+      @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       @file_inventory = FileInventory.parse(@v1_version_inventory.read)
     end
     

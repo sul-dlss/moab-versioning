@@ -10,9 +10,9 @@ feature "Determine version's file additions" do
     # action: filter the new inventory against the catalog
     # outcome: version addtions report
 
-    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/signatureCatalog.xml')
+    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
     signature_catalog = SignatureCatalog.parse(v1_catalog_pathname.read)
-    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
+    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
     version_additions = signature_catalog.version_additions(v2_inventory)
     version_additions.groups.count.should == 2

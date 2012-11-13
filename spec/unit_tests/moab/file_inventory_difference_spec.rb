@@ -44,10 +44,10 @@ describe 'Moab::FileInventoryDifference' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
     
     before(:all) do
-      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
+      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
 
-      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
+      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
       @v2_inventory = FileInventory.parse(@v2_inventory_pathname.read)
 
       opts = {}
@@ -121,9 +121,9 @@ describe 'Moab::FileInventoryDifference' do
     
     before(:all) do
       @v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
-      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
+      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
-      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
+      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
       @v2_inventory = FileInventory.parse(@v2_inventory_pathname.read)
     end
 

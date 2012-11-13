@@ -169,7 +169,7 @@ describe 'Moab::StorageObjectVersion' do
       pathname = @existing_storage_object_version.find_filepath('content', 'page-1.jpg')
       pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/page-1.jpg').should == true
       pathname = @existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/versionInventory.xml').should == true
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/versionInventory.xml').should == true
       lambda{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.should raise_exception
 
       # def find_filepath(file_category, file_id)
@@ -210,7 +210,7 @@ describe 'Moab::StorageObjectVersion' do
       pathname = @existing_storage_object_version.file_pathname('metadata','descMetadata.xml')
       pathname.to_s.include?('ingests/jq937jp0017/v0002/data/metadata/descMetadata.xml').should == true
       pathname= @existing_storage_object_version.file_pathname('manifest','signatureCatalog.xml')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/signatureCatalog.xml').should == true
+      pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml').should == true
 
       # def file_pathname(file_category, file_id)
       #   case file_category
@@ -313,8 +313,9 @@ describe 'Moab::StorageObjectVersion' do
           "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
           "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
           "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0001/versionAdditions.xml",
-          "ingests/jq937jp0017/v0001/versionInventory.xml"
+          "ingests/jq937jp0017/v0001/manifests",
+          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
       ]
 
       # def ingest_bag_data(bag_dir)
@@ -423,7 +424,7 @@ describe 'Moab::StorageObjectVersion' do
       signature_catalog = mock(SignatureCatalog.name)
       new_inventory = mock(FileInventory.name)
       signature_catalog.should_receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
-      signature_catalog.should_receive(:write_xml_file).with(temp_storage_object_version.version_pathname)
+      signature_catalog.should_receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
 
       # def update_catalog(signature_catalog,new_inventory)
@@ -465,7 +466,7 @@ describe 'Moab::StorageObjectVersion' do
       source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       temp_storage_object_version.generate_manifest_inventory()
-      FileInventory.xml_pathname_exist?(temp_version_pathname,'manifests').should == true
+      FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'),'manifests').should == true
 
       # def generate_manifest_inventory
       #   manifest_inventory = FileInventory.new(

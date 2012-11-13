@@ -155,8 +155,8 @@ describe 'Moab::Bagger' do
       @submit_bag_pathname = @temp.join('submit_bag_pathname')
 
       @disseminate_base = @ingests.join(@obj)
-      @disseminate_inventory = FileInventory.read_xml_file(@disseminate_base.join('v0002'),'version')
-      @disseminate_catalog = SignatureCatalog.read_xml_file(@disseminate_base.join('v0002'))
+      @disseminate_inventory = FileInventory.read_xml_file(@disseminate_base.join('v0002','manifests'),'version')
+      @disseminate_catalog = SignatureCatalog.read_xml_file(@disseminate_base.join('v0002','manifests'))
       @disseminate_bag_inventory = @disseminate_inventory
       @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
 
@@ -325,7 +325,7 @@ describe 'Moab::Bagger' do
       bag.write_inventory_file
 
       bag = @disseminate_bag
-      source_inventory_pathname = FileInventory.xml_pathname(@disseminate_base.join('v0002'),'version').realpath
+      source_inventory_pathname = FileInventory.xml_pathname(@disseminate_base.join('v0002','manifests'),'version').realpath
       FileUtils.should_receive(:link).with(source_inventory_pathname.to_s,@disseminate_bag_pathname.to_s, {:force=>true})
       bag.write_inventory_file
 

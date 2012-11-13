@@ -84,7 +84,7 @@ module Moab
           @bag_inventory.write_xml_file(@bag_pathname, 'additions')
         when :reconstructor
           version_dirname = StorageObject.version_dirname(@version_inventory.version_id)
-          source_file=FileInventory.xml_pathname(@source_base_pathname.join(version_dirname), 'version')
+          source_file=FileInventory.xml_pathname(@source_base_pathname.join(version_dirname,'manifests'), 'version')
           FileUtils.link(source_file.to_s, @bag_pathname.to_s, :force=>true)
       end
     end

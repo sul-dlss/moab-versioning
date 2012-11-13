@@ -78,7 +78,7 @@ module Moab
   # @return [Pathname] Pathname object containing this version's storage home for the specified file category
     def file_category_pathname(file_category)
       if file_category =~ /manifest/
-        @version_pathname
+        @version_pathname.join('manifests')
       else
         @version_pathname.join('data',file_category)
       end
@@ -90,7 +90,7 @@ module Moab
     # @see FileInventory#read_xml_file
     def file_inventory(type)
       if version_id > 0
-        FileInventory.read_xml_file(@version_pathname, type)
+        FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
       else
         groups = ['content','metadata'].collect { |id| FileGroup.new(:group_id=>id)}
         FileInventory.new(
@@ -106,7 +106,7 @@ module Moab
     # @return [SignatureCatalog] The signature catalog of the digital object as of this version
     def signature_catalog
       if version_id > 0
-        SignatureCatalog.read_xml_file(@version_pathname)
+        SignatureCatalog.read_xml_file(@version_pathname.join('manifests'))
       else
         SignatureCatalog.new(:digital_object_id => @storage_object.digital_object_id)
       end
@@ -117,11 +117,11 @@ module Moab
     # @return [void] Create the version subdirectory and move files into it
     def ingest_bag_data(bag_dir)
       raise "Version already exists: #{@version_pathname.to_s}" if @version_pathname.exist?
-      @version_pathname.mkpath
+      @version_pathname.join('manifests').mkpath
       bag_dir=Pathname(bag_dir)
       ingest_dir(bag_dir.join('data'),@version_pathname.join('data'))
-      ingest_file(bag_dir.join(FileInventory.xml_filename('version')),@version_pathname)
-      ingest_file(bag_dir.join(FileInventory.xml_filename('additions')),@version_pathname)
+      ingest_file(bag_dir.join(FileInventory.xml_filename('version')),@version_pathname.join('manifests'))
+      ingest_file(bag_dir.join(FileInventory.xml_filename('additions')),@version_pathname.join('manifests'))
     end
 
     # @api internal
@@ -161,7 +161,7 @@ module Moab
     # @see SignatureCatalog#update
     def update_catalog(signature_catalog,new_inventory)
       signature_catalog.update(new_inventory, @version_pathname.join('data'))
-      signature_catalog.write_xml_file(@version_pathname)
+      signature_catalog.write_xml_file(@version_pathname.join('manifests'))
     end
 
     # @api internal
@@ -170,7 +170,7 @@ module Moab
     # @return [void] generate a file inventory differences report and save to disk
     def generate_differences_report(old_inventory,new_inventory)
       differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
-      differences.write_xml_file(@version_pathname)
+      differences.write_xml_file(@version_pathname.join('manifests'))
     end
 
     # @api internal
@@ -180,8 +180,8 @@ module Moab
           :type=>'manifests',
           :digital_object_id=>@storage_object.digital_object_id,
           :version_id=>@version_id)
-      manifest_inventory.groups << FileGroup.new(:group_id=>'manifests').group_from_directory(@version_pathname, recursive=false)
-      manifest_inventory.write_xml_file(@version_pathname)
+      manifest_inventory.groups << FileGroup.new(:group_id=>'manifests').group_from_directory(@version_pathname.join('manifests'), recursive=false)
+      manifest_inventory.write_xml_file(@version_pathname.join('manifests'))
     end
 
     # @return [Boolean] return true if data files on disk are consistent with inventory files
@@ -195,7 +195,7 @@ module Moab
       # the file to verify
       manifest_inventory = self.file_inventory('manifests')
       # recapture the manifest signatures
-      audit_group = FileGroup.new(:group_id=>'audit').group_from_directory(@version_pathname, recursive=false)
+      audit_group = FileGroup.new(:group_id=>'audit').group_from_directory(@version_pathname.join('manifests'), recursive=false)
       # the manifest inventory does not contain a file entry for itself
       audit_group.remove_file_having_path("manifestInventory.xml")
       group_difference = FileGroupDifference.new.compare_file_groups(manifest_inventory.group('manifests'), audit_group)
