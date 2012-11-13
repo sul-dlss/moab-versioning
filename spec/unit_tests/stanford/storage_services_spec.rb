@@ -8,7 +8,7 @@ describe 'Stanford::StorageServices' do
     before (:all) do
       @digital_object_id = @obj
       @version_id = 2
-      @content_metadata = IO.read(@data.join('v2/metadata/contentMetadata.xml'))
+      @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
       @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
     end
     
@@ -57,8 +57,8 @@ describe 'Stanford::StorageServices' do
       )
 
       druid = "druid:dd116zh0343"
-      base_cm = @fixtures.join('data/dd116zh0343/v1/metadata/contentMetadata.xml')
-      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v2/metadata/contentMetadata.xml'))
+      base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
+      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       StorageServices.should_receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
@@ -120,7 +120,7 @@ describe 'Stanford::StorageServices' do
       )
 
       druid = "druid:no000non0000"
-      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v2/metadata/contentMetadata.xml'))
+      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >

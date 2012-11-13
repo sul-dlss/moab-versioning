@@ -44,7 +44,7 @@ describe 'Moab::FileGroup' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
     
     before(:all) do
-      @file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1'),recursive=true)
+      @file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'),recursive=true)
     end
     
     # Unit test for attribute: {Moab::FileGroup#group_id}
@@ -82,7 +82,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#byte_count}
     # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::FileGroup#byte_count' do
-      @file_group.byte_count.should == 217811
+      @file_group.byte_count.should == 217820
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -136,7 +136,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#base_directory}
     # Which stores: [Pathname] The full path used as the basis of the relative paths reported in {FileInstance} objects that are children of the {FileManifestation} objects contained in this file group
     specify 'Moab::FileGroup#base_directory' do
-      @file_group.base_directory.to_s.should include('data/jq937jp0017/v1')
+      @file_group.base_directory.to_s.should include('data/jq937jp0017/v0001')
        
       # def base_directory=(basepath)
       #   @base_directory = Pathname.new(basepath).realpath
@@ -152,7 +152,7 @@ describe 'Moab::FileGroup' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @v1_file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1/content'),recursive=true)
+      @v1_file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
       @new_file_group = FileGroup.new
     end
     
@@ -249,7 +249,7 @@ describe 'Moab::FileGroup' do
     # For input parameters:
     # * path [String] = The path of the file to be removed
     specify 'Moab::FileGroup#remove_file_having_path' do
-      file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v1/content'),recursive=true)
+      file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
       before_file_count = file_group.file_count
       file_group.remove_file_having_path("page-1.jpg")
       after_file_count = file_group.file_count
@@ -267,7 +267,7 @@ describe 'Moab::FileGroup' do
     # * pathname [Pathname] = The file path to be tested 
     specify 'Moab::FileGroup#is_descendent_of_base?' do
       @new_file_group.base_directory=@fixtures.join('data')
-      pathname = @fixtures.join('data/jq937jp0017/v1')
+      pathname = @fixtures.join('data/jq937jp0017/v0001')
       @new_file_group.is_descendent_of_base?(pathname).should == true
       pathname = @fixtures.join('derivatives/manifests')
       lambda{@new_file_group.is_descendent_of_base?(pathname)}.should raise_exception
@@ -307,7 +307,7 @@ describe 'Moab::FileGroup' do
     # * directory [Pathname, String] = The location of the files to harvest 
     # * recursive [Boolean] = if true, descend into child directories
     specify 'Moab::FileGroup#group_from_directory' do
-      directory = @fixtures.join('data/jq937jp0017/v1/content')
+      directory = @fixtures.join('data/jq937jp0017/v0001/content')
       recursive = true
       group = FileGroup.new
       group.should_receive(:harvest_directory).with(directory, recursive)
@@ -337,7 +337,7 @@ describe 'Moab::FileGroup' do
       file_group.harvest_directory(path,recursive=true)
       file_group.file_count=0
 
-      path = @fixtures.join('derivatives/packages/v1')
+      path = @fixtures.join('derivatives/packages/v0001')
       second_group = FileGroup.new
       second_group.base_directory=path
       second_group.harvest_directory(path,recursive=false)
@@ -365,9 +365,9 @@ describe 'Moab::FileGroup' do
     # * pathname [Pathname, String] = The location of the file to be added 
     # * validated [Boolean] = if true, path is verified to be descendant of (#base_directory)
     specify 'Moab::FileGroup#add_physical_file' do
-      pathname = @fixtures.join('data/jq937jp0017/v1/content/title.jpg')
+      pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
       group = FileGroup.new
-      group.base_directory = @fixtures.join('data/jq937jp0017/v1/content')
+      group.base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
       group.add_physical_file(pathname)
       group.files.size.should == 1
       group.files[0].signature.should == FileSignature.new(
@@ -382,7 +382,7 @@ describe 'Moab::FileGroup' do
       file_digests = mock(Hash)
       file_digests.should_receive(:[]).with(pathname).twice.and_return('my digest')
       group.instance_variable_set(:@file_digests, file_digests)
-      signature.should_receive(:signature_from_file_digest).with(pathname, 'my digest')
+      signature.should_receive(:normalize_signature).with(pathname, 'my digest')
       group.add_physical_file(pathname)
 
       #def add_physical_file(pathname, validated=nil)

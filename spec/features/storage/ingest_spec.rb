@@ -17,7 +17,7 @@ feature "Import digital object version to SDR" do
     ingests_dir = @temp.join('ingests')
     ingests_dir.rmtree if ingests_dir.exist?
     (1..3).each do |version|
-      vname = ['','v1','v2','v3'][version]
+      vname = [nil,'v0001','v0002','v0003'][version]
       object_dir = ingests_dir.join(@obj)
       object_dir.mkpath
       unless object_dir.join("v000#{version}").exist?

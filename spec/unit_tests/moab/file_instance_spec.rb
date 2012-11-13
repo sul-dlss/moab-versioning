@@ -63,12 +63,12 @@ describe 'Moab::FileInstance' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @v1_base_directory = @fixtures.join('data/jq937jp0017/v1/content')
-      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/title.jpg')
-      @title_v2_pathname = @fixtures.join('data/jq937jp0017/v2/content/title.jpg')
-      @v2_base_directory = @fixtures.join('data/jq937jp0017/v2/content')
-      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/page-1.jpg')
-      @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v2/content/page-1.jpg')
+      @v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
+      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
+      @title_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/title.jpg')
+      @v2_base_directory = @fixtures.join('data/jq937jp0017/v0002/content')
+      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
+      @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
 
       @title_v1_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
       @title_v2_instance = FileInstance.new.instance_from_file(@title_v2_pathname,@v2_base_directory)

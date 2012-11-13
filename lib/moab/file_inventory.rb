@@ -180,24 +180,21 @@ module Moab
     # @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
     # @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files
     def digests_from_bagit_bag(bag_pathname)
-      bagit_manifests = {
-          :md5 => bag_pathname.join('manifest-md5.txt'),
-          :sha1 => bag_pathname.join('manifest-sha1.txt')
-      }
-      digests = OrderedHash.new { |hash,key| hash[key] = FileSignature.new }
-      bagit_manifests.each do |checksum_type, manifest|
-        if manifest.exist?
-          manifest.each_line do |line|
+      manifest_pathname = Hash.new
+      manifest_types =  [:md5, :sha1, :sha256]
+      manifest_types.each do |type|
+        manifest_pathname[type] = bag_pathname.join("manifest-#{type.to_s}.txt")
+      end
+      digests = OrderedHash.new
+      manifest_types.each do |type|
+        if manifest_pathname[type].exist?
+          manifest_pathname[type].each_line do |line|
             line.chomp!
             checksum,data_path = line.split(/\s+\**/,2)
             if checksum && data_path
-              file_pathname = bag_pathname.join('data').join(data_path)
-              case checksum_type
-                when :md5
-                  digests[file_pathname].md5 = checksum
-                when :sha1
-                  digests[file_pathname].sha1 = checksum
-              end
+              file_pathname = bag_pathname.join(data_path)
+              digests[file_pathname] = OrderedHash.new unless digests[file_pathname]
+              digests[file_pathname][type] = checksum
             end
           end
         end

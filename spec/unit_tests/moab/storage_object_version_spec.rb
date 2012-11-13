@@ -140,11 +140,11 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#find_signature' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
-      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
+      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
-      signature.fixity.should == {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed"}
+      signature.fixity.should == {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
-      signature.size.should == 2606
+      signature.size.should == 3278
 
       lambda{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.should raise_exception
 
@@ -292,7 +292,7 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#ingest_bag_data' do
       version_id = 1
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
-      bag_dir = @packages.join("v1")
+      bag_dir = @packages.join("v0001")
       temp_storage_object_version.ingest_bag_data(bag_dir)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
@@ -334,7 +334,7 @@ describe 'Moab::StorageObjectVersion' do
     # * target_dir [Pathname] = The target location of the directory into which files are ingested
     # * use_links [Boolean] = If true, use hard links; if false, make copies
     specify 'Moab::StorageObjectVersion#ingest_dir' do
-      source_dir = @packages.join("v1/data")
+      source_dir = @packages.join("v0001/data")
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 1)
       target_dir = temp_storage_object_version.version_pathname.join('data')
       use_links = true
@@ -384,7 +384,7 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
-      source_file = @packages.join("v2").join( 'versionInventory.xml')
+      source_file = @packages.join("v0002").join( 'versionInventory.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
@@ -393,7 +393,7 @@ describe 'Moab::StorageObjectVersion' do
           "ingests/jq937jp0017/v0002",
           "ingests/jq937jp0017/v0002/versionInventory.xml"
       ]
-      source_file = @packages.join("v2").join( 'versionAdditions.xml')
+      source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname, use_links=false)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
@@ -422,7 +422,7 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 4)
       signature_catalog = mock(SignatureCatalog.name)
       new_inventory = mock(FileInventory.name)
-      signature_catalog.should_receive(:update).with(new_inventory)
+      signature_catalog.should_receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
       signature_catalog.should_receive(:write_xml_file).with(temp_storage_object_version.version_pathname)
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
 
@@ -460,9 +460,9 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
-      source_file = @packages.join("v2").join( 'versionInventory.xml')
+      source_file = @packages.join("v0002").join( 'versionInventory.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
-      source_file = @packages.join("v2").join( 'versionAdditions.xml')
+      source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       temp_storage_object_version.generate_manifest_inventory()
       FileInventory.xml_pathname_exist?(temp_version_pathname,'manifests').should == true

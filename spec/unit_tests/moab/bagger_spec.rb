@@ -17,7 +17,7 @@ describe 'Moab::Bagger' do
       # test initialization with required parameters (if any)
       version_inventory = mock(FileInventory.name) 
       signature_catalog = mock(SignatureCatalog.name) 
-      source_base_pathname = @data.join('v2')
+      source_base_pathname = @data.join('v0002')
       bag_pathname = @temp.join('bag_pathname')
       bagger = Bagger.new(version_inventory, signature_catalog, source_base_pathname, bag_pathname)
       bagger.should be_instance_of(Bagger)
@@ -40,9 +40,9 @@ describe 'Moab::Bagger' do
 
     
     before(:all) do
-      @inventory = FileInventory.read_xml_file(@manifests.join('v2'),'version')
-      @catalog = SignatureCatalog.read_xml_file(@manifests.join('v1'))
-      @source_base = @data.join('v2')
+      @inventory = FileInventory.read_xml_file(@manifests.join('v0002'),'version')
+      @catalog = SignatureCatalog.read_xml_file(@manifests.join('v0001'))
+      @source_base = @data.join('v0002')
       @bag_pathname = @temp.join('bag_pathname')
       @bagger = Bagger.new(@inventory, @catalog, @source_base, @bag_pathname)
     end
@@ -148,9 +148,9 @@ describe 'Moab::Bagger' do
   describe '=========================== INSTANCE METHODS ===========================' do
 
     before(:all) do
-      @submit_source_base = @data.join('v2')
-      @submit_inventory = FileInventory.read_xml_file(@manifests.join('v2'),'version')
-      @submit_catalog = SignatureCatalog.read_xml_file(@manifests.join('v1'))
+      @submit_source_base = @data.join('v0002')
+      @submit_inventory = FileInventory.read_xml_file(@manifests.join('v0002'),'version')
+      @submit_catalog = SignatureCatalog.read_xml_file(@manifests.join('v0001'))
       @submit_bag_inventory = @submit_catalog.version_additions(@submit_inventory)
       @submit_bag_pathname = @temp.join('submit_bag_pathname')
 
@@ -209,61 +209,67 @@ describe 'Moab::Bagger' do
       packages_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       files.sort.should == [
           "packages",
-          "packages/v1",
-          "packages/v1/bag-info.txt",
-          "packages/v1/bagit.txt",
-          "packages/v1/data",
-          "packages/v1/data/content",
-          "packages/v1/data/content/intro-1.jpg",
-          "packages/v1/data/content/intro-2.jpg",
-          "packages/v1/data/content/page-1.jpg",
-          "packages/v1/data/content/page-2.jpg",
-          "packages/v1/data/content/page-3.jpg",
-          "packages/v1/data/content/title.jpg",
-          "packages/v1/data/metadata",
-          "packages/v1/data/metadata/contentMetadata.xml",
-          "packages/v1/data/metadata/descMetadata.xml",
-          "packages/v1/data/metadata/identityMetadata.xml",
-          "packages/v1/data/metadata/provenanceMetadata.xml",
-          "packages/v1/data/metadata/versionMetadata.xml",
-          "packages/v1/manifest-md5.txt",
-          "packages/v1/manifest-sha1.txt",
-          "packages/v1/tagmanifest-md5.txt",
-          "packages/v1/tagmanifest-sha1.txt",
-          "packages/v1/versionAdditions.xml",
-          "packages/v1/versionInventory.xml",
-          "packages/v2",
-          "packages/v2/bag-info.txt",
-          "packages/v2/bagit.txt",
-          "packages/v2/data",
-          "packages/v2/data/content",
-          "packages/v2/data/content/page-1.jpg",
-          "packages/v2/data/metadata",
-          "packages/v2/data/metadata/contentMetadata.xml",
-          "packages/v2/data/metadata/provenanceMetadata.xml",
-          "packages/v2/data/metadata/versionMetadata.xml",
-          "packages/v2/manifest-md5.txt",
-          "packages/v2/manifest-sha1.txt",
-          "packages/v2/tagmanifest-md5.txt",
-          "packages/v2/tagmanifest-sha1.txt",
-          "packages/v2/versionAdditions.xml",
-          "packages/v2/versionInventory.xml",
-          "packages/v3",
-          "packages/v3/bag-info.txt",
-          "packages/v3/bagit.txt",
-          "packages/v3/data",
-          "packages/v3/data/content",
-          "packages/v3/data/content/page-2.jpg",
-          "packages/v3/data/metadata",
-          "packages/v3/data/metadata/contentMetadata.xml",
-          "packages/v3/data/metadata/provenanceMetadata.xml",
-          "packages/v3/data/metadata/versionMetadata.xml",
-          "packages/v3/manifest-md5.txt",
-          "packages/v3/manifest-sha1.txt",
-          "packages/v3/tagmanifest-md5.txt",
-          "packages/v3/tagmanifest-sha1.txt",
-          "packages/v3/versionAdditions.xml",
-          "packages/v3/versionInventory.xml"
+          "packages/v0001",
+          "packages/v0001/bag-info.txt",
+          "packages/v0001/bagit.txt",
+          "packages/v0001/data",
+          "packages/v0001/data/content",
+          "packages/v0001/data/content/intro-1.jpg",
+          "packages/v0001/data/content/intro-2.jpg",
+          "packages/v0001/data/content/page-1.jpg",
+          "packages/v0001/data/content/page-2.jpg",
+          "packages/v0001/data/content/page-3.jpg",
+          "packages/v0001/data/content/title.jpg",
+          "packages/v0001/data/metadata",
+          "packages/v0001/data/metadata/contentMetadata.xml",
+          "packages/v0001/data/metadata/descMetadata.xml",
+          "packages/v0001/data/metadata/identityMetadata.xml",
+          "packages/v0001/data/metadata/provenanceMetadata.xml",
+          "packages/v0001/data/metadata/versionMetadata.xml",
+          "packages/v0001/manifest-md5.txt",
+          "packages/v0001/manifest-sha1.txt",
+          "packages/v0001/manifest-sha256.txt",
+          "packages/v0001/tagmanifest-md5.txt",
+          "packages/v0001/tagmanifest-sha1.txt",
+          "packages/v0001/tagmanifest-sha256.txt",
+          "packages/v0001/versionAdditions.xml",
+          "packages/v0001/versionInventory.xml",
+          "packages/v0002",
+          "packages/v0002/bag-info.txt",
+          "packages/v0002/bagit.txt",
+          "packages/v0002/data",
+          "packages/v0002/data/content",
+          "packages/v0002/data/content/page-1.jpg",
+          "packages/v0002/data/metadata",
+          "packages/v0002/data/metadata/contentMetadata.xml",
+          "packages/v0002/data/metadata/provenanceMetadata.xml",
+          "packages/v0002/data/metadata/versionMetadata.xml",
+          "packages/v0002/manifest-md5.txt",
+          "packages/v0002/manifest-sha1.txt",
+          "packages/v0002/manifest-sha256.txt",
+          "packages/v0002/tagmanifest-md5.txt",
+          "packages/v0002/tagmanifest-sha1.txt",
+          "packages/v0002/tagmanifest-sha256.txt",
+          "packages/v0002/versionAdditions.xml",
+          "packages/v0002/versionInventory.xml",
+          "packages/v0003",
+          "packages/v0003/bag-info.txt",
+          "packages/v0003/bagit.txt",
+          "packages/v0003/data",
+          "packages/v0003/data/content",
+          "packages/v0003/data/content/page-2.jpg",
+          "packages/v0003/data/metadata",
+          "packages/v0003/data/metadata/contentMetadata.xml",
+          "packages/v0003/data/metadata/provenanceMetadata.xml",
+          "packages/v0003/data/metadata/versionMetadata.xml",
+          "packages/v0003/manifest-md5.txt",
+          "packages/v0003/manifest-sha1.txt",
+          "packages/v0003/manifest-sha256.txt",
+          "packages/v0003/tagmanifest-md5.txt",
+          "packages/v0003/tagmanifest-sha1.txt",
+          "packages/v0003/tagmanifest-sha256.txt",
+          "packages/v0003/versionAdditions.xml",
+          "packages/v0003/versionInventory.xml"
       ]
 
       packages_dir.rmtree if packages_dir.exist?
@@ -498,6 +504,7 @@ describe 'Moab::Bagger' do
           "bagit.txt\n",
           "manifest-md5.txt\n",
           "manifest-sha1.txt\n",
+          "manifest-sha256.txt\n",
           "versionAdditions.xml\n",
           "versionInventory.xml\n"
       ]
@@ -509,6 +516,7 @@ describe 'Moab::Bagger' do
           "bagit.txt\n",
           "manifest-md5.txt\n",
           "manifest-sha1.txt\n",
+          "manifest-sha256.txt\n",
           "versionAdditions.xml\n",
           "versionInventory.xml\n"
       ]

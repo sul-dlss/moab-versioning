@@ -47,7 +47,7 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname_exist?' do
       Manifest.xml_pathname_exist?("/test/parent_dir", "dummy").should == false
-      SignatureCatalog.xml_pathname_exist?(@manifests.join("v1")).should == true
+      SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001")).should == true
 
       # def self.xml_pathname_exist?(parent_dir, filename=nil)
       #   self.xml_pathname(parent_dir, filename).exist?
@@ -80,7 +80,7 @@ describe 'Serializer::Manifest' do
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.write_xml_file' do
-      xml_object = SignatureCatalog.read_xml_file(@manifests.join("v1"))
+      xml_object = SignatureCatalog.read_xml_file(@manifests.join("v0001"))
       #xml_object.should_receive(:to_xml)
       output_dir = @temp
       mock_pathname = mock(Pathname.name)

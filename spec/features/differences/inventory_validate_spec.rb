@@ -9,7 +9,7 @@ feature "Validate inventory against directory" do
     # action: generate an inventory for the directory and compare inventories
     # outcome: true or false result, depending of whether there are no differences
 
-    v1_data_directory = @fixtures.join('data/jq937jp0017/v1')
+    v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
     v1_inventory = FileInventory.parse(v1_inventory_pathname.read)
     opts = {}

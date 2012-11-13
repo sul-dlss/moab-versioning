@@ -132,7 +132,7 @@ describe 'Moab::FileInventory' do
     # Unit test for attribute: {Moab::FileInventory#byte_count}
     # Which stores: [Integer] \@byteCount = The total number of bytes in all files of all files in the inventory
     specify 'Moab::FileInventory#byte_count' do
-      @file_inventory.byte_count.should == 217811
+      @file_inventory.byte_count.should == 217820
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
        
@@ -197,7 +197,7 @@ describe 'Moab::FileInventory' do
       group_id = 'content'
       file_id = 'title.jpg'
       signature = @file_inventory.file_signature(group_id, file_id)
-      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
+      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
 
       # def file_signature(group_id, file_id)
       #   file_group = group(group_id)
@@ -261,14 +261,14 @@ describe 'Moab::FileInventory' do
     # * data_dir [Pathname, String] = The location of files to be inventoried
     # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories 
     specify 'Moab::FileInventory#inventory_from_directory' do
-      data_dir_1 = @fixtures.join('data/jq937jp0017/v1/metadata')
+      data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
       group_id = 'Test group_id'
       inventory_1 = FileInventory.new.inventory_from_directory(data_dir_1,group_id)
       inventory_1.groups.size.should == 1
       inventory_1.groups[0].group_id.should == group_id
       inventory_1.file_count.should == 5
 
-      data_dir_2 = @fixtures.join('data/jq937jp0017/v1')
+      data_dir_2 = @fixtures.join('data/jq937jp0017/v0001')
       inventory_2 = FileInventory.new.inventory_from_directory(data_dir_2)
       inventory_2.groups.size.should == 2
       inventory_2.groups[0].group_id.should == 'content'
@@ -292,7 +292,7 @@ describe 'Moab::FileInventory' do
     # For input parameters:
     # * bag_dir [Pathname, String] = The location of files to be inventoried
     specify 'Moab::FileInventory#inventory_from_bagit_bag' do
-      bag_dir = @packages.join('v1')
+      bag_dir = @packages.join('v0001')
       inventory = FileInventory.new.inventory_from_bagit_bag(bag_dir)
       inventory.groups.size.should == 2
       inventory.groups[0].group_id.should == 'content'
@@ -315,11 +315,11 @@ describe 'Moab::FileInventory' do
     # For input parameters:
     # * bag_dir [Pathname, String] = The location of files to be inventoried
     specify 'Moab::FileInventory#digests_from_bagit_bag' do
-      bag_pathname = @packages.join('v1')
+      bag_pathname = @packages.join('v0001')
       digests = FileInventory.new.digests_from_bagit_bag(bag_pathname)
       digests.size.should == 11
-      digests.keys[0].should == @packages.join('v1/data/content/intro-1.jpg')
-      digests[@packages.join('v1/data/content/page-2.jpg')].md5.should == "82fc107c88446a3119a51a8663d1e955"
+      digests.keys[0].should == @packages.join('v0001/data/content/intro-1.jpg')
+      digests[@packages.join('v0001/data/content/page-2.jpg')][:md5].should == "82fc107c88446a3119a51a8663d1e955"
 
       ## @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
       ## @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files

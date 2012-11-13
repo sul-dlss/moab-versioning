@@ -15,7 +15,7 @@ feature "Update the signature catalog" do
     v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')
     v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
     original_entry_count = signature_catalog.entries.count
-    signature_catalog.update(v2_inventory)
+    signature_catalog.update(v2_inventory,v1_catalog_pathname.parent.join('data'))
     signature_catalog.entries.count.should == original_entry_count + 4
   end
 

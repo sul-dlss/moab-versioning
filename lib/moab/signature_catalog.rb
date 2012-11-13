@@ -117,7 +117,7 @@ module Moab
     # @return [void] Compares the {FileSignature} entries in the new versions {FileInventory} against the signatures
     #   in this catalog and create new {SignatureCatalogEntry} addtions to the catalog
     # @example {include:file:spec/features/catalog/catalog_update_spec.rb}
-    def update(version_inventory)
+    def update(version_inventory, data_pathname)
       version_inventory.groups.each do |group|
         group.files.each do |file|
           unless @signature_hash.has_key?(file.signature)
@@ -125,7 +125,8 @@ module Moab
             entry.version_id = version_inventory.version_id
             entry.group_id = group.group_id
             entry.path = file.instances[0].path
-            entry.signature = file.signature
+            file_pathname = data_pathname.join(group.group_id,entry.path)
+            entry.signature = FileSignature.new.normalize_signature(file_pathname, file.signature.fixity)
             add_entry(entry)
           end
         end

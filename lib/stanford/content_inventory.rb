@@ -67,6 +67,8 @@ module Stanford
             signature.md5 = checksum_node.text
           when 'SHA1', 'SHA-1'
             signature.sha1 = checksum_node.text
+          when 'SHA256', 'SHA-256'
+            signature.sha256 = checksum_node.text
         end
       end
       signature
@@ -100,8 +102,10 @@ module Stanford
                     :shelve=>'yes',
                     :publish=>'yes',
                     :preserve=>'yes') {
-                  xml.checksum(:type=>"MD5") {xml.text signature.md5 }
-                  xml.checksum(:type=>"SHA-1") {xml.text signature.sha1}
+                  fixity = signature.fixity
+                  xml.checksum(:type=>"MD5") {xml.text signature.md5 } if fixity[:md5]
+                  xml.checksum(:type=>"SHA-1") {xml.text signature.sha1} if fixity[:sha1]
+                  xml.checksum(:type=>"SHA-256") {xml.text signature.sha256} if fixity[:sha256]
                 }
               end
             end

@@ -121,23 +121,34 @@ module Moab
     end
 
     # @api internal
-    # @return [void] Using the checksum information from the inventory, create md5 and sha1 manifest files for the payload
+    # @return [void] Using the checksum information from the inventory, create BagIt manifest files for the payload
     def create_payload_manifests
-      md5 = @bag_pathname.join('manifest-md5.txt').open('w')
-      sha1 = @bag_pathname.join('manifest-sha1.txt').open('w')
+      manifest_pathname = Hash.new
+      manifest_file = Hash.new
+      manifest_types =  [:md5, :sha1, :sha256]
+      manifest_types.each do |type|
+        manifest_pathname[type] = @bag_pathname.join("manifest-#{type.to_s}.txt")
+        manifest_file[type] = manifest_pathname[type].open('w')
+      end
       @bag_inventory.groups.each do |group|
         group.files.each do |file|
+          fixity = file.signature.fixity
           file.instances.each do |instance|
-            signature = file.signature
             data_path = File.join('data', group.group_id, instance.path)
-            md5.puts("#{signature.md5} #{data_path}")
-            sha1.puts("#{signature.sha1} #{data_path}")
+            manifest_types.each do |type|
+              manifest_file[type].puts("#{fixity[type]} #{data_path}") if fixity[type]
+            end
           end
         end
       end
     ensure
-      md5.close if md5
-      sha1.close if sha1
+      manifest_types.each do |type|
+        if manifest_file[type]
+          manifest_file[type].close
+          manifest_pathname[type].delete if
+              manifest_pathname[type].exist? and manifest_pathname[type].size == 0
+        end
+      end
     end
 
     # @api internal
@@ -160,20 +171,33 @@ module Moab
     end
 
     # @api internal
-    # @return [void] create md5 and sha1 manifest files containing checksums for all files in the bag's root directory
+    # @return [void] create BagIt tag manifest files containing checksums for all files in the bag's root directory
     def create_tagfile_manifests()
-      md5 = @bag_pathname.join('tagmanifest-md5.txt').open('w')
-      sha1 = @bag_pathname.join('tagmanifest-sha1.txt').open('w')
+      manifest_pathname = Hash.new
+      manifest_file = Hash.new
+      manifest_types =  [:md5, :sha1, :sha256]
+      manifest_types.each do |type|
+        manifest_pathname[type] = @bag_pathname.join("tagmanifest-#{type.to_s}.txt")
+        manifest_file[type] = manifest_pathname[type].open('w')
+      end
       @bag_pathname.children.each do |file|
         unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
           signature = FileSignature.new.signature_from_file(file.realpath)
-          md5.puts("#{signature.md5} #{file.basename}")
-          sha1.puts("#{signature.sha1} #{file.basename}")
+          fixity = signature.fixity
+          manifest_types.each do |type|
+            manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
+          end
         end
       end
     ensure
-      md5.close if md5
-      sha1.close if sha1
+      manifest_types.each do |type|
+        if manifest_file[type]
+          manifest_file[type].close
+          manifest_pathname[type].delete if
+              manifest_pathname[type].exist? and manifest_pathname[type].size == 0
+        end
+      end
+      
     end
 
   end

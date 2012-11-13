@@ -1,4 +1,4 @@
-<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://cosimo.stanford.edu/standards/mods/v3/mods-3-3.xsd">
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v0003" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v0003 http://cosimo.stanford.edu/standards/mods/v0003/mods-3-3.xsd">
    <mods:titleInfo>
       <mods:title>Stories from Thousand and one nights (the Arabian nights' entertainments)</mods:title>
    </mods:titleInfo>

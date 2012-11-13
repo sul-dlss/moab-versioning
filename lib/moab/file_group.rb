@@ -217,7 +217,7 @@ module Moab
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
       signature = FileSignature.new
       if @file_digests && @file_digests[pathname]
-        signature.signature_from_file_digest(pathname, @file_digests[pathname])
+        signature.normalize_signature(pathname, @file_digests[pathname])
       else
         signature.signature_from_file(pathname)
       end

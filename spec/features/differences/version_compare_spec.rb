@@ -10,7 +10,7 @@ feature "Compare versions" do
     #       : compare the inventories
     # outcome: a report of which files have changed
 
-   # @v1_data_directory = @fixtures.join('data/jq937jp0017/v1')
+   # @v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/versionInventory.xml')
     v1_inventory = FileInventory.parse(v1_inventory_pathname.read)
     v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/versionInventory.xml')

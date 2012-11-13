@@ -75,7 +75,7 @@ describe 'Stanford::DorMetadata' do
     before (:all) do
       @digital_object_id = @obj
       @version_id = 2
-      @content_metadata = @data.join('v2/metadata/contentMetadata.xml')
+      @content_metadata = @data.join('v0002/metadata/contentMetadata.xml')
       @node = Nokogiri::XML(IO.read(@content_metadata)).xpath('//file').first
     end
 
@@ -89,7 +89,7 @@ describe 'Stanford::DorMetadata' do
     # * directory [String] = The location of the directory to be inventoried 
     # * version_id [Integer] = The ordinal version number 
     specify 'Stanford::DorMetadata#inventory_from_directory' do
-      directory = @data.join('v2/metadata')
+      directory = @data.join('v0002/metadata')
       version_id = 2
       inventory = @dor_metadata.inventory_from_directory(directory, version_id)
       inventory.type.should == "version"

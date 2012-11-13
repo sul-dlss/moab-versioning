@@ -31,22 +31,26 @@ describe 'Serializer::Serializable' do
 
       hash1 = @v1_content.files[0].to_hash
       hash3 = @v3_content.files[0].to_hash
-      diff = Serializable.deep_diff('v1',hash1, 'v3', hash3)
+      diff = Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
       diff["signature"].should hash_match({
               "size" => {
-                  "v1" => 41981,
-                  "v3" => 32915
+                  "v0001" => 41981,
+                  "v0003" => 32915
               },
                "md5" => {
-                  "v1" => "915c0305bf50c55143f1506295dc122c",
-                  "v3" => "c1c34634e2f18a354cd3e3e1574c3194"
+                  "v0001" => "915c0305bf50c55143f1506295dc122c",
+                  "v0003" => "c1c34634e2f18a354cd3e3e1574c3194"
               },
               "sha1" => {
-                  "v1" => "60448956fbe069979fce6a6e55dba4ce1f915178",
-                  "v3" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+                  "v0001" => "60448956fbe069979fce6a6e55dba4ce1f915178",
+                  "v0003" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+              },
+              "sha256" => {
+                  "v0001" => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
+                  "v0003" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
               }
           })
-      diff["instances"]["intro-1.jpg"]["v1"]["path"].should == "intro-1.jpg"
+      diff["instances"]["intro-1.jpg"]["v0001"]["path"].should == "intro-1.jpg"
 
       diff = Serializable.deep_diff(hash1, hash3)
       diff["signature"].should hash_match({
@@ -58,9 +62,13 @@ describe 'Serializer::Serializable' do
                  :left => "915c0305bf50c55143f1506295dc122c",
                 :right => "c1c34634e2f18a354cd3e3e1574c3194"
             },
-            "sha1" => {
-                 :left => "60448956fbe069979fce6a6e55dba4ce1f915178",
-                :right => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+             "sha1" => {
+                  :left => "60448956fbe069979fce6a6e55dba4ce1f915178",
+                 :right => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+            },
+            "sha256" => {
+                 :left => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
+                :right => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
             }
         })
 
@@ -240,7 +248,7 @@ describe 'Serializer::Serializable' do
     # Which returns: [OrderedHash] Recursively generate an OrderedHash containing the object's properties
     # For input parameters: (None)
     specify 'Serializer::Serializable#to_hash' do
-      additons = FileInventory.read_xml_file(@manifests.join("v2"),'additions')
+      additons = FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
       hash = additons.groups[0].to_hash()
       hash['files'][nil].delete('instances')
       hash.should hash_match({
@@ -255,7 +263,7 @@ describe 'Serializer::Serializable' do
                       "size" => 32915,
                        "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
                       "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                      "sha256" => ""
+                      "sha256" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
                   }
               }
           }
@@ -296,9 +304,13 @@ describe 'Serializer::Serializable' do
                  :old => "c1c34634e2f18a354cd3e3e1574c3194",
                  :new => "915c0305bf50c55143f1506295dc122c"
              },
-             "sha1" => {
-                 :old => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                 :new => "60448956fbe069979fce6a6e55dba4ce1f915178"
+              "sha1" => {
+                  :old => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                  :new => "60448956fbe069979fce6a6e55dba4ce1f915178"
+             },
+             "sha256" => {
+                 :old => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+                 :new => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
              }
           }
       })
@@ -335,7 +347,7 @@ describe 'Serializer::Serializable' do
      (@v1_content.to_json+"\n").gsub(/: ".*moab-versioning/,': "moab-versioning').should == <<EOF
 {
   "group_id": "content",
-  "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v1/content",
+  "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content",
   "file_count": 6,
   "byte_count": 206432,
   "block_count": 203,
@@ -345,7 +357,7 @@ describe 'Serializer::Serializable' do
         "size": 40873,
         "md5": "1a726cd7963bd6d3ceb10a8c353ec166",
         "sha1": "583220e0572640abcd3ddd97393d224e8053a6ad",
-        "sha256": ""
+        "sha256": "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
       },
       "instances": {
         "title.jpg": {
@@ -373,7 +385,7 @@ EOF
       @v1_content.to_yaml().gsub(/!omap /,'!omap').gsub(/: .*moab-versioning/,': moab-versioning').should == <<EOF
 --- !omap
 - group_id: content
-- data_source: moab-versioning/spec/fixtures/data/jq937jp0017/v1/content
+- data_source: moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content
 - file_count: 6
 - byte_count: 206432
 - block_count: 203
@@ -383,7 +395,7 @@ EOF
             - size: 40873
             - md5: 1a726cd7963bd6d3ceb10a8c353ec166
             - sha1: 583220e0572640abcd3ddd97393d224e8053a6ad
-            - sha256: ""
+            - sha256: 8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5
         - instances: !omap
             - title.jpg: !omap
                 - path: title.jpg

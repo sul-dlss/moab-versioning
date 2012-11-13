@@ -75,10 +75,10 @@ describe 'Moab::FileSignature' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:all) do
-      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/title.jpg')
-      @title_v2_pathname = @fixtures.join('data/jq937jp0017/v2/content/title.jpg')
-      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/page-1.jpg')
-      @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v2/content/page-1.jpg')
+      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
+      @title_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/title.jpg')
+      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
+      @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
 
       @title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
       @title_v2_signature = FileSignature.new.signature_from_file(@title_v2_pathname)
@@ -162,17 +162,17 @@ describe 'Moab::FileSignature' do
     end
 
     specify 'Moab::FileSignature#signature_from_file_digest' do
-      pathname = @packages.join('v1/data/content/page-2.jpg')
-      digest = FileSignature.new(:md5 => '123md5', :sha1 => '456sha1', :sha256 => '789sha256')
-      signature = FileSignature.new.signature_from_file_digest(pathname, digest)
+      pathname = @packages.join('v0001/data/content/page-2.jpg')
+      source = FileSignature.new(:md5 => '123md5', :sha1 => '456sha1', :sha256 => '789sha256')
+      signature = FileSignature.new.normalize_signature(pathname, source.fixity)
       signature.fixity.should == {:md5=>"123md5", :sha1=>"456sha1", :sha256=>"789sha256"}
-      digest = FileSignature.new(:sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
-      signature = FileSignature.new.signature_from_file_digest(pathname, digest)
+      source = FileSignature.new(:sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
+      signature = FileSignature.new.normalize_signature(pathname, source.fixity)
       signature.fixity.should == {:md5=>"82fc107c88446a3119a51a8663d1e955",
         :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
         :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
-      digest = FileSignature.new(:sha1 => 'dummy')
-      lambda{FileSignature.new.signature_from_file_digest(pathname, digest)}.should raise_exception(/SHA1 checksum mismatch/)
+      source = FileSignature.new(:sha1 => 'dummy')
+      lambda{FileSignature.new.normalize_signature(pathname, source.fixity)}.should raise_exception(/SHA1 checksum mismatch/)
     end
   
   end

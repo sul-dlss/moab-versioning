@@ -160,7 +160,7 @@ module Moab
     # @return [void] Updates the catalog to include newly added files, then saves it to disk
     # @see SignatureCatalog#update
     def update_catalog(signature_catalog,new_inventory)
-      signature_catalog.update(new_inventory)
+      signature_catalog.update(new_inventory, @version_pathname.join('data'))
       signature_catalog.write_xml_file(@version_pathname)
     end
 

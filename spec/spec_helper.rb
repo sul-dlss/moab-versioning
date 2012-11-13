@@ -67,7 +67,7 @@ def fixture_setup
   @packages = @derivatives.join('packages')
   @ingests = @derivatives.join('ingests')
   @reconstructs = @derivatives.join('reconstructs')
-  @vname=['v0', 'v1', 'v2', 'v3']
+  @vname=[nil, 'v0001', 'v0002', 'v0003']
 
   # Inventory data directories
   (1..3).each do |version|
@@ -95,7 +95,7 @@ def fixture_setup
         else
           catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
       end
-      catalog.update(inventory)
+      catalog.update(inventory, @data.join(@vname[version]))
       catalog.write_xml_file(manifest_dir)
     end
   end

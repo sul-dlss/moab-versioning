@@ -73,9 +73,9 @@ describe 'Moab::FileManifestation' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @v1_base_directory = @fixtures.join('data/jq937jp0017/v1/content')
-      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/title.jpg')
-      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v1/content/page-1.jpg')
+      @v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
+      @title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
+      @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
 
       @title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
 
