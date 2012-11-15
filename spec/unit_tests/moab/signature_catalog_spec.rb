@@ -187,12 +187,6 @@ describe 'Moab::SignatureCatalog' do
       filepath.should == 'v0001/data/content/intro-1.jpg'
       file_signature.size = 0
       lambda{@signature_catalog.catalog_filepath(file_signature)}.should raise_exception
-
-      # def catalog_filepath(file_signature)
-      #   catalog_entry = @signature_hash[file_signature]
-      #   raise "catalog entry not found for #{file_signature.fixity} in #{@digital_object_id} - #{@version_id}" if catalog_entry.nil?
-      #   catalog_entry.storage_path
-      # end
     end
 
     # Unit test for method: {Moab::SignatureCatalog#update}

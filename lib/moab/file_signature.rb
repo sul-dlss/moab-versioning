@@ -68,9 +68,10 @@ module Moab
     attribute :sha256, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
 
     # @api internal
-    # @return [Hash<Symbol,String>] An Hasg of fixity data to be compared for equality
+    # @return [Hash<Symbol,String>] A hash of fixity data from this signataure object
     def fixity
       fixity_hash = OrderedHash.new
+      fixity_hash[:size] = @size.to_s
       fixity_hash[:md5] = @md5
       fixity_hash[:sha1] = @sha1
       fixity_hash[:sha256] = @sha256
@@ -78,22 +79,22 @@ module Moab
       fixity_hash
     end
 
+    # @return [Hash<Symbol,String>] A hash of the checksum data only
+    def checksums
+      fixity.reject { |key,value| key == :size}
+    end
+
     # @api internal
     # @param other [FileSignature] The other file signature being compared to this signature
-    # @return [Boolean] Returns true if self and other have the same fixity data.
+    # @return [Boolean] Returns true if self and other have comparable fixity data.
     def eql?(other)
-      size_eql?(other) and fixity_eql?(other)
-    end
-
-    def size_eql?(other)
-      self.size.to_i == other.size.to_i
-    end
-
-    def fixity_eql?(other)
-      matching_keys = self.fixity.keys & other.fixity.keys
+      return false if self.size.to_i != other.size.to_i
+      self_checksums = self.checksums
+      other_checksums = other.checksums
+      matching_keys = self_checksums.keys & other_checksums.keys
       return false if matching_keys.size == 0
       matching_keys.each do |key|
-        return false if self.fixity[key] != other.fixity[key]
+        return false if self_checksums[key] != other_checksums[key]
       end
       true
     end
@@ -116,11 +117,6 @@ module Moab
       @size.to_i
     end
 
-    # @@return [String] A shorthand string that can be used in a URL to uniquely identify a file signature
-    def query_param
-      [self.size.to_s, self.fixity.values[0]].join(',')
-    end
-    
     # @api internal
     # @param pathname [Pathname] The location of the file to be digested
     # @return [FileSignature] Generate a FileSignature instance containing size and checksums for a physical file

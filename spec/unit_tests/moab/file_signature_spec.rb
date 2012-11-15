@@ -87,16 +87,27 @@ describe 'Moab::FileSignature' do
     end
     
     # Unit test for method: {Moab::FileSignature#fixity}
-    # Which returns: [Array<String>] An array of fixity data to be compared for equality
+    # Which returns: [Hash<Symbol,String>] An hash of fixity data of the signature object
     # For input parameters: (None)
     specify 'Moab::FileSignature#fixity' do
       @title_v1_signature.fixity().should ==
+          {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      # def fixity
+      #   [@size.to_s, @md5, @sha1]
+      # end
+    end
+
+    # Unit test for method: {Moab::FileSignature#checksums}
+    # Which returns: [Hash<Symbol,String>] An hash of checksum data only
+    # For input parameters: (None)
+    specify 'Moab::FileSignature#checksums' do
+      @title_v1_signature.checksums().should ==
           {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
       # def fixity
       #   [@size.to_s, @md5, @sha1]
       # end
     end
-    
+
     # Unit test for method: {Moab::FileSignature#eql?}
     # Which returns: [Boolean] Returns true if self and other have the same fixity data.
     # For input parameters:
@@ -104,11 +115,7 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#eql?' do
       @title_v1_signature.eql?(@title_v2_signature).should == true
       @page1_v1_signature.eql?(@page1_v2_signature).should == false
-       
-      # def eql?(other)
-      #   self.fixity == other.fixity
-      # end
-    end
+   end
     
     # Unit test for method: {Moab::FileSignature#==}
     # Which returns: [Boolean] Returns true if self and other have the same fixity data.
@@ -129,21 +136,6 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#hash' do
       (@title_v1_signature.hash == @title_v2_signature.hash).should == true
       (@page1_v1_signature.hash == @page1_v2_signature.hash).should == false
-    end
-    
-    # Unit test for method: {Moab::FileSignature#query_param}
-    # Which returns: [String] A shorthand string that can be used in a URL to uniquely identify a file signature
-    # For input parameters: (None)
-    specify 'Moab::FileSignature#query_param' do
-      signature1 = FileSignature.new(:size=>"25153",
-                                    :md5=>"3dee12fb4f1c28351c7482b76ff76ae4",
-                                    :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b",
-                                    :sha256=>"41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad")
-      signature1.query_param.should == "25153,3dee12fb4f1c28351c7482b76ff76ae4"
-      signature2 = FileSignature.new(:size=>"25153",
-                                    :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b",
-                                    :sha256=>"41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad")
-      signature2.query_param.should == "25153,906c1314f3ab344563acbbbe2c7930f08429e35b"
     end
 
     # Unit test for method: {Moab::FileSignature#signature_from_file}
@@ -176,10 +168,11 @@ describe 'Moab::FileSignature' do
       pathname = @packages.join('v0001/data/content/page-2.jpg')
       source = FileSignature.new(:md5 => '123md5', :sha1 => '456sha1', :sha256 => '789sha256')
       signature = FileSignature.new.normalize_signature(pathname, source.fixity)
-      signature.fixity.should == {:md5=>"123md5", :sha1=>"456sha1", :sha256=>"789sha256"}
+      signature.fixity.should == {:size=>"39450", :md5=>"123md5", :sha1=>"456sha1", :sha256=>"789sha256"}
       source = FileSignature.new(:sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = FileSignature.new.normalize_signature(pathname, source.fixity)
-      signature.fixity.should == {:md5=>"82fc107c88446a3119a51a8663d1e955",
+      signature.fixity.should == { :size=>"39450",
+        :md5=>"82fc107c88446a3119a51a8663d1e955",
         :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
         :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
       source = FileSignature.new(:sha1 => 'dummy')

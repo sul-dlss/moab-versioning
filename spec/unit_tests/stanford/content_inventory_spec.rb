@@ -179,7 +179,7 @@ describe 'Stanford::ContentInventory' do
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_signature' do
       @content_inventory.generate_signature(@node).fixity.should ==
-          {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
+          {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
 
       # def generate_signature(node)
       #   signature = FileSignature.new()

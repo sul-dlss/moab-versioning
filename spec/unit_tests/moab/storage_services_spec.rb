@@ -129,9 +129,9 @@ describe 'Moab::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file_signature' do
       content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @digital_object_id, version_id=2)
-      content_signature.fixity.should == {:md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
+      content_signature.fixity.should == {:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
-      metadata_signature.fixity.should == {:md5=>"8672613ac1757cda4e44cc464559cd04", :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9", :sha256=>"02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"}
+      metadata_signature.fixity.should == {:size=>"1303", :md5=>"8672613ac1757cda4e44cc464559cd04", :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9", :sha256=>"02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"}
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
       manifest_signature.size.should == 1631
 

@@ -197,7 +197,7 @@ describe 'Moab::FileInventory' do
       group_id = 'content'
       file_id = 'title.jpg'
       signature = @file_inventory.file_signature(group_id, file_id)
-      signature.fixity.should == {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      signature.fixity.should == {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
 
       # def file_signature(group_id, file_id)
       #   file_group = group(group_id)
