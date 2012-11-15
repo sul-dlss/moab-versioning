@@ -129,12 +129,23 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#hash' do
       (@title_v1_signature.hash == @title_v2_signature.hash).should == true
       (@page1_v1_signature.hash == @page1_v2_signature.hash).should == false
-       
-      # def hash
-      #   fixity.hash
-      # end
     end
     
+    # Unit test for method: {Moab::FileSignature#query_param}
+    # Which returns: [String] A shorthand string that can be used in a URL to uniquely identify a file signature
+    # For input parameters: (None)
+    specify 'Moab::FileSignature#query_param' do
+      signature1 = FileSignature.new(:size=>"25153",
+                                    :md5=>"3dee12fb4f1c28351c7482b76ff76ae4",
+                                    :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b",
+                                    :sha256=>"41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad")
+      signature1.query_param.should == "25153,3dee12fb4f1c28351c7482b76ff76ae4"
+      signature2 = FileSignature.new(:size=>"25153",
+                                    :sha1=>"906c1314f3ab344563acbbbe2c7930f08429e35b",
+                                    :sha256=>"41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad")
+      signature2.query_param.should == "25153,906c1314f3ab344563acbbbe2c7930f08429e35b"
+    end
+
     # Unit test for method: {Moab::FileSignature#signature_from_file}
     # Which returns: [FileSignature] Generate a FileSignature instance containing size and checksums for a physical file
     # For input parameters:

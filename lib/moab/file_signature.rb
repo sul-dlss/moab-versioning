@@ -70,7 +70,10 @@ module Moab
     # @api internal
     # @return [Hash<Symbol,String>] An Hasg of fixity data to be compared for equality
     def fixity
-      fixity_hash = { :md5 => @md5, :sha1 => @sha1, :sha256 => @sha256 }
+      fixity_hash = OrderedHash.new
+      fixity_hash[:md5] = @md5
+      fixity_hash[:sha1] = @sha1
+      fixity_hash[:sha256] = @sha256
       fixity_hash.delete_if { |key,value| value.nil? or value.empty?}
       fixity_hash
     end
@@ -113,6 +116,11 @@ module Moab
       @size.to_i
     end
 
+    # @@return [String] A shorthand string that can be used in a URL to uniquely identify a file signature
+    def query_param
+      [self.size.to_s, self.fixity.values[0]].join(',')
+    end
+    
     # @api internal
     # @param pathname [Pathname] The location of the file to be digested
     # @return [FileSignature] Generate a FileSignature instance containing size and checksums for a physical file
