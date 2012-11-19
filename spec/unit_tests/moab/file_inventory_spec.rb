@@ -310,44 +310,16 @@ describe 'Moab::FileInventory' do
       #end
     end
 
-    # Unit test for method: {Moab::FileInventory#digests_from_bagit_bag}
-    # Which returns: [FileInventory] Traverse a BagIt bag and return an inventory of the files it contains
+    # Unit test for method: {Moab::FileInventory#signatures_from_bagit_manifests}
+    # Which returns: [Hash<Pathname,FileSignature>] Parse BagIt manifests and return an hash of the fixity data it contains
     # For input parameters:
-    # * bag_dir [Pathname, String] = The location of files to be inventoried
-    specify 'Moab::FileInventory#digests_from_bagit_bag' do
+    # * bag_dir [Pathname, String] = The location of the BagIt bag
+    specify 'Moab::FileInventory#signatures_from_bagit_manifests' do
       bag_pathname = @packages.join('v0001')
-      digests = FileInventory.new.digests_from_bagit_bag(bag_pathname)
-      digests.size.should == 11
-      digests.keys[0].should == @packages.join('v0001/data/content/intro-1.jpg')
-      digests[@packages.join('v0001/data/content/page-2.jpg')][:md5].should == "82fc107c88446a3119a51a8663d1e955"
-
-      ## @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
-      ## @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files
-      #def digests_from_bagit_bag(bag_pathname)
-      #  bagit_manifests = {
-      #      :md5 => bag_pathname.join('manifest-md5.txt'),
-      #      :sha1 => bag_pathname.join('manifest-sha1.txt')
-      #  }
-      #  digests = OrderedHash.new { |hash,key| hash[key] = FileSignature.new }
-      #  bagit_manifests.each do |checksum_type, manifest|
-      #    if manifest.exist?
-      #      manifest.each_line do |line|
-      #        line.chomp!
-      #        checksum,data_path = line.split(/\s+\**/,2)
-      #        if checksum && data_path
-      #          file_pathname = bag_pathname.join('data').join(data_path)
-      #          case checksum_type
-      #            when :md5
-      #              digests[file_pathname].md5 = checksum
-      #            when :sha1
-      #              digests[file_pathname].sha1 = checksum
-      #          end
-      #        end
-      #      end
-      #    end
-      #  end
-      #  digests
-      #  end
+      signature_for_path = FileInventory.new.signatures_from_bagit_manifests(bag_pathname)
+      signature_for_path.size.should == 11
+      signature_for_path.keys[0].should == @packages.join('v0001/data/content/intro-1.jpg')
+      signature_for_path[@packages.join('v0001/data/content/page-2.jpg')].md5.should == "82fc107c88446a3119a51a8663d1e955"
       end
 
     

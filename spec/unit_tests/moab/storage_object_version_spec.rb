@@ -493,6 +493,15 @@ describe 'Moab::StorageObjectVersion' do
       version.verify_version_inventory.should == true
     end
 
+    specify 'Moab::StorageObjectVersion#verify_file_location' do
+      version = @existing_storage_object_version
+      file_id = 'my/file'
+      file_location = @data
+      version.verify_file_location(file_id,file_location).should == true
+      file_location = @data.join('dummy')
+      lambda{version.verify_file_location(file_id,file_location)}.should raise_exception(/Storage location for 'my\/file' not found/)
+    end
+
     specify 'Moab::StorageObjectVersion#verify_version_additions' do
       version = @existing_storage_object_version
       version.verify_version_additions.should == true

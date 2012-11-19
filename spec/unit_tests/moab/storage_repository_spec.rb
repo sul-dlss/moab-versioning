@@ -48,6 +48,12 @@ describe 'Moab::StorageRepository' do
       object_pathname.stub(:exist?).and_return(true)
       StorageObject.should_receive(:new).with(@obj, object_pathname)
       @storage_repository.storage_object(@obj)
+
+      object_pathname.stub(:exist?).and_return(false)
+      object_pathname.should_receive(:mkpath)
+      StorageObject.should_receive(:new).with(@obj, object_pathname)
+      @storage_repository.storage_object(@obj,create=true)
+
       object_pathname.stub(:exist?).and_return(false)
       lambda{@storage_repository.storage_object(@obj)}.should raise_exception(Moab::ObjectNotFoundException)
     end

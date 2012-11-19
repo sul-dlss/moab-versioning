@@ -189,30 +189,45 @@ describe 'Moab::SignatureCatalog' do
       lambda{@signature_catalog.catalog_filepath(file_signature)}.should raise_exception
     end
 
+    specify 'Moab::SignatureCatalog#normalize_inventory_signatures' do
+      @v2_inventory.groups.each do |group|
+        if group.group_id == 'content'
+          group.files.each do |file|
+            file.signature.sha256 = nil
+          end
+        end
+      end
+      content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
+      content_signatures.collect{|sig| sig.sha256}.should == [nil,nil,nil,nil]
+      @signature_catalog.normalize_inventory_signatures(@v2_inventory,@v2_inventory_pathname.parent.parent.join('data'))
+      content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
+      content_signatures.collect{|sig| sig.sha256}.should ==
+          ["b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+           "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0",
+           "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271",
+           "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"]
+    end
+
     # Unit test for method: {Moab::SignatureCatalog#update}
     # Which returns: [void] Compares the {FileSignature} entries in the new versions {FileInventory} against the signatures in this catalog and create new {SignatureCatalogEntry} addtions to the catalog
     # For input parameters:
     # * version_inventory [FileInventory] = The complete inventory of the files comprising a digital object version 
     specify 'Moab::SignatureCatalog#update' do
-      @signature_catalog.update(@v2_inventory,@v1_catalog_pathname.parent.parent.join('data'))
+      @v2_inventory.groups.each do |group|
+        if group.group_id == 'metadata'
+          group.files.each do |file|
+            file.signature.sha256 = nil if [1303,399].include?(file.signature.size.to_i)
+          end
+        end
+      end
+      @signature_catalog.update(@v2_inventory,@v2_inventory_pathname.parent.parent.join('data'))
       @signature_catalog.entries.count.should == @original_entry_count + 4
-       
-      # def update(version_inventory)
-      #   version_inventory.groups.each do |group|
-      #     group.files.each do |file|
-      #       unless @signature_hash.has_key?(file.signature)
-      #         entry = SignatureCatalogEntry.new
-      #         entry.version_id = version_inventory.version_id
-      #         entry.group_id = group.group_id
-      #         entry.path = file.instances[0].path
-      #         entry.signature = file.signature
-      #         add_entry(entry)
-      #       end
-      #     end
-      #   end
-      #   @version_id = version_inventory.version_id
-      #   @catalog_datetime = Time.now
-      # end
+      v2_entries = @signature_catalog.entries.select{|entry| entry.version_id.to_i == 2}
+      v2_entries.collect{|entry| entry.signature.sha256}.should ==
+          ["b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+           "02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73",
+           "ee62fdef9736ff12e394c3510f3d0a6ccd18bd5b1fb7e42fe46800d5934c9001",
+           "291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"]
     end
     
     # Unit test for method: {Moab::SignatureCatalog#version_additions}

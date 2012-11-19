@@ -213,13 +213,22 @@ module Moab
             relative_path = File.join(group.group_id, instance.path)
             catalog_entry = signature_catalog.signature_hash[file.signature]
             storage_location = object_pathname.join(catalog_entry.storage_path)
-            unless storage_location.exist?
-              raise "Storage location for #{relative_path.to_s} not found at #{storage_location.to_s}"
-            end
+            verify_file_location(relative_path,storage_location)
           end
         end
       end
       true
+    end
+
+    # @param file_id [String] The relative path of a file instance in a given version
+    # @param [Pathname] file_location The storage location of the file
+    # @return [Boolean] Return true if the file location exists, else raise an error
+    def verify_file_location(file_id,file_location)
+      if file_location.exist?
+        true
+      else
+        raise "Storage location for '#{file_id.to_s}' not found at #{file_location.to_s}"
+      end
     end
 
     # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory

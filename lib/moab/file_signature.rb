@@ -67,21 +67,44 @@ module Moab
     # @return [String] The SHA256 checksum value of the file
     attribute :sha256, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
 
+    # @param type [Symbol,String] The type of checksum
+    # @param value [String] The checksum value
+    # @return [void] Set the value of the specified checksum type
+    def set_checksum(type,value)
+      case type.to_sym
+        when :md5
+          @md5 = value
+        when :sha1
+          @sha1 = value
+        when :sha256
+          @sha256 = value
+        else
+          raise "Unknown checksum type '#{type.to_s}'"
+      end
+    end
+
+   # @return [Hash<Symbol,String>] A hash of the checksum data
+    def checksums
+      checksum_hash = OrderedHash.new
+      checksum_hash[:md5] = @md5
+      checksum_hash[:sha1] = @sha1
+      checksum_hash[:sha256] = @sha256
+      checksum_hash.delete_if { |key,value| value.nil? or value.empty?}
+      checksum_hash
+    end
+
+    # @return [Boolean] The signature contains all of the 3 desired checksums
+    def complete?
+      checksums.size == 3
+    end
+
     # @api internal
     # @return [Hash<Symbol,String>] A hash of fixity data from this signataure object
     def fixity
       fixity_hash = OrderedHash.new
       fixity_hash[:size] = @size.to_s
-      fixity_hash[:md5] = @md5
-      fixity_hash[:sha1] = @sha1
-      fixity_hash[:sha256] = @sha256
-      fixity_hash.delete_if { |key,value| value.nil? or value.empty?}
+      fixity_hash.merge!(checksums)
       fixity_hash
-    end
-
-    # @return [Hash<Symbol,String>] A hash of the checksum data only
-    def checksums
-      fixity.reject { |key,value| key == :size}
     end
 
     # @api internal
@@ -138,28 +161,18 @@ module Moab
       self
     end
 
-    # @param pathname [Pathname] The location of the file
-    # @param source [FileSignature] The checksums extracted from the BagIt manifests (or other fixity data source)
-    # @return [FileSignature] Fixity data (size and checksums) for a file derived from BagIt manifest, if possible
-    def normalize_signature(pathname, fixity)
-      if fixity[:md5] && fixity[:sha1] && fixity[:sha256]
-        # for efficiency, use the fixity data we already have
-        @size = pathname.size
-        @md5 = fixity[:md5]
-        @sha1 = fixity[:sha1]
-        @sha256 = fixity[:sha256]
+    # @api internal
+    # @param pathname [Pathname] The location of the file whose full signature will be returned
+    # @return [FileSignature] The full signature derived from the file, unless the fixity is inconsistent with current values
+    def normalized_signature(pathname)
+      sig_from_file = FileSignature.new.signature_from_file(pathname)
+      if self.eql?(sig_from_file)
+        # The full signature from file is consistent with current values
+        return sig_from_file
       else
-        # but if any of the digests are missing, then compute new values and validate against expected
-        self.signature_from_file(pathname)
-        if fixity[:md5] && @md5 != fixity[:md5]
-          raise "MD5 checksum mismatch for #{pathname} found: #{@md5} expected: #{fixity[:md5]}"
-        elsif fixity[:sha1] && @sha1 != fixity[:sha1]
-          raise "SHA1 checksum mismatch for #{pathname} found: #{@sha1} expected: #{fixity[:sha1]}"
-        elsif fixity[:sha256] && @sha256 != fixity[:sha256]
-          raise "SHA256 checksum mismatch for #{pathname} found: #{@sha256} expected: #{fixity[:sha256]}"
-        end
+        # One or more of the fixity values is inconsistent, so raise an exception
+        raise "Signature inconsistent between inventory and file for #{pathname}: #{self.diff(sig_from_file).inspect}"
       end
-      self
     end
 
   end

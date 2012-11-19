@@ -180,21 +180,16 @@ describe 'Stanford::ContentInventory' do
     specify 'Stanford::ContentInventory#generate_signature' do
       @content_inventory.generate_signature(@node).fixity.should ==
           {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
-
-      # def generate_signature(node)
-      #   signature = FileSignature.new()
-      #   signature.size = node.attributes['size'].content
-      #   checksum_nodes = node.xpath('checksum')
-      #   checksum_nodes.each do |checksum_node|
-      #     case checksum_node.attributes['type'].content.upcase
-      #       when 'MD5'
-      #         signature.md5 = checksum_node.text
-      #       when 'SHA1', 'SHA-1'
-      #         signature.sha1 = checksum_node.text
-      #     end
-      #   end
-      #   signature
-      # end
+      # add a sha256 checksum
+      node2 = @node.clone
+      Nokogiri::XML::Builder.with(node2) do |xml|
+        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type=>"SHA-256"
+      end
+      @content_inventory.generate_signature(node2).fixity.should ==
+          {:size=>"40873",
+           :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+           :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
+           :sha256=>"291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"}
     end
 
     # Unit test for method: {Stanford::ContentInventory#generate_instance}
@@ -292,6 +287,8 @@ describe 'Stanford::ContentInventory' do
           "File node having id='page-2.jpg' is missing md5",
           "File node having id='page-3.jpg' is missing sha1"
       ]
+      lambda{@content_inventory.validate_content_metadata_details(Hash.new)}.should raise_exception(
+          /Content Metadata is in unrecognized format/)
     end
   
   end

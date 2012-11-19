@@ -171,6 +171,7 @@ describe 'Moab::FileInventoryDifference' do
       diff = @file_inventory_difference.compare(basis_inventory, other_inventory)
       group_diff = diff.group_difference("content")
       group_diff.group_id.should == "content"
+      lambda{diff.group_difference("dummy")}.should raise_exception(/group 'dummy' not found/)
     end
     
     # Unit test for method: {Moab::FileInventoryDifference#compare_with_directory}

@@ -74,6 +74,7 @@ Require the following:
 - <b>1.1.0/b> More SHA256 enhancements plus isolation of manifest files in a separate folder
 - <b>1.1.1/b> Add support for generation of signature query param for inclusion in URLs
 - <b>1.1.2/b> Revise use of fixity and checksums hash
+- <b>1.1.3/b> All Moab manifests should now include all checksum types even if missing from source inventory
 
 == License
 

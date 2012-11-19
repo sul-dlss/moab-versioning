@@ -59,6 +59,7 @@ module Moab
       @package_mode = package_mode
       case package_mode
         when :depositor
+          @signature_catalog.normalize_inventory_signatures(@version_inventory, @source_base_pathname)
           @bag_inventory = @signature_catalog.version_additions(@version_inventory)
         when :reconstructor
           @bag_inventory = @version_inventory

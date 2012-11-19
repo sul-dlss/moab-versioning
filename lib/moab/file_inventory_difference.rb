@@ -72,7 +72,7 @@ module Moab
       @group_differences.each do |group_difference|
         return group_difference if group_difference.group_id == group_id
       end
-      raise "group #{group_id} not found in file inventory difference report for #{@digital_object_id}"
+      raise "group '#{group_id}' not found in file inventory difference report for #{@digital_object_id}"
     end
 
     # @api external
@@ -126,19 +126,6 @@ module Moab
       else
         basis_inventory.digital_object_id.to_s
       end
-    end
-
-    # @param [FileInventory] version_inventory The version inventory to be compared to a directory's contents
-    # @param [FileInventory] version_additions The version additons report to be compared to a directory's contents
-    # @param data_dir [Pathname,String] The location of files to be inventoried
-    # @return [String] Report of the differences found between manifests and a directory's contents
-    def verify_content(version_inventory, version_additions, data_dir)
-      file_inventory = FileInventory.new.inventory_from_directory(data_dir,group_id='content')
-      # compare new versionInventory to an inventory derived from the workspace home directory
-      inv_directory_diff =  Moab::FileInventoryDifference.new.compare(version_inventory, file_inventory)
-      # compare version_additions received against the workspace directory
-      adds_directory_diff =  Moab::FileInventoryDifference.new.compare(version_additions, file_inventory)
-      #todo analyze the diff file (no method for this yet in the toolkit)  - I could work on a convenience method for all of the above
     end
 
   end

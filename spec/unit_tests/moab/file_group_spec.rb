@@ -288,8 +288,8 @@ describe 'Moab::FileGroup' do
       recursive = false
       file_group = FileGroup.new
       file_group.should_receive(:group_from_directory).with(directory, recursive)
-      file_group.group_from_directory_digests(directory, file_digests, recursive)
-      file_group.instance_variable_get(:@file_digests).should == file_digests
+      file_group.group_from_bagit_subdir(directory, file_digests, recursive)
+      file_group.instance_variable_get(:@signatures_from_bag).should == file_digests
 
       #@param  directory [Pathame,String] The directory whose children are to be added to the file group
       #@param digests [Hash<Pathname,Signature>] The fixity data already calculated for the files
@@ -379,10 +379,13 @@ describe 'Moab::FileGroup' do
       signature.should_receive(:signature_from_file).with(pathname)
       group.add_physical_file(pathname)
 
-      file_digests = mock(Hash)
-      file_digests.should_receive(:[]).with(pathname).twice.and_return('my digest')
-      group.instance_variable_set(:@file_digests, file_digests)
-      signature.should_receive(:normalize_signature).with(pathname, 'my digest')
+      signature = mock(FileSignature)
+      signature_for_path = mock(Hash)
+      signature_for_path.should_receive(:[]).with(pathname).twice.and_return(signature)
+      group.instance_variable_set(:@signatures_from_bag, signature_for_path)
+      signature.should_receive(:complete?).and_return(false)
+      signature.should_receive(:normalized_signature).with(pathname).and_return(signature)
+      group.should_receive(:add_file_instance)
       group.add_physical_file(pathname)
 
       #def add_physical_file(pathname, validated=nil)

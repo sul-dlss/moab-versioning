@@ -112,8 +112,27 @@ module Moab
       catalog_entry.storage_path
     end
 
+    # @param version_inventory [FileInventory] The complete inventory of the files comprising a digital object version
+    # @param data_pathname [Pathname] The location of the object's data directory
+    # @return [void] Inspect and upgrade the inventory's signature data to include all desired checksums
+    def normalize_inventory_signatures(version_inventory, data_pathname)
+      version_inventory.groups.each do |group|
+        group.files.each do |file|
+          unless file.signature.complete?
+            if @signature_hash.has_key?(file.signature)
+              file.signature = @signature_hash.find {|k,v| k == file.signature}[0]
+            else
+              file_pathname = data_pathname.join(group.group_id,file.instances[0].path)
+              file.signature = file.signature.normalized_signature(file_pathname)
+            end
+          end
+        end
+      end
+    end
+
     # @api external
     # @param version_inventory [FileInventory] The complete inventory of the files comprising a digital object version
+    # @param data_pathname [Pathname] The location of the object's data directory
     # @return [void] Compares the {FileSignature} entries in the new versions {FileInventory} against the signatures
     #   in this catalog and create new {SignatureCatalogEntry} addtions to the catalog
     # @example {include:file:spec/features/catalog/catalog_update_spec.rb}
@@ -125,8 +144,12 @@ module Moab
             entry.version_id = version_inventory.version_id
             entry.group_id = group.group_id
             entry.path = file.instances[0].path
-            file_pathname = data_pathname.join(group.group_id,entry.path)
-            entry.signature = FileSignature.new.normalize_signature(file_pathname, file.signature.fixity)
+            if file.signature.complete?
+              entry.signature = file.signature
+            else
+              file_pathname = data_pathname.join(group.group_id,entry.path)
+              entry.signature = file.signature.normalized_signature(file_pathname)
+            end
             add_entry(entry)
           end
         end

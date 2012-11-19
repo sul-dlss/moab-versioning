@@ -86,6 +86,18 @@ describe 'Moab::FileSignature' do
       @page1_v2_signature = FileSignature.new.signature_from_file(@page1_v2_pathname)
     end
     
+    specify 'Moab::FileSignature#set_checksum' do
+      signature = FileSignature.new
+      signature.set_checksum(:md5,'1a726cd7963bd6d3ceb10a8c353ec166')
+      signature.set_checksum(:sha1,'583220e0572640abcd3ddd97393d224e8053a6ad')
+      signature.set_checksum(:sha256,'8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5')
+      signature.checksums().should ==
+          {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+           :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
+           :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      lambda{signature.set_checksum('xyz','dummy')}.should raise_exception(/Unknown checksum type 'xyz'/)
+    end
+
     # Unit test for method: {Moab::FileSignature#fixity}
     # Which returns: [Hash<Symbol,String>] An hash of fixity data of the signature object
     # For input parameters: (None)
@@ -147,36 +159,22 @@ describe 'Moab::FileSignature' do
       title_v1_signature.size.should == 40873
       title_v1_signature.md5.should == "1a726cd7963bd6d3ceb10a8c353ec166"
       title_v1_signature.sha1.should ==  "583220e0572640abcd3ddd97393d224e8053a6ad"
-
-      # def signature_from_file(pathname)
-      #   @size = pathname.size
-      #   md5_digest = Digest::MD5.new
-      #   sha1_digest = Digest::SHA1.new
-      #   pathname.open("r") do |stream|
-      #     while buffer = stream.read(8192)
-      #       md5_digest.update(buffer)
-      #       sha1_digest.update(buffer)
-      #     end
-      #   end
-      #   @md5 = md5_digest.hexdigest
-      #   @sha1 = sha1_digest.hexdigest
-      #   self
-      # end
     end
 
-    specify 'Moab::FileSignature#signature_from_file_digest' do
+    specify 'Moab::FileSignature#normalized_signature' do
       pathname = @packages.join('v0001/data/content/page-2.jpg')
-      source = FileSignature.new(:md5 => '123md5', :sha1 => '456sha1', :sha256 => '789sha256')
-      signature = FileSignature.new.normalize_signature(pathname, source.fixity)
-      signature.fixity.should == {:size=>"39450", :md5=>"123md5", :sha1=>"456sha1", :sha256=>"789sha256"}
-      source = FileSignature.new(:sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
-      signature = FileSignature.new.normalize_signature(pathname, source.fixity)
-      signature.fixity.should == { :size=>"39450",
-        :md5=>"82fc107c88446a3119a51a8663d1e955",
-        :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
-        :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
-      source = FileSignature.new(:sha1 => 'dummy')
-      lambda{FileSignature.new.normalize_signature(pathname, source.fixity)}.should raise_exception(/SHA1 checksum mismatch/)
+      file_fixity = { :size=>"39450",
+          :md5=>"82fc107c88446a3119a51a8663d1e955",
+          :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
+          :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
+      source = FileSignature.new(file_fixity)
+      signature = source.normalized_signature(pathname)
+      signature.fixity.should == file_fixity
+      source = FileSignature.new(:size=>"39450", :sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
+      signature = source.normalized_signature(pathname)
+      signature.fixity.should == file_fixity
+      source = FileSignature.new( :sha1 => 'dummy')
+      lambda{source.normalized_signature(pathname)}.should raise_exception(/Signature inconsistent between inventory and file/)
     end
   
   end

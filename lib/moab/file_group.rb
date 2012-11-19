@@ -162,11 +162,11 @@ module Moab
     end
 
     # @param  directory [Pathame,String] The directory whose children are to be added to the file group
-    # @param digests [Hash<Pathname,Signature>] The fixity data already calculated for the files
+    # @param signatures_from_bag [Hash<Pathname,Signature>] The fixity data already calculated for the files
     # @param recursive [Boolean] if true, descend into child directories
     # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
-    def group_from_directory_digests(directory, digests, recursive=true)
-      @file_digests = digests
+    def group_from_bagit_subdir(directory, signatures_from_bag, recursive=true)
+      @signatures_from_bag = signatures_from_bag
       group_from_directory(directory, recursive)
     end
 
@@ -210,16 +210,19 @@ module Moab
     # @api internal
     # @param pathname [Pathname, String] The location of the file to be added
     # @param validated [Boolean] if true, path is verified to be descendant of (#base_directory)
-    # @return [void] Add a single physical file's data to the array of files in this group
+    # @return [void] Add a single physical file's data to the array of files in this group.
+    #   If fixity data was supplied in bag manifests, then utilize that data.
     def add_physical_file(pathname, validated=nil)
       pathname=Pathname.new(pathname).realpath
       validated ||= is_descendent_of_base?(pathname)
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
-      signature = FileSignature.new
-      if @file_digests && @file_digests[pathname]
-        signature.normalize_signature(pathname, @file_digests[pathname])
+      if @signatures_from_bag && @signatures_from_bag[pathname]
+        signature = @signatures_from_bag[pathname]
+        unless signature.complete?
+          signature = signature.normalized_signature(pathname)
+        end
       else
-        signature.signature_from_file(pathname)
+        signature = FileSignature.new.signature_from_file(pathname)
       end
       add_file_instance(signature,instance)
     end

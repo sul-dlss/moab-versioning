@@ -169,37 +169,38 @@ module Moab
     # @return [FileInventory] Traverse a BagIt bag's payload and return an inventory of the files it contains (using fixity from bag manifest files)
     def inventory_from_bagit_bag(bag_dir)
       bag_pathname = Pathname(bag_dir)
-      bag_digests = digests_from_bagit_bag(bag_pathname)
+      signatures_from_bag = signatures_from_bagit_manifests(bag_pathname)
       bag_data_subdirs = bag_pathname.join('data').children
       bag_data_subdirs.each do |subdir|
-        @groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_directory_digests(subdir, bag_digests)
+        @groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_bagit_subdir(subdir, signatures_from_bag)
       end
       self
     end
 
     # @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
-    # @return [Hash<Pathname,Signature>] The fixity data present in the bag's manifest files
-    def digests_from_bagit_bag(bag_pathname)
+    # @return [Hash<Pathname,FileSignature>] The fixity data present in the bag's manifest files
+    def signatures_from_bagit_manifests(bag_pathname)
       manifest_pathname = Hash.new
-      manifest_types =  [:md5, :sha1, :sha256]
-      manifest_types.each do |type|
+      checksum_types =  [:md5, :sha1, :sha256]
+      checksum_types.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type.to_s}.txt")
       end
-      digests = OrderedHash.new
-      manifest_types.each do |type|
+      signatures = OrderedHash.new { |hash,path| hash[path] = FileSignature.new }
+      checksum_types.each do |type|
         if manifest_pathname[type].exist?
           manifest_pathname[type].each_line do |line|
             line.chomp!
             checksum,data_path = line.split(/\s+\**/,2)
             if checksum && data_path
               file_pathname = bag_pathname.join(data_path)
-              digests[file_pathname] = OrderedHash.new unless digests[file_pathname]
-              digests[file_pathname][type] = checksum
+              signature = signatures[file_pathname]
+              signature.set_checksum(type, checksum)
             end
           end
         end
       end
-      digests
+      signatures.each {|file_pathname,signature| signature.size = file_pathname.size}
+      signatures
     end
 
     # @api internal
