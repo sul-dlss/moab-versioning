@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "moab-versioning"
-  s.version     = "1.1.3"
+  s.version     = "1.2.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Richard Anderson", "Lynn McRae", "Hannah Frost"]
   s.email       = ["rnanders@stanford.edu"]
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "hashery", ">=2.0.0"
   s.add_dependency "json"
   s.add_dependency "happymapper"
+  s.add_dependency "systemu"
 
   # Bundler will install these gems too if you've checked out dor-services data from git and run 'bundle install'
   # It will not add these as dependencies if you require dor-services for other projects

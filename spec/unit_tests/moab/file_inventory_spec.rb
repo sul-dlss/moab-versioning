@@ -178,14 +178,7 @@ describe 'Moab::FileInventory' do
       group_id = 'content'
       group = @file_inventory.group(group_id)
       group.group_id.should == group_id
-      lambda{@file_inventory.group('dummy')}.should raise_exception
-
-      # def group(group_id)
-      #   @groups.each do |group|
-      #     return group if group.group_id == group_id
-      #   end
-      #   raise "group #{group_id} not found in file inventory for #{@digital_object_id} - #{@version_id}"
-      # end
+      @file_inventory.group('dummy').should == nil
     end
 
     # Unit test for method: {Moab::FileInventory#file_signature}

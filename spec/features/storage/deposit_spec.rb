@@ -24,7 +24,7 @@ feature "Export a digital object version from DOR" do
       end
       bag_dir = @temp.join('packages',vname)
       bag_dir.rmtree if bag_dir.exist?
-      Bagger.new(inventory,catalog,data_dir,bag_dir).fill_bag(:depositor)
+      Bagger.new(inventory,catalog,bag_dir).fill_bag(:depositor,data_dir)
     end
 
     files = Array.new

@@ -86,6 +86,11 @@ module Moab
       path_hash
     end
 
+    # @return [Array<String>] The list of file paths in this group
+    def path_list
+      files.collect{|file| file.instances.collect{|instance| instance.path}}.flatten
+    end
+
     # @api internal
     # @param signature_subset [Array<FileSignature>] The signatures used to select the entries to return
     # @return [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group

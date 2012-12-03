@@ -194,11 +194,13 @@ module Moab
     def verify_manifest_inventory
       # the file to verify
       manifest_inventory = self.file_inventory('manifests')
+      manifest_group = manifest_inventory.group('manifests')
+      raise "manifest group not found in #{file_pathname('manifests','manifestInventory.xml')}" if manifest_group.nil?
       # recapture the manifest signatures
       audit_group = FileGroup.new(:group_id=>'audit').group_from_directory(@version_pathname.join('manifests'), recursive=false)
       # the manifest inventory does not contain a file entry for itself
       audit_group.remove_file_having_path("manifestInventory.xml")
-      group_difference = FileGroupDifference.new.compare_file_groups(manifest_inventory.group('manifests'), audit_group)
+      group_difference = FileGroupDifference.new.compare_file_groups(manifest_group, audit_group)
       group_difference.difference_count == 0
     end
 

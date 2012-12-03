@@ -189,8 +189,9 @@ describe 'Moab::SignatureCatalog' do
       lambda{@signature_catalog.catalog_filepath(file_signature)}.should raise_exception
     end
 
-    specify 'Moab::SignatureCatalog#normalize_inventory_signatures' do
+    specify 'Moab::SignatureCatalog#normalize_group_signatures' do
       @v2_inventory.groups.each do |group|
+        group.data_source = @v2_inventory_pathname.parent.parent.join('data',group.group_id).to_s
         if group.group_id == 'content'
           group.files.each do |file|
             file.signature.sha256 = nil
@@ -199,7 +200,9 @@ describe 'Moab::SignatureCatalog' do
       end
       content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
       content_signatures.collect{|sig| sig.sha256}.should == [nil,nil,nil,nil]
-      @signature_catalog.normalize_inventory_signatures(@v2_inventory,@v2_inventory_pathname.parent.parent.join('data'))
+      @v2_inventory.groups.each do |group|
+        @signature_catalog.normalize_group_signatures(group)
+      end
       content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
       content_signatures.collect{|sig| sig.sha256}.should ==
           ["b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",

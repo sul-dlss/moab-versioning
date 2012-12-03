@@ -10,28 +10,19 @@ describe 'Moab::Bagger' do
     # For input parameters:
     # * version_inventory [FileInventory] = The complete inventory of the files comprising a digital object version 
     # * signature_catalog [SignatureCatalog] = The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode) 
-    # * source_base_pathname [Pathname, String] = The home location of the source files 
-    # * bag_pathname [Pathname, String] = The location of the Bagit bag to be created 
+    # * bag_pathname [Pathname, String] = The location of the Bagit bag to be created
     specify 'Moab::Bagger#initialize' do
        
       # test initialization with required parameters (if any)
       version_inventory = mock(FileInventory.name) 
       signature_catalog = mock(SignatureCatalog.name) 
-      source_base_pathname = @data.join('v0002')
       bag_pathname = @temp.join('bag_pathname')
-      bagger = Bagger.new(version_inventory, signature_catalog, source_base_pathname, bag_pathname)
+      bagger = Bagger.new(version_inventory, signature_catalog,  bag_pathname)
       bagger.should be_instance_of(Bagger)
       bagger.version_inventory.should == version_inventory
       bagger.signature_catalog.should == signature_catalog
-      bagger.source_base_pathname.should == source_base_pathname.realpath
       bagger.bag_pathname.should == bag_pathname
        
-      # def initialize(version_inventory, signature_catalog, source_base_pathname, bag_pathname)
-      #   @version_inventory = version_inventory
-      #   @signature_catalog = signature_catalog
-      #   @source_base_pathname = Pathname.new(source_base_pathname).realpath
-      #   @bag_pathname = Pathname.new(bag_pathname)
-      # end
     end
   
   end
@@ -42,9 +33,8 @@ describe 'Moab::Bagger' do
     before(:all) do
       @inventory = FileInventory.read_xml_file(@manifests.join('v0002'),'version')
       @catalog = SignatureCatalog.read_xml_file(@manifests.join('v0001'))
-      @source_base = @data.join('v0002')
       @bag_pathname = @temp.join('bag_pathname')
-      @bagger = Bagger.new(@inventory, @catalog, @source_base, @bag_pathname)
+      @bagger = Bagger.new(@inventory, @catalog, @bag_pathname)
     end
     
     # Unit test for attribute: {Moab::Bagger#version_inventory}
@@ -78,23 +68,7 @@ describe 'Moab::Bagger' do
       #   @signature_catalog
       # end
     end
-    
-    # Unit test for attribute: {Moab::Bagger#source_base_pathname}
-    # Which stores: [Pathname] The home location of the source files
-    specify 'Moab::Bagger#source_base_pathname' do
-      value = @temp.join('source_base_pathname')
-      @bagger.source_base_pathname= value
-      @bagger.source_base_pathname.should == value
-       
-      # def source_base_pathname=(value)
-      #   @source_base_pathname = value
-      # end
-       
-      # def source_base_pathname
-      #   @source_base_pathname
-      # end
-    end
-    
+
     # Unit test for attribute: {Moab::Bagger#bag_pathname}
     # Which stores: [Pathname] The location of the Bagit bag to be created
     specify 'Moab::Bagger#bag_pathname' do
@@ -165,13 +139,13 @@ describe 'Moab::Bagger' do
     before(:each) do
       @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
       @submit_bag_pathname.mkpath
-      @submit_bag = Bagger.new(@submit_inventory, @submit_catalog, @submit_source_base, @submit_bag_pathname)
+      @submit_bag = Bagger.new(@submit_inventory, @submit_catalog, @submit_bag_pathname)
       @submit_bag.package_mode = :depositor
       @submit_bag.bag_inventory = @submit_bag_inventory
 
       @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
       @disseminate_bag_pathname.mkpath
-      @disseminate_bag = Bagger.new(@disseminate_inventory, @disseminate_catalog, @disseminate_base, @disseminate_bag_pathname)
+      @disseminate_bag = Bagger.new(@disseminate_inventory, @disseminate_catalog, @disseminate_bag_pathname)
       @disseminate_bag.package_mode = :reconstructor
       @disseminate_bag.bag_inventory = @disseminate_bag_inventory
     end
@@ -181,6 +155,27 @@ describe 'Moab::Bagger' do
       @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
     end
 
+    specify 'Moab::Bagger#delete_bag' do
+      packages =  @temp.join('packages')
+      bag_dir = packages.join('deleteme')
+      data_dir = bag_dir.join('data')
+      data_dir.mkpath
+      data_dir.exist?.should == true
+      bagger = Bagger.new(nil,nil,bag_dir)
+      bagger.delete_bag
+      bag_dir.exist?.should == false
+    end
+
+    specify 'Moab::Bagger#delete_tarfile' do
+      packages =  @temp.join('packages')
+      tar_file = packages.join('deleteme.tar')
+      tar_file.open('w') {|f| f.puts "delete me please"}
+      tar_file.exist?.should == true
+      bag_dir = packages.join('deleteme')
+      bagger = Bagger.new(nil,nil,bag_dir)
+      bagger.delete_tarfile
+      tar_file.exist?.should == false
+    end
     
     # Unit test for method: {Moab::Bagger#fill_bag}
     # Which returns: [Bagger] Perform all the operations required to fill the bag payload, write the manifests and tagfiles, and checksum the tagfiles
@@ -201,7 +196,7 @@ describe 'Moab::Bagger' do
             else
               catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
           end
-          Bagger.new(inventory,catalog,data_dir,package).fill_bag(:depositor)
+          Bagger.new(inventory,catalog,package).fill_bag(:depositor, data_dir)
         end
       end
 
@@ -275,79 +270,36 @@ describe 'Moab::Bagger' do
       packages_dir.rmtree if packages_dir.exist?
 
       bag = @submit_bag
-      bag.should_receive(:write_inventory_file)
       bag.should_receive(:fill_payload)
       bag.should_receive(:create_payload_manifests)
       bag.should_receive(:create_bag_info_txt)
       bag.should_receive(:create_bagit_txt)
       bag.should_receive(:create_tagfile_manifests)
-      @submit_catalog.should_receive(:version_additions).with(@submit_inventory)
-      bag.fill_bag(:depositor)
+      @submit_inventory.should_receive(:write_xml_file).with(@submit_bag_pathname,'version')
+      @submit_catalog.should_receive(:version_additions).with(@submit_inventory).and_return(@submit_bag_inventory)
+      @submit_bag_inventory.should_receive(:write_xml_file).with(@submit_bag_pathname,'additions')
+      bag.fill_bag(:depositor, @submit_source_base)
       bag.package_mode.should == :depositor
 
       bag = @disseminate_bag
-      bag.should_receive(:write_inventory_file)
       bag.should_receive(:fill_payload)
       bag.should_receive(:create_payload_manifests)
       bag.should_receive(:create_bag_info_txt)
       bag.should_receive(:create_bagit_txt)
       bag.should_receive(:create_tagfile_manifests)
-      @submit_catalog.should_not_receive(:version_additions)
-      bag.fill_bag(:reconstructor)
+      @disseminate_catalog.should_not_receive(:version_additions)
+      @disseminate_bag_inventory.should_receive(:write_xml_file).with(@disseminate_bag_pathname,'version')
+      bag.fill_bag(:reconstructor, @disseminate_base)
       bag.package_mode.should == :reconstructor
 
-      # def fill_bag(package_mode)
-      #   @package_mode = package_mode
-      #   case package_mode
-      #     when :depositor
-      #       @bag_inventory = @signature_catalog.version_additions(@version_inventory)
-      #     when :reconstructor
-      #       @bag_inventory = @version_inventory
-      #   end
-      #   @bag_pathname.mkpath
-      #   write_inventory_file
-      #   fill_payload
-      #   create_payload_manifests
-      #   create_bag_info_txt
-      #   create_bagit_txt
-      #   create_tagfile_manifests
-      #   self
-      # end
     end
-    
-    # Unit test for method: {Moab::Bagger#write_inventory_file}
-    # Which returns: [void] Create a copy of version inventory file in the bag's root directory
-    # For input parameters: (None)
-    specify 'Moab::Bagger#write_inventory_file' do
-      bag = @submit_bag
-      @submit_inventory.should_receive(:write_xml_file).with(@submit_bag_pathname,'version')
-      @submit_bag_inventory.should_receive(:write_xml_file).with(@submit_bag_pathname,'additions')
-      bag.write_inventory_file
 
-      bag = @disseminate_bag
-      source_inventory_pathname = FileInventory.xml_pathname(@disseminate_base.join('v0002','manifests'),'version').realpath
-      FileUtils.should_receive(:link).with(source_inventory_pathname.to_s,@disseminate_bag_pathname.to_s, {:force=>true})
-      bag.write_inventory_file
-
-      # def write_inventory_file
-      #   case @package_mode
-      #     when :depositor
-      #       @version_inventory.write_xml_file(@bag_pathname, 'version')
-      #       @bag_inventory.write_xml_file(@bag_pathname, 'additions')
-      #     when :reconstructor
-      #       version_dirname = StorageObject.version_dirname(@version_inventory.version_id)
-      #       source_file=FileInventory.xml_pathname(@source_base_pathname.join(version_dirname), 'version')
-      #       FileUtils.link(source_file.to_s, @bag_pathname.to_s)
-      #   end
-      # end
-    end
-    
     # Unit test for method: {Moab::Bagger#fill_payload}
     # Which returns: [void] Fill in the bag's data folder with copies of all files to be packaged for delivery.
     # For input parameters: (None)
     specify 'Moab::Bagger#fill_payload' do
       bag = @submit_bag
-      bag.fill_payload
+      bag.fill_payload(@submit_source_base)
       files = Array.new
       bag.bag_pathname.join('data').find {|f| files << f.relative_path_from(@temp).to_s}
       files.sort.should == [
@@ -361,7 +313,7 @@ describe 'Moab::Bagger' do
       ]
 
       bag = @disseminate_bag
-      bag.fill_payload
+      bag.fill_payload(@disseminate_base)
       files = Array.new
       bag.bag_pathname.join('data').find {|f| files << f.relative_path_from(@temp).to_s}
       files.sort.should == [
@@ -379,30 +331,6 @@ describe 'Moab::Bagger' do
           "disseminate_bag_pathname/data/metadata/versionMetadata.xml"
       ]
 
-      # def fill_payload
-      #   payload_pathname = @bag_pathname.join('data')
-      #   payload_pathname.mkpath
-      #   @bag_inventory.groups.each do |group|
-      #     group.files.each do |file|
-      #       file.instances.each do |instance|
-      #         relative_path = File.join(group.group_id, instance.path)
-      #         case @package_mode
-      #           when :depositor
-      #             source = @source_base_pathname.join(relative_path)
-      #           when :reconstructor
-      #             catalog_entry = @signature_catalog.signature_hash[file.signature]
-      #             source = @source_base_pathname.join(catalog_entry.storage_path)
-      #         end
-      #         target = payload_pathname.join(relative_path)
-      #         target.parent.mkpath
-      #         target.make_link(source)
-      #         datetime = Time.parse(instance.datetime)
-      #         target.utime(datetime, datetime)
-      #       end
-      #     end
-      #   end
-      #   nil
-      # end
     end
     
     # Unit test for method: {Moab::Bagger#create_payload_manifests}
@@ -410,7 +338,7 @@ describe 'Moab::Bagger' do
     # For input parameters: (None)
     specify 'Moab::Bagger#create_payload_manifests' do
       bag = @submit_bag
-      bag.fill_payload
+      bag.fill_payload(@submit_source_base)
       bag.create_payload_manifests()
       md5 = bag.bag_pathname.join('manifest-md5.txt')
       md5.exist?.should == true
@@ -496,7 +424,7 @@ describe 'Moab::Bagger' do
     # For input parameters: (None)
     specify 'Moab::Bagger#create_tagfile_manifests' do
       bag = @submit_bag
-      bag.fill_bag(:depositor)
+      bag.fill_bag(:depositor,@submit_source_base)
       md5 = bag.bag_pathname.join('tagmanifest-md5.txt')
       md5.exist?.should == true
       (md5.readlines.collect{ |line| line.split(/ /)[1] }).should == [
@@ -534,6 +462,14 @@ describe 'Moab::Bagger' do
       #   md5.close if md5
       #   sha1.close if sha1
       # end
+    end
+
+    specify 'Moab::Bagger#create_tarfile' do
+      bag_dir = @packages.join('v0001')
+      tarfile = @temp.join('test.tar')
+      bagger = Bagger.new(nil,nil,bag_dir)
+      bagger.should_receive(:shell_execute).with("cd '#{@packages}'; tar --dereference --force-local -cf  '#{@temp}/test.tar' 'v0001'")
+      lambda{bagger.create_tarfile(tarfile)}.should raise_exception(/Unable to create tarfile/)
     end
   
   end

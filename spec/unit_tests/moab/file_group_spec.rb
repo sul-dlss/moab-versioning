@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'spec_helper'
 
 # Unit tests for class {Moab::FileGroup}
 describe 'Moab::FileGroup' do
@@ -173,7 +174,12 @@ describe 'Moab::FileGroup' do
       #   path_hash
       # end
     end
-    
+
+    specify 'Moab::FileGroup#path_list' do
+      @v1_file_group.path_list.should ==
+          ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+    end
+
     # Unit test for method: {Moab::FileGroup#path_hash_subset}
     # Which returns: [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
     # For input parameters:

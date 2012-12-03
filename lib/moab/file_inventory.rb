@@ -97,10 +97,7 @@ module Moab
     # @param [String] group_id The identifer of the group to be selected
     # @return [FileGroup] The file group in this inventory for the specified group_id
     def group(group_id)
-      @groups.each do |group|
-        return group if group.group_id == group_id
-      end
-      raise "group #{group_id} not found in file inventory for #{@digital_object_id} - #{@version_id}"
+      @groups.find{ |group| group.group_id == group_id}
     end
 
     # @param [String] group_id The identifer of the group to be selected
@@ -108,6 +105,7 @@ module Moab
     # @return [FileSignature] The signature of the specified file
     def file_signature(group_id, file_id)
       file_group = group(group_id)
+      raise "group #{group_id} not found for #{@digital_object_id} - #{@version_id}" if file_group.nil?
       file_signature = file_group.path_hash[file_id]
       raise "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
       file_signature

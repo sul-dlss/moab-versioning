@@ -1,4 +1,5 @@
 require 'moab'
+require 'systemu'
 
 module Moab
 
@@ -22,13 +23,12 @@ module Moab
     # @param version_inventory [FileInventory] The complete inventory of the files comprising a digital object version
     # @param signature_catalog [SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode),
     #   or to filter the version inventory (in :depositor mode)
-    # @param source_base_pathname [Pathname,String] The home location of the source files
     # @param bag_pathname [Pathname,String] The location of the Bagit bag to be created
-    def initialize(version_inventory, signature_catalog, source_base_pathname, bag_pathname)
+    def initialize(version_inventory, signature_catalog, bag_pathname)
       @version_inventory = version_inventory
       @signature_catalog = signature_catalog
-      @source_base_pathname = Pathname.new(source_base_pathname).realpath
       @bag_pathname = Pathname.new(bag_pathname)
+      create_bagit_txt()
     end
 
     # @return [FileInventory] The complete inventory of the files comprising a digital object version
@@ -37,9 +37,6 @@ module Moab
     # @return [SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode),
     #   or to filter the version inventory (in :depositor mode)
     attr_accessor :signature_catalog
-
-    # @return [Pathname] The home location of the source files
-    attr_accessor :source_base_pathname
 
     # @return [Pathname] The location of the Bagit bag to be created
     attr_accessor :bag_pathname
@@ -51,74 +48,136 @@ module Moab
     #   and the full path of source files {#fill_payload}
     attr_accessor :package_mode
 
+    # @return [void] Delete any existing bag data and re-initialize the bag directory
+    def reset_bag
+      delete_bag
+      delete_tarfile
+      create_bagit_txt
+    end
+
+    # @api internal
+    # @return [void] Generate the bagit.txt tag file
+    def create_bagit_txt()
+      @bag_pathname.mkpath
+      @bag_pathname.join("bagit.txt").open('w') do |f|
+        f.puts "Tag-File-Character-Encoding: UTF-8"
+        f.puts "BagIt-Version: 0.97"
+      end
+    end
+
+    # @return [NilClass] Delete the bagit files
+    def delete_bag()
+      # make sure this looks like a bag before deleting
+      if @bag_pathname.join('bagit.txt').exist?
+        if @bag_pathname.join('data').exist?
+          @bag_pathname.rmtree
+        else
+          @bag_pathname.children.each {|file| file.delete}
+          @bag_pathname.rmdir
+        end
+      end
+      nil
+    end
+
+    # @param tar_pathname [Pathname] The location of the tar file (default is based on bag location)
+    def delete_tarfile()
+      bag_name = @bag_pathname.basename
+      bag_parent = @bag_pathname.parent
+      tar_pathname = bag_parent.join("#{bag_name}.tar")
+      tar_pathname.delete if tar_pathname.exist?
+    end
+
     # @api external
     # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of source files (Bagger#fill_payload)
+    # @param source_base_pathname [Pathname] The home location of the source files
     # @return [Bagger] Perform all the operations required to fill the bag payload, write the manifests and tagfiles, and checksum the tagfiles
     # @example {include:file:spec/features/storage/deposit_spec.rb}
-    def fill_bag(package_mode)
+    def fill_bag(package_mode, source_base_pathname)
+      create_bag_inventory(package_mode)
+      fill_payload(source_base_pathname)
+      create_tagfiles
+      self
+    end
+
+    # @api external
+    # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of source files (Bagger#fill_payload)
+    # @return [FileInventory] Create, write, and return the inventory of the files that will become the payload
+    def create_bag_inventory(package_mode)
       @package_mode = package_mode
+      @bag_pathname.mkpath
       case package_mode
         when :depositor
-          @signature_catalog.normalize_inventory_signatures(@version_inventory, @source_base_pathname)
+          @version_inventory.write_xml_file(@bag_pathname, 'version')
           @bag_inventory = @signature_catalog.version_additions(@version_inventory)
+          @bag_inventory.write_xml_file(@bag_pathname, 'additions')
         when :reconstructor
           @bag_inventory = @version_inventory
+          @bag_inventory.write_xml_file(@bag_pathname, 'version')
       end
-      @bag_pathname.mkpath
-      write_inventory_file
-      fill_payload
+      @bag_inventory
+    end
+
+    # @api internal
+    # @param source_base_pathname [Pathname] The home location of the source files
+    # @return [void] Fill in the bag's data folder with copies of all files to be packaged for delivery.
+    # This method uses Unix hard links in order to greatly speed up the process.
+    # Hard links, however, require that the target bag must be created within the same filesystem as the source files
+    def fill_payload(source_base_pathname)
+      @bag_inventory.groups.each do |group|
+        group_id = group.group_id
+        case @package_mode
+          when :depositor
+            deposit_group(group_id, source_base_pathname.join(group_id))
+          when :reconstructor
+            reconstuct_group(group_id, source_base_pathname)
+        end
+      end
+    end
+
+    # @param group_id [String] The name of the data group being copied to the bag
+    # @param source_dir [Pathname] The location from which files should be copied
+    # @return [Boolean] Copy all the files listed in the group inventory to the bag.
+    #    Return true if successful or nil if the group was not found in the inventory
+    def deposit_group(group_id, source_dir)
+      group = @bag_inventory.group(group_id)
+      return nil? if group.nil?
+      target_dir = @bag_pathname.join('data',group_id)
+      group.path_list.each do |relative_path|
+        source = source_dir.join(relative_path)
+        target = target_dir.join(relative_path)
+        target.parent.mkpath
+        FileUtils.symlink source, target
+      end
+      true
+    end
+
+    # @param group_id [String] The name of the data group being copied to the bag
+    # @param storage_object_dir [Pathname] The home location of the object store from which files should be copied
+    # @return [Boolean] Copy all the files listed in the group inventory to the bag.
+    #    Return true if successful or nil if the group was not found in the inventory
+    def reconstuct_group(group_id, storage_object_dir)
+      group = @bag_inventory.group(group_id)
+      return nil? if group.nil?
+      target_dir = @bag_pathname.join('data',group_id)
+      group.files.each do |file|
+        catalog_entry = @signature_catalog.signature_hash[file.signature]
+        source = storage_object_dir.join(catalog_entry.storage_path)
+        file.instances.each do |instance|
+          target = target_dir.join(instance.path)
+          target.parent.mkpath
+          FileUtils.symlink source, target
+        end
+      end
+      true
+    end
+
+    # @return [Boolean] create BagIt manifests and tag files.  Return true if successful
+    def create_tagfiles
       create_payload_manifests
       create_bag_info_txt
       create_bagit_txt
       create_tagfile_manifests
-      self
-    end
-
-    # @api internal
-    # @return [void] Create a copy of version inventory file in the bag's root directory
-    # In :depositor mode, serialize the in-memory versionInventory and the versionAddtions
-    # In :reconstructor mode, copy the existing inventory file to the bag's' root
-    def write_inventory_file
-      case @package_mode
-        when :depositor
-          @version_inventory.write_xml_file(@bag_pathname, 'version')
-          @bag_inventory.write_xml_file(@bag_pathname, 'additions')
-        when :reconstructor
-          version_dirname = StorageObject.version_dirname(@version_inventory.version_id)
-          source_file=FileInventory.xml_pathname(@source_base_pathname.join(version_dirname,'manifests'), 'version')
-          FileUtils.link(source_file.to_s, @bag_pathname.to_s, :force=>true)
-      end
-    end
-
-    # @api internal
-    # @return [void] Fill in the bag's data folder with copies of all files to be packaged for delivery.
-    # This method uses Unix hard links in order to greatly speed up the process.
-    # Hard links, however, require that the target bag must be created within the same filesystem as the source files
-    def fill_payload
-      payload_pathname = @bag_pathname.join('data')
-      payload_pathname.mkpath
-      @bag_inventory.groups.each do |group|
-        group.files.each do |file|
-          file.instances.each do |instance|
-            relative_path = File.join(group.group_id, instance.path)
-            case @package_mode
-              when :depositor
-                source = @source_base_pathname.join(relative_path)
-              when :reconstructor
-                catalog_entry = @signature_catalog.signature_hash[file.signature]
-                source = @source_base_pathname.join(catalog_entry.storage_path)
-            end
-            target = payload_pathname.join(relative_path)
-            target.parent.mkpath
-            FileUtils.link source.to_s, target.to_s, :force=>true
-            if instance.datetime
-              datetime = Time.parse(instance.datetime)
-              target.utime(datetime, datetime)
-            end
-          end
-        end
-      end
-      nil
+      true
     end
 
     # @api internal
@@ -163,15 +222,6 @@ module Moab
     end
 
     # @api internal
-    # @return [void] Generate the bagit.txt tag file
-    def create_bagit_txt()
-      @bag_pathname.join("bagit.txt").open('w') do |f|
-        f.puts "Tag-File-Character-Encoding: UTF-8"
-        f.puts "BagIt-Version: 0.97"
-      end
-    end
-
-    # @api internal
     # @return [void] create BagIt tag manifest files containing checksums for all files in the bag's root directory
     def create_tagfile_manifests()
       manifest_pathname = Hash.new
@@ -198,7 +248,40 @@ module Moab
               manifest_pathname[type].exist? and manifest_pathname[type].size == 0
         end
       end
-      
+    end
+
+    # @return [Boolean] Create a tar file containing the bag
+    def create_tarfile(tar_pathname=nil)
+      bag_name = @bag_pathname.basename
+      bag_parent = @bag_pathname.parent
+      tar_pathname ||= bag_parent.join("#{bag_name}.tar")
+      tar_cmd="cd '#{bag_parent}'; tar --dereference --force-local -cf  '#{tar_pathname}' '#{bag_name}'"
+      begin
+        shell_execute(tar_cmd)
+      rescue
+        shell_execute(tar_cmd.sub('--force-local',''))
+      end
+      raise "Unable to create tarfile #{tar_pathname}" unless tar_pathname.exist?
+      return true
+
+    end
+
+    # Executes a system command in a subprocess.
+    # The method will return stdout from the command if execution was successful.
+    # The method will raise an exception if if execution fails.
+    # The exception's message will contain the explaination of the failure.
+    # @param [String] command the command to be executed
+    # @return [String] stdout from the command if execution was successful
+    def shell_execute(command)
+      status, stdout, stderr = systemu(command)
+      if (status.exitstatus != 0)
+        raise stderr
+      end
+      return stdout
+    rescue
+      msg = "Command failed to execute: [#{command}] caused by <STDERR = #{stderr.split($/).join('; ')}>"
+      msg << " STDOUT = #{stdout.split($/).join('; ')}" if (stdout && (stdout.length > 0))
+      raise msg
     end
 
   end

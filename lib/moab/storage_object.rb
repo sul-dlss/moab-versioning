@@ -89,8 +89,8 @@ module Moab
       storage_version = StorageObjectVersion.new(self,version_id)
       version_inventory = storage_version.file_inventory('version')
       signature_catalog = storage_version.signature_catalog
-      bagger = Bagger.new(version_inventory, signature_catalog, @object_pathname, bag_dir)
-      bagger.fill_bag(:reconstructor)
+      bagger = Bagger.new(version_inventory, signature_catalog, bag_dir)
+      bagger.fill_bag(:reconstructor,@object_pathname)
     end
 
     # @param [String] catalog_filepath The object-relative path of the file
