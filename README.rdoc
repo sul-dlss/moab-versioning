@@ -76,6 +76,7 @@ Require the following:
 - <b>1.1.2/b> Revise use of fixity and checksums hash
 - <b>1.1.3/b> All Moab manifests should now include all checksum types even if missing from source inventory
 - <b>1.2.0/b> Content and metadata groups can be separately added to bag.  Added create_tarfile method.
+- <b>1.2.1/b> Correctly handle situations in which content group is empty
 
 == License
 

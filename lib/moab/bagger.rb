@@ -140,7 +140,7 @@ module Moab
     #    Return true if successful or nil if the group was not found in the inventory
     def deposit_group(group_id, source_dir)
       group = @bag_inventory.group(group_id)
-      return nil? if group.nil?
+      return nil? if group.nil? or group.files.empty?
       target_dir = @bag_pathname.join('data',group_id)
       group.path_list.each do |relative_path|
         source = source_dir.join(relative_path)
@@ -157,7 +157,7 @@ module Moab
     #    Return true if successful or nil if the group was not found in the inventory
     def reconstuct_group(group_id, storage_object_dir)
       group = @bag_inventory.group(group_id)
-      return nil? if group.nil?
+      return nil? if group.nil? or group.files.empty?
       target_dir = @bag_pathname.join('data',group_id)
       group.files.each do |file|
         catalog_entry = @signature_catalog.signature_hash[file.signature]

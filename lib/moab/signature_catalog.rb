@@ -116,13 +116,15 @@ module Moab
     # @param group_pathname [Pathname] The location of the directory containing the group's files
     # @return [void] Inspect and upgrade the group's signature data to include all desired checksums
     def normalize_group_signatures(group, group_pathname=nil)
-      group_pathname ||= Pathname(group.data_source)
-      raise "Could not locate #{group_pathname}" unless group_pathname.exist?
+      unless  group_pathname.nil?
+        group_pathname = Pathname(group_pathname)
+        raise "Could not locate #{group_pathname}" unless group_pathname.exist?
+      end
       group.files.each do |file|
         unless file.signature.complete?
           if @signature_hash.has_key?(file.signature)
             file.signature = @signature_hash.find {|k,v| k == file.signature}[0]
-          else
+          elsif group_pathname
             file_pathname = group_pathname.join(file.instances[0].path)
             file.signature = file.signature.normalized_signature(file_pathname)
           end

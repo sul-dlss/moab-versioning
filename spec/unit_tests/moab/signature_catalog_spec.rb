@@ -201,7 +201,7 @@ describe 'Moab::SignatureCatalog' do
       content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
       content_signatures.collect{|sig| sig.sha256}.should == [nil,nil,nil,nil]
       @v2_inventory.groups.each do |group|
-        @signature_catalog.normalize_group_signatures(group)
+        @signature_catalog.normalize_group_signatures(group, group.data_source)
       end
       content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
       content_signatures.collect{|sig| sig.sha256}.should ==
