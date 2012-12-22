@@ -71,7 +71,7 @@ module Moab
     # @param value [String] The checksum value
     # @return [void] Set the value of the specified checksum type
     def set_checksum(type,value)
-      case type.to_sym
+      case type.to_s.downcase.to_sym
         when :md5
           @md5 = value
         when :sha1
@@ -173,6 +173,26 @@ module Moab
         # One or more of the fixity values is inconsistent, so raise an exception
         raise "Signature inconsistent between inventory and file for #{pathname}: #{self.diff(sig_from_file).inspect}"
       end
+    end
+
+    # @return [Hash<Symbol,String>] Key is type (e.g. :sha1), value is checksum names (e.g. ['SHA-1', 'SHA1'])
+    def FileSignature.checksum_names_for_type
+      names_for_type = OrderedHash.new
+      names_for_type[:md5] = ['MD5']
+      names_for_type[:sha1] = ['SHA-1', 'SHA1']
+      names_for_type[:sha256] = ['SHA-256', 'SHA256']
+      names_for_type
+    end
+
+   # @return [Hash<String, Symbol>] Key is checksum name (e.g. MD5), value is checksum type (e.g. :md5)
+    def FileSignature.checksum_type_for_name
+      type_for_name = OrderedHash.new
+      self.checksum_names_for_type.each do |type, names|
+        names.each do |name|
+          type_for_name[name] = type
+        end
+      end
+      type_for_name
     end
 
   end

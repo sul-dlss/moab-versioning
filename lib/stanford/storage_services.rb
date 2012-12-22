@@ -45,6 +45,12 @@ module Stanford
       signature_catalog.version_additions(new_inventory)
     end
 
+    def self.cm_remediate(object_id, version_id=nil)
+      cm = self.retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)
+      group = self.retrieve_file_group('content', object_id, version_id)
+      ContentInventory.new.remediate_content_metadata(cm,group)
+    end
+
   end
 
 end

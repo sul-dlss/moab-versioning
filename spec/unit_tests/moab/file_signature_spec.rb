@@ -85,7 +85,7 @@ describe 'Moab::FileSignature' do
       @page1_v1_signature = FileSignature.new.signature_from_file(@page1_v1_pathname)
       @page1_v2_signature = FileSignature.new.signature_from_file(@page1_v2_pathname)
     end
-    
+
     specify 'Moab::FileSignature#set_checksum' do
       signature = FileSignature.new
       signature.set_checksum(:md5,'1a726cd7963bd6d3ceb10a8c353ec166')
@@ -176,7 +176,18 @@ describe 'Moab::FileSignature' do
       source = FileSignature.new( :sha1 => 'dummy')
       lambda{source.normalized_signature(pathname)}.should raise_exception(/Signature inconsistent between inventory and file/)
     end
-  
+
+
+    specify 'Moab::FileSignature.checksum_names_for_type' do
+      FileSignature.checksum_names_for_type.should ==
+          {:md5=>["MD5"], :sha1=>["SHA-1", "SHA1"],:sha256=>["SHA-256", "SHA256"]}
+    end
+
+    specify 'Moab::FileSignature.checksum_type_for_name' do
+      FileSignature.checksum_type_for_name.should ==
+          {"MD5"=>:md5, "SHA1"=>:sha1, "SHA-1"=>:sha1, "SHA256"=>:sha256, "SHA-256"=>:sha256}
+    end
+
   end
 
 end
