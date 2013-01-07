@@ -14,7 +14,7 @@ describe 'Stanford::StorageServices' do
 
     specify 'Stanford::StorageServices.cm_remediate' do
       remediated_cm = StorageServices.cm_remediate(@digital_object_id,1)
-      remediated_cm.to_xml.should be_equivalent_to( <<-EOF
+      remediated_cm.should be_equivalent_to( <<-EOF
       <contentMetadata type="sample" objectId="druid:jq937jp0017">
           <resource type="version" sequence="1" id="version-1">
               <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">

@@ -78,6 +78,7 @@ Require the following:
 - <b>1.2.0/b> Content and metadata groups can be separately added to bag.  Added create_tarfile method.
 - <b>1.2.1/b> Correctly handle situations in which content group is empty
 - <b>1.2.2/b> Added capability to remediate contentMetadata that is missing fixity data
+- <b>1.2.3/b> Remediated contentMetadata now formatted with proper line breaks & indents
 == License
 
 Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.

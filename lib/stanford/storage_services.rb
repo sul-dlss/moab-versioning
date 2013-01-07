@@ -45,6 +45,9 @@ module Stanford
       signature_catalog.version_additions(new_inventory)
     end
 
+    # @param object_id [String] The digital object identifier of the object whose contentMetadata is to be remediated
+    # @param version_id [Integer] The ID of the version whose file data is to be used, if nil use latest version
+    # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
     def self.cm_remediate(object_id, version_id=nil)
       cm = self.retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)
       group = self.retrieve_file_group('content', object_id, version_id)

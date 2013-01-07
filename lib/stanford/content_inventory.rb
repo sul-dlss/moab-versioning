@@ -163,13 +163,16 @@ module Stanford
     end
 
     # @param content_metadata [String] The contentMetadata as a string
-    # @param content_group [FileGroup] The {FileGroup} object used as the data source
+    # @param content_group [FileGroup] The {FileGroup} object used as the fixity data source
+    # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
+    # @see http://blog.slashpoundbang.com/post/1454850669/how-to-pretty-print-xml-with-nokogiri
     def remediate_content_metadata(content_metadata, content_group)
       return nil if content_metadata.nil?
       return content_metadata if content_group.nil? or content_group.files.size < 1
       signature_for_path = content_group.path_hash
-      checksum_types = FileSignature.checksum_names_for_type
-      ng_doc = Nokogiri::XML(content_metadata)
+      @type_for_name = FileSignature.checksum_type_for_name
+      @names_for_type = FileSignature.checksum_names_for_type
+      ng_doc = Nokogiri::XML(content_metadata) { |x| x.noblanks }
       nodeset = ng_doc.xpath("//file")
       nodeset.each do |file_node|
         filepath = file_node['id']
@@ -177,7 +180,7 @@ module Stanford
         remediate_file_size(file_node, signature)
         remediate_checksum_nodes(file_node, signature)
       end
-      ng_doc
+      ng_doc.to_xml(:indent => 2)
     end
 
     # @param [Nokogiri::XML::Element] file_node the File stanza being remediated
@@ -196,21 +199,22 @@ module Stanford
     # @param [FileSignature] signature the fixity data for the file from the FileGroup
     # @return [void] update the file's checksum elements if data missing, raise exception if inconsistent
     def remediate_checksum_nodes(file_node, signature)
-      type_for_name = FileSignature.checksum_type_for_name
+      # collect <checksum> elements for checksum types that are already present
       checksum_nodes = OrderedHash.new
       file_node.xpath('checksum').each do |checksum_node|
-        type = type_for_name[checksum_node['type']]
+        type = @type_for_name[checksum_node['type']]
         checksum_nodes[type] = checksum_node
       end
-      names_for_type = FileSignature.checksum_names_for_type
-      names_for_type.keys.each do |type|
+      # add new <checksum> elements for the other checksum types that were missing
+      @names_for_type.each do |type, names|
         unless checksum_nodes.has_key?(type)
           checksum_node = Nokogiri::XML::Element.new('checksum',file_node.document)
-          checksum_node['type'] = names_for_type[type][0]
+          checksum_node['type'] = names[0]
           file_node << checksum_node
           checksum_nodes[type] = checksum_node
         end
       end
+      # make sure the <checksum> element has a content value
       checksum_nodes.each do |type,checksum_node|
         cm_checksum = checksum_node.content
         sig_checksum = signature.checksums[type]
