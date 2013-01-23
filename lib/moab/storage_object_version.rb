@@ -130,7 +130,7 @@ module Moab
     # @param use_links [Boolean] If true, use hard links; if false, make copies
     # @return [void] recursively link or copy the source directory contents to the target directory
     def ingest_dir(source_dir, target_dir, use_links=true)
-      raise "cannot copy - target already exists: #{target_dir.realpath}" if target_dir.exist?
+      raise "cannot copy - target already exists: #{target_dir.expand_path}" if target_dir.exist?
       target_dir.mkpath
       source_dir.children.each do |child|
         if child.directory?

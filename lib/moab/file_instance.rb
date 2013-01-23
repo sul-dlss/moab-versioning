@@ -47,7 +47,7 @@ module Moab
     # @param base_directory [Pathname] The full path used as the basis of the relative paths reported
     # @return [FileInstance] Returns a file instance containing a physical file's' properties
     def instance_from_file(pathname, base_directory)
-      @path = pathname.realpath.relative_path_from(base_directory.realpath).to_s
+      @path = pathname.expand_path.relative_path_from(base_directory.expand_path).to_s
       @datetime = pathname.mtime.iso8601
       self
     end

@@ -233,7 +233,7 @@ module Moab
       end
       @bag_pathname.children.each do |file|
         unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
-          signature = FileSignature.new.signature_from_file(file.realpath)
+          signature = FileSignature.new.signature_from_file(file)
           fixity = signature.fixity
           manifest_types.each do |type|
             manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]

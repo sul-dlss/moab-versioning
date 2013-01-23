@@ -152,7 +152,7 @@ module Moab
     attr_accessor :base_directory
 
     def base_directory=(basepath)
-      @base_directory = Pathname.new(basepath).realpath
+      @base_directory = Pathname.new(basepath).expand_path
     end
 
     # @api internal
@@ -161,7 +161,7 @@ module Moab
     def is_descendent_of_base?(pathname)
       raise("base_directory has not been set") if @base_directory.nil?
       is_descendent = false
-      pathname.realpath.ascend {|ancestor| is_descendent ||= (ancestor == @base_directory)}
+      pathname.expand_path.ascend {|ancestor| is_descendent ||= (ancestor == @base_directory)}
       raise("#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
       is_descendent
     end
@@ -198,7 +198,7 @@ module Moab
     # @see http://stackoverflow.com/questions/3974087/how-to-make-rubys-find-find-follow-symlinks
     # @see http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
     def harvest_directory(path, recursive, validated=nil)
-      pathname=Pathname.new(path).realpath
+      pathname=Pathname.new(path).expand_path
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
         if child.basename.to_s == ".DS_Store"
@@ -218,7 +218,7 @@ module Moab
     # @return [void] Add a single physical file's data to the array of files in this group.
     #   If fixity data was supplied in bag manifests, then utilize that data.
     def add_physical_file(pathname, validated=nil)
-      pathname=Pathname.new(pathname).realpath
+      pathname=Pathname.new(pathname).expand_path
       validated ||= is_descendent_of_base?(pathname)
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
       if @signatures_from_bag && @signatures_from_bag[pathname]
