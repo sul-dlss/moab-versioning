@@ -64,7 +64,7 @@ module Moab
     def find_filepath(file_category, file_id)
       this_version_filepath = file_pathname(file_category, file_id)
       return this_version_filepath if this_version_filepath.exist?
-      raise "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == 'manifest'
+      raise FileNotFoundException, "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}" if file_category == 'manifest'
       file_signature = file_inventory('version').file_signature(file_category, file_id)
       catalog_filepath = signature_catalog.catalog_filepath(file_signature)
       @storage_object.storage_filepath(catalog_filepath)

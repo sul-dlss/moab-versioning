@@ -81,6 +81,7 @@ Require the following:
 - <b>1.2.3/b> Remediated contentMetadata now formatted with proper line breaks & indents
 - <b>1.2.4/b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
 - <b>1.2.5/b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
+- <b>1.2.6/b> Fix Moab::ValidationException when manifest file not found
 
 == License
 
