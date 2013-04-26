@@ -105,9 +105,9 @@ module Moab
     # @return [FileSignature] The signature of the specified file
     def file_signature(group_id, file_id)
       file_group = group(group_id)
-      raise "group #{group_id} not found for #{@digital_object_id} - #{@version_id}" if file_group.nil?
+      raise FileNotFoundException, "group #{group_id} not found for #{@digital_object_id} - #{@version_id}" if file_group.nil?
       file_signature = file_group.path_hash[file_id]
-      raise "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
+      raise FileNotFoundException, "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
       file_signature
     end
 

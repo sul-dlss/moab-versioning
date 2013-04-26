@@ -80,6 +80,8 @@ Require the following:
 - <b>1.2.2/b> Added capability to remediate contentMetadata that is missing fixity data
 - <b>1.2.3/b> Remediated contentMetadata now formatted with proper line breaks & indents
 - <b>1.2.4/b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
+- <b>1.2.5/b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
+
 == License
 
 Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.

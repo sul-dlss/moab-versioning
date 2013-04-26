@@ -108,7 +108,7 @@ module Moab
     # @return [String] The object-relative path of the file having the specified signature
     def catalog_filepath(file_signature)
       catalog_entry = @signature_hash[file_signature]
-      raise "catalog entry not found for #{file_signature.fixity.inspect} in #{@digital_object_id} - #{@version_id}" if catalog_entry.nil?
+      raise FileNotFoundException, "catalog entry not found for #{file_signature.fixity.inspect} in #{@digital_object_id} - #{@version_id}" if catalog_entry.nil?
       catalog_entry.storage_path
     end
 

@@ -28,12 +28,23 @@ module Moab
     attr_accessor :storage_object
 
   # @param storage_object [StorageObject] The object representing the digital object's storage location
-  # @param version_id [Integer] The ordinal version number
+  # @param version_id [Integer,String] The ordinal version number or a string like 'v0003'
     def initialize(storage_object, version_id)
-      @version_id = version_id
-      @version_name = StorageObject.version_dirname(version_id)
+      if version_id.is_a?(Integer)
+        @version_id = version_id
+      elsif version_id.is_a?(String) and version_id.match /^v(\d+)$/
+        @version_id = version_id.sub(/^v/,'').to_i
+      else
+        raise "version_id (#{version_id}) is not in a recognized format"
+      end
+      @version_name = StorageObject.version_dirname(@version_id)
       @version_pathname = storage_object.object_pathname.join(@version_name)
       @storage_object=storage_object
+    end
+
+    # @return [Boolean] true if the object version directory exists
+    def exist?
+      @version_pathname.exist?
     end
 
   # @param [String] file_category The category of file ('content', 'metadata', or 'manifest'))
@@ -191,9 +202,23 @@ module Moab
           self.verify_version_additions
     end
 
+    # @param inventory [FileInventory] The file inventory containing the id to be verified
+    # @return [Boolean] true if the id is correct, raise exception if there is an id mismatch
+    def verify_version_id(inventory)
+      if @storage_object.digital_object_id != inventory.digital_object_id
+        raise "digital_object_id mismatch - expected: #{@storage_object.digital_object_id} - found: #{inventory.digital_object_id}"
+      end
+      if @version_id != inventory.version_id
+        raise "version mismatch - expected: #{@version_id} - found: #{inventory.version_id}"
+      end
+      true
+    end
+
+    # @return [Boolean] return true if the manifest inventory matches the actual files
     def verify_manifest_inventory
       # the file to verify
       manifest_inventory = self.file_inventory('manifests')
+      self.verify_version_id(manifest_inventory)
       manifest_group = manifest_inventory.group('manifests')
       raise "manifest group not found in #{file_pathname('manifests','manifestInventory.xml')}" if manifest_group.nil?
       # recapture the manifest signatures
@@ -201,12 +226,16 @@ module Moab
       # the manifest inventory does not contain a file entry for itself
       audit_group.remove_file_having_path("manifestInventory.xml")
       group_difference = FileGroupDifference.new.compare_file_groups(manifest_group, audit_group)
-      group_difference.difference_count == 0
+      unless group_difference.difference_count == 0
+        raise Moab::ValidationException, "#{group_difference.difference_count} differences found in manifests for version #{version_id}"
+      end
+      true
     end
 
     # @return [Boolean] returns true if files & signatures listed in version inventory can all be found
     def verify_version_inventory
       version_inventory = self.file_inventory('version')
+      self.verify_version_id(version_inventory)
       signature_catalog =self.signature_catalog
       object_pathname = self.storage_object.object_pathname
       version_inventory.groups.each do |group|
@@ -235,8 +264,20 @@ module Moab
 
     # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
     def verify_version_additions
-      version_addtions = self.file_inventory('additions')
-      FileInventoryDifference.new.verify_against_directory(version_addtions,@version_pathname.join('data'))
+      version_additions = self.file_inventory('additions')
+      self.verify_version_id(version_additions)
+      FileInventoryDifference.new.verify_against_directory(version_additions,@version_pathname.join('data'))
+    end
+
+    # @param timestamp [Time] The time at which the deactivation was initiated.  Used to name the inactive directory
+    # @return [null] Deactivate this object version by moving it to another directory.  (Used by restore operation)
+    def deactivate(timestamp)
+      if @version_pathname.exist?
+        timestamp_pathname = @version_pathname.parent.join(timestamp.utc.iso8601.gsub(/[-:]/,''))
+        timestamp_pathname.mkpath
+        demote_pathame = timestamp_pathname.join(@version_pathname.basename)
+        @version_pathname.rename(demote_pathame)
+      end
     end
 
   end

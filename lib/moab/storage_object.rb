@@ -19,6 +19,12 @@ module Moab
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageObject
 
+    # @return [String] The digital object ID (druid)
+    attr_accessor :digital_object_id
+
+    # @return [Pathname] The location of the object's storage home directory
+    attr_accessor :object_pathname
+
     # @param object_id [String] The digital object identifier
     # @param object_dir [Pathname,String] The location of the object's storage home directory
     def initialize(object_id, object_dir, mkpath=false)
@@ -27,16 +33,15 @@ module Moab
       initialize_storage if mkpath
     end
 
-    # @return [String] The digital object ID (druid)
-    attr_accessor :digital_object_id
-
-    # @return [Pathname] The location of the object's storage home directory
-    attr_accessor :object_pathname
+    # @return [Boolean] true if the object's storage directory exists
+    def exist?
+      @object_pathname.exist?
+    end
 
     # @api external
     # @return [void] Create the directory for the digital object home unless it already exists
     def initialize_storage
-      @object_pathname.mkpath
+        @object_pathname.mkpath
     end
 
     # @api external
@@ -97,7 +102,7 @@ module Moab
     # @return [Pathname] The absolute storage path of the file, including the object's home directory
     def storage_filepath(catalog_filepath)
       storage_filepath = @object_pathname.join(catalog_filepath)
-      raise "#{catalog_filepath} missing from storage location #{storage_filepath}" unless storage_filepath.exist?
+      raise FileNotFoundException, "#{catalog_filepath} missing from storage location #{storage_filepath}" unless storage_filepath.exist?
       storage_filepath
     end
 
@@ -108,19 +113,41 @@ module Moab
       ("v%04d" % version_id)
     end
 
-    # @api external
-    # @return [Integer] The identifier of the latest version of this object
-    def current_version_id
-      return @current_version_id unless @current_version_id.nil?
-      version_id = 0
+    # @return [Array<Integer>] The list of all version ids for this object
+    def version_id_list
+      list = Array.new
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
         if vnum.match /^v(\d+)$/
-          v = vnum[1..-1].to_i
-          version_id = v > version_id ? v : version_id
+          list << vnum[1..-1].to_i
         end
       end
+      list.sort
+    end
+
+    # @return [Array<StorageObjectVersion>] The list of all versions in this storage object
+    def version_list
+      version_id_list.collect{|id| self.storage_object_version(id)}
+    end
+    alias :versions :version_list
+
+    # @return [Boolean] true if there are no versions yet in this object
+    def empty?
+      version_id_list.empty?
+    end
+
+    # @api external
+    # @return [Integer] The identifier of the latest version of this object, or 0 if no versions exist
+    def current_version_id
+      return @current_version_id unless @current_version_id.nil?
+      list = self.version_id_list
+      version_id = list.empty? ? 0 : list.last
       @current_version_id = version_id
+    end
+
+    # @return [StorageObjectVersion] The most recent version in the storage object
+    def current_version
+      self.storage_object_version(current_version_id)
     end
 
     # @api internal
@@ -161,6 +188,35 @@ module Moab
       end
     end
 
+    # @return [Boolean] Return true if validation passes, else raise exception
+    def verify_object_storage
+      self.version_list.each do |version|
+        version.verify_storage
+      end
+      true
+    end
+
+    # @param recovery_path [Pathname, String] The location of the recovered object versions
+    # @return [Boolean] Restore all recovered versions to online storage and verify results
+    def restore_object(recovery_path)
+      timestamp = Time.now
+      recovery_object = StorageObject.new(@digital_object_id, recovery_path, mkpath=false)
+      recovery_object.versions.each do |recovery_version|
+        recovery_version.verify_manifest_inventory
+        version_id = recovery_version.version_id
+        storage_version = self.storage_object_version(version_id)
+        # rename/save the original
+        storage_version.deactivate(timestamp)
+        # copy the recovered version into place
+        FileUtils.cp_r(recovery_version.version_pathname.to_s,storage_version.version_pathname.to_s)
+        storage_version.verify_manifest_inventory
+        storage_version.verify_version_additions
+      end
+      self.versions.each do |storage_version|
+        storage_version.verify_version_inventory
+      end
+      true
+    end
 
   end
 

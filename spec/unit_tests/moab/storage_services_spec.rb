@@ -11,6 +11,14 @@ describe 'Moab::StorageServices' do
       @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
     end
 
+    specify 'Moab::StorageServices.object_path' do
+      Moab::StorageServices.object_path(@digital_object_id).should match('spec/fixtures/derivatives/ingests/jq937jp0017')
+    end
+
+    specify 'Moab::StorageServices.object_version_path' do
+      Moab::StorageServices.object_version_path(@digital_object_id,1).should match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
+    end
+
     # Unit test for method: {Moab::StorageServices.current_version}
     # Which returns: [Integer] The version number of the currently highest version
     # For input parameters:

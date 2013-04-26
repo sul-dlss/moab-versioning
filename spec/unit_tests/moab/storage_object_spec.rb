@@ -42,10 +42,9 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#initialize' do
        
       # test initialization with required parameters (if any)
-      object_id = @obj
-      storage_object = StorageObject.new(object_id, @temp_object_dir)
+      storage_object = StorageObject.new(@druid, @temp_object_dir)
       storage_object.should be_instance_of(StorageObject)
-      storage_object.digital_object_id.should == object_id
+      storage_object.digital_object_id.should == @druid
       storage_object.object_pathname.to_s.should include('temp/ingests/jq937jp0017')
 
       # def initialize(object_id, object_dir, mkpath=false)
@@ -110,7 +109,7 @@ describe 'Moab::StorageObject' do
       @temp_ingests = @temp.join("ingests")
       @temp_ingests.rmtree if @temp_ingests.exist?
       @temp_object_dir = @temp_ingests.join(@obj)
-      @storage_object = StorageObject.new(@obj,@temp_object_dir)
+      @storage_object = StorageObject.new(@druid,@temp_object_dir)
       @storage_object.initialize_storage
     end
 
@@ -124,8 +123,10 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#initialize_storage' do
       @temp_object_dir.rmtree if @temp_object_dir.exist?
       @temp_object_dir.exist?.should == false
+      @storage_object.exist?.should == false
       @storage_object.initialize_storage()
       @temp_object_dir.exist?.should == true
+      @storage_object.exist?.should == true
 
       # def initialize_storage
       #   @object_pathname.mkpath
@@ -273,7 +274,7 @@ describe 'Moab::StorageObject' do
       new_inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').
           gsub(/dataSource=".*moab-versioning/,'dataSource="moab-versioning').
           should be_equivalent_to(<<-EOF
-            <fileInventory type="version" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
+            <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
               <fileGroup groupId="content" dataSource="moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
                 <file>
                   <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
@@ -326,7 +327,7 @@ describe 'Moab::StorageObject' do
         EOF
       )
       bag_dir.join('versionAdditions.xml').read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
-        <fileInventory type="additions" objectId="jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
+        <fileInventory type="additions" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
           <fileGroup groupId="content" dataSource="" fileCount="6" byteCount="206432" blockCount="203">
             <file>
               <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
@@ -504,7 +505,7 @@ describe 'Moab::StorageObject' do
     # * catalog_filepath [String] = The object-relative path of the file
     specify 'Moab::StorageObject#storage_filepath' do
       catalog_filepath = 'v0001/data/content/intro-1.jpg'
-      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
       filepath = storage_object.storage_filepath(catalog_filepath)
       filepath.to_s.include?('ingests/jq937jp0017/v0001/data/content/intro-1.jpg').should == true
       lambda{storage_object.storage_filepath('dummy')}.should raise_exception
@@ -516,37 +517,50 @@ describe 'Moab::StorageObject' do
       # end
     end
 
+
+    specify 'Moab::StorageObject#version_id_list' do
+      @storage_object.version_id_list.size.should == 0
+      object_dir = @ingests.join(@obj)
+      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object.version_id_list.size.should == 3
+    end
+
+    specify 'Moab::StorageObject#version_list' do
+      @storage_object.version_list.size.should == 0
+      object_dir = @ingests.join(@obj)
+      storage_object = StorageObject.new(@druid, object_dir)
+      version_list = storage_object.version_list
+      version_list.size.should == 3
+      version_list[1].version_id.should == 2
+    end
+
+
     # Unit test for method: {Moab::StorageObject#current_version_id}
     # Which returns: [Integer] The identifier of the latest version of this object
     # For input parameters: (None)
     specify 'Moab::StorageObject#current_version_id' do
+      @storage_object.current_version_id.should == 0
       object_id = @obj
       object_dir = @ingests.join(@obj)
       storage_object = StorageObject.new(object_id, object_dir)
-      storage_object.current_version_id().should == 3
-       
-      # def current_version_id
-      #   return @current_version_id unless @current_version_id.nil?
-      #   version_id = 0
-      #   @object_pathname.children.each do |dirname|
-      #     vnum = dirname.basename.to_s
-      #     if vnum.match /^v(\d+)$/
-      #       v = vnum[1..-1].to_i
-      #       version_id = v > version_id ? v : version_id
-      #     end
-      #   end
-      #   @current_version_id = version_id
-      # end
+      storage_object.current_version_id.should == 3
     end
-    
+
+    specify 'Moab::StorageObject#current_version' do
+      @storage_object.current_version.version_id.should == 0
+      object_dir = @ingests.join(@obj)
+      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object.current_version.version_id.should == 3
+    end
+
+
     # Unit test for method: {Moab::StorageObject#validate_new_inventory}
     # Which returns: [Boolean] Tests whether the new version number is one higher than the current version number
     # For input parameters:
     # * version_inventory [FileInventory] = The inventory of the object version to be ingested 
     specify 'Moab::StorageObject#validate_new_inventory' do
-      object_id = @obj
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(object_id, object_dir)
+      storage_object = StorageObject.new(@druid, object_dir)
       version_inventory_3 = mock(FileInventory.name+"3")
       version_inventory_3.should_receive(:version_id).twice.and_return(3)
       lambda{storage_object.validate_new_inventory(version_inventory_3)}.should raise_exception
@@ -567,7 +581,7 @@ describe 'Moab::StorageObject' do
     # For input parameters:
     # * version_id [Integer] = The existing version to return.  If nil, return latest version
     specify 'Moab::StorageObject#find_object_version' do
-      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
 
       version_2 = storage_object.find_object_version(2)
       version_2.should be_instance_of(StorageObjectVersion)
@@ -602,7 +616,7 @@ describe 'Moab::StorageObject' do
     # For input parameters:
     # * version_id [Integer] = The version to return. OK if version does not exist
     specify 'Moab::StorageObject#storage_object_version' do
-      storage_object = StorageObject.new(@obj,@ingests.join(@obj))
+      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
 
       version_2 = storage_object.storage_object_version(2)
       version_2.should be_instance_of(StorageObjectVersion)
@@ -622,6 +636,19 @@ describe 'Moab::StorageObject' do
       #   end
       # end
     end
+
+    specify 'Moab::StorageObject#verify_object_storage' do
+      object_dir = @ingests.join(@obj)
+      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object.verify_object_storage.should == true
+    end
+
+    specify 'Moab::StorageObject#restore_object' do
+      @storage_object.version_list.size.should == 0
+      @storage_object.restore_object(@ingests.join(@obj))
+      @storage_object.version_list.size.should == 3
+    end
+
 
   end
 

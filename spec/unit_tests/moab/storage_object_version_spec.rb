@@ -22,12 +22,14 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#initialize' do
 
       # test initialization with required parameters (if any)
-      storage_object = StorageObject.new(@obj, @temp_object_dir)
+      storage_object = StorageObject.new(@druid, @temp_object_dir)
       version_id = 2
       storage_object_version = StorageObjectVersion.new(storage_object, version_id)
       storage_object_version.should be_instance_of(StorageObjectVersion)
       storage_object_version.storage_object.should == storage_object
       storage_object_version.version_id.should == version_id
+      v0003 = StorageObjectVersion.new(storage_object, 'v0003')
+      v0003.version_id.should == 3
 
       # def initialize(storage_object, version_id)
       #   @version_id = version_id
@@ -42,7 +44,7 @@ describe 'Moab::StorageObjectVersion' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
 
     before(:all) do
-      storage_object = StorageObject.new(@obj, @ingests.join(@obj))
+      storage_object = StorageObject.new(@druid, @ingests.join(@obj))
       version_id = 2
       @storage_object_version = StorageObjectVersion.new(storage_object, version_id)
     end
@@ -117,12 +119,22 @@ describe 'Moab::StorageObjectVersion' do
 
     before(:all) do
       @existing_object_pathname = @ingests.join(@obj)
-      @existing_storage_object = StorageObject.new(@obj, @existing_object_pathname)
+      @existing_storage_object = StorageObject.new(@druid, @existing_object_pathname)
       @existing_storage_object_version = StorageObjectVersion.new(@existing_storage_object, version_id=2)
       @temp_ingests = @temp.join("ingests")
       @temp_object_dir = @temp_ingests.join(@obj)
-      @temp_storage_object = StorageObject.new(@obj, @temp_object_dir)
+      @temp_storage_object = StorageObject.new(@druid, @temp_object_dir)
       @temp_package_pathname = @temp.join("packages")
+      bad_object_pathname = @temp.join(@obj)
+      bad_object_pathname.rmtree if bad_object_pathname.exist?
+      bad_object_pathname.mkpath
+      FileUtils.cp_r(@existing_object_pathname.join('v0001').to_s, bad_object_pathname.join('v0001').to_s)
+      @object_with_manifest_errors = StorageObject.new(@druid,bad_object_pathname)
+      @version_with_manifest_errors = @object_with_manifest_errors.storage_object_version(1)
+      new_manifest_file = @version_with_manifest_errors.version_pathname.join('manifests','dummy1.xml')
+      new_manifest_file.open('w'){|f| f.puts "dummy"}
+      new_metadata_file = @version_with_manifest_errors.version_pathname.join('data','metadata','dummy2.xml')
+      new_metadata_file.open('w'){|f| f.puts "dummy"}
     end
 
     before(:each) do
@@ -131,6 +143,7 @@ describe 'Moab::StorageObjectVersion' do
 
     after(:all) do
       @temp_ingests.rmtree if @temp_ingests.exist?
+      @temp.join(@obj).rmtree if @temp.join(@obj).exist?
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#find_signature}
@@ -478,6 +491,17 @@ describe 'Moab::StorageObjectVersion' do
       # end
     end
 
+    specify 'Moab::StorageObjectVersion#verify_version_id' do
+      version = @existing_storage_object_version
+      manifest_inventory = version.file_inventory('manifests')
+      version.verify_version_id(manifest_inventory).should == true
+      manifest_inventory.version_id = 5
+      lambda{version.verify_version_id(manifest_inventory)}.should raise_exception(/version mismatch/)
+      manifest_inventory.digital_object_id = 'druid:my000jnk9999'
+      lambda{version.verify_version_id(manifest_inventory)}.should raise_exception(/digital_object_id mismatch/)
+    end
+
+
     specify 'Moab::StorageObjectVersion#verify_storage' do
       version = @existing_storage_object_version
       version.verify_storage.should == true
@@ -486,6 +510,8 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#verify_manifest_inventory' do
       version = @existing_storage_object_version
       version.verify_manifest_inventory.should == true
+      version = @version_with_manifest_errors
+      lambda{version.verify_manifest_inventory}.should raise_exception(Moab::ValidationException)
     end
 
     specify 'Moab::StorageObjectVersion#verify_version_inventory' do
@@ -505,7 +531,28 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#verify_version_additions' do
       version = @existing_storage_object_version
       version.verify_version_additions.should == true
+      version = @version_with_manifest_errors
+      lambda{version.verify_version_additions}.should raise_exception(Moab::ValidationException)
     end
+
+    specify 'Moab::StorageObjectVersion#deactivate' do
+      # create an object version in a temp location by copying from ingests location
+      @temp_ingests = @temp.join("ingests")
+      @temp_ingests.rmtree if @temp_ingests.exist?
+      @temp_object_dir = @temp_ingests.join(@obj)
+      @temp_object_dir.mkpath
+      version_id = @existing_storage_object_version.version_id
+      FileUtils.cp_r @existing_storage_object_version.version_pathname, @temp_object_dir
+      so = StorageObject.new(@druid, @temp_object_dir)
+      version = so.storage_object_version(version_id)
+      timestamp = Time.now
+      version.deactivate(timestamp)
+      version.exist?.should == false
+      inactive_location = @temp_object_dir.join(timestamp.utc.iso8601.gsub(/[-:]/,''))
+      inactive_location.children.size.should == 1
+      @temp_ingests.rmtree if @temp_ingests.exist?
+    end
+
 
   end
 

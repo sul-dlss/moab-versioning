@@ -18,6 +18,19 @@ module Moab
     # @return [StorageRepository] an instance of the interface to SDR storage
     @@repository = Moab::StorageRepository.new
 
+    # @param object_id [String] The digital object identifier of the object
+    # @return [String] the location of the storage object
+    def self.object_path(object_id)
+      @@repository.storage_object(object_id).object_pathname.to_s
+    end
+
+    # @param object_id [String] The digital object identifier of the object
+    # @param [Integer] version_id The ID of the version, if nil use latest version
+    # @return [String] the location of the storage object version
+    def self.object_version_path(object_id,version_id=nil)
+      @@repository.storage_object(object_id).find_object_version(version_id).version_pathname.to_s
+    end
+
     # @param object_id [String] The digital object identifier
     # @return [Integer] The version number of the currently highest version
     def self.current_version(object_id)

@@ -114,7 +114,10 @@ module Moab
     # @example {include:file:spec/features/differences/inventory_validate_spec.rb}
     def verify_against_directory(basis_inventory, data_directory, group_id=nil)
       compare_with_directory(basis_inventory, data_directory, group_id)
-      difference_count == 0
+      unless difference_count == 0
+          raise Moab::ValidationException, "#{difference_count} differences found in #{data_directory}"
+      end
+      true
     end
 
     # @api internal
