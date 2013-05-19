@@ -1,5 +1,14 @@
 = moab-versioning
 
+== License
+
+Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
+All rights reserved.  See {file:LICENSE.rdoc} for details.
+
+== API Documentation
+
+http://rubydoc.info/github/sul-dlss/moab-versioning/master/frames
+
 == Modules
 
 === Serializer
@@ -70,20 +79,16 @@ Require the following:
 - <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
 - <b>0.8.8</b> Permit content directory to be empty when generating a version inventory
 - <b>1.0.0</b> Make ready for production, allow fixity data to be copied from Bagit manifests to inventory
-- <b>1.0.1/b> Added SHA256 to the checksums stored in a FileSignature object
-- <b>1.1.0/b> More SHA256 enhancements plus isolation of manifest files in a separate folder
-- <b>1.1.1/b> Add support for generation of signature query param for inclusion in URLs
-- <b>1.1.2/b> Revise use of fixity and checksums hash
-- <b>1.1.3/b> All Moab manifests should now include all checksum types even if missing from source inventory
-- <b>1.2.0/b> Content and metadata groups can be separately added to bag.  Added create_tarfile method.
-- <b>1.2.1/b> Correctly handle situations in which content group is empty
-- <b>1.2.2/b> Added capability to remediate contentMetadata that is missing fixity data
-- <b>1.2.3/b> Remediated contentMetadata now formatted with proper line breaks & indents
-- <b>1.2.4/b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
-- <b>1.2.5/b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
-- <b>1.2.6/b> Fix Moab::ValidationException when manifest file not found
+- <b>1.0.1</b> Added SHA256 to the checksums stored in a FileSignature object
+- <b>1.1.0</b> More SHA256 enhancements plus isolation of manifest files in a separate folder
+- <b>1.1.1</b> Add support for generation of signature query param for inclusion in URLs
+- <b>1.1.2</b> Revise use of fixity and checksums hash
+- <b>1.1.3</b> All Moab manifests should now include all checksum types even if missing from source inventory
+- <b>1.2.0</b> Content and metadata groups can be separately added to bag.  Added create_tarfile method.
+- <b>1.2.1</b> Correctly handle situations in which content group is empty
+- <b>1.2.2</b> Added capability to remediate contentMetadata that is missing fixity data
+- <b>1.2.3</b> Remediated contentMetadata now formatted with proper line breaks & indents
+- <b>1.2.4</b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
+- <b>1.2.5</b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
+- <b>1.2.6</b> Fix Moab::ValidationException when manifest file not found
 
-== License
-
-Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
-All rights reserved.  See {file:LICENSE.rdoc} for details.
