@@ -1,0 +1,4 @@
+--exclude lib/tools
+--hide-void-return
+-
+LICENSE.rdoc
