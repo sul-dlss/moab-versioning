@@ -27,6 +27,9 @@ module Moab
     # @return [Pathname] The location of the object's home directory
     attr_accessor :storage_object
 
+    # @return [Hash<FileInventory>] Cached copies of versionInventory, versionAdditions, or manifestInventory
+    attr_accessor :inventory_cache
+
   # @param storage_object [StorageObject] The object representing the digital object's storage location
   # @param version_id [Integer,String] The ordinal version number or a string like 'v0003'
     def initialize(storage_object, version_id)
@@ -40,6 +43,12 @@ module Moab
       @version_name = StorageObject.version_dirname(@version_id)
       @version_pathname = storage_object.object_pathname.join(@version_name)
       @storage_object=storage_object
+      @inventory_cache = Hash.new
+    end
+
+    # @return [String] The unique identifier concatenating digital object id with version id
+    def composite_key
+      @storage_object.digital_object_id + '-' + StorageObject.version_dirname(@version_id)
     end
 
     # @return [Boolean] true if the object version directory exists
@@ -101,7 +110,8 @@ module Moab
     # @see FileInventory#read_xml_file
     def file_inventory(type)
       if version_id > 0
-        FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
+        return @inventory_cache[type] if @inventory_cache.has_key?(type)
+        @inventory_cache[type] = FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
       else
         groups = ['content','metadata'].collect { |id| FileGroup.new(:group_id=>id)}
         FileInventory.new(
@@ -195,78 +205,116 @@ module Moab
       manifest_inventory.write_xml_file(@version_pathname.join('manifests'))
     end
 
-    # @return [Boolean] return true if data files on disk are consistent with inventory files
-    def verify_storage()
-      self.verify_manifest_inventory &&
-          self.verify_version_inventory &&
-          self.verify_version_additions
-    end
-
-    # @param inventory [FileInventory] The file inventory containing the id to be verified
-    # @return [Boolean] true if the id is correct, raise exception if there is an id mismatch
-    def verify_version_id(inventory)
-      if @storage_object.digital_object_id != inventory.digital_object_id
-        raise "digital_object_id mismatch - expected: #{@storage_object.digital_object_id} - found: #{inventory.digital_object_id}"
-      end
-      if @version_id != inventory.version_id
-        raise "version mismatch - expected: #{@version_id} - found: #{inventory.version_id}"
-      end
-      true
+    # @return [VerificationResult] return result of testing correctness of version manifests
+    def verify_version_storage()
+      result = VerificationResult.new(self.composite_key)
+      result.subentities << self.verify_manifest_inventory
+      result.subentities << self.verify_version_inventory
+      result.subentities << self.verify_version_additions
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
     end
 
     # @return [Boolean] return true if the manifest inventory matches the actual files
     def verify_manifest_inventory
-      # the file to verify
+      # read/parse manifestInventory.xml
+      result = VerificationResult.new("manifest_inventory")
       manifest_inventory = self.file_inventory('manifests')
-      self.verify_version_id(manifest_inventory)
-      manifest_group = manifest_inventory.group('manifests')
-      raise "manifest group not found in #{file_pathname('manifests','manifestInventory.xml')}" if manifest_group.nil?
-      # recapture the manifest signatures
-      audit_group = FileGroup.new(:group_id=>'audit').group_from_directory(@version_pathname.join('manifests'), recursive=false)
-      # the manifest inventory does not contain a file entry for itself
-      audit_group.remove_file_having_path("manifestInventory.xml")
-      group_difference = FileGroupDifference.new.compare_file_groups(manifest_group, audit_group)
-      unless group_difference.difference_count == 0
-        raise Moab::ValidationException, "#{group_difference.difference_count} differences found in manifests for version #{version_id}"
-      end
-      true
+      result.subentities << VerificationResult.verify_value('composite_key',self.composite_key,manifest_inventory.composite_key)
+      result.subentities << VerificationResult.verify_truth('manifests_group', ! manifest_inventory.group_empty?('manifests'))
+      # measure the manifest signatures of the files in the directory (excluding manifestInventory.xml)
+      directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'),'manifests')
+      directory_inventory.digital_object_id = storage_object.digital_object_id
+      directory_group = directory_inventory.group('manifests')
+      directory_group.remove_file_having_path("manifestInventory.xml")
+      # compare the measured signatures against the values in manifestInventory.xml
+      diff = FileInventoryDifference.new
+      diff.compare(manifest_inventory,directory_inventory)
+      compare_result = VerificationResult.new('file_differences')
+      compare_result.verified = (diff.difference_count == 0)
+      compare_result.details = diff.differences_detail
+      result.subentities << compare_result
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
     end
 
-    # @return [Boolean] returns true if files & signatures listed in version inventory can all be found
-    def verify_version_inventory
-      version_inventory = self.file_inventory('version')
-      self.verify_version_id(version_inventory)
+    def verify_signature_catalog
+      result = VerificationResult.new("signature_catalog")
       signature_catalog =self.signature_catalog
+      result.subentities << VerificationResult.verify_value('signature_key',self.composite_key,signature_catalog.composite_key)
+      found = 0
+      missing = Array.new
       object_pathname = self.storage_object.object_pathname
+      signature_catalog.entries.each do |catalog_entry|
+        storage_location = object_pathname.join(catalog_entry.storage_path)
+        if storage_location.exist?
+          found += 1
+        else
+          missing << storage_location.to_s
+        end
+      end
+      file_result = VerificationResult.new("storage_location")
+      file_result.verified = (found == signature_catalog.file_count)
+      file_result.details = {
+          'expected' => signature_catalog.file_count,
+          'found' => found
+      }
+      file_result.details['missing'] = missing unless missing.empty?
+      result.subentities << file_result
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
+    end
+
+    # @return [Boolean] true if files & signatures listed in version inventory can all be found
+    def verify_version_inventory
+      result = VerificationResult.new("version_inventory")
+      version_inventory = self.file_inventory('version')
+      result.subentities << VerificationResult.verify_value('inventory_key',self.composite_key,version_inventory.composite_key)
+      signature_catalog =self.signature_catalog
+      result.subentities << VerificationResult.verify_value('signature_key',self.composite_key,signature_catalog.composite_key)
+      found = 0
+      missing = Array.new
       version_inventory.groups.each do |group|
         group.files.each do |file|
           file.instances.each do |instance|
             relative_path = File.join(group.group_id, instance.path)
             catalog_entry = signature_catalog.signature_hash[file.signature]
-            storage_location = object_pathname.join(catalog_entry.storage_path)
-            verify_file_location(relative_path,storage_location)
+            if ! catalog_entry.nil?
+              found += 1
+            else
+              missing << relative_path.to_s
+            end
           end
         end
       end
-      true
-    end
+      file_result = VerificationResult.new("catalog_entry")
+      file_result.verified = (found == version_inventory.file_count)
+      file_result.details = {
+          'expected' => version_inventory.file_count,
+          'found' => found
+      }
+      file_result.details['missing'] = missing unless missing.empty?
 
-    # @param file_id [String] The relative path of a file instance in a given version
-    # @param [Pathname] file_location The storage location of the file
-    # @return [Boolean] Return true if the file location exists, else raise an error
-    def verify_file_location(file_id,file_location)
-      if file_location.exist?
-        true
-      else
-        raise "Storage location for '#{file_id.to_s}' not found at #{file_location.to_s}"
-      end
+      result.subentities << file_result
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
     end
 
     # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
     def verify_version_additions
+      result = VerificationResult.new("version_additions")
       version_additions = self.file_inventory('additions')
-      self.verify_version_id(version_additions)
-      FileInventoryDifference.new.verify_against_directory(version_additions,@version_pathname.join('data'))
+      result.subentities << VerificationResult.verify_value('composite_key',self.composite_key,version_additions.composite_key)
+      data_directory = @version_pathname.join('data')
+      directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(data_directory)
+      diff = FileInventoryDifference.new
+      diff.compare(version_additions, directory_inventory)
+      compare_result = VerificationResult.new('file_differences')
+      compare_result.verified = (diff.difference_count == 0)
+      compare_result.details = diff.differences_detail
+      result.subentities << compare_result
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
     end
 
     # @param timestamp [Time] The time at which the deactivation was initiated.  Used to name the inactive directory

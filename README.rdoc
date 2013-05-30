@@ -91,4 +91,5 @@ Require the following:
 - <b>1.2.4</b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
 - <b>1.2.5</b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
 - <b>1.2.6</b> Fix Moab::ValidationException when manifest file not found
+- <b>1.2.7</b> Revise digital object and version storage verification to return a VerificationResult object
 

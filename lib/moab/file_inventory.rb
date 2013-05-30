@@ -54,6 +54,11 @@ module Moab
     # @return [Integer] The ordinal version number
     attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
 
+    # @return [String] The unique identifier concatenating digital object id with version id
+    def composite_key
+      @digital_object_id + '-' + StorageObject.version_dirname(@version_id)
+    end
+
     # @attribute
     # @return [Time] The datetime at which the inventory was created
     attribute :inventory_datetime, Time, :tag => 'inventoryDatetime', :on_save => Proc.new {|t| t.to_s}
@@ -94,10 +99,34 @@ module Moab
     # @return [Array<FileGroup>] The set of data groups comprising the version
     has_many :groups, FileGroup, :tag => 'fileGroup'
 
+    # @return [Array<FileGroup] The set of data groups that contain files
+    def non_empty_groups
+      @groups.select{|group| !group.files.empty?}
+    end
+
+    # @param non_empty [Boolean] if true, return group_id's only for groups having files
+    # @return [Array<String>] group identifiers contained in this file inventory
+    def group_ids(non_empty=nil)
+      groups = non_empty ? self.non_empty_groups : @groups
+      groups.map{|group| group.group_id}
+    end
+
     # @param [String] group_id The identifer of the group to be selected
     # @return [FileGroup] The file group in this inventory for the specified group_id
     def group(group_id)
       @groups.find{ |group| group.group_id == group_id}
+    end
+
+    # @param group_id [String] File group identifer (e.g. data, metadata, manifests)
+    # @return [Boolean] true if the group is missing or empty
+    def group_empty?(group_id)
+      group = self.group(group_id)
+      group.nil? or group.files.empty?
+    end
+
+    # @return [Array<String>] The data fields to include in summary reports
+    def summary_fields
+      %w{type digital_object_id version_id inventory_datetime file_count byte_count block_count groups}
     end
 
     # @param [String] group_id The identifer of the group to be selected

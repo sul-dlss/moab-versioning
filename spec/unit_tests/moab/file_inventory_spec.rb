@@ -102,7 +102,11 @@ describe 'Moab::FileInventory' do
        
       # attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
     end
-    
+
+    specify 'Moab::FileInventory#composite_key' do
+      @file_inventory.composite_key.should == "druid:jq937jp0017-v0001"
+    end
+
     # Unit test for attribute: {Moab::FileInventory#inventory_datetime}
     # Which stores: [Time] \@inventoryDatetime = The datetime at which the inventory was created
     specify 'Moab::FileInventory#inventory_datetime' do
@@ -170,6 +174,17 @@ describe 'Moab::FileInventory' do
       @file_inventory = FileInventory.parse(@v1_version_inventory.read)
     end
     
+    specify 'Moab::FileInventory#non_empty_groups' do
+      inventory = FileInventory.parse(@v1_version_inventory.read)
+      inventory.groups.size.should == 2
+      inventory.group_ids.should == ["content", "metadata"]
+      inventory.groups << FileGroup.new(:group_id => 'empty')
+      inventory.groups.size.should == 3
+      inventory.group_ids.should == ["content", "metadata", "empty"]
+      inventory.non_empty_groups.size.should == 2
+      inventory.group_ids(non_empty=true).should == ["content", "metadata"]
+    end
+
     # Unit test for method: {Moab::FileInventory#group}
     # Which returns: [FileGroup] The file group in this inventory for the specified group_id
     # For input parameters:
@@ -179,6 +194,11 @@ describe 'Moab::FileInventory' do
       group = @file_inventory.group(group_id)
       group.group_id.should == group_id
       @file_inventory.group('dummy').should == nil
+    end
+
+    specify 'Moab::FileInventory#group_empty?' do
+      @file_inventory.group_empty?('content').should == false
+      @file_inventory.group_empty?('dummy').should == true
     end
 
     # Unit test for method: {Moab::FileInventory#file_signature}
@@ -353,6 +373,76 @@ describe 'Moab::FileInventory' do
       #   self.class.write_xml_file(self, parent_dir, type)
       # end
     end
+
+    # Unit test for method: {Moab::FileInventory#summary_fields}
+    specify "Moab::FileInventory#summary_fields}" do
+      hash = @file_inventory.summary
+      hash.should == {
+          "type"=>"version",
+          "digital_object_id"=>"druid:jq937jp0017",
+          "version_id"=>1,
+          "file_count"=>11,
+          "byte_count"=>217820,
+          "block_count"=>216,
+          "inventory_datetime"=>"2012-11-13T22:23:48Z",
+          "groups" => {"metadata"=> {"group_id"=>"metadata", "file_count"=>5, "byte_count"=>11388, "block_count"=>13},
+                      "content"=> {"group_id"=>"content", "file_count"=>6, "byte_count"=>206432, "block_count"=>203}}
+      }
+      hash["type"].should == "version"
+      hash["groups"]["metadata"]["file_count"].should == 5
+
+      json = @file_inventory.to_json(summary=true)
+      "#{json}\n".should == <<-EOF
+{
+  "type": "version",
+  "digital_object_id": "druid:jq937jp0017",
+  "version_id": 1,
+  "inventory_datetime": "2012-11-13T22:23:48Z",
+  "file_count": 11,
+  "byte_count": 217820,
+  "block_count": 216,
+  "groups": {
+    "content": {
+      "group_id": "content",
+      "file_count": 6,
+      "byte_count": 206432,
+      "block_count": 203
+    },
+    "metadata": {
+      "group_id": "metadata",
+      "file_count": 5,
+      "byte_count": 11388,
+      "block_count": 13
+    }
+  }
+}
+      EOF
+
+      yaml = @file_inventory.to_yaml(summary=true)
+      "#{yaml.gsub(/!omap /,"!omap")}".should == <<-EOF
+--- !omap
+- type: version
+- digital_object_id: druid:jq937jp0017
+- version_id: 1
+- inventory_datetime: "2012-11-13T22:23:48Z"
+- file_count: 11
+- byte_count: 217820
+- block_count: 216
+- groups: !omap
+    - content: !omap
+        - group_id: content
+        - file_count: 6
+        - byte_count: 206432
+        - block_count: 203
+    - metadata: !omap
+        - group_id: metadata
+        - file_count: 5
+        - byte_count: 11388
+        - block_count: 13
+      EOF
+      
+    end
+
   
   end
 

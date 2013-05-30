@@ -83,6 +83,18 @@ module Moab
     #    each of which contains an collection of file-level differences having that change type.
     has_many :subsets, FileGroupDifferenceSubset, :tag => 'subset'
 
+    # @param change [String] the change type to search for
+    # @return [FileGroupDifferenceSubset] Find a specified subset of changes
+    def subset(change)
+      @subsets.find{ |subset| subset.change == change}
+    end
+
+    # @return [Array<String>] The data fields to include in summary reports
+    def summary_fields
+      %w{group_id difference_count identical renamed modified deleted added}
+    end
+
+
     # @api internal
     # @return [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
     def summary()

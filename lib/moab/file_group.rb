@@ -61,6 +61,12 @@ module Moab
       files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
     end
 
+    # @return [Array<String>] The data fields to include in summary reports
+    def summary_fields
+      %w{group_id file_count byte_count block_count}
+    end
+
+
     # @attribute
     # @return [Array<FileManifestation>] The set of files comprising the group
     has_many :files, FileManifestation, :tag => 'file'

@@ -80,26 +80,28 @@ module Serializer
     # @return [OrderedHash] Generate a hash from an array of objects.
     #   If the array member has a field tagged as a key, that field will be used as the hash.key.
     #   Otherwise the index position of the array member will be used as the key
-    def array_to_hash(array)
+    def array_to_hash(array,summary=false)
       item_hash = OrderedHash.new
       array.each_index do |index|
         item = array[index]
-        ikey = item.respond_to?(:key) ?  item.key : index
-        item_hash[ikey] =  item.respond_to?(:to_hash) ? item.to_hash : item
+        ikey = (item.respond_to?(:key) && item.key) ?  item.key : index
+        item_hash[ikey] =  item.respond_to?(:to_hash) ? item.to_hash(summary) : item
       end
       item_hash
     end
 
     # @api internal
     # @return [OrderedHash] Recursively generate an OrderedHash containing the object's properties
-    def to_hash
+    # @param summary [Boolean] Controls the depth and detail of recursion
+    def to_hash(summary=false)
       oh = OrderedHash.new
-      variables.each do |variable|
+      vars = summary ? variables.select{|v| summary_fields.include?(v.name)} : variables
+      vars.each do |variable|
         key = variable.options[:tag] || variable.name.to_s
         value = self.send(variable.name)
         case value
           when Array
-            oh[key] = array_to_hash(value)
+            oh[key] = array_to_hash(value,summary)
           when Serializable
             oh[key] = value.to_hash
           else
@@ -107,6 +109,11 @@ module Serializer
         end
       end
       oh
+    end
+
+    # @return [OrderedHash] Calls to_hash(summary=true)
+    def summary
+      self.to_hash(summary=true)
     end
 
     # @api internal
@@ -155,15 +162,15 @@ module Serializer
 
     # @api internal
     # @return [String] Generate JSON output from a hash of the object's variables
-    def to_json
-      hash=self.to_hash
+    def to_json(summary=false)
+      hash=self.to_hash(summary)
       JSON.pretty_generate(hash)
     end
 
     # @api internal
     # @return [String] Generate YAML output from a hash of the object's variables
-    def to_yaml
-      self.to_hash.to_yaml
+    def to_yaml(summary=false)
+      self.to_hash(summary).to_yaml
     end
 
   end

@@ -188,12 +188,15 @@ module Moab
       end
     end
 
-    # @return [Boolean] Return true if validation passes, else raise exception
+    # @return [VerificationResult] Return result of storage verfication
     def verify_object_storage
+      result = VerificationResult.new(digital_object_id)
       self.version_list.each do |version|
-        version.verify_storage
+        result.subentities << version.verify_version_storage
       end
-      true
+      result.subentities << current_version.verify_signature_catalog
+      result.verified = result.subentities.all?{|entity| entity.verified}
+      result
     end
 
     # @param recovery_path [Pathname, String] The location of the recovered object versions
@@ -202,20 +205,14 @@ module Moab
       timestamp = Time.now
       recovery_object = StorageObject.new(@digital_object_id, recovery_path, mkpath=false)
       recovery_object.versions.each do |recovery_version|
-        recovery_version.verify_manifest_inventory
         version_id = recovery_version.version_id
         storage_version = self.storage_object_version(version_id)
         # rename/save the original
         storage_version.deactivate(timestamp)
         # copy the recovered version into place
         FileUtils.cp_r(recovery_version.version_pathname.to_s,storage_version.version_pathname.to_s)
-        storage_version.verify_manifest_inventory
-        storage_version.verify_version_additions
       end
-      self.versions.each do |storage_version|
-        storage_version.verify_version_inventory
-      end
-      true
+      self
     end
 
   end

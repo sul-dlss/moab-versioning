@@ -274,6 +274,17 @@ describe 'Moab::FileGroupDifference' do
       #   self
       # end
     end
+
+    specify 'Moab::FileGroupDifference#compare_file_groups with empty group' do
+      basis_group = @v1_content
+      other_group = FileGroup.new(:group_id => "content")
+      diff = @diff.compare_file_groups(basis_group, other_group)
+      diff.difference_count.should == 6
+      diff.deleted.should == 6
+      diff.subset('deleted').count.should == 6
+      #puts JSON.pretty_generate(diff.to_hash)
+    end
+
     
     # Unit test for method: {Moab::FileGroupDifference#compare_matching_signatures}
     # Which returns: [void] For signatures that are present in both groups, report which file instances are identical or renamed

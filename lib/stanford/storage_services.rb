@@ -24,7 +24,10 @@ module Stanford
         base_version = StorageObjectVersion.new(storage_object,0)
         base_inventory = base_version.file_inventory('version')
       end
-      FileInventoryDifference.new.compare(base_inventory, new_inventory)
+      diff = FileInventoryDifference.new.compare(base_inventory, new_inventory)
+      metadata_diff = diff.group_difference('metadata')
+      diff.group_differences.delete(metadata_diff) if metadata_diff
+      diff
     end
 
     # @param new_content_metadata [String] The content metadata to be compared to the current signtature catalog

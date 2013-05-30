@@ -66,13 +66,15 @@ module Moab
     # @return [Array<FileGroupDifference>] The set of data groups comprising the version
     has_many :group_differences, FileGroupDifference, :tag => 'fileGroupDifference'
 
+    # @return [Array<String>] The data fields to include in summary reports
+    def summary_fields
+      %w{digital_object_id difference_count basis other report_datetime group_differences}
+    end
+
     # @param [String] group_id The identifer of the group to be selected
-    # @return [FileGroupDifference] The subset of this report for the specified group_id
+    # @return [FileGroupDifference] The subset of this report for the specified group_id (or nil if not found)
     def group_difference(group_id)
-      @group_differences.each do |group_difference|
-        return group_difference if group_difference.group_id == group_id
-      end
-      raise "group '#{group_id}' not found in file inventory difference report for #{@digital_object_id}"
+      @group_differences.find{ |group_difference| group_difference.group_id == group_id}
     end
 
     # @api external
@@ -85,39 +87,15 @@ module Moab
       @basis ||= basis_inventory.data_source
       @other ||= other_inventory.data_source
       @report_datetime = Time.now
-      group_ids = basis_inventory.groups.keys | other_inventory.groups.keys
+      # get a union list of all group_ids present in either inventory
+      group_ids = basis_inventory.group_ids | other_inventory.group_ids
       group_ids.each do |group_id|
-        basis_group = basis_inventory.groups.keyfind(group_id)
-        other_group = other_inventory.groups.keyfind(group_id)
-        unless (basis_group.nil? || other_group.nil?)
-         @group_differences << FileGroupDifference.new.compare_file_groups(basis_group, other_group)
-        end
+        # get a pair of groups to compare, creating a empty group if not present in the inventory
+        basis_group = basis_inventory.group(group_id) || FileGroup.new(:group_id => group_id)
+        other_group = other_inventory.group(group_id) || FileGroup.new(:group_id => group_id)
+        @group_differences << FileGroupDifference.new.compare_file_groups(basis_group, other_group)
       end
       self
-    end
-
-    # @api external
-    # @param basis_inventory [FileInventory] The inventory that is the basis of the comparison
-    # @param data_directory [Pathname,String] location of the directory to compare against the inventory
-    # @param group_id (see FileInventory#inventory_from_directory)
-    # @return [FileInventoryDifference] Returns a report showing the differences, if any, between the manifest file and the contents of the data directory
-    # @example {include:file:spec/features/differences/directory_compare_spec.rb}
-    def compare_with_directory(basis_inventory, data_directory, group_id=nil)
-      directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(data_directory,group_id)
-      compare(basis_inventory, directory_inventory)
-      self
-    end
-
-    # @api external
-    # @param (see #compare_with_directory)
-    # @return [Boolean] Returns true if the manifest file accurately represents the contents of the data directory
-    # @example {include:file:spec/features/differences/inventory_validate_spec.rb}
-    def verify_against_directory(basis_inventory, data_directory, group_id=nil)
-      compare_with_directory(basis_inventory, data_directory, group_id)
-      unless difference_count == 0
-          raise Moab::ValidationException, "#{difference_count} differences found in #{data_directory}"
-      end
-      true
     end
 
     # @api internal
@@ -129,6 +107,24 @@ module Moab
       else
         basis_inventory.digital_object_id.to_s
       end
+    end
+
+    # @return [Hash] Serializes the data and then filters it to report only the changes
+    def differences_detail
+      #return self.summary if difference_count == 0
+      inv_diff = self.to_hash
+      inv_diff["group_differences"].each_value do |group_diff|
+        delete_subsets = []
+        group_diff["subsets"].each do |change_type,subset|
+          delete_subsets << change_type if change_type == "identical" or subset["count"] == 0
+        end
+        delete_subsets.each do |change_type|
+          group_diff["subsets"].delete(change_type)
+          group_diff.delete(change_type) if change_type != "identical"
+        end
+        group_diff.delete("subsets") if group_diff["subsets"].empty?
+      end
+      inv_diff
     end
 
   end

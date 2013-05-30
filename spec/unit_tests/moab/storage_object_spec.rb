@@ -640,7 +640,8 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#verify_object_storage' do
       object_dir = @ingests.join(@obj)
       storage_object = StorageObject.new(@druid, object_dir)
-      storage_object.verify_object_storage.should == true
+      result = storage_object.verify_object_storage
+      result.verified.should == true
     end
 
     specify 'Moab::StorageObject#restore_object' do

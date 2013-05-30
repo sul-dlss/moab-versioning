@@ -160,7 +160,11 @@ describe 'Moab::SignatureCatalog' do
       @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
       @v2_inventory = FileInventory.parse(@v2_inventory_pathname.read)
     end
-    
+
+    specify 'Moab::SignatureCatalog#composite_key' do
+      @signature_catalog.composite_key.should == "druid:jq937jp0017-v0001"
+    end
+
     # Unit test for method: {Moab::SignatureCatalog#add_entry}
     # Which returns: [void] Add a new entry to the catalog and to the {#signature_hash} index
     # For input parameters:
@@ -259,7 +263,20 @@ describe 'Moab::SignatureCatalog' do
       #   version_additions
       # end
     end
-  
+
+    # Unit test for method: {Moab::SignatureCatalog#summary_fields}
+    specify "Moab::SignatureCatalog#summary_fields}" do
+      hash = @signature_catalog.summary
+      hash.should == {
+        "digital_object_id"=>"druid:jq937jp0017",
+        "version_id"=>1,
+        "catalog_datetime"=>"2012-11-13T22:24:25Z",
+        "file_count"=>11,
+        "byte_count"=>217820,
+        "block_count"=>216
+      }
+    end
+
   end
 
 end

@@ -171,45 +171,9 @@ describe 'Moab::FileInventoryDifference' do
       diff = @file_inventory_difference.compare(basis_inventory, other_inventory)
       group_diff = diff.group_difference("content")
       group_diff.group_id.should == "content"
-      lambda{diff.group_difference("dummy")}.should raise_exception(/group 'dummy' not found/)
+      diff.group_difference("dummy").should == nil
     end
-    
-    # Unit test for method: {Moab::FileInventoryDifference#compare_with_directory}
-    # Which returns: [FileInventoryDifference] Returns a report showing the differences, if any, between the manifest file and the contents of the data directory
-    # For input parameters:
-    # * basis_inventory [FileInventory] = The inventory that is the basis of the comparison
-    # * data_directory [Pathname, String] = location of the directory to compare against the inventory
-    # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories
-    specify 'Moab::FileInventoryDifference#compare_with_directory' do
-      diff = @file_inventory_difference.compare_with_directory(@v1_inventory,@v1_data_directory)
-      diff.group_differences.size.should == 2
-      diff.basis.should == "v1"
-      diff.other.should include("data/jq937jp0017/v0001/content")
-      diff.difference_count.should == 0
-      diff.digital_object_id.should == "druid:jq937jp0017|"
 
-      # def compare_with_directory(basis_inventory, data_directory, group_id=nil)
-      #   directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(data_directory,group_id)
-      #   compare(basis_inventory, directory_inventory)
-      #   self
-      # end
-    end
-    
-    # Unit test for method: {Moab::FileInventoryDifference#verify_against_directory}
-    # Which returns: [Boolean] Returns true if the manifest file accurately represents the contents of the data directory
-    # For input parameters:
-    # * basis_inventory [FileInventory] = The inventory that is the basis of the comparison
-    # * data_directory [Pathname, String] = location of the directory to compare against the inventory
-    # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories
-    specify 'Moab::FileInventoryDifference#verify_against_directory' do
-      @file_inventory_difference.verify_against_directory(@v1_inventory,@v1_data_directory).should == true
-
-      # def verify_against_directory(basis_inventory, data_directory, group_id=nil)
-      #   compare_with_directory(basis_inventory, data_directory, group_id)
-      #   difference_count == 0
-      # end
-    end
-    
     # Unit test for method: {Moab::FileInventoryDifference#common_object_id}
     # Which returns: [String] Returns either the common digitial object ID, or a concatenation of both inventory's IDs
     # For input parameters:
@@ -229,7 +193,44 @@ describe 'Moab::FileInventoryDifference' do
       #   end
       # end
     end
-    
+
+    # Unit test for method: {Moab::FileInventoryDifference#summary_fields}
+    specify "Moab::FileInventoryDifference#summary_fields}" do
+      basis_inventory = @v1_inventory
+      other_inventory = @v2_inventory
+      diff = @file_inventory_difference.compare(basis_inventory, other_inventory)
+      hash = diff.summary
+      hash.delete("report_datetime")
+      hash.should == {
+        "digital_object_id"=>"druid:jq937jp0017",
+        "basis"=>"v1",
+        "other"=>"v2",
+        "difference_count"=>6,
+        "group_differences"=> {
+           "metadata"=> { "group_id"=>"metadata", "difference_count"=>3,
+              "identical"=>2, "added"=>0, "modified"=>3, "deleted"=>0, "renamed"=>0
+           },
+           "content"=> { "group_id"=>"content", "difference_count"=>3,
+              "identical"=>3, "added"=>0, "modified"=>1,  "deleted"=>2, "renamed"=>0
+           }
+        }
+      }
+
+      #puts diff.to_yaml(summary=true)
+      #puts diff.to_json
+    end
+
+    # Unit test for method: {Moab::FileInventoryDifference#differences_detail}
+    specify "Moab::FileInventoryDifference#differences_detail}" do
+      basis_inventory = @v1_inventory
+      other_inventory = @v2_inventory
+      diff = @file_inventory_difference.compare(basis_inventory, other_inventory)
+      hash = diff.differences_detail
+      #puts JSON.pretty_generate(hash)
+      hash["group_differences"].size.should == 2
+
+    end
+
   end
 
 end

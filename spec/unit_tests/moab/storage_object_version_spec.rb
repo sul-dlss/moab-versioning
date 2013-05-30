@@ -146,6 +146,10 @@ describe 'Moab::StorageObjectVersion' do
       @temp.join(@obj).rmtree if @temp.join(@obj).exist?
     end
 
+    specify 'Moab::StorageObjectVersion#composite_key' do
+      @existing_storage_object_version.composite_key.should == "druid:jq937jp0017-v0002"
+    end
+
     # Unit test for method: {Moab::StorageObjectVersion#find_signature}
     # Which returns: [FileSignature] signature of the specified file
     # For input parameters:
@@ -491,48 +495,219 @@ describe 'Moab::StorageObjectVersion' do
       # end
     end
 
-    specify 'Moab::StorageObjectVersion#verify_version_id' do
+    specify 'Moab::StorageObjectVersion#verify_version_storage' do
       version = @existing_storage_object_version
-      manifest_inventory = version.file_inventory('manifests')
-      version.verify_version_id(manifest_inventory).should == true
-      manifest_inventory.version_id = 5
-      lambda{version.verify_version_id(manifest_inventory)}.should raise_exception(/version mismatch/)
-      manifest_inventory.digital_object_id = 'druid:my000jnk9999'
-      lambda{version.verify_version_id(manifest_inventory)}.should raise_exception(/digital_object_id mismatch/)
-    end
-
-
-    specify 'Moab::StorageObjectVersion#verify_storage' do
-      version = @existing_storage_object_version
-      version.verify_storage.should == true
+      result = version.verify_version_storage
+      #puts JSON.pretty_generate(result.to_hash(verbose=true))
+      result.verified.should == true
     end
 
     specify 'Moab::StorageObjectVersion#verify_manifest_inventory' do
       version = @existing_storage_object_version
-      version.verify_manifest_inventory.should == true
+      result = version.verify_manifest_inventory
+      result.verified.should == true
+
       version = @version_with_manifest_errors
-      lambda{version.verify_manifest_inventory}.should raise_exception(Moab::ValidationException)
+      result = version.verify_manifest_inventory
+      detail_hash = result.to_hash
+      detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
+      #puts JSON.pretty_generate(detail_hash)
+      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
+{
+  "manifest_inventory": {
+    "verified": false,
+    "details": {
+      "composite_key": {
+        "verified": true
+      },
+      "manifests_group": {
+        "verified": true
+      },
+      "file_differences": {
+        "verified": false,
+        "details": {
+          "digital_object_id": "druid:jq937jp0017",
+          "difference_count": 1,
+          "basis": "v1",
+          "other": "/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/manifests",
+          "group_differences": {
+            "manifests": {
+              "group_id": "manifests",
+              "difference_count": 1,
+              "identical": 4,
+              "added": 1,
+              "subsets": {
+                "added": {
+                  "change": "added",
+                  "count": 1,
+                  "files": {
+                    "0": {
+                      "change": "added",
+                      "basis_path": "",
+                      "other_path": "dummy1.xml",
+                      "signatures": {
+                        "0": {
+                          "size": 6,
+                          "md5": "f02e326f800ee26f04df7961adbf7c0a",
+                          "sha1": "f161ebd29699d93411cec0915c5133c0f3229a28",
+                          "sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+      EOF
     end
+
+    specify 'Moab::StorageObjectVersion#verify_signature_catalog' do
+      version = @existing_storage_object_version
+      result = version.verify_signature_catalog
+      result.verified.should == true
+      detail_hash=result.to_hash(verbose=true)
+      #puts JSON.pretty_generate(detail_hash)
+      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
+{
+  "signature_catalog": {
+    "verified": true,
+    "details": {
+      "signature_key": {
+        "verified": true,
+        "details": {
+          "found": "druid:jq937jp0017-v0002",
+          "expected": "druid:jq937jp0017-v0002"
+        }
+      },
+      "storage_location": {
+        "verified": true,
+        "details": {
+          "found": 15,
+          "expected": 15
+        }
+      }
+    }
+  }
+}
+      EOF
+      end
+
 
     specify 'Moab::StorageObjectVersion#verify_version_inventory' do
       version = @existing_storage_object_version
-      version.verify_version_inventory.should == true
-    end
-
-    specify 'Moab::StorageObjectVersion#verify_file_location' do
-      version = @existing_storage_object_version
-      file_id = 'my/file'
-      file_location = @data
-      version.verify_file_location(file_id,file_location).should == true
-      file_location = @data.join('dummy')
-      lambda{version.verify_file_location(file_id,file_location)}.should raise_exception(/Storage location for 'my\/file' not found/)
+      result = version.verify_version_inventory
+      result.verified.should == true
+      detail_hash=result.to_hash(verbose=true)
+      #puts JSON.pretty_generate(detail_hash)
+      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
+{
+  "version_inventory": {
+    "verified": true,
+    "details": {
+      "inventory_key": {
+        "verified": true,
+        "details": {
+          "found": "druid:jq937jp0017-v0002",
+          "expected": "druid:jq937jp0017-v0002"
+        }
+      },
+      "signature_key": {
+        "verified": true,
+        "details": {
+          "found": "druid:jq937jp0017-v0002",
+          "expected": "druid:jq937jp0017-v0002"
+        }
+      },
+      "catalog_entry": {
+        "verified": true,
+        "details": {
+          "found": 9,
+          "expected": 9
+        }
+      }
+    }
+  }
+}
+      EOF
     end
 
     specify 'Moab::StorageObjectVersion#verify_version_additions' do
       version = @existing_storage_object_version
-      version.verify_version_additions.should == true
+      result = version.verify_version_additions
+      result.verified.should == true
+
       version = @version_with_manifest_errors
-      lambda{version.verify_version_additions}.should raise_exception(Moab::ValidationException)
+      result = version.verify_version_additions
+      result.verified.should == false
+      detail_hash=result.to_hash(verbose=true)
+      detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
+      #puts JSON.pretty_generate(detail_hash)
+      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
+{
+  "version_additions": {
+    "verified": false,
+    "details": {
+      "composite_key": {
+        "verified": true,
+        "details": {
+          "found": "druid:jq937jp0017-v0001",
+          "expected": "druid:jq937jp0017-v0001"
+        }
+      },
+      "file_differences": {
+        "verified": false,
+        "details": {
+          "digital_object_id": "druid:jq937jp0017|",
+          "difference_count": 1,
+          "basis": "v1",
+          "other": "/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/data/content|/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/data/metadata",
+          "group_differences": {
+            "content": {
+              "group_id": "content",
+              "difference_count": 0,
+              "identical": 6
+            },
+            "metadata": {
+              "group_id": "metadata",
+              "difference_count": 1,
+              "identical": 5,
+              "added": 1,
+              "subsets": {
+                "added": {
+                  "change": "added",
+                  "count": 1,
+                  "files": {
+                    "0": {
+                      "change": "added",
+                      "basis_path": "",
+                      "other_path": "dummy2.xml",
+                      "signatures": {
+                        "0": {
+                          "size": 6,
+                          "md5": "f02e326f800ee26f04df7961adbf7c0a",
+                          "sha1": "f161ebd29699d93411cec0915c5133c0f3229a28",
+                          "sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+      EOF
+
     end
 
     specify 'Moab::StorageObjectVersion#deactivate' do

@@ -46,6 +46,11 @@ module Moab
     # @return [Integer] The ordinal version number
     attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
 
+    # @return [String] The unique identifier concatenating digital object id with version id
+    def composite_key
+      @digital_object_id + '-' + StorageObject.version_dirname(@version_id)
+    end
+
     # @attribute
     # @return [Time] The datetime at which the catalog was updated
     attribute :catalog_datetime, Time, :tag => 'catalogDatetime', :on_save => Proc.new {|t| t.to_s}
@@ -81,6 +86,11 @@ module Moab
     def block_count
       block_size=1024
       entries.inject(0) { |sum, entry| sum + (entry.signature.size.to_i + block_size - 1)/block_size }
+    end
+
+    # @return [Array<String>] The data fields to include in summary reports
+    def summary_fields
+      %w{digital_object_id version_id catalog_datetime file_count byte_count block_count groups}
     end
 
     # @attribute

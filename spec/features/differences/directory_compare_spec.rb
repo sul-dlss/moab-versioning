@@ -13,8 +13,9 @@ feature "Compare inventory against directory" do
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = FileInventory.parse(v1_inventory_pathname.read)
     opts = {}
-    file_inventory_difference = FileInventoryDifference.new(opts)
-    diff = file_inventory_difference.compare_with_directory(v1_inventory,v1_data_directory)
+    directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(v1_data_directory)
+    diff = FileInventoryDifference.new(opts)
+    diff.compare(v1_inventory, directory_inventory)
     diff.group_differences.size.should == 2
     diff.basis.should == "v1"
     diff.other.should include("data/jq937jp0017/v0001/content")
