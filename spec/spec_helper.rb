@@ -144,7 +144,7 @@ def fixture_setup
         else
           catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
       end
-      Bagger.new(inventory,catalog,data_dir,package_dir).fill_bag(:depositor)
+      Bagger.new(inventory,catalog,package_dir).fill_bag(:depositor,data_dir)
     end
   end
 

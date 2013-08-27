@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    moab-versioning (1.2.7)
+    moab-versioning (1.2.8)
       confstruct
       happymapper
       hashery (>= 2.0.0)

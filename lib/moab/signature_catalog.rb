@@ -90,7 +90,7 @@ module Moab
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{digital_object_id version_id catalog_datetime file_count byte_count block_count groups}
+      %w{digital_object_id version_id catalog_datetime file_count byte_count block_count}
     end
 
     # @attribute
