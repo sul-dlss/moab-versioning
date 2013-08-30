@@ -18,7 +18,12 @@ module Stanford
     # @param subset [String] Speciifes which subset of files to list (all|preserve|publish|shelve)
     # @param version_id [Integer] The ID of the version whosen content metadata is to be transformed
     # @return [FileInventory] The versionInventory equivalent of the contentMetadata
+    #   if the supplied content_metadata is blank or empty, then a skeletal FileInventory will be returned
     def inventory_from_cm(content_metadata, object_id, subset, version_id=nil)
+      # The contentMetadata datastream is not required for ingest, since some object types, such as collection or APO do not require one.
+      # Many of these objects have contentMetadata with no child elements, such as this:
+      #    <contentMetadata objectId="bd608mj3166" type="file"/>
+      # but there are also objects that have no datasteam of this name at all
       cm_inventory = FileInventory.new(:type=>"version",:digital_object_id=>object_id, :version_id=>version_id)
       content_group = group_from_cm(content_metadata, subset)
       cm_inventory.groups << content_group
