@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   # It will not add these as dependencies if you require dor-services for other projects
   s.add_development_dependency "awesome_print"
   s.add_development_dependency "equivalent-xml", ">=0.2.2"
-  s.add_development_dependency "lyberteam-gems-devel", ">=1.0"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rcov"
   s.add_development_dependency "rdoc"
