@@ -345,7 +345,7 @@ describe 'Serializer::Serializable' do
     # For input parameters: (None)
     specify 'Serializer::Serializable#to_json' do
       #puts JSON.pretty_generate(@v1_content.to_hash)
-     (@v1_content.to_json+"\n").gsub(/: ".*moab-versioning/,': "moab-versioning').should == <<EOF
+     (@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning').should == <<EOF
 {
   "group_id": "content",
   "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content",
@@ -363,7 +363,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "intro-1.jpg": {
           "path": "intro-1.jpg",
-          "datetime": "2012-03-26T14:20:35Z"
+          "datetime": ""
         }
       }
     },
@@ -377,7 +377,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "intro-2.jpg": {
           "path": "intro-2.jpg",
-          "datetime": "2012-03-26T14:19:30Z"
+          "datetime": ""
         }
       }
     },
@@ -391,7 +391,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "page-1.jpg": {
           "path": "page-1.jpg",
-          "datetime": "2012-03-26T15:59:14Z"
+          "datetime": ""
         }
       }
     },
@@ -405,7 +405,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "page-2.jpg": {
           "path": "page-2.jpg",
-          "datetime": "2012-03-26T15:23:36Z"
+          "datetime": ""
         }
       }
     },
@@ -419,7 +419,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "page-3.jpg": {
           "path": "page-3.jpg",
-          "datetime": "2012-03-26T15:24:39Z"
+          "datetime": ""
         }
       }
     },
@@ -433,7 +433,7 @@ describe 'Serializer::Serializable' do
       "instances": {
         "title.jpg": {
           "path": "title.jpg",
-          "datetime": "2012-03-26T14:15:11Z"
+          "datetime": ""
         }
       }
     }

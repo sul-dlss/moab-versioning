@@ -270,7 +270,7 @@ describe 'Moab::SignatureCatalog' do
       hash.should == {
         "digital_object_id"=>"druid:jq937jp0017",
         "version_id"=>1,
-        "catalog_datetime"=>"2012-11-13T22:24:25Z",
+        "catalog_datetime"=>"#{@signature_catalog.catalog_datetime}",
         "file_count"=>11,
         "byte_count"=>217820,
         "block_count"=>216

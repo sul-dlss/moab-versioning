@@ -161,7 +161,7 @@ describe 'Moab::StorageObjectVersion' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       signature.fixity.should == {:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
-      signature.size.should == 3278
+      signature.size.should == File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml'))
 
       lambda{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.should raise_exception
 
@@ -512,7 +512,7 @@ describe 'Moab::StorageObjectVersion' do
       detail_hash = result.to_hash
       detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      detail_hash.should == JSON.parse(<<-EOF
+      JSON.parse(JSON.pretty_generate(detail_hash)).should == JSON.parse(<<-EOF
       {
   "manifest_inventory": {
     "verified": false,
@@ -651,7 +651,7 @@ EOF
       detail_hash=result.to_hash(verbose=true)
       detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      detail_hash.should == JSON.parse(<<-EOF 
+      JSON.parse(JSON.pretty_generate(detail_hash)).should == JSON.parse(<<-EOF 
       {
   "version_additions": {
     "verified": false,
@@ -669,7 +669,7 @@ EOF
           "digital_object_id": "druid:jq937jp0017|",
           "difference_count": 1,
           "basis": "v1",
-          "other": "/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/data/content|/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/data/metadata",
+          "other": "#{File.expand_path("..", fixtures_directory)}/temp/jq937jp0017/v0001/data/content|#{File.expand_path("..", fixtures_directory)}/temp/jq937jp0017/v0001/data/metadata",
           "group_differences": {
             "content": {
               "group_id": "content",
