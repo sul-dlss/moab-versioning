@@ -529,7 +529,7 @@ describe 'Moab::StorageObjectVersion' do
           "digital_object_id": "druid:jq937jp0017",
           "difference_count": 1,
           "basis": "v1",
-          "other": "/Users/rnanders/Code/Ruby/moab-versioning/spec/temp/jq937jp0017/v0001/manifests",
+          "other": "#{File.expand_path('..', fixtures_directory)}/temp/jq937jp0017/v0001/manifests",
           "group_differences": {
             "manifests": {
               "group_id": "manifests",

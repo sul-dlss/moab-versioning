@@ -15,7 +15,7 @@ feature "Feature: File Inventory Serialization" do
     inventory_pathname = output_dir.join('versionInventory.xml')
     inventory_pathname.read.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
-        <fileGroup groupId="content" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content" fileCount="6" byteCount="206432" blockCount="203">
+        <fileGroup groupId="content" dataSource="#{fixtures_directory}/fixtures/data/jq937jp0017/v0001/content" fileCount="6" byteCount="206432" blockCount="203">
           <file>
             <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
             <fileInstance path="intro-1.jpg" datetime="2012-03-26T14:20:35Z"/>
@@ -41,7 +41,7 @@ feature "Feature: File Inventory Serialization" do
             <fileInstance path="title.jpg" datetime="2012-03-26T14:15:11Z"/>
           </file>
         </fileGroup>
-        <fileGroup groupId="metadata" dataSource="/Users/rnanders/Code/Ruby/moab-versioning/spec/fixtures/data/jq937jp0017/v0001/metadata" fileCount="5" byteCount="11388" blockCount="13">
+        <fileGroup groupId="metadata" dataSource="#{fixtures_directory}/moab-versioning/spec/fixtures/data/jq937jp0017/v0001/metadata" fileCount="5" byteCount="11388" blockCount="13">
           <file>
             <fileSignature size="1871" md5="8cdee9c3470552d258a4351bf4c117e2" sha1="321737e42cc4a3134164539f768514d4f7f6d184" sha256="af38d344d9aee248b01b0af9c85dffbfbd1aeb0f2c6dadf3620797ca73ab24c3"/>
             <fileInstance path="contentMetadata.xml" datetime="2012-03-28T14:04:24Z"/>
