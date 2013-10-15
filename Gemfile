@@ -4,3 +4,4 @@ source "http://rubygems.org"
 gemspec
 
 gem 'rcov', :platform => :ruby_18
+gem 'nokogiri', "~> 1.5.9"
