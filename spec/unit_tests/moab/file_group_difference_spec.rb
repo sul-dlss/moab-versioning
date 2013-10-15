@@ -174,7 +174,7 @@ describe 'Moab::FileGroupDifference' do
       deltas[:added].should ==  ["page-2.jpg"]
       deltas[:deleted].should == ["intro-1.jpg", "intro-2.jpg"]
       deltas[:modified].should == ["page-1.jpg"]
-      deltas[:copied].should == [
+      deltas[:copied].should match_array [
           {:basis=>["page-2.jpg"], :other=>["page-3.jpg"]},
           {:basis=>["page-3.jpg"], :other=>["page-4.jpg"]},
           {:basis=>["title.jpg"], :other=>["title.jpg"]}
@@ -187,7 +187,7 @@ describe 'Moab::FileGroupDifference' do
       deltas[:added].should ==  []
       deltas[:deleted].should == []
       deltas[:modified].should == []
-      deltas[:copied].should == [
+      deltas[:copied].should match_array [
           {:basis=>["a1.txt", "a2.txt", "a3.txt"], :other=>["a1.txt", "a4.txt", "a5.txt", "a6.txt"]},
           {:basis=>["b1.txt", "b2.txt"], :other=>["b1.txt"]}
       ]

@@ -17,7 +17,7 @@ feature "Import digital object version to SDR" do
     # outcome: confirmation that the bag manifest is complete
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Verify versionMetadata completeness" do
@@ -29,7 +29,7 @@ feature "Import digital object version to SDR" do
     # outcome: confirmation that the versionMetadata manifest is complete
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Verify data file fixity" do
@@ -39,7 +39,7 @@ feature "Import digital object version to SDR" do
     # outcome: true/false verification that the bag data files are not corrupted
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
 
@@ -62,7 +62,7 @@ feature "Import digital object version to SDR" do
     #       : update the storage location index
     # outcome: version's data folder containing version's files
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Create or update the storage location index" do
@@ -73,7 +73,7 @@ feature "Import digital object version to SDR" do
     #       : verify the storage location index against all versions
     # outcome: revised storage location index
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
 end

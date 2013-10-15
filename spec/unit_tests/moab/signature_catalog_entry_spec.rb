@@ -21,7 +21,7 @@ describe 'Moab::SignatureCatalogEntry' do
       opts[:version_id] = 26
       opts[:group_id] = 'Test group_id'
       opts[:path] = 'Test path'
-      opts[:signature] = mock(FileSignature.name)
+      opts[:signature] = double(FileSignature.name)
       signature_catalog_entry = SignatureCatalogEntry.new(opts)
       signature_catalog_entry.version_id.should == opts[:version_id]
       signature_catalog_entry.group_id.should == opts[:group_id]
@@ -75,7 +75,7 @@ describe 'Moab::SignatureCatalogEntry' do
     # Unit test for attribute: {Moab::SignatureCatalogEntry#signature}
     # Which stores: [FileSignature] The fixity data of the file instance
     specify 'Moab::SignatureCatalogEntry#signature' do
-      value = mock(FileSignature.name)
+      value = double(FileSignature.name)
       @signature_catalog_entry.signature= value
       @signature_catalog_entry.signature.should == value
 
@@ -103,7 +103,7 @@ describe 'Moab::SignatureCatalogEntry' do
       @signature_catalog_entry.version_id = 5
       @signature_catalog_entry.group_id = 'content'
       @signature_catalog_entry.path = 'title.jpg'
-      @signature_catalog_entry.signature = mock(FileSignature.name)
+      @signature_catalog_entry.signature = double(FileSignature.name)
     end
     
     # Unit test for method: {Moab::SignatureCatalogEntry#storage_path}

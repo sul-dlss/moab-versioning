@@ -25,9 +25,9 @@ describe 'Moab::VersionMetadataEntry' do
       opts[:significance] = 'Major'
       opts[:description] = 'Test reason'
       opts[:note] = 'Test note'
-      opts[:content_changes] = mock(FileGroupDifference.name)
-      opts[:metadata_changes] = mock(FileGroupDifference.name)
-      opts[:events] = [mock(VersionMetadataEvent.name)]
+      opts[:content_changes] = double(FileGroupDifference.name)
+      opts[:metadata_changes] = double(FileGroupDifference.name)
+      opts[:events] = [double(VersionMetadataEvent.name)]
       version_metadata_entry = VersionMetadataEntry.new(opts)
       version_metadata_entry.version_id.should == opts[:version_id]
       version_metadata_entry.significance.should == opts[:significance]
@@ -95,7 +95,7 @@ describe 'Moab::VersionMetadataEntry' do
     # Unit test for attribute: {Moab::VersionMetadataEntry#content_changes}
     # Which stores: [FileGroupDifference] \<fileGroupDifference> = Summary of content file differences since previous version
     specify 'Moab::VersionMetadataEntry#content_changes' do
-      value = mock(FileGroupDifference.name)
+      value = double(FileGroupDifference.name)
       @version_metadata_entry.content_changes= value
       @version_metadata_entry.content_changes.should == value
        
@@ -105,7 +105,7 @@ describe 'Moab::VersionMetadataEntry' do
     # Unit test for attribute: {Moab::VersionMetadataEntry#metadata_changes}
     # Which stores: [FileGroupDifference] \<fileGroupDifference> = Summary of metadata file differences since previous version
     specify 'Moab::VersionMetadataEntry#metadata_changes' do
-      value = mock(FileGroupDifference.name)
+      value = double(FileGroupDifference.name)
       @version_metadata_entry.metadata_changes= value
       @version_metadata_entry.metadata_changes.should == value
        
@@ -115,7 +115,7 @@ describe 'Moab::VersionMetadataEntry' do
     # Unit test for attribute: {Moab::VersionMetadataEntry#events}
     # Which stores: [Array<VersionMetadataEvent>] \[<event>] = Array of events with timestamps that track lifecycle stages
     specify 'Moab::VersionMetadataEntry#events' do
-      value = [mock(VersionMetadataEvent.name)]
+      value = [double(VersionMetadataEvent.name)]
       @version_metadata_entry.events= value
       @version_metadata_entry.events.should == value
        

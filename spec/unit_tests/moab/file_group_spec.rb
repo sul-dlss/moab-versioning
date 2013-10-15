@@ -380,13 +380,13 @@ describe 'Moab::FileGroup' do
           :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
       group.files[0].instances[0].path.should == 'title.jpg'
 
-      signature = mock(FileSignature)
+      signature = double(FileSignature)
       FileSignature.stub(:new).and_return(signature)
       signature.should_receive(:signature_from_file).with(pathname)
       group.add_physical_file(pathname)
 
-      signature = mock(FileSignature)
-      signature_for_path = mock(Hash)
+      signature = double(FileSignature)
+      signature_for_path = double(Hash)
       signature_for_path.should_receive(:[]).with(pathname).twice.and_return(signature)
       group.instance_variable_set(:@signatures_from_bag, signature_for_path)
       signature.should_receive(:complete?).and_return(false)

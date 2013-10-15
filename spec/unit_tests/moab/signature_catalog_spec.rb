@@ -170,8 +170,8 @@ describe 'Moab::SignatureCatalog' do
     # For input parameters:
     # * entry [SignatureCatalogEntry] = The new catalog entry 
     specify 'Moab::SignatureCatalog#add_entry' do
-      entry = mock(SignatureCatalogEntry.name)
-      entry.should_receive(:signature).and_return(mock(FileSignature.name))
+      entry = double(SignatureCatalogEntry.name)
+      entry.should_receive(:signature).and_return(double(FileSignature.name))
       @signature_catalog.add_entry(entry)
       @signature_catalog.entries.count.should == @original_entry_count + 1
        

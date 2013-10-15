@@ -22,7 +22,7 @@ describe 'Moab::VersionMetadata' do
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:versions] = [mock(VersionMetadataEntry.name)]
+      opts[:versions] = [double(VersionMetadataEntry.name)]
       version_metadata = VersionMetadata.new(opts)
       version_metadata.digital_object_id.should == opts[:digital_object_id]
       version_metadata.versions.should == opts[:versions]
@@ -55,7 +55,7 @@ describe 'Moab::VersionMetadata' do
     # Unit test for attribute: {Moab::VersionMetadata#versions}
     # Which stores: [Array<VersionMetadataEntry>] \[<version>] = An array of version metadata entries, one per version
     specify 'Moab::VersionMetadata#versions' do
-      value = [mock(VersionMetadataEntry.name)]
+      value = [double(VersionMetadataEntry.name)]
       @version_metadata.versions= value
       @version_metadata.versions.should == value
        

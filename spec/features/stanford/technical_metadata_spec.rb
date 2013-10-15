@@ -13,7 +13,7 @@ feature "Process technicalMetadata datastream" do
     # action: Generate Jhove output for only the new or modified files
     # outcome: a report containing Jhove output for selected files
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Merge new Jhove output into technicalMetadata" do
@@ -23,7 +23,7 @@ feature "Process technicalMetadata datastream" do
     #       : add technicalMetadata entries for new or updated files
     # outcome: a new technicalMetadata datastream for the new version
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Merge new technicalMetadata into contentMetadata" do
@@ -33,7 +33,7 @@ feature "Process technicalMetadata datastream" do
     #       : add contentMetadata entries for new or updated files
     # outcome: a new contentMetadata datastream for the new version
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
 end

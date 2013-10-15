@@ -12,19 +12,16 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:features) do |spec|
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+
+RSpec::Core::RakeTask.new(:features) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.spec_files = FileList['spec/features/**/*_spec.rb']
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/unit_tests/**/*.rb']
-end
-
-Spec::Rake::SpecTask.new(:rcov) do |spec|
+RSpec::Core::RakeTask.new(:rcov) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.pattern = 'spec/unit_tests/**/*.rb'
   spec.rcov = true
@@ -42,4 +39,4 @@ task :clean do
   FileUtils.rm_r('spec/fixtures/derivatives') if(File.exists? 'spec/fixtures/derivatives')
 end
 
-task :default => [:rcov, :doc]
+task :default => [:spec]

@@ -61,8 +61,8 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.read_xml_file' do
       parent_dir = @manifests.join("v1")
-      mock_pathname = mock(Pathname.name)
-      mock_xml = mock("xml")
+      mock_pathname = double(Pathname.name)
+      mock_xml = double("xml")
       SignatureCatalog.should_receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
       mock_pathname.should_receive(:read).and_return(mock_xml)
       SignatureCatalog.should_receive(:parse).with(mock_xml)
@@ -83,7 +83,7 @@ describe 'Serializer::Manifest' do
       xml_object = SignatureCatalog.read_xml_file(@manifests.join("v0001"))
       #xml_object.should_receive(:to_xml)
       output_dir = @temp
-      mock_pathname = mock(Pathname.name)
+      mock_pathname = double(Pathname.name)
       SignatureCatalog.should_receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
       mock_pathname.should_receive(:open).with('w').and_return(an_instance_of(IO))
       SignatureCatalog.write_xml_file(xml_object, output_dir)

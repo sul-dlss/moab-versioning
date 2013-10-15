@@ -12,7 +12,7 @@ describe 'Stanford::ActiveFedoraObject' do
     specify 'Stanford::ActiveFedoraObject#initialize' do
        
       # test initialization with required parameters (if any)
-      fedora_object = mock('FedoraObject')
+      fedora_object = double('FedoraObject')
       active_fedora_object = ActiveFedoraObject.new(fedora_object)
       active_fedora_object.should be_instance_of(ActiveFedoraObject)
       active_fedora_object.fedora_object.should == fedora_object
@@ -26,15 +26,15 @@ describe 'Stanford::ActiveFedoraObject' do
   
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
     
-    before(:all) do
-      fedora_object = mock('FedoraObject')
+    before(:each) do
+      fedora_object = double('FedoraObject')
       @active_fedora_object = ActiveFedoraObject.new(fedora_object)
     end
     
     # Unit test for attribute: {Stanford::ActiveFedoraObject#fedora_object}
     # Which stores: [Object] The Active Fedora representation of the Fedora Object
     specify 'Stanford::ActiveFedoraObject#fedora_object' do
-      value = mock('NewFedoraObject')
+      value = double('NewFedoraObject')
       @active_fedora_object.fedora_object= value
       @active_fedora_object.fedora_object.should == value
        
@@ -52,7 +52,7 @@ describe 'Stanford::ActiveFedoraObject' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @fedora_object = mock('FedoraObject')
+      @fedora_object = double('FedoraObject')
       @active_fedora_object = ActiveFedoraObject.new(@fedora_object)
     end
     
@@ -62,8 +62,8 @@ describe 'Stanford::ActiveFedoraObject' do
     # * ds_id [String] = The datastream identifier 
     specify 'Stanford::ActiveFedoraObject#get_datastream_content' do
       ds_id = 'Test ds_id'
-      mock_datastream = mock('datastream')
-      mock_datastreams = mock('datastreams')
+      mock_datastream = double('datastream')
+      mock_datastreams = double('datastreams')
       @active_fedora_object.fedora_object.should_receive(:datastreams).and_return(mock_datastreams)
       mock_datastreams.should_receive(:[]).with(ds_id).and_return(mock_datastream)
       mock_datastream.should_receive(:content)

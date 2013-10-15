@@ -19,8 +19,8 @@ describe 'Moab::FileManifestation' do
        
       # test initialization with options hash
       opts = OrderedHash.new
-      opts[:signature] = mock(FileSignature.name)
-      opts[:instances] = mock(FileInstance.name)
+      opts[:signature] = double(FileSignature.name)
+      opts[:instances] = double(FileInstance.name)
       file_manifestation = FileManifestation.new(opts)
       file_manifestation.signature.should == opts[:signature]
       file_manifestation.instances.should == opts[:instances]
@@ -43,7 +43,7 @@ describe 'Moab::FileManifestation' do
     # Unit test for attribute: {Moab::FileManifestation#signature}
     # Which stores: [FileSignature] The fixity data of the file instance
     specify 'Moab::FileManifestation#signature' do
-      value = mock(FileSignature.name)
+      value = double(FileSignature.name)
       @file_manifestation.signature= value
       @file_manifestation.signature.should == value
       @file_manifestation.signature= [value]
@@ -61,7 +61,7 @@ describe 'Moab::FileManifestation' do
     # Unit test for attribute: {Moab::FileManifestation#instances}
     # Which stores: [Array<FileInstance>] The location(s) of the file manifestation's file instances
     specify 'Moab::FileManifestation#instances' do
-      value = mock(FileInstance.name)
+      value = double(FileInstance.name)
       @file_manifestation.instances= value
       @file_manifestation.instances.should == value
        

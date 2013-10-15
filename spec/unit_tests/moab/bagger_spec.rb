@@ -14,8 +14,8 @@ describe 'Moab::Bagger' do
     specify 'Moab::Bagger#initialize' do
        
       # test initialization with required parameters (if any)
-      version_inventory = mock(FileInventory.name) 
-      signature_catalog = mock(SignatureCatalog.name) 
+      version_inventory = double(FileInventory.name) 
+      signature_catalog = double(SignatureCatalog.name) 
       bag_pathname = @temp.join('bag_pathname')
       bagger = Bagger.new(version_inventory, signature_catalog,  bag_pathname)
       bagger.should be_instance_of(Bagger)
@@ -40,7 +40,7 @@ describe 'Moab::Bagger' do
     # Unit test for attribute: {Moab::Bagger#version_inventory}
     # Which stores: [FileInventory] The complete inventory of the files comprising a digital object version
     specify 'Moab::Bagger#version_inventory' do
-      value = mock(FileInventory.name)
+      value = double(FileInventory.name)
       @bagger.version_inventory= value
       @bagger.version_inventory.should == value
        
@@ -56,7 +56,7 @@ describe 'Moab::Bagger' do
     # Unit test for attribute: {Moab::Bagger#signature_catalog}
     # Which stores: [SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode)
     specify 'Moab::Bagger#signature_catalog' do
-      value = mock(SignatureCatalog.name)
+      value = double(SignatureCatalog.name)
       @bagger.signature_catalog= value
       @bagger.signature_catalog.should == value
        
@@ -88,7 +88,7 @@ describe 'Moab::Bagger' do
     # Unit test for attribute: {Moab::Bagger#bag_inventory}
     # Which stores: [FileInventory] The actual inventory of the files to be packaged (derived from @version_inventory in {#fill_bag})
     specify 'Moab::Bagger#bag_inventory' do
-      value = mock(FileInventory.name)
+      value = double(FileInventory.name)
       @bagger.bag_inventory= value
       @bagger.bag_inventory.should == value
        
@@ -427,7 +427,7 @@ describe 'Moab::Bagger' do
       bag.fill_bag(:depositor,@submit_source_base)
       md5 = bag.bag_pathname.join('tagmanifest-md5.txt')
       md5.exist?.should == true
-      (md5.readlines.collect{ |line| line.split(/ /)[1] }).should == [
+      (md5.readlines.collect{ |line| line.split(/ /)[1] }).should match_array [
           "bag-info.txt\n",
           "bagit.txt\n",
           "manifest-md5.txt\n",
@@ -439,7 +439,7 @@ describe 'Moab::Bagger' do
 
       sha1 = bag.bag_pathname.join('tagmanifest-sha1.txt')
       sha1.exist?.should == true
-      (sha1.readlines.collect{ |line| line.split(/ /)[1] }).should == [
+      (sha1.readlines.collect{ |line| line.split(/ /)[1] }).should match_array [
           "bag-info.txt\n",
           "bagit.txt\n",
           "manifest-md5.txt\n",

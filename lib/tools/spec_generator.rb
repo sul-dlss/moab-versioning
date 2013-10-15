@@ -367,10 +367,10 @@ class SpecGenerator
               key, value = type[1].split(/[,]/)
               "{#{value_for(name, key)} => #{value_for(name, value)}}"
             else
-              "mock(#{return_type}.name)"
+              "double(#{return_type}.name)"
           end
         else
-          "mock(#{return_type}.name)"
+          "double(#{return_type}.name)"
         end
     end
   end

@@ -438,8 +438,8 @@ describe 'Moab::StorageObjectVersion' do
     # * new_inventory [FileInventory] = The new version's inventory
     specify 'Moab::StorageObjectVersion#update_catalog' do
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 4)
-      signature_catalog = mock(SignatureCatalog.name)
-      new_inventory = mock(FileInventory.name)
+      signature_catalog = double(SignatureCatalog.name)
+      new_inventory = double(FileInventory.name)
       signature_catalog.should_receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
       signature_catalog.should_receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
@@ -456,9 +456,9 @@ describe 'Moab::StorageObjectVersion' do
     # * old_inventory [FileInventory] = The old version's inventory
     # * new_inventory [FileInventory] = The new version's inventory
     specify 'Moab::StorageObjectVersion#generate_differences_report' do
-      old_inventory = mock(FileInventory.name)
-      new_inventory = mock(FileInventory.name)
-      mock_fid = mock(FileInventoryDifference.name)
+      old_inventory = double(FileInventory.name)
+      new_inventory = double(FileInventory.name)
+      mock_fid = double(FileInventoryDifference.name)
       FileInventoryDifference.should_receive(:new).and_return(mock_fid)
       mock_fid.should_receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
       mock_fid.should_receive(:write_xml_file)
@@ -512,8 +512,8 @@ describe 'Moab::StorageObjectVersion' do
       detail_hash = result.to_hash
       detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
-{
+      detail_hash.should == JSON.parse(<<-EOF
+      {
   "manifest_inventory": {
     "verified": false,
     "details": {
@@ -564,7 +564,8 @@ describe 'Moab::StorageObjectVersion' do
     }
   }
 }
-      EOF
+EOF
+)
     end
 
     specify 'Moab::StorageObjectVersion#verify_signature_catalog' do
@@ -573,8 +574,8 @@ describe 'Moab::StorageObjectVersion' do
       result.verified.should == true
       detail_hash=result.to_hash(verbose=true)
       #puts JSON.pretty_generate(detail_hash)
-      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
-{
+      detail_hash.should == JSON.parse(<<-EOF
+      {
   "signature_catalog": {
     "verified": true,
     "details": {
@@ -595,7 +596,8 @@ describe 'Moab::StorageObjectVersion' do
     }
   }
 }
-      EOF
+EOF
+)
       end
 
 
@@ -605,8 +607,8 @@ describe 'Moab::StorageObjectVersion' do
       result.verified.should == true
       detail_hash=result.to_hash(verbose=true)
       #puts JSON.pretty_generate(detail_hash)
-      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
-{
+      detail_hash.should == JSON.parse(<<-EOF
+      {
   "version_inventory": {
     "verified": true,
     "details": {
@@ -634,7 +636,8 @@ describe 'Moab::StorageObjectVersion' do
     }
   }
 }
-      EOF
+EOF
+)
     end
 
     specify 'Moab::StorageObjectVersion#verify_version_additions' do
@@ -648,8 +651,8 @@ describe 'Moab::StorageObjectVersion' do
       detail_hash=result.to_hash(verbose=true)
       detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
-{
+      detail_hash.should == JSON.parse(<<-EOF 
+      {
   "version_additions": {
     "verified": false,
     "details": {
@@ -706,8 +709,8 @@ describe 'Moab::StorageObjectVersion' do
     }
   }
 }
-      EOF
-
+EOF
+)
     end
 
     specify 'Moab::StorageObjectVersion#deactivate' do

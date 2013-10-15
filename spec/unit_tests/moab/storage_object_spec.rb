@@ -139,10 +139,10 @@ describe 'Moab::StorageObject' do
     # * bag_dir [Pathname, String] = The location of the bag to be ingested 
     specify 'Moab::StorageObject#ingest_bag' do
       #bag_dir = @temp.join('bag_dir')
-      #current_version = mock('version_2')
-      #signature_catalog = mock(SignatureCatalog.name)
-      #new_version = mock('version_3')
-      #new_inventory = mock(FileInventory.name)
+      #current_version = double('version_2')
+      #signature_catalog = double(SignatureCatalog.name)
+      #new_version = double('version_3')
+      #new_inventory = double(FileInventory.name)
       #@storage_object.should_receive(:current_version_id).and_return(2)
       #StorageObjectVersion.should_receive(:new).with(@storage_object,2).and_return(current_version)
       #StorageObjectVersion.should_receive(:new).with(@storage_object,3).and_return(new_version)
@@ -561,10 +561,10 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#validate_new_inventory' do
       object_dir = @ingests.join(@obj)
       storage_object = StorageObject.new(@druid, object_dir)
-      version_inventory_3 = mock(FileInventory.name+"3")
+      version_inventory_3 = double(FileInventory.name+"3")
       version_inventory_3.should_receive(:version_id).twice.and_return(3)
       lambda{storage_object.validate_new_inventory(version_inventory_3)}.should raise_exception
-      version_inventory_4 = mock(FileInventory.name+"4")
+      version_inventory_4 = double(FileInventory.name+"4")
       version_inventory_4.should_receive(:version_id).and_return(4)
       storage_object.validate_new_inventory(version_inventory_4).should == true
 

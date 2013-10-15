@@ -226,7 +226,7 @@ class ApiClass
       return_type = return_tag.types[0]
       description = confluence_translate(return_tag.text.gsub(/\n/, ' '))
     end
-    method_documentation << "|#{method.name}|#{return_type}|#{description}|\n"
+    method_documentation << "|#{method.name}|#{return_type}|#{example.description}|\n"
 
     if method.respond_to?(:docstring)
       params = method.docstring.tags(:param)
@@ -234,7 +234,7 @@ class ApiClass
         method_documentation << "\n||Parameter||Data Type||Description||\n"
         params.each do |p|
           description = confluence_translate(p.text.gsub(/\n/, ' '))
-          method_documentation << "|#{p.name}|#{p.types.join(', ')}|#{description}|\n"
+          method_documentation << "|#{p.name}|#{p.types.join(', ')}|#{example.description}|\n"
         end
       end
     end

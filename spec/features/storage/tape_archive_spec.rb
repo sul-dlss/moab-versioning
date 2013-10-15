@@ -13,7 +13,7 @@ feature "Tape archive" do
     # action: set up a TSM policy domain, policy set, and management class
     # outcome: TSM storage managment policy
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
 
@@ -34,7 +34,7 @@ feature "Tape archive" do
     # outcome: copies of the versions' files should be on tape
     #        : TSM log file and 'description' label and date for the archive
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Retrieve files of first version" do
@@ -42,7 +42,7 @@ feature "Tape archive" do
     # action: retrieve the data from tape to a temp disk location
     # outcome: disk folder containing the version's files
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
   scenario "Retrieve files of addtional versions" do
@@ -50,7 +50,7 @@ feature "Tape archive" do
     # action: retrieve the data from tape to separate temp disk locations
     # outcome: disk folders containing the versions' files
 
-    pending("need to implement '#{description}'")
+    pending("need to implement '#{example.description}'")
   end
 
 end

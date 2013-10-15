@@ -2,8 +2,8 @@
 #$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
+require 'rspec/core'
 require 'equivalent-xml'
 require 'moab_stanford'
 require 'spec_config'
@@ -11,13 +11,21 @@ require 'ap'
 
 include Stanford
 
+RSpec.configure do |config|
+  config.before(:all) {fixture_setup}
+end
+
+def fixtures_directory
+  File.expand_path('fixtures', File.dirname(__FILE__))
+end
+
 # Use Gherkin DSL syntax in specs for better readability
 # feature "<title>"  do
 #    In order to: <achieve benefit>
 #    The application needs to: <provide functionality>
 #    ...
 # end
-module Spec::DSL::Main
+module RSpec::Core::DSL
   alias feature describe
 end
 
@@ -28,8 +36,9 @@ end
 #   outcome: <to generate this result>
 #   ...
 # end
-module Spec::Example::ExampleGroupMethods
-  alias scenario example
+RSpec::Core::ExampleGroup.alias_example_to :scenario
+
+module RSpec::Core::Hooks
   alias background before
 end
 
@@ -38,7 +47,7 @@ end
 # @see https://github.com/rspec/rspec-expectations/pull/79
 # @see https://github.com/playup/diff_matcher
 # @see https://github.com/rspec/rspec-expectations/issues/97
-Spec::Matchers.define :hash_match do |expected|
+RSpec::Matchers.define :hash_match do |expected|
   diff = nil
   match do |actual|
     expected = expected.is_a?(Hash) ? expected : expected.to_hash
@@ -184,15 +193,4 @@ def fixture_setup
   #  end
   #end
 
-
-
 end
-
-
-Spec::Runner.configure do |config|
-  config.before(:all) {fixture_setup}
-  config.before(:each) {}
-  config.after(:all) {}
-  config.after(:each) {}
-end
-

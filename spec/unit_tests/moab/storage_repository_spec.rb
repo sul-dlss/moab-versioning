@@ -43,7 +43,7 @@ describe 'Moab::StorageRepository' do
     # For input parameters:
     # * object_id [String] = The identifier of the digital object whose version is desired 
     specify 'Moab::StorageRepository#storage_object' do
-      object_pathname = mock(Pathname)
+      object_pathname = double(Pathname)
       @storage_repository.stub(:storage_object_pathname).and_return(object_pathname)
       object_pathname.stub(:exist?).and_return(true)
       StorageObject.should_receive(:new).with(@obj, object_pathname)
@@ -76,9 +76,9 @@ describe 'Moab::StorageRepository' do
      end
     
     specify "Moab::StorageRepository#store_new_version" do
-      bag_pathname = mock("bag_pathname")
-      object_pathname = mock("object_pathname")
-      storage_object = mock(StorageObject)
+      bag_pathname = double("bag_pathname")
+      object_pathname = double("object_pathname")
+      storage_object = double(StorageObject)
       @storage_repository.should_receive(:storage_object).with(@druid,true).and_return(storage_object)
       storage_object.stub(:object_pathname).and_return(object_pathname)
       storage_object.should_receive(:ingest_bag).with(bag_pathname)
