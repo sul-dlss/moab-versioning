@@ -19,7 +19,7 @@ describe 'Time' do
       Time.input(nil).should == nil
       Time.input(@time_string).should == @time_class_instance
       Time.input(@time_class_instance).should == @time_class_instance
-      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError)
+      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
       lambda{Time.input(4)}.should raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.input(datetime)
@@ -44,7 +44,7 @@ describe 'Time' do
       Time.output(nil).should == nil
       Time.output(@time_string).should == "2012-04-12T19:36:07Z"
       Time.output(@time_class_instance).should == "2012-04-12T19:36:07Z"
-      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError)
+      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
       lambda{Time.output(4)}.should raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.output(datetime)
