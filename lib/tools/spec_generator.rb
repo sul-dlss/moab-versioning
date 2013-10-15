@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'hashery/orderedhash'
+require 'hashery/orderedhash' if RUBY_VERSION < '1.9'
 require 'pathname'
 require 'yard'
 include YARD

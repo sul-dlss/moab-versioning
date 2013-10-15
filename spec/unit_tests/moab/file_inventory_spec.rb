@@ -417,6 +417,10 @@ describe 'Moab::FileInventory' do
   }
 }
       EOF
+end
+
+    specify "Moab::FileInventory#summary_fields}" do
+      pending("this test does not work with 1.8 Hashery classes and 1.9 native Hashes") if RUBY_VERSION > '1.8'
 
       yaml = @file_inventory.to_yaml(summary=true)
       "#{yaml.gsub(/!omap /,"!omap")}".should == <<-EOF
