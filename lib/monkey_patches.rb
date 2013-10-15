@@ -1,3 +1,5 @@
+require 'time'
+
 # monkey-patch to fix JSON_pure
 # @see http://prettystatemachine.blogspot.com/2010/09/typeerrors-in-tojson-make-me-briefly.html
 #noinspection RubyUnusedLocalVariable
