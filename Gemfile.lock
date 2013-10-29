@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    moab-versioning (1.2.9)
+    moab-versioning (1.2.10)
       confstruct
       happymapper
       hashery (>= 2.0.0)
@@ -14,14 +14,14 @@ GEM
   remote: http://sul-gems.stanford.edu/
   specs:
     awesome_print (1.0.1)
-    confstruct (0.2.4)
+    confstruct (0.2.5)
     equivalent-xml (0.2.8)
       nokogiri (>= 1.4.3)
-    happymapper (0.4.0)
+    happymapper (0.4.1)
       libxml-ruby (~> 2.0)
-    hashery (2.1.0)
+    hashery (2.1.1)
     json (1.6.3)
-    libxml-ruby (2.3.3)
+    libxml-ruby (2.7.0)
     lyberteam-gems-devel (1.0.1)
       rake (>= 0.8.7)
       rest-client

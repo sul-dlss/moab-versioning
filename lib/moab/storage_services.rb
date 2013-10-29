@@ -18,6 +18,40 @@ module Moab
     # @return [StorageRepository] an instance of the interface to SDR storage
     @@repository = Moab::StorageRepository.new
 
+    def self.repository
+      @@repository
+    end
+
+    # @return [Array<Pathname>] A list of the filesystems currently used for storage
+    def self.storage_roots
+      @@repository.storage_roots
+    end
+
+    # @return [String] The trunk segment of the object deposit path
+    def self.deposit_trunk
+      @@repository.deposit_trunk
+    end
+
+    # @param object_id [String] The identifier of the digital object
+    # @return [Pathname] The branch segment of the object deposit path
+    def self.deposit_branch(object_id)
+      @@repository.deposit_branch(object_id)
+    end
+
+    # @param object_id [String] The identifier of the digital object
+    # @param [Object] include_deposit
+    # @return [StorageObject] The representation of a digitial object's  storage directory, which might not exist yet.
+    def self.find_storage_object(object_id, include_deposit=false)
+      @@repository.find_storage_object(object_id, include_deposit)
+    end
+
+    # @param object_id [String] The identifier of the digital object whose version is desired
+    # @param create [Boolean] If true, the object home directory should be created if it does not exist
+    # @return [StorageObject] The representation of a digitial object's storage directory, which must exist.
+    def self.storage_object(object_id, create=false)
+      @@repository.storage_object(object_id, create)
+    end
+
     # @param object_id [String] The digital object identifier of the object
     # @return [String] the location of the storage object
     def self.object_path(object_id)

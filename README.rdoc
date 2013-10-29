@@ -94,3 +94,4 @@ Require the following:
 - <b>1.2.7</b> Revise digital object and version storage verification to return a VerificationResult object
 - <b>1.2.8</b> Fixed Bagger initialization in spec_helper.rb
 - <b>1.2.9</b> Fixed Stanford::StorageServices.compare_cm_to_version to trap FileNotFoundException when fetching contentMetadata file
+- <b>1.2.10</b> Changed object storage and deposit model to allow use of multiple filesystems as storage roots

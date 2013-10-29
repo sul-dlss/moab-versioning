@@ -11,15 +11,21 @@ module Stanford
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository < Moab::StorageRepository
 
-    # @param object_id [String] The identifier of the digital object whose version is desired
-    # @return [Pathname] The location of the desired object's home directory
-    def storage_object_pathname(object_id)
+    # @param object_id [String] The identifier of the digital object
+    # @return [String] The branch segment of the object storage path
+    def storage_branch(object_id)
       case Moab::Config.path_method.to_s
         when 'druid_tree'
-          repository_home.join(druid_tree(object_id))
+          druid_tree(object_id)
         when 'druid'
-          repository_home.join(object_id.split(/:/)[-1])
+          object_id.split(/:/)[-1]
       end
+    end
+
+    # @param object_id [String] The identifier of the digital object
+    # @return [Pathname] The branch segment of the object deposit path
+    def deposit_branch(object_id)
+      object_id.split(/:/)[-1]
     end
 
     # @param object_id [String] The identifier of the digital object whose path is requested

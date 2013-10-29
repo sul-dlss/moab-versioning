@@ -11,6 +11,32 @@ describe 'Moab::StorageServices' do
       @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
     end
 
+    specify 'Moab::StorageServices.storage_roots' do
+      Moab::StorageServices.storage_roots. should == [@derivatives,@fixtures.join('newnode')]
+    end
+
+    specify 'Moab::StorageServices.deposit_trunk' do
+      Moab::StorageServices.deposit_trunk. should == 'packages'
+    end
+
+    specify 'Moab::StorageServices.deposit_branch' do
+      Moab::StorageServices.deposit_branch(@obj).should == 'jq937jp0017'
+    end
+
+    specify 'Moab::StorageServices.find_storage_object' do
+      Moab::StorageServices.repository.should_receive(:find_storage_object).with(@obj,false)
+      Moab::StorageServices.find_storage_object(@obj)
+      Moab::StorageServices.repository.should_receive(:find_storage_object).with(@obj,true)
+      Moab::StorageServices.find_storage_object(@obj,true)
+    end
+
+    specify 'Moab::StorageServices.storage_object' do
+      Moab::StorageServices.repository.should_receive(:storage_object).with(@obj,false)
+      Moab::StorageServices.storage_object(@obj)
+      Moab::StorageServices.repository.should_receive(:storage_object).with(@obj,true)
+      Moab::StorageServices.storage_object(@obj,true)
+    end
+
     specify 'Moab::StorageServices.object_path' do
       Moab::StorageServices.object_path(@digital_object_id).should match('spec/fixtures/derivatives/ingests/jq937jp0017')
     end
