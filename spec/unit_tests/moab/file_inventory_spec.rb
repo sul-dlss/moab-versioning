@@ -308,8 +308,7 @@ describe 'Moab::FileInventory' do
       bag_dir = @packages.join('v0001')
       inventory = FileInventory.new.inventory_from_bagit_bag(bag_dir)
       inventory.groups.size.should == 2
-      inventory.groups[0].group_id.should == 'content'
-      inventory.groups[1].group_id.should == 'metadata'
+      inventory.groups.collect{|group| group.group_id}.sort.should == ['content','metadata']
       inventory.file_count.should == 11
 
       #def inventory_from_bagit_bag(bag_dir)
@@ -374,8 +373,8 @@ describe 'Moab::FileInventory' do
       # end
     end
 
-    # Unit test for method: {Moab::FileInventory#summary_fields}
-    specify "Moab::FileInventory#summary_fields}" do
+    # Unit test for method: {Moab::FileInventory#summary_fields hash/json}
+    specify "Moab::FileInventory#summary_fields" do
       hash = @file_inventory.summary
       hash.should == {
           "type"=>"version",
@@ -419,59 +418,6 @@ describe 'Moab::FileInventory' do
       EOF
     end
 
-    specify "Moab::FileInventory#summary_fields}" do
-      #pending("this test does not work with 1.8 Hashery classes and 1.9 native Hashes") if RUBY_VERSION > '1.8'
-      yaml = @file_inventory.to_yaml(summary=true)
-      if RUBY_VERSION < '1.9'
-        "#{yaml.gsub(/!omap /,"!omap")}".should == <<-EOF
---- !omap
-- type: version
-- digital_object_id: druid:jq937jp0017
-- version_id: 1
-- inventory_datetime: "#{@file_inventory.inventory_datetime}"
-- file_count: 11
-- byte_count: 217820
-- block_count: 216
-- groups: !omap
-    - content: !omap
-        - group_id: content
-        - file_count: 6
-        - byte_count: 206432
-        - block_count: 203
-    - metadata: !omap
-        - group_id: metadata
-        - file_count: 5
-        - byte_count: 11388
-        - block_count: 13
-        EOF
-      else
-        yaml.should == <<-EOF
----
-type: version
-digital_object_id: druid:jq937jp0017
-version_id: 1
-inventory_datetime: '2012-11-13T22:23:48Z'
-file_count: 11
-byte_count: 217820
-block_count: 216
-groups:
-  content:
-    group_id: content
-    file_count: 6
-    byte_count: 206432
-    block_count: 203
-  metadata:
-    group_id: metadata
-    file_count: 5
-    byte_count: 11388
-    block_count: 13
-        EOF
-
-      end
-
-    end
-
-  
   end
 
 end

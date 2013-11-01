@@ -59,9 +59,9 @@ describe 'Moab::StorageRepository' do
     end
 
     specify 'Moab::StorageRepository#storage_object' do
-      mock_so = mock(StorageObject)
+      mock_so = double(StorageObject)
       @storage_repository.should_receive(:find_storage_object).twice.and_return(mock_so)
-      mock_path = mock(Pathname)
+      mock_path = double(Pathname)
       mock_so.stub(:object_pathname).and_return(mock_path)
       mock_path.stub(:exist?).and_return(false)
       lambda{@storage_repository.storage_object('jq937jp0017')}.should raise_exception(Moab::ObjectNotFoundException)
