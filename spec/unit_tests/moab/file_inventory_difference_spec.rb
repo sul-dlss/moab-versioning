@@ -208,10 +208,10 @@ describe 'Moab::FileInventoryDifference' do
         "difference_count"=>6,
         "group_differences"=> {
            "metadata"=> { "group_id"=>"metadata", "difference_count"=>3,
-              "identical"=>2, "added"=>0, "modified"=>3, "deleted"=>0, "renamed"=>0
+              "identical"=>2, "added"=>0, "modified"=>3, "deleted"=>0, "renamed"=>0, "copyadded"=>0, "copydeleted"=>0
            },
            "content"=> { "group_id"=>"content", "difference_count"=>3,
-              "identical"=>3, "added"=>0, "modified"=>1,  "deleted"=>2, "renamed"=>0
+              "identical"=>3, "added"=>0, "modified"=>1,  "deleted"=>2, "renamed"=>0, "copyadded"=>0, "copydeleted"=>0
            }
         }
       }

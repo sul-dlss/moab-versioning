@@ -65,7 +65,7 @@ describe 'Stanford::StorageServices' do
       diff.should be_instance_of(FileInventoryDifference)
       diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="3" basis="v1-contentMetadata-all" other="new-contentMetadata-all" >
-          <fileGroupDifference groupId="content" differenceCount="3" identical="3" renamed="0" modified="1" deleted="2" added="0">
+          <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" deleted="2" added="0">
             <subset change="identical" count="3">
               <file change="identical" basisPath="title.jpg" otherPath="same">
                 <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad" sha256=""/>
@@ -77,6 +77,8 @@ describe 'Stanford::StorageServices' do
                 <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2" sha256=""/>
               </file>
             </subset>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="renamed" count="0"/>
             <subset change="modified" count="1">
               <file change="modified" basisPath="page-1.jpg" otherPath="same">
@@ -105,12 +107,14 @@ describe 'Stanford::StorageServices' do
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:dd116zh0343" differenceCount="12" basis="v1-contentMetadata-shelve" other="new-contentMetadata-shelve" >
-          <fileGroupDifference groupId="content" differenceCount="12" identical="1" renamed="1" modified="1" deleted="5" added="5">
+          <fileGroupDifference groupId="content" differenceCount="12" identical="1" copyadded="0" copydeleted="0" renamed="1" modified="1" deleted="5" added="5">
             <subset change="identical" count="1">
               <file change="identical" basisPath="folder1PuSu/story1u.txt" otherPath="same">
                 <fileSignature size="7888" md5="e2837b9f02e0b0b76f526eeb81c7aa7b" sha1="61dfac472b7904e1413e0cbf4de432bda2a97627" sha256=""/>
               </file>
             </subset>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="renamed" count="1">
               <file change="renamed" basisPath="folder1PuSu/story2r.txt" otherPath="folder1PuSu/story2rr.txt">
                 <fileSignature size="5983" md5="dc2be64ae43f1c1db4a068603465955d" sha1="b8a672c1848fc3d13b5f380e15835690e24600e0" sha256=""/>
@@ -166,8 +170,10 @@ describe 'Stanford::StorageServices' do
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >
-          <fileGroupDifference groupId="content" differenceCount="8" identical="0" renamed="0" modified="0" deleted="0" added="8">
+          <fileGroupDifference groupId="content" differenceCount="8" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="8">
             <subset change="identical" count="0"/>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="renamed" count="0"/>
             <subset change="modified" count="0"/>
             <subset change="deleted" count="0"/>
@@ -209,9 +215,11 @@ describe 'Stanford::StorageServices' do
     specify 'Stanford::StorageServices.compare_cm_to_version_inventory with emtpy subset' do
       inventory_diff = <<-EOF
         <fileInventoryDifference objectId="druid:ms205ty4764" differenceCount="0" basis="v0" other="new-contentMetadata-xyz" >
-          <fileGroupDifference groupId="content" differenceCount="0" identical="0" renamed="0" modified="0" deleted="0" added="0">
+          <fileGroupDifference groupId="content" differenceCount="0" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="0">
             <subset change="identical" count="0"/>
             <subset change="renamed" count="0"/>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="modified" count="0"/>
             <subset change="deleted" count="0"/>
             <subset change="added" count="0"/>

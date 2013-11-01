@@ -338,7 +338,7 @@ describe 'Stanford::ContentInventory' do
 
     end
 
-  
+
   end
 
 end

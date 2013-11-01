@@ -21,6 +21,8 @@ class Time
     case datetime
       when nil
         nil
+      when ""
+        nil
       when String
         Time.parse(datetime)
       when Time

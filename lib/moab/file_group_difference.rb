@@ -21,9 +21,11 @@ module Moab
   # are further categorized as follows:
   # * <i>identical</i> = signature and file path is the same in both basis and other file group
   # * <i>renamed</i> = signature is unchanged, but the path has moved
-  # * <i>modified</i> = path is present in both groups, but the signature has changed
-  # * <i>deleted</i> = signature and path are only in the basis inventory
+  # * <i>copyadded</i> = duplicate copy of file was added
+  # * <i>copydeleted</i> = duplicate copy of file was deleted
+  # * <i>modified</i> = path is same in both groups, but the signature has changed
   # * <i>added</i> = signature and path are only in the other inventor
+  # * <i>deleted</i> = signature and path are only in the basis inventory
   #
   # ====Data Model
   # * {FileInventoryDifference} = compares two {FileInventory} instances based on file signatures and pathnames
@@ -40,9 +42,19 @@ module Moab
     # The name of the XML element used to serialize this objects data
     tag 'fileGroupDifference'
 
+    # @return [Hash<Symbol,FileGroupDifferenceSubset>] A set of containers (one for each change type),
+    #    each of which contains a collection of file-level differences having that change type.
+    attr_accessor :subset_hash
+
+    # @param change [String] the change type to search for
+    # @return [FileGroupDifferenceSubset] Find a specified subset of changes
+    def subset(change)
+      @subset_hash[change.to_sym]
+    end
+
     # (see Serializable#initialize)
     def initialize(opts={})
-      @subsets = Array.new
+      @subset_hash = OrderedHash.new {|hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s)}
       super(opts)
     end
 
@@ -55,43 +67,80 @@ module Moab
     attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
 
     def difference_count
-      @renamed + @modified + @deleted +@added
+      count = 0
+      @subset_hash.each do |type,subset|
+        count += subset.count if type != :identical
+      end
+      count
     end
 
     # @attribute
     # @return [Integer] How many files were unchanged
     attribute :identical, Integer, :on_save => Proc.new { |n| n.to_s }
+    def identical
+      @subset_hash[:identical].count
+    end
+
+    # @attribute
+    # @return [Integer] How many duplicate copies of files were added
+    attribute :copyadded, Integer, :on_save => Proc.new { |n| n.to_s }
+    def copyadded
+      @subset_hash[:copyadded].count
+    end
+
+    # @attribute
+    # @return [Integer] How many duplicate copies of files were deleted
+    attribute :copydeleted, Integer, :on_save => Proc.new { |n| n.to_s }
+    def copydeleted
+      @subset_hash[:copydeleted].count
+    end
 
     # @attribute
     # @return [Integer] How many files were renamed
     attribute :renamed, Integer, :on_save => Proc.new { |n| n.to_s }
+    def renamed
+      @subset_hash[:renamed].count
+    end
 
     # @attribute
     # @return [Integer] How many files were modified
     attribute :modified, Integer, :on_save => Proc.new { |n| n.to_s }
-
-    # @attribute
-    # @return [Integer] How many files were deleted
-    attribute :deleted, Integer, :on_save => Proc.new { |n| n.to_s }
+    def modified
+      @subset_hash[:modified].count
+    end
 
     # @attribute
     # @return [Integer] How many files were added
     attribute :added, Integer, :on_save => Proc.new { |n| n.to_s }
+    def added
+      @subset_hash[:added].count
+    end
+
+    # @attribute
+    # @return [Integer] How many files were deleted
+    attribute :deleted, Integer, :on_save => Proc.new { |n| n.to_s }
+    def deleted
+      @subset_hash[:deleted].count
+    end
 
     # @attribute
     # @return [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type),
     #    each of which contains an collection of file-level differences having that change type.
     has_many :subsets, FileGroupDifferenceSubset, :tag => 'subset'
 
-    # @param change [String] the change type to search for
-    # @return [FileGroupDifferenceSubset] Find a specified subset of changes
-    def subset(change)
-      @subsets.find{ |subset| subset.change == change}
+    def subsets
+      @subset_hash.values
+    end
+
+    def subsets=(array)
+      if array
+        array.each{|subset| @subset_hash[subset.change.to_sym] = subset}
+      end
     end
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{group_id difference_count identical renamed modified deleted added}
+      %w{group_id difference_count identical copyadded copydeleted renamed modified deleted added}
     end
 
 
@@ -99,47 +148,15 @@ module Moab
     # @return [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
     def summary()
       FileGroupDifference.new(
-          :group_id => @group_id,
-          :identical => @identical,
-          :renamed => @renamed,
-          :modified => @modified,
-          :deleted => @deleted,
-          :added => @added
+          :group_id => group_id,
+          :identical => identical,
+          :copyadded => copyadded,
+          :copydeleted => copydeleted,
+          :renamed => renamed,
+          :modified => modified,
+          :added => added,
+          :deleted => deleted
       )
-    end
-
-
-    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
-    def file_deltas()
-      # The hash to be returned
-      deltas = Hash.new
-      # Container for a files whose checksums matched across versions, but may have copies removed, added, or renamed
-      copied = Hash.new {|hash, key| hash[key] = {:basis=>Array.new , :other=>Array.new} }
-      # Capture the filename data
-      @subsets.each  do |subset|
-        case subset.change
-          when "added"
-            deltas[:added] = subset.files.collect {|file| file.other_path}
-          when "deleted"
-            deltas[:deleted] = subset.files.collect {|file| file.basis_path}
-          when "modified"
-            deltas[:modified] = subset.files.collect {|file| file.basis_path}
-          when "identical"
-            subset.files.each  do |instance|
-              signature = instance.signatures[0]
-              copied[signature][:basis] << instance.basis_path
-              copied[signature][:other] << instance.basis_path
-            end
-          when "renamed"
-            subset.files.each  do |instance|
-              signature = instance.signatures[0]
-              copied[signature][:basis] << instance.basis_path unless (instance.basis_path.nil? or instance.basis_path.empty?)
-              copied[signature][:other] << instance.other_path unless (instance.other_path.nil? or instance.other_path.empty?)
-            end
-        end
-      end
-      deltas[:copied] = copied.values
-      deltas
     end
 
     # @api internal
@@ -177,17 +194,18 @@ module Moab
 
     # @api internal
     # @param (see #compare_file_groups)
-    # @return [void] For signatures that are present in both groups,
+    # @return [FileGroupDifference] For signatures that are present in both groups,
     #   report which file instances are identical or renamed
     def compare_matching_signatures(basis_group, other_group)
       matching_signatures = matching_keys(basis_group.signature_hash, other_group.signature_hash)
       tabulate_unchanged_files(matching_signatures, basis_group.signature_hash, other_group.signature_hash)
       tabulate_renamed_files(matching_signatures, basis_group.signature_hash, other_group.signature_hash)
+      self
     end
 
     # @api internal
     # @param (see #compare_file_groups)
-    # @return [void] For signatures that are present in only one or the other group,
+    # @return [FileGroupDifference] For signatures that are present in only one or the other group,
     #   report which file instances are modified, deleted, or added
     def compare_non_matching_signatures(basis_group, other_group)
       basis_only_signatures = basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
@@ -195,8 +213,9 @@ module Moab
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
       tabulate_modified_files(basis_path_hash, other_path_hash)
-      tabulate_deleted_files(basis_path_hash, other_path_hash)
       tabulate_added_files(basis_path_hash, other_path_hash)
+      tabulate_deleted_files(basis_path_hash, other_path_hash)
+      self
     end
 
     # @api internal
@@ -205,10 +224,9 @@ module Moab
     #   Signature to file path mapping from the file group that is the basis of the comparison
     # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the being compared to the basis group
-    # @return [FileGroupDifferenceSubset]
+    # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'identical'
     def tabulate_unchanged_files(matching_signatures, basis_signature_hash, other_signature_hash)
-      unchanged_files = Array.new
       matching_signatures.each do |signature|
         basis_paths = basis_signature_hash[signature].paths
         other_paths = other_signature_hash[signature].paths
@@ -218,14 +236,10 @@ module Moab
           fid.basis_path = path
           fid.other_path = "same"
           fid.signatures << signature
-          unchanged_files << fid
+          @subset_hash[:identical].files << fid
         end
       end
-      unchanged_subset = FileGroupDifferenceSubset.new(:change => 'identical')
-      unchanged_subset.files = unchanged_files
-      @subsets << unchanged_subset
-      @identical = unchanged_subset.count
-      unchanged_subset
+      self
     end
 
 
@@ -235,10 +249,9 @@ module Moab
     #   Signature to file path mapping from the file group that is the basis of the comparison
     # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the being compared to the basis group
-    # @return [FileGroupDifferenceSubset]
-    #   Container for reporting the set of file-level differences of type 'renamed'
+    # @return [FileGroupDifference]
+    #   Container for reporting the set of file-level differences of type 'renamed','copyadded', or 'copydeleted'
     def tabulate_renamed_files(matching_signatures, basis_signature_hash, other_signature_hash)
-      renamed_files = Array.new
       matching_signatures.each do |signature|
         basis_paths = basis_signature_hash[signature].paths
         other_paths = other_signature_hash[signature].paths
@@ -246,18 +259,23 @@ module Moab
         other_only_paths = other_paths - basis_paths
         maxsize = [basis_only_paths.size, other_only_paths.size].max
         (0..maxsize-1).each do |n|
-          fid = FileInstanceDifference.new(:change => 'renamed')
+          fid = FileInstanceDifference.new()
           fid.basis_path = basis_only_paths[n]
           fid.other_path = other_only_paths[n]
           fid.signatures << signature
-          renamed_files << fid
+          case true
+            when fid.basis_path.nil?
+              fid.change = 'copyadded'
+              fid.basis_path = basis_paths[0]
+            when fid.other_path.nil?
+              fid.change = 'copydeleted'
+            else
+              fid.change = 'renamed'
+          end
+          @subset_hash[fid.change.to_sym].files << fid
         end
       end
-      renamed_subset = FileGroupDifferenceSubset.new(:change => 'renamed')
-      renamed_subset.files = renamed_files
-      @subsets << renamed_subset
-      @renamed = renamed_subset.count
-      renamed_subset
+      self
     end
 
 
@@ -266,23 +284,18 @@ module Moab
     #   The file paths and associated signatures for manifestations appearing only in the basis group
     # @param other_path_hash [OrderedHash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the other group
-    # @return [FileGroupDifferenceSubset]
+    # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'modified'
     def tabulate_modified_files(basis_path_hash, other_path_hash)
-      modified_files = Array.new
       matching_keys(basis_path_hash, other_path_hash).each do |path|
         fid = FileInstanceDifference.new(:change => 'modified')
         fid.basis_path = path
         fid.other_path = "same"
         fid.signatures << basis_path_hash[path]
         fid.signatures << other_path_hash[path]
-        modified_files << fid
+        @subset_hash[:modified].files << fid
       end
-      modified_subset = FileGroupDifferenceSubset.new(:change => 'modified')
-      modified_subset.files = modified_files
-      @subsets << modified_subset
-      @modified = modified_subset.count
-      modified_subset
+      self
     end
 
     # @api internal
@@ -290,45 +303,78 @@ module Moab
     #   The file paths and associated signatures for manifestations appearing only in the basis group
     # @param other_path_hash [OrderedHash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the other group
-    # @return [FileGroupDifferenceSubset]
-    #   Container for reporting the set of file-level differences of type 'deleted'
-    def tabulate_deleted_files(basis_path_hash, other_path_hash)
-      deleted_files = Array.new
-      basis_only_keys(basis_path_hash, other_path_hash).each do |path|
-        fid = FileInstanceDifference.new(:change => 'deleted')
-        fid.basis_path = path
-        fid.other_path = ""
-        fid.signatures << basis_path_hash[path]
-        deleted_files << fid
-      end
-      deleted_subset = FileGroupDifferenceSubset.new(:change => 'deleted')
-      deleted_subset.files = deleted_files
-      @subsets << deleted_subset
-      @deleted = deleted_subset.count
-      deleted_subset
-    end
-
-    # @api internal
-    # @param basis_path_hash [OrderedHash<String,FileSignature>]
-    #   The file paths and associated signatures for manifestations appearing only in the basis group
-    # @param other_path_hash [OrderedHash<String,FileSignature>]
-    #   The file paths and associated signatures for manifestations appearing only in the other group
-    # @return [FileGroupDifferenceSubset]
+    # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'added'
     def tabulate_added_files(basis_path_hash, other_path_hash)
-      added_files = Array.new
       other_only_keys(basis_path_hash, other_path_hash).each do |path|
         fid = FileInstanceDifference.new(:change => 'added')
         fid.basis_path = ""
         fid.other_path = path
         fid.signatures << other_path_hash[path]
-        added_files << fid
+        @subset_hash[:added].files << fid
       end
-      added_subset = FileGroupDifferenceSubset.new(:change => 'added')
-      added_subset.files = added_files
-      @subsets << added_subset
-      @added = added_subset.count
-      added_subset
+      self
+    end
+
+    # @api internal
+    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the basis group
+    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    #   The file paths and associated signatures for manifestations appearing only in the other group
+    # @return [FileGroupDifference]
+    #   Container for reporting the set of file-level differences of type 'deleted'
+    def tabulate_deleted_files(basis_path_hash, other_path_hash)
+      basis_only_keys(basis_path_hash, other_path_hash).each do |path|
+        fid = FileInstanceDifference.new(:change => 'deleted')
+        fid.basis_path = path
+        fid.other_path = ""
+        fid.signatures << basis_path_hash[path]
+        @subset_hash[:deleted].files << fid
+      end
+      self
+    end
+
+    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
+    def file_deltas()
+      # The hash to be returned
+      deltas = Hash.new {|hash, key| hash[key] = []}
+      # case where other_path is empty or 'same'.  (create array of strings)
+      [:identical, :modified, :deleted, :copydeleted].each do |change|
+        deltas[change].concat @subset_hash[change].files.collect{|file| file.basis_path}
+      end
+      # case where basis_path and other_path are both present.  (create array of arrays)
+      [:copyadded, :renamed].each do |change|
+        deltas[change].concat @subset_hash[change].files.collect{|file| [file.basis_path,file.other_path]}
+      end
+      # case where basis_path is empty.  (create array of strings)
+      [:added].each do |change|
+        deltas[change].concat @subset_hash[change].files.collect{|file| file.other_path}
+      end
+      deltas
+    end
+
+    # @param [Array<Array<String>>] filepairs The set of oldname, newname pairs for all files being renamed
+    # @return [Boolean] Test whether any of the new names are the same as one of the old names,
+    #    such as would be true for insertion of a new file into a page sequence, or a circular rename.
+    #    In such a case, return true, indicating that use of intermediate temporary files would be required
+    #    when updating a copy of an object's files at a given location.
+    def rename_require_temp_files(filepairs)
+      # Split the filepairs into two arrays
+      oldnames = []
+      newnames = []
+      filepairs.each do |old,new|
+        oldnames << old
+        newnames << new
+      end
+      # Are any of the filenames the same in set of oldnames and set of newnames?
+      intersection = oldnames & newnames
+      intersection.count > 0
+    end
+
+    # @param [Array<Array<String>>] filepairs The set of oldname, newname pairs for all files being renamed
+    # @return [Array<Array<String>>] a set of file triples containing oldname, tempname, newname
+    def rename_tempfile_triplets(filepairs)
+      filepairs.collect{|old,new| [old, new, "#{new}-#{Time.now.strftime('%Y%m%d%H%H%S')}-tmp"]}
     end
 
   end

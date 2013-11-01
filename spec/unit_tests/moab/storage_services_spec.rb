@@ -185,7 +185,7 @@ describe 'Moab::StorageServices' do
       differences=Moab::StorageServices.version_differences(@digital_object_id,2,3)
       differences.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="6" basis="v2" other="v3" >
-          <fileGroupDifference groupId="content" differenceCount="3" identical="2" renamed="2" modified="0" deleted="0" added="1">
+          <fileGroupDifference groupId="content" differenceCount="3" identical="2" copyadded="0" copydeleted="0" renamed="2" modified="0" deleted="0" added="1">
             <subset change="identical" count="2">
               <file change="identical" basisPath="page-1.jpg" otherPath="same">
                 <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed" sha256="b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"/>
@@ -202,6 +202,8 @@ describe 'Moab::StorageServices' do
                 <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2" sha256="7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"/>
               </file>
             </subset>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="modified" count="0"/>
             <subset change="deleted" count="0"/>
             <subset change="added" count="1">
@@ -210,7 +212,7 @@ describe 'Moab::StorageServices' do
               </file>
             </subset>
           </fileGroupDifference>
-          <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" renamed="0" modified="3" deleted="0" added="0">
+          <fileGroupDifference groupId="metadata" differenceCount="3" identical="2" copyadded="0" copydeleted="0" renamed="0" modified="3" deleted="0" added="0">
             <subset change="identical" count="2">
               <file change="identical" basisPath="descMetadata.xml" otherPath="same">
                 <fileSignature size="3055" md5="19c96e98dd25dd68c493faa6a0fde4d0" sha1="541d5845cc866d7676fa43c337b3f7a59f597487" sha256="a575d9058a56d77a4e65e2b1bedb619686a03d5f717374bd0df98d422432e1fe"/>
@@ -234,6 +236,8 @@ describe 'Moab::StorageServices' do
                 <fileSignature size="589" md5="ab28cda36767a2ca0ca7aa8322ee6516" sha1="6fc850a1b106a1b039a597d319e821845150d85a" sha256="db9a480e829d17aa26b19ce2d52f5cc12c3cc99b4f30e6c0a217d41bd38a6298"/>
               </file>
             </subset>
+            <subset change="copyadded" count="0"/>
+            <subset change="copydeleted" count="0"/>
             <subset change="deleted" count="0"/>
             <subset change="added" count="0"/>
           </fileGroupDifference>
