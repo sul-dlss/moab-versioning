@@ -100,6 +100,13 @@ describe 'Moab::StorageObject' do
       #   @object_pathname
       # end
     end
+
+    specify 'Moab::StorageObject#storage_root' do
+      value = @temp.join('storage_root')
+      @storage_object.storage_root= value
+      @storage_object.storage_root.should == value
+    end
+
   
   end
   
@@ -111,6 +118,7 @@ describe 'Moab::StorageObject' do
       @temp_object_dir = @temp_ingests.join(@obj)
       @storage_object = StorageObject.new(@druid,@temp_object_dir)
       @storage_object.initialize_storage
+      @storage_object.storage_root= @fixtures.join('derivatives')
     end
 
     after(:all) do
@@ -132,7 +140,15 @@ describe 'Moab::StorageObject' do
       #   @object_pathname.mkpath
       # end
     end
+
+    specify 'Moab::StorageObject#deposit_home' do
+      @storage_object.deposit_home.should == @packages
+    end
     
+    specify 'Moab::StorageObject#deposit_bag_pathname' do
+       @storage_object.deposit_bag_pathname.should == @packages.join('jq937jp0017')
+     end
+
     # Unit test for method: {Moab::StorageObject#ingest_bag}
     # Which returns: [void] Ingest a new object version contained in a bag into this objects storage area
     # For input parameters:

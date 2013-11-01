@@ -113,7 +113,7 @@ describe 'Moab::FileGroupDifference' do
     # Unit test for attribute: {Moab::FileGroupDifference#subsets}
     # Which stores: [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type), each of which contains an collection of file-level differences having that change type.
     specify 'Moab::FileGroupDifference#subsets' do
-      @file_group_difference.subsets.size.should == 5
+      @file_group_difference.subsets.size.should >= 5
        
       # has_many :subsets, FileGroupDifferenceSubset
     end
@@ -165,32 +165,6 @@ describe 'Moab::FileGroupDifference' do
       #       :added => @added
       #   )
       # end
-    end
-
-    # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
-    specify 'Moab::FileGroupDifference#file_deltas' do
-      @diff.compare_file_groups(@v1_content, @v3_content)
-      deltas = @diff.file_deltas
-      deltas[:added].should ==  ["page-2.jpg"]
-      deltas[:deleted].should == ["intro-1.jpg", "intro-2.jpg"]
-      deltas[:modified].should == ["page-1.jpg"]
-      deltas[:copied].should match_array [
-          {:basis=>["page-2.jpg"], :other=>["page-3.jpg"]},
-          {:basis=>["page-3.jpg"], :other=>["page-4.jpg"]},
-          {:basis=>["title.jpg"], :other=>["title.jpg"]}
-      ]
-      v1 = FileGroup.new.group_from_directory(@fixtures.join('data/duplicates/v0001'))
-      v2 = FileGroup.new.group_from_directory(@fixtures.join('data/duplicates/v0002'))
-      @diff = FileGroupDifference.new
-      @diff.compare_file_groups(v1,v2)
-      deltas = @diff.file_deltas
-      deltas[:added].should ==  []
-      deltas[:deleted].should == []
-      deltas[:modified].should == []
-      deltas[:copied].should match_array [
-          {:basis=>["a1.txt", "a2.txt", "a3.txt"], :other=>["a1.txt", "a4.txt", "a5.txt", "a6.txt"]},
-          {:basis=>["b1.txt", "b2.txt"], :other=>["b1.txt"]}
-      ]
     end
 
     # Unit test for method: {Moab::FileGroupDifference#matching_keys}
@@ -281,10 +255,78 @@ describe 'Moab::FileGroupDifference' do
       diff = @diff.compare_file_groups(basis_group, other_group)
       diff.difference_count.should == 6
       diff.deleted.should == 6
-      diff.subset('deleted').count.should == 6
       #puts JSON.pretty_generate(diff.to_hash)
     end
 
+    specify 'Moab::FileGroupDifference#compare_file_groups copyadded, copydeleted, renamed' do
+      basis_group_string = <<-EOF
+          <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="3" byteCount="6368941" blockCount="6222">
+            <file>
+              <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
+              <fileInstance path="Original-1" datetime=""/>
+              <fileInstance path="Copy-removed" datetime=""/>
+            </file>
+            <file>
+              <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
+              <fileInstance path="Original-2" datetime=""/>
+            </file>
+            <file>
+              <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
+              <fileInstance path="Original-3" datetime=""/>
+            </file>
+          </fileGroup>
+      EOF
+      other_group_string = <<-EOF
+          <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="2" byteCount="3186054" blockCount="3113">
+            <file>
+              <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
+              <fileInstance path="Original-1" datetime=""/>
+            </file>
+            <file>
+              <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
+              <fileInstance path="Original-2" datetime=""/>
+              <fileInstance path="Copy-added" datetime=""/>
+            </file>
+            <file>
+              <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
+              <fileInstance path="File-renamed" datetime=""/>
+            </file>
+          </fileGroup>
+      EOF
+      basis_group = FileGroup.parse(basis_group_string)
+      other_group = FileGroup.parse(other_group_string)
+      diff = @diff.compare_file_groups(basis_group, other_group)
+      #puts diff.to_xml
+      diff.difference_count.should == 3
+      diff.identical.should == 2
+      diff.copyadded.should == 1
+      diff.copydeleted.should == 1
+      diff.renamed.should == 1
+      diff.subset_hash[:copyadded].to_xml.should be_equivalent_to(<<-EOF
+        <subset change="copyadded" count="1">
+          <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
+            <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
+          </file>
+        </subset>
+      EOF
+      )
+      diff.subset_hash[:copydeleted].to_xml.should be_equivalent_to(<<-EOF
+        <subset change="copydeleted" count="1">
+          <file change="copydeleted" basisPath="Copy-removed" otherPath="">
+            <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
+          </file>
+        </subset>
+      EOF
+      )
+      diff.subset_hash[:renamed].to_xml.should be_equivalent_to(<<-EOF
+         <subset change="renamed" count="1">
+          <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
+            <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
+          </file>
+        </subset>
+       EOF
+      )
+    end
     
     # Unit test for method: {Moab::FileGroupDifference#compare_matching_signatures}
     # Which returns: [void] For signatures that are present in both groups, report which file instances are identical or renamed
@@ -318,8 +360,8 @@ describe 'Moab::FileGroupDifference' do
       other_group = @v3_content
       @diff.compare_non_matching_signatures(basis_group, other_group)
       @diff.subsets.size.should == 3
-      (@diff.subsets.collect {|s| s.change}).should == ["modified", "deleted", "added"]
-      (@diff.subsets.collect {|s| s.files.size}).should == [1, 2, 1]
+      (@diff.subsets.collect {|s| s.change}).should == ["modified", "added", "deleted"]
+      (@diff.subsets.collect {|s| s.files.size}).should == [1, 1, 2]
       @diff.modified.should == 1
       @diff.deleted.should == 2
       @diff.added.should == 1
@@ -350,7 +392,8 @@ describe 'Moab::FileGroupDifference' do
            {:size=>"19125", :md5=>"a5099878de7e2e064432d6df44ca8827", :sha1=>"c0ccac433cf02a6cee89c14f9ba6072a184447a2", :sha256=>"7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"},
            {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}]
 
-      unchanged_subset = @diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+      @diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+      unchanged_subset = @diff.subset('identical')
       unchanged_subset.should be_instance_of(FileGroupDifferenceSubset)
       unchanged_subset.change.should == 'identical'
       unchanged_subset.files.size.should == 1
@@ -397,7 +440,8 @@ describe 'Moab::FileGroupDifference' do
           {:size=>"39450", :md5=>"82fc107c88446a3119a51a8663d1e955", :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5", :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"},
           {:size=>"19125", :md5=>"a5099878de7e2e064432d6df44ca8827", :sha1=>"c0ccac433cf02a6cee89c14f9ba6072a184447a2", :sha256=>"7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"},
           {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}]
-      renamed_subset = @diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+      @diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+      renamed_subset = @diff.subset('renamed')
       renamed_subset.should be_instance_of(FileGroupDifferenceSubset)
       renamed_subset.change.should == 'renamed'
       renamed_subset.files.size.should == 2
@@ -456,7 +500,8 @@ describe 'Moab::FileGroupDifference' do
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
-      modified_subset = @diff.tabulate_modified_files(basis_path_hash, other_path_hash)
+      @diff.tabulate_modified_files(basis_path_hash, other_path_hash)
+      modified_subset = @diff.subset('modified')
       modified_subset.should be_instance_of(FileGroupDifferenceSubset)
       modified_subset.change.should == 'modified'
       modified_subset.files.size.should == 1
@@ -504,7 +549,8 @@ describe 'Moab::FileGroupDifference' do
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
-      deleted_subset = @diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
+      @diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
+      deleted_subset = @diff.subset('deleted')
       deleted_subset.should be_instance_of(FileGroupDifferenceSubset)
       deleted_subset.change.should == 'deleted'
       deleted_subset.files.size.should == 2
@@ -553,7 +599,8 @@ describe 'Moab::FileGroupDifference' do
       other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
       basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
-      added_subset = @diff.tabulate_added_files(basis_path_hash, other_path_hash)
+      @diff.tabulate_added_files(basis_path_hash, other_path_hash)
+      added_subset = @diff.subset('added')
       added_subset.should be_instance_of(FileGroupDifferenceSubset)
       added_subset.change.should == 'added'
       added_subset.files.size.should == 1
@@ -580,7 +627,70 @@ describe 'Moab::FileGroupDifference' do
       #   added_subset
       # end
     end
-  
+
+    specify 'Moab::FileGroupDifference  parse xml' do
+      fixture = @ingests.join('jq937jp0017','v0003','manifests','fileInventoryDifference.xml')
+      fid = FileInventoryDifference.parse(IO.read(fixture))
+      fgd = fid.group_difference('content')
+      fgd.subsets.count.should >= 5
+      fgd.subset('identical').files.count.should == 2
+      fgd.subset('renamed').files.count.should == 2
+      fgd.subset('renamed').files[0].basis_path.should == "page-2.jpg"
+      fgd.subset('renamed').files[0].other_path.should == "page-3.jpg"
+      fgd.subset('modified').files.count.should == 0
+      fgd.subset('deleted').files.count.should == 0
+      fgd.subset('added').files.count.should == 1
+      fgd.subset('added').files[0].other_path.should == "page-2.jpg"
+    end
+
+    specify 'Moab::FileGroupDifference#file_deltas' do
+      deltas = @diff.file_deltas
+      deltas.should ==
+        {
+            :identical => [],
+             :modified => [],
+              :deleted => [],
+          :copydeleted => [],
+            :copyadded => [],
+              :renamed => [],
+                :added => []
+        }
+      basis_group = @v1_content
+      other_group = @v3_content
+      @diff.compare_file_groups(basis_group, other_group)
+      deltas = @diff.file_deltas
+      #ap deltas, {:index=>false, :multiline=>false}
+      deltas.should ==
+        {
+              :identical => [ "title.jpg" ],
+               :modified => [ "page-1.jpg" ],
+                :deleted => [ "intro-1.jpg", "intro-2.jpg" ],
+            :copydeleted => [],
+              :copyadded => [],
+                :renamed => [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ],
+                  :added => [ "page-2.jpg" ]
+        }
+    end
+
+    specify 'Moab::FileGroupDifference#renames_require_temp_files' do
+      renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
+      @diff.rename_require_temp_files(renamed).should == true
+      renamed = [ [ "page-1.jpg", "page-1b.jpg" ], [ "page-2.jpg", "page-2b.jpg" ] ]
+      @diff.rename_require_temp_files(renamed).should == false
+    end
+
+    specify 'Moab::FileGroupDifference#renames_require_temp_files' do
+      renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
+      triplets = @diff.rename_tempfile_triplets(renamed)
+      #ap result, {:index=>false, :multiline=>false}
+      triplets[0][0].should == "page-2.jpg"
+      triplets[0][1].should == "page-3.jpg"
+      triplets[0][2].should match /^page-3.jpg.*-tmp$/
+      triplets[1][0].should == "page-3.jpg"
+      triplets[1][1].should == "page-4.jpg"
+      triplets[1][2].should match /^page-4.jpg.*-tmp$/
+    end
+
   end
 
 end

@@ -5,75 +5,70 @@ describe 'Moab::StorageRepository' do
   
   describe '=========================== CONSTRUCTOR ===========================' do
     
-    # Unit test for constructor: {Moab::StorageRepository#initialize}
-    # Which returns an instance of: [Moab::StorageRepository]
-    # For input parameters:
-    # * repository_home [Pathname, String] = The location of the root directory of the repository storage node 
     specify 'Moab::StorageRepository#initialize' do
        
-      storage_repository_default = Moab::StorageRepository.new()
-      storage_repository_default.should be_instance_of(Moab::StorageRepository)
-      storage_repository_default.repository_home.to_s.should =~ /fixtures\/derivatives\/ingest/
-
+      storage_repository = Moab::StorageRepository.new()
+      storage_repository.should be_instance_of(Moab::StorageRepository)
     end
   
   end
   
   describe '=========================== INSTANCE METHODS ===========================' do
-    
+
     before(:each) do
       @storage_repository = Moab::StorageRepository.new()
       @object_id = @druid
 
     end
     
-    # Unit test for method: {Moab::StorageRepository#repository_home}
-    # Which returns: [Pathname] The location of the root directory of the repository storage node
-    # For input parameters: (None)
-    specify 'Moab::StorageRepository#repository_home' do
-      @storage_repository.repository_home.to_s.should =~ /fixtures\/derivatives\/ingest/
-
-      # def repository_home
-      #   Pathname.new(Moab::Config.repository_home)
-      # end
+    specify 'Moab::StorageRepository#storage_roots' do
+      @storage_repository.storage_roots[0].should == @fixtures.join('derivatives')
+      @storage_repository.storage_roots[1].should == @fixtures.join('newnode')
     end
 
-    # Unit test for method: {Moab::StorageRepository#storage_object}
-    # Which returns: [StorageObject] The representation of the desired object storage directory
-    # For input parameters:
-    # * object_id [String] = The identifier of the digital object whose version is desired 
+    specify 'Moab::StorageRepository#storage_trunk' do
+      @storage_repository.storage_trunk.should == 'ingests'
+    end
+
+    specify 'Moab::StorageRepository#deposit_trunk' do
+      @storage_repository.deposit_trunk.should == 'packages'
+    end
+
+    specify 'Moab::StorageRepository#storage_branch' do
+      @storage_repository.storage_branch('abcdef').should == 'ab/cd/ef/abcdef'
+    end
+
+    specify 'Moab::StorageRepository#deposit_branch' do
+      @storage_repository.deposit_branch('abcdef').should == 'abcdef'
+    end
+
+    specify 'Moab::StorageRepository#find_storage_root' do
+      @storage_repository.find_storage_root('abcdef').should  == @fixtures.join('newnode')
+      @storage_repository.stub(:storage_branch).and_return('jq937jp0017')
+      @storage_repository.find_storage_root('jq937jp0017').should == @derivatives
+      @storage_repository.stub(:storage_trunk).and_return('junk')
+      lambda{@storage_repository.find_storage_root('abcdef')}.should raise_exception(/Storage area not found/)
+    end
+
+    specify 'Moab::StorageRepository#find_storage_object' do
+      @storage_repository.stub(:storage_branch).and_return('jq937jp0017')
+      so = @storage_repository.find_storage_object('jq937jp0017')
+      so.object_pathname.should == @derivatives.join('ingests/jq937jp0017')
+      so.deposit_bag_pathname.should == @derivatives.join('packages/jq937jp0017')
+
+    end
+
     specify 'Moab::StorageRepository#storage_object' do
-      object_pathname = double(Pathname)
-      @storage_repository.stub(:storage_object_pathname).and_return(object_pathname)
-      object_pathname.stub(:exist?).and_return(true)
-      StorageObject.should_receive(:new).with(@obj, object_pathname)
-      @storage_repository.storage_object(@obj)
+      mock_so = mock(StorageObject)
+      @storage_repository.should_receive(:find_storage_object).twice.and_return(mock_so)
+      mock_path = mock(Pathname)
+      mock_so.stub(:object_pathname).and_return(mock_path)
+      mock_path.stub(:exist?).and_return(false)
+      lambda{@storage_repository.storage_object('jq937jp0017')}.should raise_exception(Moab::ObjectNotFoundException)
 
-      object_pathname.stub(:exist?).and_return(false)
-      object_pathname.should_receive(:mkpath)
-      StorageObject.should_receive(:new).with(@obj, object_pathname)
-      @storage_repository.storage_object(@obj,create=true)
-
-      object_pathname.stub(:exist?).and_return(false)
-      lambda{@storage_repository.storage_object(@obj)}.should raise_exception(Moab::ObjectNotFoundException)
+      mock_path.should_receive(:mkpath)
+      @storage_repository.storage_object('jq937jp0017',create=true)
     end
-    
-    # Unit test for method: {Moab::StorageRepository#storage_object_pathname}
-    # Which returns: [Pathname] The location of the desired object's home directory (default=pairtree)
-    # For input parameters:
-    # * object_id [String] = The identifier of the digital object whose version is desired 
-    specify 'Moab::StorageRepository#storage_object_pathname' do
-      pathname = @storage_repository.storage_object_pathname(@obj)
-      pathname.to_s.include?('ingests/jq/93/7j/p0/01/7/jq937jp0017').should == true
-
-      # def storage_object_pathname(object_id)
-      #   #todo This method should be customized, or overridden in a subclass
-      #   # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
-      #   path_segments = object_id.scan(/..?/) << object_id
-      #   object_path = path_segments.join(File::SEPARATOR).gsub(/:/,'_')
-      #   repository_home.join(object_path)
-      # end
-     end
     
     specify "Moab::StorageRepository#store_new_version" do
       bag_pathname = double("bag_pathname")

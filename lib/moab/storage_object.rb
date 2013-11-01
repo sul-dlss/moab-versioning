@@ -25,6 +25,9 @@ module Moab
     # @return [Pathname] The location of the object's storage home directory
     attr_accessor :object_pathname
 
+    # @return [Pathname] The location of the storage filesystem that contains (or will contain) the object
+    attr_accessor :storage_root
+
     # @param object_id [String] The digital object identifier
     # @param object_dir [Pathname,String] The location of the object's storage home directory
     def initialize(object_id, object_dir, mkpath=false)
@@ -44,12 +47,22 @@ module Moab
         @object_pathname.mkpath
     end
 
+    # @return [Pathname] The absolute location of the area in which bags are deposited
+    def deposit_home
+      storage_root.join(StorageServices.deposit_trunk)
+    end
+
+    # @return [Pathname] The absolute location of this object's deposit bag
+    def deposit_bag_pathname
+      deposit_home.join(StorageServices.deposit_branch(digital_object_id))
+    end
+
     # @api external
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
     # @return [void] Ingest a new object version contained in a bag into this objects storage area
     # @example {include:file:spec/features/storage/ingest_spec.rb}
-    def ingest_bag(bag_dir)
-      bag_dir = Pathname.new(bag_dir)
+    def ingest_bag(bag_dir=deposit_bag_pathname)
+      bag_dir = Pathname(bag_dir)
       current_version = StorageObjectVersion.new(self,current_version_id)
       current_inventory = current_version.file_inventory('version')
       new_version = StorageObjectVersion.new(self,current_version_id + 1)
@@ -116,6 +129,7 @@ module Moab
     # @return [Array<Integer>] The list of all version ids for this object
     def version_id_list
       list = Array.new
+      return list unless @object_pathname.exist?
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
         if vnum.match /^v(\d+)$/
