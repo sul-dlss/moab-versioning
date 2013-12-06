@@ -52,14 +52,14 @@ module Moab
 
     # @attribute
     # @return [Time] The datetime at which the report was run
-    attribute :report_datetime, Time, :tag => 'reportDatetime', :on_save => Proc.new {|t| t.to_s}
+    attribute :report_datetime, Time, :tag => 'reportDatetime', :on_save => Proc.new {|t| UtcTime.output(t)}
 
     def report_datetime=(datetime)
-      @report_datetime=Time.input(datetime)
+      @report_datetime=UtcTime.input(datetime)
     end
 
     def report_datetime
-      Time.output(@report_datetime)
+      UtcTime.output(@report_datetime)
     end
 
     # @attribute

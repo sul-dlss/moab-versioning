@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-# Unit tests for class {Time}
-describe 'Time' do
+# Unit tests for class {UtcTime}
+describe 'UtcTime' do
   
   describe '=========================== CLASS METHODS ===========================' do
     
@@ -15,12 +15,12 @@ describe 'Time' do
     # Which returns: [void] Store the input datetime as a Time object
     # For input parameters:
     # * datetime [Time, String, Nil] = The input datetime 
-    specify 'Time.input' do
-      Time.input(nil).should == nil
-      Time.input(@time_string).should == @time_class_instance
-      Time.input(@time_class_instance).should == @time_class_instance
-      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      lambda{Time.input(4)}.should raise_exception(RuntimeError,'unknown time format 4')
+    specify 'UtcTime.input' do
+      UtcTime.input(nil).should == nil
+      UtcTime.input(@time_string).should == @time_class_instance
+      UtcTime.input(@time_class_instance).should == @time_class_instance
+      expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
+      lambda{UtcTime.input(4)}.should raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.input(datetime)
       #   case datetime
@@ -40,12 +40,12 @@ describe 'Time' do
     # Which returns: [String] Format the datetime into a ISO 8601 formatted string
     # For input parameters:
     # * datetime [Time, String, Nil] = The datetime value to output 
-    specify 'Time.output' do
-      Time.output(nil).should == nil
-      Time.output(@time_string).should == "2012-04-12T19:36:07Z"
-      Time.output(@time_class_instance).should == "2012-04-12T19:36:07Z"
-      expect { Time.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      lambda{Time.output(4)}.should raise_exception(RuntimeError,'unknown time format 4')
+    specify 'UtcTime.output' do
+      UtcTime.output(nil).should == nil
+      UtcTime.output(@time_string).should == "2012-04-12T19:36:07Z"
+      UtcTime.output(@time_class_instance).should == "2012-04-12T19:36:07Z"
+      expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
+      lambda{UtcTime.output(4)}.should raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.output(datetime)
       #   case datetime
@@ -58,30 +58,6 @@ describe 'Time' do
       #     else
       #       raise "unknown time format #{datetime.inspect}"
       #   end
-      # end
-    end
-  
-  end
-  
-  describe '=========================== CONSTRUCTOR ===========================' do
-  
-  end
-  
-  describe '=========================== INSTANCE METHODS ===========================' do
-    
-    before(:each) do
-      @time = Time.parse("Apr 12 19:36:07 UTC 2012")
-      
-    end
-    
-    # Unit test for method: {Time#to_s}
-    # Which returns: [String] The datetime in ISO 8601 format
-    # For input parameters: (None)
-    specify 'Time#to_s' do
-      @time.to_s().should == "2012-04-12T19:36:07Z"
-       
-      # def to_s
-      #   self.utc.iso8601
       # end
     end
   

@@ -96,3 +96,6 @@ Require the following:
 - <b>1.2.9</b> Fixed Stanford::StorageServices.compare_cm_to_version to trap FileNotFoundException when fetching contentMetadata file
 - <b>1.2.10</b> Changed object storage and deposit model to allow use of multiple filesystems as storage roots
 - <b>1.2.11</b> Enhanced FileGroupDifferences report to include duplicate copy added or deleted
+- <b>1.3.0</b> Make compatible with Ruby 1.9
+- <b>1.3.1</b> Merge 1.2.11 changes
+- <b>1.3.2</b> Avoid monkey-patching of Time class to fix a conflict with Rails

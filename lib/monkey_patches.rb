@@ -10,15 +10,11 @@ class Fixnum
   end
 end
 
-# Make the default output from a Time variable be formatted in ISO 8601 format
-class Time
-  # @return [String] The datetime in ISO 8601 format
-  def to_s
-    self.utc.iso8601
-  end
+# Timestamp conversion methods.
+class UtcTime
 
   # @param datetime [Time,String,Nil] The input datetime
-  # @return [void] Store the input datetime as a Time object
+  # @return [void] Convert input datetime to a Time object, or nil if input is empty.
   def self.input(datetime)
     case datetime
       when nil
@@ -35,7 +31,7 @@ class Time
   end
 
   # @param datetime [Time,String,Nil] The datetime value to output
-  # @return [String] Format the datetime into a ISO 8601 formatted string
+  # @return [String] Convert the datetime into a ISO 8601 formatted string
   def self.output(datetime)
     case datetime
       when nil

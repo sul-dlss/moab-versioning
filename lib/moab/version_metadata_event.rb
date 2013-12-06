@@ -32,14 +32,14 @@ module Moab
 
     # @attribute
     # @return [Time] The date and time of an event
-    attribute :datetime, Time, :on_save => Proc.new {|t| t.to_s}
+    attribute :datetime, Time, :on_save => Proc.new {|t| UtcTime.output(t)}
 
     def datetime=(event_datetime)
-      @datetime=Time.input(event_datetime)
+      @datetime=UtcTime.input(event_datetime)
     end
 
     def datetime
-      Time.output(@datetime)
+      UtcTime.output(@datetime)
     end
 
   end
