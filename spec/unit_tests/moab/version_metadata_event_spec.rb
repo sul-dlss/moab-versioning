@@ -56,7 +56,7 @@ describe 'Moab::VersionMetadataEvent' do
       @version_metadata_event.datetime= Time.parse("Apr 12 19:36:07 UTC 2012")
       @version_metadata_event.datetime.should == "2012-04-12T19:36:07Z"
       @version_metadata_event.datetime= nil
-      @version_metadata_event.datetime.should == nil
+      @version_metadata_event.datetime.should == ""
        
       # def datetime=(event_datetime)
       #   @datetime=Time.input(event_datetime)

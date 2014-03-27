@@ -34,8 +34,8 @@ class UtcTime
   # @return [String] Convert the datetime into a ISO 8601 formatted string
   def self.output(datetime)
     case datetime
-      when nil
-        nil
+      when nil, ""
+        ""
       when String
         Time.parse(datetime).utc.iso8601
       when Time

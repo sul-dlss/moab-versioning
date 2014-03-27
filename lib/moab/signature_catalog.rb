@@ -52,8 +52,8 @@ module Moab
     end
 
     # @attribute
-    # @return [Time] The datetime at which the catalog was updated
-    attribute :catalog_datetime, Time, :tag => 'catalogDatetime', :on_save => Proc.new {|t| UtcTime.output(t)}
+    # @return [String] The datetime at which the catalog was updated
+    attribute :catalog_datetime, Time, :tag => 'catalogDatetime'
 
     def catalog_datetime=(datetime)
       @catalog_datetime=UtcTime.input(datetime)

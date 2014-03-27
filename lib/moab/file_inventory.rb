@@ -60,8 +60,8 @@ module Moab
     end
 
     # @attribute
-    # @return [Time] The datetime at which the inventory was created
-    attribute :inventory_datetime, Time, :tag => 'inventoryDatetime', :on_save => Proc.new {|t| UtcTime.output(t)}
+    # @return [String] The datetime at which the inventory was created
+    attribute :inventory_datetime, String, :tag => 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
       @inventory_datetime=UtcTime.input(datetime)

@@ -30,8 +30,8 @@ module Moab
     attribute :path, String, :key => true
 
     # @attribute
-    # @return [Time] gsub(/\n/,' ')
-    attribute :datetime, Time, :on_save => Proc.new {|t| UtcTime.output(t)}
+    # @return [String] gsub(/\n/,' ')
+    attribute :datetime, String
 
     def datetime=(event_datetime)
       @datetime=UtcTime.input(event_datetime)

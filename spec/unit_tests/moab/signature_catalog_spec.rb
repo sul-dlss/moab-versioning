@@ -277,6 +277,13 @@ describe 'Moab::SignatureCatalog' do
       }
     end
 
+    specify "Serialization to string using HappyMapper to_xml" do
+      signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
+      signature_catalog.catalog_datetime=""
+      text = signature_catalog.to_xml
+      text.should =~ /signatureCatalog/
+    end
+
   end
 
 end

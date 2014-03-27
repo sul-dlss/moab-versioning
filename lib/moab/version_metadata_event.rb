@@ -31,8 +31,8 @@ module Moab
 
 
     # @attribute
-    # @return [Time] The date and time of an event
-    attribute :datetime, Time, :on_save => Proc.new {|t| UtcTime.output(t)}
+    # @return [String] The date and time of an event
+    attribute :datetime, String
 
     def datetime=(event_datetime)
       @datetime=UtcTime.input(event_datetime)

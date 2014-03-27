@@ -41,7 +41,7 @@ describe 'UtcTime' do
     # For input parameters:
     # * datetime [Time, String, Nil] = The datetime value to output 
     specify 'UtcTime.output' do
-      UtcTime.output(nil).should == nil
+      UtcTime.output(nil).should == ""
       UtcTime.output(@time_string).should == "2012-04-12T19:36:07Z"
       UtcTime.output(@time_class_instance).should == "2012-04-12T19:36:07Z"
       expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"

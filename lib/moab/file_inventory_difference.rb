@@ -51,8 +51,8 @@ module Moab
     attribute :other, String
 
     # @attribute
-    # @return [Time] The datetime at which the report was run
-    attribute :report_datetime, Time, :tag => 'reportDatetime', :on_save => Proc.new {|t| UtcTime.output(t)}
+    # @return [String] The datetime at which the report was run
+    attribute :report_datetime, String, :tag => 'reportDatetime'
 
     def report_datetime=(datetime)
       @report_datetime=UtcTime.input(datetime)
