@@ -23,7 +23,7 @@ else
   OrderedHash = Hash
 end
 require 'json'
-require 'json/pure'
+#require 'json/pure'
 require 'pathname'
 require 'fileutils'
 require 'time'
