@@ -13,6 +13,13 @@ include Stanford
 
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}
+  # Use Gherkin DSL syntax in specs for better readability
+  # scenario "<title>" do
+  #   given: <inputs>
+  #   action: <the application does>
+  #   outcome: <to generate this result>
+  #   ...
+  # end
   config.alias_example_to :scenario
 end
 
@@ -30,13 +37,6 @@ module RSpec::Core::DSL
   alias feature describe
 end
 
-# Use Gherkin DSL syntax in specs for better readability
-# scenario "<title>" do
-#   given: <inputs>
-#   action: <the application does>
-#   outcome: <to generate this result>
-#   ...
-# end
 
 module RSpec::Core::Hooks
   alias background before
