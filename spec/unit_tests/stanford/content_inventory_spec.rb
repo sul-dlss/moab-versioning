@@ -42,7 +42,9 @@ describe 'Stanford::ContentInventory' do
     specify 'Stanford::ContentInventory#inventory_from_cm' do
       version_id = 2
       inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
-      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(inventory.to_xml)
+      xmlObj1.xpath('//@inventoryDatetime').remove
+      xmlTest = <<-EOF
         <fileInventory type="version" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -64,12 +66,16 @@ describe 'Stanford::ContentInventory' do
           </fileGroup>
         </fileInventory>
       EOF
-      )
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       version_id = 1
       inventory = ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
-      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(inventory.to_xml)
+      xmlObj1.xpath('//@inventoryDatetime').remove
+      xmlTest = <<-EOF
         <fileInventory type="version" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
           <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
             <file>
@@ -107,7 +113,9 @@ describe 'Stanford::ContentInventory' do
           </fileGroup>
         </fileInventory>
       EOF
-      )
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       # def inventory_from_cm(content_metadata, object_id, version_id=nil)
       #   cm_inventory = FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
@@ -121,21 +129,23 @@ describe 'Stanford::ContentInventory' do
     # testing boundary case where all subset attributes ar no (e.g. shelve='no')
     specify 'Stanford::ContentInventory#inventory_from_cm with empty subset' do
       empty_inventory = <<-EOF
-              <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
-                <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
-              </fileInventory>
-            EOF
+        <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
+          <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
+        </fileInventory>
+      EOF
       druid = 'druid:ms205ty4764'
       version_id = 1
-      subset = 'shelve'
-      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
-      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
-      subset = 'publish'
-      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
-      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
-      subset = 'preserve'
-      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
-      inventory.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(empty_inventory.gsub(/subset/,subset))
+      subsets = %w(shelve publish preserve)
+      subsets.each do |subset|
+        inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+        #diff.should be_instance_of(FileInventoryDifference)
+        xmlObj1 = Nokogiri::XML(inventory.to_xml)
+        xmlObj1.xpath('//@inventoryDatetime').remove
+        xmlObj2 = Nokogiri::XML(empty_inventory)
+        xmlObj2.xpath('//@dataSource').each {|d| d.value = d.value.gsub(/subset/, subset) }
+        same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+        same.should be true
+      end
     end
 
     # Unit test for method: {Stanford::ContentInventory#group_from_cm}
@@ -219,9 +229,11 @@ describe 'Stanford::ContentInventory' do
       directory = @data.join('v0002/content')
       recursive = true
       group= FileGroup.new.group_from_directory(directory, recursive)
-      cm = @content_inventory.generate_content_metadata(group,@digital_object_id, @version_id)
+      cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
+      xmlObj1 = Nokogiri::XML(cm)
+      xmlObj1.xpath('//@datetime').remove
       #puts cm
-      cm.gsub(/datetime=".*Z"/,'').should be_equivalent_to(<<-EOF
+      xmlTest = <<-EOF
         <contentMetadata type="sample" objectId="jq937jp0017">
           <resource type="version" sequence="1" id="version-2">
             <file preserve="yes" publish="yes"  size="32915" id="page-1.jpg" shelve="yes">
@@ -246,8 +258,10 @@ describe 'Stanford::ContentInventory' do
             </file>
           </resource>
         </contentMetadata>
-        EOF
-        )
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       # def generate_content_metadata(file_group, object_id, version_id)
       #   cm = Nokogiri::XML::Builder.new do |xml|
@@ -294,9 +308,10 @@ describe 'Stanford::ContentInventory' do
     specify 'Stanford::ContentInventory#remediate_content_metadata' do
       cm = @fixtures.join('bad_data','contentMetadata-missing-fixity.xml').read
       directory = @data.join('v0001/content')
-      group= FileGroup.new.group_from_directory(directory, recursive=true)
-      ng_xml =  @content_inventory.remediate_content_metadata(cm,group)
-      ng_xml.should be_equivalent_to( <<-EOF
+      group = FileGroup.new.group_from_directory(directory, recursive=true)
+      ng_xml = @content_inventory.remediate_content_metadata(cm, group)
+      xmlObj1 = Nokogiri::XML(ng_xml)
+      xmlTest = <<-EOF
         <contentMetadata type="sample" objectId="druid:jq937jp0017">
           <resource type="version" sequence="1" id="version-1">
             <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
@@ -326,7 +341,9 @@ describe 'Stanford::ContentInventory' do
           </resource>
         </contentMetadata>
       EOF
-      )
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       cm_bad_size = cm.sub(/40873/,'37804')
       lambda{@content_inventory.remediate_content_metadata(cm_bad_size,group)}.

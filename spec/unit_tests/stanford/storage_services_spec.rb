@@ -14,7 +14,8 @@ describe 'Stanford::StorageServices' do
 
     specify 'Stanford::StorageServices.cm_remediate' do
       remediated_cm = StorageServices.cm_remediate(@digital_object_id,1)
-      remediated_cm.should be_equivalent_to( <<-EOF
+      xmlObj1 = Nokogiri::XML(remediated_cm)
+      xmlTest = <<-EOF
       <contentMetadata type="sample" objectId="druid:jq937jp0017">
           <resource type="version" sequence="1" id="version-1">
               <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
@@ -50,7 +51,9 @@ describe 'Stanford::StorageServices' do
           </resource>
       </contentMetadata>
       EOF
-      )
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
     end
 
 
@@ -63,7 +66,9 @@ describe 'Stanford::StorageServices' do
     specify 'Stanford::StorageServices.compare_cm_to_version_inventory' do
       diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata, @druid, 'all', 1)
       diff.should be_instance_of(FileInventoryDifference)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(diff.to_xml)
+      xmlObj1.xpath('//@reportDatetime').remove
+      xmlTest = <<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="3" basis="v1-contentMetadata-all" other="new-contentMetadata-all" >
           <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" deleted="2" added="0">
             <subset change="identical" count="3">
@@ -97,15 +102,19 @@ describe 'Stanford::StorageServices' do
             <subset change="added" count="0"/>
           </fileGroupDifference>
         </fileInventoryDifference>
-        EOF
-      )
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       StorageServices.should_receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(diff.to_xml)
+      xmlObj1.xpath('//@reportDatetime').remove
+      xmlTest = <<-EOF
         <fileInventoryDifference objectId="druid:dd116zh0343" differenceCount="12" basis="v1-contentMetadata-shelve" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="12" identical="1" copyadded="0" copydeleted="0" renamed="1" modified="1" deleted="5" added="5">
             <subset change="identical" count="1">
@@ -162,13 +171,17 @@ describe 'Stanford::StorageServices' do
             </subset>
           </fileGroupDifference>
         </fileInventoryDifference>
-        EOF
-      )
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       druid = "druid:no000non0000"
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(diff.to_xml)
+      xmlObj1.xpath('//@reportDatetime').remove
+      xmlTest = <<-EOF
         <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="8" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="8">
             <subset change="identical" count="0"/>
@@ -206,8 +219,10 @@ describe 'Stanford::StorageServices' do
           </fileGroupDifference>
         </fileInventoryDifference>
       EOF
-      )
-       
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
+
     end
 
     # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
@@ -226,19 +241,19 @@ describe 'Stanford::StorageServices' do
           </fileGroupDifference>
         </fileInventoryDifference>
       EOF
-
       druid = 'druid:ms205ty4764'
       version_id = 1
-      subset = 'shelve'
-      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
-      diff.should be_instance_of(FileInventoryDifference)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
-      subset = 'publish'
-      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
-      subset = 'preserve'
-      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
-      diff.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(inventory_diff.gsub(/xyz/,subset))
+      subsets = %w(shelve publish preserve)
+      subsets.each do |subset|
+        diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
+        diff.should be_instance_of(FileInventoryDifference)
+        xmlObj1 = Nokogiri::XML(diff.to_xml)
+        xmlObj1.xpath('//@reportDatetime').remove
+        xmlObj2 = Nokogiri::XML(inventory_diff)
+        xmlObj2.xpath('//@other').each {|o| o.value = o.value.gsub(/xyz/, subset) }
+        same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+        same.should be true
+      end
     end
 
     # Unit test for method: {Stanford::StorageServices.cm_version_additions}
@@ -253,7 +268,9 @@ describe 'Stanford::StorageServices' do
       version_id = 78 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, @druid, 1)
       adds.should be_instance_of(FileInventory)
-      adds.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(adds.to_xml)
+      xmlObj1.xpath('//@inventoryDatetime').remove
+      xmlTest = <<-EOF
         <fileInventory type="additions" objectId="druid:jq937jp0017" versionId=""  fileCount="1" byteCount="32915" blockCount="33">
           <fileGroup groupId="content" dataSource="" fileCount="1" byteCount="32915" blockCount="33">
             <file>
@@ -262,12 +279,16 @@ describe 'Stanford::StorageServices' do
             </file>
           </fileGroup>
         </fileInventory>
-        EOF
-      )
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, "druid:no000non0000", nil)
       adds.should be_instance_of(FileInventory)
-      adds.to_xml.gsub(/inventoryDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(adds.to_xml)
+      xmlObj1.xpath('//@inventoryDatetime').remove
+      xmlTest = <<-EOF
         <fileInventory type="additions" objectId="druid:no000non0000" versionId=""  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -288,9 +309,10 @@ describe 'Stanford::StorageServices' do
             </file>
           </fileGroup>
         </fileInventory>
-        EOF
-      )
-
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
     end
 
   end

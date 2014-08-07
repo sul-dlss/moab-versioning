@@ -13,7 +13,11 @@ feature "Feature: Manifest Serialization" do
     catalog_object = SignatureCatalog.read_xml_file(@manifests.join("v0001"))
     catalog_object.write_xml_file(output_dir)
     catalog_pathname = output_dir.join('signatureCatalog.xml')
-    catalog_pathname.read.gsub(/catalogDatetime=".*?"/,'').should be_equivalent_to( <<-EOF
+    xmlObj1 = Nokogiri::XML(catalog_pathname.read)
+    xmlObj1.xpath('//@catalogDatetime').remove
+    output_dir.rmtree
+
+    catalog_test = <<-EOF
       <signatureCatalog objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <entry originalVersion="1" groupId="content" storagePath="intro-1.jpg">
           <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
@@ -50,8 +54,9 @@ feature "Feature: Manifest Serialization" do
         </entry>
       </signatureCatalog>
     EOF
-    )
-    output_dir.rmtree
+    xmlObj2 = Nokogiri::XML(catalog_test)
+    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+    same.should be true
   end
 
 end

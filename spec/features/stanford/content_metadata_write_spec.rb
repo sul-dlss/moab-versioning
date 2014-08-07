@@ -11,11 +11,14 @@ feature "Write contentMetadata datastream" do
 
     directory = @data.join('v0002/content')
     recursive = true
-    group= FileGroup.new.group_from_directory(directory, recursive)
+    group = FileGroup.new.group_from_directory(directory, recursive)
     digital_object_id = @obj
     version_id = 2
-    cm = ContentInventory.new.generate_content_metadata(group,digital_object_id, version_id)
-    cm.gsub(/datetime="[^"]*"/,'').should be_equivalent_to(<<-EOF
+    cm = ContentInventory.new.generate_content_metadata(group, digital_object_id, version_id)
+    xmlObj1 = Nokogiri::XML(cm)
+    xmlObj1.xpath('//@datetime').remove
+
+    cm_test = <<-EOF
       <contentMetadata type="sample" objectId="jq937jp0017">
         <resource type="version" sequence="1" id="version-2">
           <file publish="yes"  preserve="yes" size="32915" shelve="yes" id="page-1.jpg">
@@ -41,7 +44,9 @@ feature "Write contentMetadata datastream" do
         </resource>
       </contentMetadata>
     EOF
-  )
+    xmlObj2 = Nokogiri::XML(cm_test)
+    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+    same.should be true
   end
 
 

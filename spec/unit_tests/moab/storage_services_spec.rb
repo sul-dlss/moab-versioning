@@ -62,22 +62,25 @@ describe 'Moab::StorageServices' do
     # For input parameters:
     # * object_id [String] = The digital object identifier of the object
     specify 'Moab::StorageServices.version_metadata' do
-      Moab::StorageServices.version_metadata(@digital_object_id).read.should be_equivalent_to(<<-EOF
-          <versionMetadata objectId="druid:jq937jp0017">
-            <version versionId="1" label="1.0" significance="major">
-              <description>Initial version</description>
-            </version>
-            <version versionId="2" label="2.0" significance="minor">
-              <description>Editing page-1 and removing intro files</description>
-              <note>content change</note>
-            </version>
-            <version versionId="3" label="2.1" significance="minor">
-              <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
-              <note>page insertion</note>
-            </version>
-          </versionMetadata>
-        EOF
-        )
+      xmlObj1 = Nokogiri::XML(Moab::StorageServices.version_metadata(@digital_object_id).read)
+      xmlTest = <<-EOF
+        <versionMetadata objectId="druid:jq937jp0017">
+          <version versionId="1" label="1.0" significance="major">
+            <description>Initial version</description>
+          </version>
+          <version versionId="2" label="2.0" significance="minor">
+            <description>Editing page-1 and removing intro files</description>
+            <note>content change</note>
+          </version>
+          <version versionId="3" label="2.1" significance="minor">
+            <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
+            <note>page insertion</note>
+          </version>
+        </versionMetadata>
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
 
       # def self.version_metadata(object_id)
       #   self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
@@ -183,7 +186,9 @@ describe 'Moab::StorageServices' do
     # * compare_version_id [Object] = The identifier of the version to be compared to the base version
     specify 'Moab::StorageServices.version_differences' do
       differences=Moab::StorageServices.version_differences(@digital_object_id,2,3)
-      differences.to_xml.gsub(/reportDatetime=".*?"/,'').should be_equivalent_to(<<-EOF
+      xmlObj1 = Nokogiri::XML(differences.to_xml)
+      xmlObj1.xpath('//@reportDatetime').remove
+      xmlTest = <<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="6" basis="v2" other="v3" >
           <fileGroupDifference groupId="content" differenceCount="3" identical="2" copyadded="0" copydeleted="0" renamed="2" modified="0" deleted="0" added="1">
             <subset change="identical" count="2">
@@ -242,8 +247,10 @@ describe 'Moab::StorageServices' do
             <subset change="added" count="0"/>
           </fileGroupDifference>
         </fileInventoryDifference>
-        EOF
-        )
+      EOF
+      xmlObj2 = Nokogiri::XML(xmlTest)
+      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
+      same.should be true
     end
 
   end
