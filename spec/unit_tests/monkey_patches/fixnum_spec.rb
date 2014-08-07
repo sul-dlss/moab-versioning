@@ -14,7 +14,7 @@ describe 'Fixnum' do
     # Which returns: [String] The string value of the number
     # For input parameters: (None)
     specify 'Fixnum#to_json' do
-      @fixnum.to_json().should == "13579"
+      expect(@fixnum.to_json()).to eq("13579")
        
       # def to_json(options = nil)
       #   to_s

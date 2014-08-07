@@ -8,7 +8,7 @@ feature "Import digital object version to SDR" do
 
   end
 
-  scenario "Verify bag manifest completeness" do
+  scenario "Verify bag manifest completeness" do |example|
     # given: a Bagit bag manifest for each checksum type
     #      : the new version's versionMetadata datastream
     #      : the previous version's versionManifest (unless first version)
@@ -17,10 +17,10 @@ feature "Import digital object version to SDR" do
     # outcome: confirmation that the bag manifest is complete
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
-  scenario "Verify versionMetadata completeness" do
+  scenario "Verify versionMetadata completeness" do |example|
     # given: the Bagit bag manifest for each checksum type
     #      : the new version manifest
     #      : the existing index of storage location by file signature
@@ -29,17 +29,17 @@ feature "Import digital object version to SDR" do
     # outcome: confirmation that the versionMetadata manifest is complete
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
-  scenario "Verify data file fixity" do
+  scenario "Verify data file fixity" do |example|
     # given: the Bagit bag containing a subset of object files
     #      : the bag manifest
     # action: verify bag manifest against the files in the bag's data folder
     # outcome: true/false verification that the bag data files are not corrupted
     #        : detailed report of any discrepancies
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
 
@@ -51,10 +51,10 @@ feature "Import digital object version to SDR" do
     #       : and any version-level metadata files, such as logs
     # outcome: version storage folder
 
-    pending("need to implement '#description' functionality")
+    skip("need to implement '#description' functionality")
   end
 
-  scenario "Copy unique data files to storage folder of new version" do
+  scenario "Copy unique data files to storage folder of new version" do |example|
     # given: the Bagit bag containing a subset of object files
     #      : the bag manifest
     #      : the existing index of storage location by file signature
@@ -62,10 +62,10 @@ feature "Import digital object version to SDR" do
     #       : update the storage location index
     # outcome: version's data folder containing version's files
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
-  scenario "Create or update the storage location index" do
+  scenario "Create or update the storage location index" do |example|
     # given: version's data folder containing version's files
     #      : the bag manifest
     #      : the existing index of storage location by file signature
@@ -73,7 +73,7 @@ feature "Import digital object version to SDR" do
     #       : verify the storage location index against all versions
     # outcome: revised storage location index
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
 end

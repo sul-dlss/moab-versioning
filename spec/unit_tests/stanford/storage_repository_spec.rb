@@ -8,7 +8,7 @@ describe 'Stanford::StorageRepository' do
      specify 'Stanford::StorageRepository#initialize' do
        
       storage_repository = StorageRepository.new()
-      storage_repository.should be_instance_of(Stanford::StorageRepository)
+      expect(storage_repository).to be_instance_of(Stanford::StorageRepository)
 
     end
   
@@ -27,18 +27,18 @@ describe 'Stanford::StorageRepository' do
       Moab::Config.configure do
         path_method :druid_tree
       end
-      @storage_repository.storage_branch(@object_id).to_s.should == 'jq/937/jp/0017/jq937jp0017'
+      expect(@storage_repository.storage_branch(@object_id).to_s).to eq('jq/937/jp/0017/jq937jp0017')
 
       Moab::Config.configure do
         path_method :druid
       end
-      @storage_repository.storage_branch(@object_id).to_s.should == 'jq937jp0017'
+      expect(@storage_repository.storage_branch(@object_id).to_s).to eq('jq937jp0017')
 
     end
     
     specify 'Stanford::StorageRepository#druid_tree' do
-      @storage_repository.druid_tree(@object_id).should == "jq/937/jp/0017/jq937jp0017"
-      lambda{@storage_repository.druid_tree('123cd456nm')}.should raise_exception
+      expect(@storage_repository.druid_tree(@object_id)).to eq("jq/937/jp/0017/jq937jp0017")
+      expect{@storage_repository.druid_tree('123cd456nm')}.to raise_exception
     end
   
   end

@@ -26,7 +26,7 @@ feature "Create reconstructed digital object for a version" do
 
     files = Array.new
     reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-    files.sort.should == [
+    expect(files.sort).to eq([
         "reconstructs",
         "reconstructs/v0001",
         "reconstructs/v0001/bag-info.txt",
@@ -97,7 +97,7 @@ feature "Create reconstructed digital object for a version" do
         "reconstructs/v0003/tagmanifest-sha1.txt",
         "reconstructs/v0003/tagmanifest-sha256.txt",
         "reconstructs/v0003/versionInventory.xml"
-    ]
+    ])
     reconstructs_dir.rmtree if reconstructs_dir.exist?
   end
 

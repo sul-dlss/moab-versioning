@@ -14,7 +14,7 @@ describe 'Moab::FileSignature' do
       # test initialization with required parameters (if any)
       opts = {}
       file_signature = FileSignature.new(opts)
-      file_signature.should be_instance_of(FileSignature)
+      expect(file_signature).to be_instance_of(FileSignature)
        
       # test initialization with options hash
       opts = OrderedHash.new
@@ -22,9 +22,9 @@ describe 'Moab::FileSignature' do
       opts[:md5] = 'Test md5'
       opts[:sha1] = 'Test sha1'
       file_signature = FileSignature.new(opts)
-      file_signature.size.should == opts[:size]
-      file_signature.md5.should == opts[:md5]
-      file_signature.sha1.should == opts[:sha1]
+      expect(file_signature.size).to eq(opts[:size])
+      expect(file_signature.md5).to eq(opts[:md5])
+      expect(file_signature.sha1).to eq(opts[:sha1])
        
       # def initialize(opts={})
       #   super(opts)
@@ -45,7 +45,7 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#size' do
       value = 19
       @file_signature.size= value
-      @file_signature.size.should == value
+      expect(@file_signature.size).to eq(value)
        
       # attribute :size, Integer, :on_save => Proc.new { |n| n.to_s }
     end
@@ -55,7 +55,7 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#md5' do
       value = 'Test md5'
       @file_signature.md5= value
-      @file_signature.md5.should == value
+      expect(@file_signature.md5).to eq(value)
 
       # attribute :md5, String
     end
@@ -65,7 +65,7 @@ describe 'Moab::FileSignature' do
     specify 'Moab::FileSignature#sha1' do
       value = 'Test sha1'
       @file_signature.sha1= value
-      @file_signature.sha1.should == value
+      expect(@file_signature.sha1).to eq(value)
        
       # attribute :sha1, String
     end
@@ -91,19 +91,21 @@ describe 'Moab::FileSignature' do
       signature.set_checksum(:md5,'1a726cd7963bd6d3ceb10a8c353ec166')
       signature.set_checksum(:sha1,'583220e0572640abcd3ddd97393d224e8053a6ad')
       signature.set_checksum(:sha256,'8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5')
-      signature.checksums().should ==
+      expect(signature.checksums()).to eq(
           {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
            :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
            :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
-      lambda{signature.set_checksum('xyz','dummy')}.should raise_exception(/Unknown checksum type 'xyz'/)
+      )
+      expect{signature.set_checksum('xyz','dummy')}.to raise_exception(/Unknown checksum type 'xyz'/)
     end
 
     # Unit test for method: {Moab::FileSignature#fixity}
     # Which returns: [Hash<Symbol,String>] An hash of fixity data of the signature object
     # For input parameters: (None)
     specify 'Moab::FileSignature#fixity' do
-      @title_v1_signature.fixity().should ==
+      expect(@title_v1_signature.fixity()).to eq(
           {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      )
       # def fixity
       #   [@size.to_s, @md5, @sha1]
       # end
@@ -113,8 +115,9 @@ describe 'Moab::FileSignature' do
     # Which returns: [Hash<Symbol,String>] An hash of checksum data only
     # For input parameters: (None)
     specify 'Moab::FileSignature#checksums' do
-      @title_v1_signature.checksums().should ==
+      expect(@title_v1_signature.checksums()).to eq(
           {:md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      )
       # def fixity
       #   [@size.to_s, @md5, @sha1]
       # end
@@ -125,8 +128,8 @@ describe 'Moab::FileSignature' do
     # For input parameters:
     # * other [FileSignature] = The other file signature being compared to this signature 
     specify 'Moab::FileSignature#eql?' do
-      @title_v1_signature.eql?(@title_v2_signature).should == true
-      @page1_v1_signature.eql?(@page1_v2_signature).should == false
+      expect(@title_v1_signature.eql?(@title_v2_signature)).to eq(true)
+      expect(@page1_v1_signature.eql?(@page1_v2_signature)).to eq(false)
    end
     
     # Unit test for method: {Moab::FileSignature#==}
@@ -134,8 +137,8 @@ describe 'Moab::FileSignature' do
     # For input parameters:
     # * other [FileSignature] = The other file signature being compared to this signature 
     specify 'Moab::FileSignature#==' do
-      (@title_v1_signature == @title_v2_signature).should == true
-      (@page1_v1_signature == @page1_v2_signature).should == false
+      expect(@title_v1_signature == @title_v2_signature).to eq(true)
+      expect(@page1_v1_signature == @page1_v2_signature).to eq(false)
        
       # def ==(other)
       #   eql?(other)
@@ -146,8 +149,8 @@ describe 'Moab::FileSignature' do
     # Which returns: [Fixnum] Compute a hash-code for the fixity value array.
     # For input parameters: (None)
     specify 'Moab::FileSignature#hash' do
-      (@title_v1_signature.hash == @title_v2_signature.hash).should == true
-      (@page1_v1_signature.hash == @page1_v2_signature.hash).should == false
+      expect(@title_v1_signature.hash == @title_v2_signature.hash).to eq(true)
+      expect(@page1_v1_signature.hash == @page1_v2_signature.hash).to eq(false)
     end
 
     # Unit test for method: {Moab::FileSignature#signature_from_file}
@@ -156,9 +159,9 @@ describe 'Moab::FileSignature' do
     # * pathname [Pathname] = The location of the file to be digested 
     specify 'Moab::FileSignature#signature_from_file' do
       title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
-      title_v1_signature.size.should == 40873
-      title_v1_signature.md5.should == "1a726cd7963bd6d3ceb10a8c353ec166"
-      title_v1_signature.sha1.should ==  "583220e0572640abcd3ddd97393d224e8053a6ad"
+      expect(title_v1_signature.size).to eq(40873)
+      expect(title_v1_signature.md5).to eq("1a726cd7963bd6d3ceb10a8c353ec166")
+      expect(title_v1_signature.sha1).to eq("583220e0572640abcd3ddd97393d224e8053a6ad")
     end
 
     specify 'Moab::FileSignature#normalized_signature' do
@@ -169,23 +172,25 @@ describe 'Moab::FileSignature' do
           :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
       source = FileSignature.new(file_fixity)
       signature = source.normalized_signature(pathname)
-      signature.fixity.should == file_fixity
+      expect(signature.fixity).to eq(file_fixity)
       source = FileSignature.new(:size=>"39450", :sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = source.normalized_signature(pathname)
-      signature.fixity.should == file_fixity
+      expect(signature.fixity).to eq(file_fixity)
       source = FileSignature.new( :sha1 => 'dummy')
-      lambda{source.normalized_signature(pathname)}.should raise_exception(/Signature inconsistent between inventory and file/)
+      expect{source.normalized_signature(pathname)}.to raise_exception(/Signature inconsistent between inventory and file/)
     end
 
 
     specify 'Moab::FileSignature.checksum_names_for_type' do
-      FileSignature.checksum_names_for_type.should ==
+      expect(FileSignature.checksum_names_for_type).to eq(
           {:md5=>["MD5"], :sha1=>["SHA-1", "SHA1"],:sha256=>["SHA-256", "SHA256"]}
+      )
     end
 
     specify 'Moab::FileSignature.checksum_type_for_name' do
-      FileSignature.checksum_type_for_name.should ==
+      expect(FileSignature.checksum_type_for_name).to eq(
           {"MD5"=>:md5, "SHA1"=>:sha1, "SHA-1"=>:sha1, "SHA256"=>:sha256, "SHA-256"=>:sha256}
+      )
     end
 
   end

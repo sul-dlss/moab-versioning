@@ -29,7 +29,7 @@ feature "Export a digital object version from DOR" do
 
     files = Array.new
     @temp.join('packages').find { |f| files << f.relative_path_from(@temp).to_s }
-    files.sort.should == [
+    expect(files.sort).to eq([
         "packages",
         "packages/v0001",
         "packages/v0001/bag-info.txt",
@@ -92,7 +92,7 @@ feature "Export a digital object version from DOR" do
         "packages/v0003/tagmanifest-sha256.txt",
         "packages/v0003/versionAdditions.xml",
         "packages/v0003/versionInventory.xml"
-    ]
+    ])
     @temp.join('packages').rmtree
   end
 end

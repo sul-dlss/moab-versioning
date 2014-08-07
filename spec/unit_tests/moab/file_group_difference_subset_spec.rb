@@ -14,18 +14,18 @@ describe 'Moab::FileGroupDifferenceSubset' do
       # test initialization with required parameters (if any)
       opts = {}
       file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
-      file_group_difference_subset.should be_instance_of(FileGroupDifferenceSubset)
+      expect(file_group_difference_subset).to be_instance_of(FileGroupDifferenceSubset)
        
       # test initialization of arrays and hashes
-      file_group_difference_subset.files.should be_kind_of(Array)
-      file_group_difference_subset.files.size.should == 0
+      expect(file_group_difference_subset.files).to be_kind_of(Array)
+      expect(file_group_difference_subset.files.size).to eq(0)
 
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:change] = 'Test change'
       file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
-      file_group_difference_subset.change.should == opts[:change]
-      file_group_difference_subset.count.should == 0
+      expect(file_group_difference_subset.change).to eq(opts[:change])
+      expect(file_group_difference_subset.count).to eq(0)
 
       # def initialize(opts={})
       #   @files = Array.new
@@ -47,7 +47,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     specify 'Moab::FileGroupDifferenceSubset#change' do
       value = 'Test change'
       @file_group_difference_subset.change= value
-      @file_group_difference_subset.change.should == value
+      expect(@file_group_difference_subset.change).to eq(value)
        
       # attribute :change, String, :key => true
     end
@@ -57,7 +57,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     specify 'Moab::FileGroupDifferenceSubset#count' do
       value = 52
       @file_group_difference_subset.count= value
-      @file_group_difference_subset.count.should == 0
+      expect(@file_group_difference_subset.count).to eq(0)
        
       # attribute :count, Integer, :on_save => Proc.new { |n| n.to_s }
     end
@@ -65,7 +65,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#files}
     # Which stores: [Array<FileInstanceDifference>] The set of file instances having this type of change
     specify 'Moab::FileGroupDifferenceSubset#files' do
-      @file_group_difference_subset.files.size.should == 0
+      expect(@file_group_difference_subset.files.size).to eq(0)
        
       # has_many :files, FileInstanceDifference
     end

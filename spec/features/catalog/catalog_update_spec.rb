@@ -16,7 +16,7 @@ feature "Update the signature catalog" do
     v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
     original_entry_count = signature_catalog.entries.count
     signature_catalog.update(v2_inventory,v1_catalog_pathname.parent.parent.join('data'))
-    signature_catalog.entries.count.should == original_entry_count + 4
+    expect(signature_catalog.entries.count).to eq(original_entry_count + 4)
   end
 
 end

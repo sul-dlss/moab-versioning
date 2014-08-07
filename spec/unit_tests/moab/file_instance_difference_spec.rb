@@ -14,11 +14,11 @@ describe 'Moab::FileInstanceDifference' do
       # test initialization with required parameters (if any)
       opts = {}
       file_instance_difference = FileInstanceDifference.new(opts)
-      file_instance_difference.should be_instance_of(FileInstanceDifference)
+      expect(file_instance_difference).to be_instance_of(FileInstanceDifference)
        
       # test initialization of arrays and hashes
-      file_instance_difference.signatures.should be_kind_of(Array)
-      file_instance_difference.signatures.size.should == 0
+      expect(file_instance_difference.signatures).to be_kind_of(Array)
+      expect(file_instance_difference.signatures.size).to eq(0)
 
       # test initialization with options hash
       opts = OrderedHash.new
@@ -26,9 +26,9 @@ describe 'Moab::FileInstanceDifference' do
       opts[:basis_path] = 'Test basis_path'
       opts[:other_path] = 'Test other_path'
       file_instance_difference = FileInstanceDifference.new(opts)
-      file_instance_difference.change.should == opts[:change]
-      file_instance_difference.basis_path.should == opts[:basis_path]
-      file_instance_difference.other_path.should == opts[:other_path]
+      expect(file_instance_difference.change).to eq(opts[:change])
+      expect(file_instance_difference.basis_path).to eq(opts[:basis_path])
+      expect(file_instance_difference.other_path).to eq(opts[:other_path])
 
       # def initialize(opts={})
       #   @signatures = Array.new
@@ -50,7 +50,7 @@ describe 'Moab::FileInstanceDifference' do
     specify 'Moab::FileInstanceDifference#change' do
       value = 'Test change'
       @file_instance_difference.change= value
-      @file_instance_difference.change.should == value
+      expect(@file_instance_difference.change).to eq(value)
        
       # attribute :change, String
     end
@@ -60,7 +60,7 @@ describe 'Moab::FileInstanceDifference' do
     specify 'Moab::FileInstanceDifference#basis_path' do
       value = 'Test basis_path'
       @file_instance_difference.basis_path= value
-      @file_instance_difference.basis_path.should == value
+      expect(@file_instance_difference.basis_path).to eq(value)
        
       # attribute :basis_path, String, :tag => 'basisPath', :on_save => Proc.new { |s| s.to_s }
     end
@@ -70,7 +70,7 @@ describe 'Moab::FileInstanceDifference' do
     specify 'Moab::FileInstanceDifference#other_path' do
       value = 'Test other_path'
       @file_instance_difference.other_path= value
-      @file_instance_difference.other_path.should == value
+      expect(@file_instance_difference.other_path).to eq(value)
        
       # attribute :other_path, String, :tag => 'otherPath', :on_save => Proc.new { |s| s.to_s }
     end
@@ -78,7 +78,7 @@ describe 'Moab::FileInstanceDifference' do
     # Unit test for attribute: {Moab::FileInstanceDifference#signatures}
     # Which stores: [Array<FileSignature>] \[<fileSignature>] = The fixity data of the file manifestation(s) (plural if change was a content modification)
     specify 'Moab::FileInstanceDifference#signatures' do
-      @file_instance_difference.signatures.size.should == 0
+      expect(@file_instance_difference.signatures.size).to eq(0)
        
       # has_many :signatures, FileSignature
     end

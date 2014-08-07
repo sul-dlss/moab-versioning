@@ -9,10 +9,10 @@ describe 'Moab::VerificationResult' do
 
     specify 'Moab::VerificationResult#initialize' do
       result = VerificationResult.new('my_entity')
-      result.entity.should == 'my_entity'
-      result.verified.should == false
-      result.details.should == nil
-      result.subentities.should be_an_instance_of(Array)
+      expect(result.entity).to eq('my_entity')
+      expect(result.verified).to eq(false)
+      expect(result.details).to eq(nil)
+      expect(result.subentities).to be_an_instance_of(Array)
     end
 
   end
@@ -21,20 +21,20 @@ describe 'Moab::VerificationResult' do
 
     specify 'Moab::VerificationResult.verify_value' do
       result = VerificationResult.verify_value('greeting',"hello","goodbye")
-      result.entity.should == 'greeting'
-      result.verified.should == false
-      result.details.should == {"expected"=>"hello", "found"=>"goodbye"}
-      result.subentities.should be_an_instance_of(Array)
-      result.subentities.size.should == 0
+      expect(result.entity).to eq('greeting')
+      expect(result.verified).to eq(false)
+      expect(result.details).to eq({"expected"=>"hello", "found"=>"goodbye"})
+      expect(result.subentities).to be_an_instance_of(Array)
+      expect(result.subentities.size).to eq(0)
     end
 
     specify 'Moab::VerificationResult.verify_truth' do
       result = VerificationResult.verify_truth('truth',"true")
-      result.entity.should == 'truth'
-      result.verified.should == true
-      result.details.should == nil
-      result.subentities.should be_an_instance_of(Array)
-      result.subentities.size.should == 0
+      expect(result.entity).to eq('truth')
+      expect(result.verified).to eq(true)
+      expect(result.details).to eq(nil)
+      expect(result.subentities).to be_an_instance_of(Array)
+      expect(result.subentities.size).to eq(0)
     end
 
   end
@@ -58,7 +58,7 @@ describe 'Moab::VerificationResult' do
       end
       detail_hash = result.to_hash(verbose=true)
       #puts JSON.pretty_generate(detail_hash)
-      "#{JSON.pretty_generate(detail_hash)}\n".should == <<-EOF
+      expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<-EOF
 {
   "my_entity": {
     "verified": false,
@@ -88,7 +88,7 @@ describe 'Moab::VerificationResult' do
 
       detail_json = result.to_json(verbose=false)
       #puts detail_json
-      "#{detail_json}\n".should == <<-EOF
+      expect("#{detail_json}\n").to eq <<-EOF
 {
   "my_entity": {
     "verified": false,

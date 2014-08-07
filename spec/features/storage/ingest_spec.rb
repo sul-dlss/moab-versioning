@@ -28,7 +28,7 @@ feature "Import digital object version to SDR" do
 
     files = Array.new
     ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-    files.sort.should == [
+    expect(files.sort).to eq([
         "ingests",
         "ingests/jq937jp0017",
         "ingests/jq937jp0017/v0001",
@@ -80,7 +80,7 @@ feature "Import digital object version to SDR" do
         "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
         "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
         "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
-    ]
+    ])
     ingests_dir.rmtree if ingests_dir.exist?  end
 
 

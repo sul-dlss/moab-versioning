@@ -11,7 +11,7 @@ describe 'Stanford::ContentInventory' do
        
       # test initialization with required parameters (if any)
       content_inventory = ContentInventory.new()
-      content_inventory.should be_instance_of(ContentInventory)
+      expect(content_inventory).to be_instance_of(ContentInventory)
 
       # def initialize()
       # end
@@ -68,7 +68,7 @@ describe 'Stanford::ContentInventory' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       version_id = 1
@@ -115,7 +115,7 @@ describe 'Stanford::ContentInventory' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       # def inventory_from_cm(content_metadata, object_id, version_id=nil)
       #   cm_inventory = FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
@@ -144,7 +144,7 @@ describe 'Stanford::ContentInventory' do
         xmlObj2 = Nokogiri::XML(empty_inventory)
         xmlObj2.xpath('//@dataSource').each {|d| d.value = d.value.gsub(/subset/, subset) }
         same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-        same.should be true
+        expect(same).to be true
       end
     end
 
@@ -154,23 +154,23 @@ describe 'Stanford::ContentInventory' do
     # * content_metadata [String] = The contentMetadata as a string
     specify 'Stanford::ContentInventory#group_from_cm' do
       group = @content_inventory.group_from_cm(@content_metadata,'all')
-      group.should be_instance_of(FileGroup)
-      group.data_source.should == "contentMetadata-all"
+      expect(group).to be_instance_of(FileGroup)
+      expect(group.data_source).to eq("contentMetadata-all")
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       group = ContentInventory.new.group_from_cm(cm_with_subsets,"all")
-      group.files.size.should == 12
+      expect(group.files.size).to eq(12)
 
       group = ContentInventory.new.group_from_cm(cm_with_subsets,"shelve")
-      group.files.size.should == 8
+      expect(group.files.size).to eq(8)
 
       group = ContentInventory.new.group_from_cm(cm_with_subsets,"publish")
-      group.files.size.should == 12
+      expect(group.files.size).to eq(12)
 
       group = ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
-      group.files.size.should == 8
+      expect(group.files.size).to eq(8)
 
-      lambda{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.should raise_exception
+      expect{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception
 
       # def group_from_cm(content_metadata)
       #   content_group = FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')
@@ -188,18 +188,20 @@ describe 'Stanford::ContentInventory' do
     # For input parameters:
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_signature' do
-      @content_inventory.generate_signature(@node).fixity.should ==
+      expect(@content_inventory.generate_signature(@node).fixity).to eq(
           {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
+      )
       # add a sha256 checksum
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
         xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type=>"SHA-256"
       end
-      @content_inventory.generate_signature(node2).fixity.should ==
+      expect(@content_inventory.generate_signature(node2).fixity).to eq(
           {:size=>"40873",
            :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
            :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
            :sha256=>"291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"}
+      )
     end
 
     # Unit test for method: {Stanford::ContentInventory#generate_instance}
@@ -208,7 +210,7 @@ describe 'Stanford::ContentInventory' do
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_instance' do
       node = Nokogiri::XML(@content_metadata).xpath('//file').first
-      @content_inventory.generate_instance(@node).should hash_match({
+      expect(@content_inventory.generate_instance(@node)).to hash_match({
               "path" => "title.jpg",
           "datetime" => "2012-03-26T14:15:11Z"
       })
@@ -261,7 +263,7 @@ describe 'Stanford::ContentInventory' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       # def generate_content_metadata(file_group, object_id, version_id)
       #   cm = Nokogiri::XML::Builder.new do |xml|
@@ -285,23 +287,23 @@ describe 'Stanford::ContentInventory' do
 
     specify 'Stanford::ContentInventory#validate_content_metadata' do
       cm = @fixtures.join('data','jq937jp0017','v0001','metadata','contentMetadata.xml').read
-      @content_inventory.validate_content_metadata(cm).should == true
+      expect(@content_inventory.validate_content_metadata(cm)).to eq(true)
 
       cm = @fixtures.join('bad_data','contentMetadata.xml')
-      lambda{@content_inventory.validate_content_metadata(cm)}.should raise_exception(Moab::InvalidMetadataException)
+      expect{@content_inventory.validate_content_metadata(cm)}.to raise_exception(Moab::InvalidMetadataException)
     end
 
     specify 'Stanford::ContentInventory#validate_content_metadata_details' do
       cm = @fixtures.join('bad_data','contentMetadata.xml').read
       content_metadata_doc = Nokogiri::XML(cm)
       result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
-      result.should == [
+      expect(result).to eq([
           "File node 0 is missing id",
           "File node having id='page-1.jpg' is missing size",
           "File node having id='page-2.jpg' is missing md5",
           "File node having id='page-3.jpg' is missing sha1"
-      ]
-      lambda{@content_inventory.validate_content_metadata_details(Hash.new)}.should raise_exception(
+      ])
+      expect{@content_inventory.validate_content_metadata_details(Hash.new)}.to raise_exception(
           /Content Metadata is in unrecognized format/)
     end
 
@@ -343,15 +345,15 @@ describe 'Stanford::ContentInventory' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       cm_bad_size = cm.sub(/40873/,'37804')
-      lambda{@content_inventory.remediate_content_metadata(cm_bad_size,group)}.
-          should raise_exception(/Inconsistent size for title.jpg: 37804 != 40873/)
+      expect{@content_inventory.remediate_content_metadata(cm_bad_size,group)}.
+          to raise_exception(/Inconsistent size for title.jpg: 37804 != 40873/)
 
       cm_bad_checksum = cm.sub(/1a726cd7963bd6d3ceb10a8c353ec166/,'915c0305bf50c55143f1506295dc122c')
-      lambda{@content_inventory.remediate_content_metadata(cm_bad_checksum,group)}.
-          should raise_exception(/Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/)
+      expect{@content_inventory.remediate_content_metadata(cm_bad_checksum,group)}.
+          to raise_exception(/Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/)
 
     end
 

@@ -11,7 +11,7 @@ feature "Build a version metadata datastream" do
 
 
   scenario "test" do
-    pending ("needs a rewrite to eliminate events")
+    skip ("needs a rewrite to eliminate events")
     # given:
     # action:
     # outcome:

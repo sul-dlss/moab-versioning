@@ -15,10 +15,10 @@ feature "Determine version's file additions" do
     v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
     version_additions = signature_catalog.version_additions(v2_inventory)
-    version_additions.groups.count.should == 2
-    version_additions.file_count.should == 4
-    version_additions.byte_count.should == 35181
-    version_additions.block_count.should == 37
+    expect(version_additions.groups.count).to eq(2)
+    expect(version_additions.file_count).to eq(4)
+    expect(version_additions.byte_count).to eq(35181)
+    expect(version_additions.block_count).to eq(37)
   end
 
 end

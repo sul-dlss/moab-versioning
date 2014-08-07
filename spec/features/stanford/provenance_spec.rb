@@ -13,7 +13,7 @@ feature "Process provenanceMetadata" do
     # action: create or update provenanceMetadata datastream
     # outcome: new provenanceMetadata datastream
 
-    pending("need to implement '#description' functionality")
+    skip("need to implement '#description' functionality")
   end
 
 end

@@ -14,8 +14,8 @@ describe 'Stanford::ActiveFedoraObject' do
       # test initialization with required parameters (if any)
       fedora_object = double('FedoraObject')
       active_fedora_object = ActiveFedoraObject.new(fedora_object)
-      active_fedora_object.should be_instance_of(ActiveFedoraObject)
-      active_fedora_object.fedora_object.should == fedora_object
+      expect(active_fedora_object).to be_instance_of(ActiveFedoraObject)
+      expect(active_fedora_object.fedora_object).to eq(fedora_object)
        
       # def initialize(fedora_object)
       #   @fedora_object = fedora_object
@@ -36,7 +36,7 @@ describe 'Stanford::ActiveFedoraObject' do
     specify 'Stanford::ActiveFedoraObject#fedora_object' do
       value = double('NewFedoraObject')
       @active_fedora_object.fedora_object= value
-      @active_fedora_object.fedora_object.should == value
+      expect(@active_fedora_object.fedora_object).to eq(value)
        
       # def fedora_object=(value)
       #   @fedora_object = value
@@ -64,9 +64,9 @@ describe 'Stanford::ActiveFedoraObject' do
       ds_id = 'Test ds_id'
       mock_datastream = double('datastream')
       mock_datastreams = double('datastreams')
-      @active_fedora_object.fedora_object.should_receive(:datastreams).and_return(mock_datastreams)
-      mock_datastreams.should_receive(:[]).with(ds_id).and_return(mock_datastream)
-      mock_datastream.should_receive(:content)
+      expect(@active_fedora_object.fedora_object).to receive(:datastreams).and_return(mock_datastreams)
+      expect(mock_datastreams).to receive(:[]).with(ds_id).and_return(mock_datastream)
+      expect(mock_datastream).to receive(:content)
       @active_fedora_object.get_datastream_content(ds_id)
 
       # def get_datastream_content(ds_id)

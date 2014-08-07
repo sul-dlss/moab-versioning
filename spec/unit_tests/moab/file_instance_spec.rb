@@ -14,15 +14,15 @@ describe 'Moab::FileInstance' do
       # test initialization with required parameters (if any)
       opts = {}
       file_instance = FileInstance.new(opts)
-      file_instance.should be_instance_of(FileInstance)
+      expect(file_instance).to be_instance_of(FileInstance)
        
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:path] = @temp.join('path').to_s
       opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
       file_instance = FileInstance.new(opts)
-      file_instance.path.should == opts[:path]
-      file_instance.datetime.should == "2012-04-18T21:51:31Z"
+      expect(file_instance.path).to eq(opts[:path])
+      expect(file_instance.datetime).to eq("2012-04-18T21:51:31Z")
        
       # def initialize(opts={})
       #   super(opts)
@@ -43,7 +43,7 @@ describe 'Moab::FileInstance' do
     specify 'Moab::FileInstance#path' do
       value = 'Test path'
       @file_instance.path= value
-      @file_instance.path.should == value
+      expect(@file_instance.path).to eq(value)
        
       # attribute :path, String, :key => true
     end
@@ -53,7 +53,7 @@ describe 'Moab::FileInstance' do
     specify 'Moab::FileInstance#datetime' do
       value = "Wed Apr 18 21:51:31 UTC 2012"
       @file_instance.datetime= value
-      @file_instance.datetime.should == "2012-04-18T21:51:31Z"
+      expect(@file_instance.datetime).to eq("2012-04-18T21:51:31Z")
        
       # attribute :datetime, Time, :on_save => Proc.new {|t| t.to_s}
     end
@@ -85,8 +85,8 @@ describe 'Moab::FileInstance' do
 
     specify 'Moab::FileInstance#instance_from_file' do
       file_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
-      file_instance.path.should == "title.jpg"
-      file_instance.datetime.should =~ /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/
+      expect(file_instance.path).to eq("title.jpg")
+      expect(file_instance.datetime).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
        
       # def instance_from_file(pathname, base_directory)
       #   @path = pathname.realpath.relative_path_from(base_directory.realpath).to_s
@@ -100,9 +100,9 @@ describe 'Moab::FileInstance' do
     # For input parameters:
     # * other [FileInstance] = The other file instance being compared to this instance 
     specify 'Moab::FileInstance#eql?' do
-      @title_v1_instance.eql?(@title_v2_instance).should == true
-      @page1_v1_instance.eql?(@page1_v2_instance).should == true
-      @title_v1_instance.eql?(@page1_v2_instance).should == false
+      expect(@title_v1_instance.eql?(@title_v2_instance)).to eq(true)
+      expect(@page1_v1_instance.eql?(@page1_v2_instance)).to eq(true)
+      expect(@title_v1_instance.eql?(@page1_v2_instance)).to eq(false)
 
       # def eql?(other)
       #   self.path == other.path
@@ -114,9 +114,9 @@ describe 'Moab::FileInstance' do
     # For input parameters:
     # * other [FileInstance] = The other file instance being compared to this instance 
     specify 'Moab::FileInstance#==' do
-      (@title_v1_instance == @title_v2_instance).should == true
-      (@page1_v1_instance == @page1_v2_instance).should == true
-      (@title_v1_instance == @page1_v2_instance).should == false
+      expect(@title_v1_instance == @title_v2_instance).to eq(true)
+      expect(@page1_v1_instance == @page1_v2_instance).to eq(true)
+      expect(@title_v1_instance == @page1_v2_instance).to eq(false)
 
       # def ==(other)
       #   eql?(other)
@@ -127,9 +127,9 @@ describe 'Moab::FileInstance' do
     # Which returns: [Fixnum] Compute a hash-code for the path string.
     # For input parameters: (None)
     specify 'Moab::FileInstance#hash' do
-      (@title_v1_instance.hash == @title_v2_instance.hash).should == true
-      (@page1_v1_instance.hash == @page1_v2_instance.hash).should == true
-      (@title_v1_instance.hash == @page1_v2_instance.hash).should == false
+      expect(@title_v1_instance.hash == @title_v2_instance.hash).to eq(true)
+      expect(@page1_v1_instance.hash == @page1_v2_instance.hash).to eq(true)
+      expect(@title_v1_instance.hash == @page1_v2_instance.hash).to eq(false)
        
       # def hash
       #   path.hash

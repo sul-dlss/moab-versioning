@@ -19,7 +19,7 @@ describe 'Array' do
     # Which returns: [Array<Object>] An array containing the key fields from a collection of objects
     # For input parameters: (None)
     specify 'Array#keys' do
-      @array.keys().should == ["A","B","C"]
+      expect(@array.keys()).to eq(["A","B","C"])
        
       # def keys
       #   self.collect { |e| e.key }
@@ -31,8 +31,8 @@ describe 'Array' do
     # For input parameters:
     # * key [Object] = The key value to search for 
     specify 'Array#keyfind' do
-       @array.keyfind("B").should == "Billy"
-       @array.keyfind("J").should == nil
+       expect(@array.keyfind("B")).to eq("Billy")
+       expect(@array.keyfind("J")).to eq(nil)
 
       # def keyfind(key)
       #   self.each { |e| return e if key == e.key}

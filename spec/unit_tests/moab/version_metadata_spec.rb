@@ -14,18 +14,18 @@ describe 'Moab::VersionMetadata' do
       # test initialization with required parameters (if any)
       opts = {}
       version_metadata = VersionMetadata.new(opts)
-      version_metadata.should be_instance_of(VersionMetadata)
+      expect(version_metadata).to be_instance_of(VersionMetadata)
        
       # test initialization of arrays and hashes
-      version_metadata.versions.should be_kind_of(Array)
+      expect(version_metadata.versions).to be_kind_of(Array)
        
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:versions] = [double(VersionMetadataEntry.name)]
       version_metadata = VersionMetadata.new(opts)
-      version_metadata.digital_object_id.should == opts[:digital_object_id]
-      version_metadata.versions.should == opts[:versions]
+      expect(version_metadata.digital_object_id).to eq(opts[:digital_object_id])
+      expect(version_metadata.versions).to eq(opts[:versions])
        
       # def initialize(opts={})
       #   @versions = Array.new
@@ -47,7 +47,7 @@ describe 'Moab::VersionMetadata' do
     specify 'Moab::VersionMetadata#digital_object_id' do
       value = 'Test digital_object_id'
       @version_metadata.digital_object_id= value
-      @version_metadata.digital_object_id.should == value
+      expect(@version_metadata.digital_object_id).to eq(value)
        
       # attribute :digital_object_id, String, :tag => 'objectId'
     end
@@ -57,7 +57,7 @@ describe 'Moab::VersionMetadata' do
     specify 'Moab::VersionMetadata#versions' do
       value = [double(VersionMetadataEntry.name)]
       @version_metadata.versions= value
-      @version_metadata.versions.should == value
+      expect(@version_metadata.versions).to eq(value)
        
       # has_many :versions, VersionMetadataEntry
     end

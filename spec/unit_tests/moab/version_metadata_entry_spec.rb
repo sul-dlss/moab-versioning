@@ -14,10 +14,10 @@ describe 'Moab::VersionMetadataEntry' do
       # test initialization with required parameters (if any)
       opts = {}
       version_metadata_entry = VersionMetadataEntry.new(opts)
-      version_metadata_entry.should be_instance_of(VersionMetadataEntry)
+      expect(version_metadata_entry).to be_instance_of(VersionMetadataEntry)
        
       # test initialization of arrays and hashes
-      version_metadata_entry.events.should be_kind_of(Array)
+      expect(version_metadata_entry.events).to be_kind_of(Array)
        
       # test initialization with options hash
       opts = OrderedHash.new
@@ -29,13 +29,13 @@ describe 'Moab::VersionMetadataEntry' do
       opts[:metadata_changes] = double(FileGroupDifference.name)
       opts[:events] = [double(VersionMetadataEvent.name)]
       version_metadata_entry = VersionMetadataEntry.new(opts)
-      version_metadata_entry.version_id.should == opts[:version_id]
-      version_metadata_entry.significance.should == opts[:significance]
-      version_metadata_entry.description.should == opts[:description]
-      version_metadata_entry.note.should == opts[:note]
-      version_metadata_entry.content_changes.should == opts[:content_changes]
-      version_metadata_entry.metadata_changes.should == opts[:metadata_changes]
-      version_metadata_entry.events.should == opts[:events]
+      expect(version_metadata_entry.version_id).to eq(opts[:version_id])
+      expect(version_metadata_entry.significance).to eq(opts[:significance])
+      expect(version_metadata_entry.description).to eq(opts[:description])
+      expect(version_metadata_entry.note).to eq(opts[:note])
+      expect(version_metadata_entry.content_changes).to eq(opts[:content_changes])
+      expect(version_metadata_entry.metadata_changes).to eq(opts[:metadata_changes])
+      expect(version_metadata_entry.events).to eq(opts[:events])
        
       # def initialize(opts={})
       #   @events = Array.new
@@ -57,7 +57,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#version_id' do
       value = 37
       @version_metadata_entry.version_id= value
-      @version_metadata_entry.version_id.should == value
+      expect(@version_metadata_entry.version_id).to eq(value)
        
       # attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
     end
@@ -67,7 +67,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#significance' do
       value = 'Major|Minor'
       @version_metadata_entry.significance= value
-      @version_metadata_entry.significance.should == value
+      expect(@version_metadata_entry.significance).to eq(value)
        
       # attribute :significance, String
     end
@@ -77,7 +77,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#reason' do
       value = 'Test reason'
       @version_metadata_entry.description= value
-      @version_metadata_entry.description.should == value
+      expect(@version_metadata_entry.description).to eq(value)
        
       # element :reason, String
     end
@@ -87,7 +87,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#note' do
       value = 'Test note'
       @version_metadata_entry.note= value
-      @version_metadata_entry.note.should == value
+      expect(@version_metadata_entry.note).to eq(value)
        
       # element :note, String
     end
@@ -97,7 +97,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#content_changes' do
       value = double(FileGroupDifference.name)
       @version_metadata_entry.content_changes= value
-      @version_metadata_entry.content_changes.should == value
+      expect(@version_metadata_entry.content_changes).to eq(value)
        
       # element :content_changes, FileGroupDifference
     end
@@ -107,7 +107,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#metadata_changes' do
       value = double(FileGroupDifference.name)
       @version_metadata_entry.metadata_changes= value
-      @version_metadata_entry.metadata_changes.should == value
+      expect(@version_metadata_entry.metadata_changes).to eq(value)
        
       # element :metadata_changes, FileGroupDifference
     end
@@ -117,7 +117,7 @@ describe 'Moab::VersionMetadataEntry' do
     specify 'Moab::VersionMetadataEntry#events' do
       value = [double(VersionMetadataEvent.name)]
       @version_metadata_entry.events= value
-      @version_metadata_entry.events.should == value
+      expect(@version_metadata_entry.events).to eq(value)
        
       # has_many :events, VersionMetadataEvent
     end

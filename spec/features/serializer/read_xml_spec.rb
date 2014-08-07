@@ -14,10 +14,10 @@ feature "Manifest file parsing" do
     # outcome: an in-memory representation of the manifest
 
     parent_dir = @manifests.join("v0001")
-    SignatureCatalog.xml_pathname(parent_dir).should == parent_dir.join('signatureCatalog.xml')
+    expect(SignatureCatalog.xml_pathname(parent_dir)).to eq(parent_dir.join('signatureCatalog.xml'))
     catalog = SignatureCatalog.read_xml_file(parent_dir)
-    catalog.should be_instance_of(SignatureCatalog)
-    catalog.entries.size.should == 11
+    expect(catalog).to be_instance_of(SignatureCatalog)
+    expect(catalog.entries.size).to eq(11)
   end
 
 end

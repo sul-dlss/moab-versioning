@@ -25,11 +25,11 @@ describe 'Moab::StorageObjectVersion' do
       storage_object = StorageObject.new(@druid, @temp_object_dir)
       version_id = 2
       storage_object_version = StorageObjectVersion.new(storage_object, version_id)
-      storage_object_version.should be_instance_of(StorageObjectVersion)
-      storage_object_version.storage_object.should == storage_object
-      storage_object_version.version_id.should == version_id
+      expect(storage_object_version).to be_instance_of(StorageObjectVersion)
+      expect(storage_object_version.storage_object).to eq(storage_object)
+      expect(storage_object_version.version_id).to eq(version_id)
       v0003 = StorageObjectVersion.new(storage_object, 'v0003')
-      v0003.version_id.should == 3
+      expect(v0003.version_id).to eq(3)
 
       # def initialize(storage_object, version_id)
       #   @version_id = version_id
@@ -54,7 +54,7 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#version_id' do
       value = 84
       @storage_object_version.version_id= value
-      @storage_object_version.version_id.should == value
+      expect(@storage_object_version.version_id).to eq(value)
 
       # def version_id=(value)
       #   @version_id = value
@@ -70,7 +70,7 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#version_name' do
       value = 'Test version_name'
       @storage_object_version.version_name= value
-      @storage_object_version.version_name.should == value
+      expect(@storage_object_version.version_name).to eq(value)
 
       # def version_name=(value)
       #   @version_name = value
@@ -86,7 +86,7 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#version_pathname' do
       value = @temp.join('version_pathname')
       @storage_object_version.version_pathname= value
-      @storage_object_version.version_pathname.should == value
+      expect(@storage_object_version.version_pathname).to eq(value)
 
       # def version_pathname=(value)
       #   @version_pathname = value
@@ -102,7 +102,7 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#storage_object' do
       value = @temp.join('storage_object')
       @storage_object_version.storage_object= value
-      @storage_object_version.storage_object.should == value
+      expect(@storage_object_version.storage_object).to eq(value)
 
       # def storage_object=(value)
       #   @storage_object = value
@@ -147,7 +147,7 @@ describe 'Moab::StorageObjectVersion' do
     end
 
     specify 'Moab::StorageObjectVersion#composite_key' do
-      @existing_storage_object_version.composite_key.should == "druid:jq937jp0017-v0002"
+      expect(@existing_storage_object_version.composite_key).to eq("druid:jq937jp0017-v0002")
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#find_signature}
@@ -157,13 +157,13 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#find_signature' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
-      signature.fixity.should == {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}
+      expect(signature.fixity).to eq({:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"})
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
-      signature.fixity.should == {:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
+      expect(signature.fixity).to eq({:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"})
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
-      signature.size.should == File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml'))
+      expect(signature.size).to eq(File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')))
 
-      lambda{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.should raise_exception
+      expect{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.to raise_exception
 
       # def find_signature(file_category, file_id)
       #   case file_category
@@ -182,12 +182,12 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#find_filepath' do
       pathname = @existing_storage_object_version.find_filepath('content', 'title.jpg')
-      pathname.to_s.include?('ingests/jq937jp0017/v0001/data/content/title.jpg').should == true
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0001/data/content/title.jpg')).to eq(true)
       pathname = @existing_storage_object_version.find_filepath('content', 'page-1.jpg')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/page-1.jpg').should == true
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/page-1.jpg')).to eq(true)
       pathname = @existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/versionInventory.xml').should == true
-      lambda{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.should raise_exception
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/versionInventory.xml')).to eq(true)
+      expect{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.to raise_exception
 
       # def find_filepath(file_category, file_id)
       #   this_version_filepath = file_pathname(file_category, file_id)
@@ -207,8 +207,8 @@ describe 'Moab::StorageObjectVersion' do
     specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
       file_category = 'content'
       file_signature = FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
-      @existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
-          to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
+      expect(@existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
+          to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg})
 
       # def find_filepath_using_signature(file_category, file_signature)
       #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)
@@ -223,11 +223,11 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#file_pathname' do
       pathname = @existing_storage_object_version.file_pathname('content','title.jpg')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/title.jpg').should == true
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/title.jpg')).to eq(true)
       pathname = @existing_storage_object_version.file_pathname('metadata','descMetadata.xml')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/data/metadata/descMetadata.xml').should == true
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/data/metadata/descMetadata.xml')).to eq(true)
       pathname= @existing_storage_object_version.file_pathname('manifest','signatureCatalog.xml')
-      pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml').should == true
+      expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml')).to eq(true)
 
       # def file_pathname(file_category, file_id)
       #   case file_category
@@ -245,14 +245,14 @@ describe 'Moab::StorageObjectVersion' do
     # * file_category [String] = The category of file ('content', 'metadata', or 's')
     specify 'Moab::StorageObjectVersion#file_category_pathname' do
       file_category = 'content'
-      @existing_storage_object_version.file_category_pathname(file_category).
-        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content}
+      expect(@existing_storage_object_version.file_category_pathname(file_category).
+        to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content})
       file_category = 'metadata'
-      @existing_storage_object_version.file_category_pathname(file_category).
-        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata}
+      expect(@existing_storage_object_version.file_category_pathname(file_category).
+        to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata})
       file_category = 'manifests'
-      @existing_storage_object_version.file_category_pathname(file_category).
-        to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002}
+      expect(@existing_storage_object_version.file_category_pathname(file_category).
+        to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002})
 
       # def file_category_pathname(file_category)
       #   case file_category
@@ -270,7 +270,7 @@ describe 'Moab::StorageObjectVersion' do
     # * type [String] = The type of inventory to return (version|additions|manifests)
     specify 'Moab::StorageObjectVersion#file_inventory' do
       type = 'version'
-      @existing_storage_object_version.file_inventory(type).should be_an_instance_of(FileInventory)
+      expect(@existing_storage_object_version.file_inventory(type)).to be_an_instance_of(FileInventory)
 
       # def file_inventory(type)
       #   if version_id > 0
@@ -291,7 +291,7 @@ describe 'Moab::StorageObjectVersion' do
     # Which returns: [SignatureCatalog] The signature catalog of the digital object as of this version
     # For input parameters: (None)
     specify 'Moab::StorageObjectVersion#signature_catalog' do
-      @existing_storage_object_version.signature_catalog().should be_instance_of(SignatureCatalog)
+      expect(@existing_storage_object_version.signature_catalog()).to be_instance_of(SignatureCatalog)
 
       # def signature_catalog
       #   if version_id > 0
@@ -313,7 +313,7 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version.ingest_bag_data(bag_dir)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-      files.sort.should == [
+      expect(files.sort).to eq([
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0001",
           "ingests/jq937jp0017/v0001/data",
@@ -333,7 +333,7 @@ describe 'Moab::StorageObjectVersion' do
           "ingests/jq937jp0017/v0001/manifests",
           "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
           "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
-      ]
+      ])
 
       # def ingest_bag_data(bag_dir)
       #   raise "Version already exists: #{@version_pathname.to_s}" if @version_pathname.exist?
@@ -359,7 +359,7 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-      files.sort.should == [
+      expect(files.sort).to eq([
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0001",
           "ingests/jq937jp0017/v0001/data",
@@ -376,7 +376,7 @@ describe 'Moab::StorageObjectVersion' do
           "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
           "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
           "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-      ]
+      ])
 
       # def ingest_dir(source_dir, target_dir, use_links=true)
       #   raise "cannot copy - target already exists: #{target_dir.realpath}" if target_dir.exist?
@@ -406,21 +406,21 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-      files.sort.should == [
+      expect(files.sort).to eq([
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0002",
           "ingests/jq937jp0017/v0002/versionInventory.xml"
-      ]
+      ])
       source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname, use_links=false)
       files = Array.new
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-      files.sort.should == [
+      expect(files.sort).to eq([
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0002",
           "ingests/jq937jp0017/v0002/versionAdditions.xml",
           "ingests/jq937jp0017/v0002/versionInventory.xml"
-      ]
+      ])
 
       # def ingest_file(source_file, target_dir, use_links=true)
       #   if use_links
@@ -440,8 +440,8 @@ describe 'Moab::StorageObjectVersion' do
       temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 4)
       signature_catalog = double(SignatureCatalog.name)
       new_inventory = double(FileInventory.name)
-      signature_catalog.should_receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
-      signature_catalog.should_receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
+      expect(signature_catalog).to receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
+      expect(signature_catalog).to receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
 
       # def update_catalog(signature_catalog,new_inventory)
@@ -459,9 +459,9 @@ describe 'Moab::StorageObjectVersion' do
       old_inventory = double(FileInventory.name)
       new_inventory = double(FileInventory.name)
       mock_fid = double(FileInventoryDifference.name)
-      FileInventoryDifference.should_receive(:new).and_return(mock_fid)
-      mock_fid.should_receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
-      mock_fid.should_receive(:write_xml_file)
+      expect(FileInventoryDifference).to receive(:new).and_return(mock_fid)
+      expect(mock_fid).to receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
+      expect(mock_fid).to receive(:write_xml_file)
       @existing_storage_object_version.generate_differences_report(old_inventory, new_inventory)
 
       # def generate_differences_report(old_inventory,new_inventory)
@@ -483,7 +483,7 @@ describe 'Moab::StorageObjectVersion' do
       source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       temp_storage_object_version.generate_manifest_inventory()
-      FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'),'manifests').should == true
+      expect(FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'),'manifests')).to eq(true)
 
       # def generate_manifest_inventory
       #   manifest_inventory = FileInventory.new(
@@ -499,20 +499,20 @@ describe 'Moab::StorageObjectVersion' do
       version = @existing_storage_object_version
       result = version.verify_version_storage
       #puts JSON.pretty_generate(result.to_hash(verbose=true))
-      result.verified.should == true
+      expect(result.verified).to eq(true)
     end
 
     specify 'Moab::StorageObjectVersion#verify_manifest_inventory' do
       version = @existing_storage_object_version
       result = version.verify_manifest_inventory
-      result.verified.should == true
+      expect(result.verified).to eq(true)
 
       version = @version_with_manifest_errors
       result = version.verify_manifest_inventory
       detail_hash = result.to_hash
       detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      JSON.parse(JSON.pretty_generate(detail_hash)).should == JSON.parse(<<-EOF
+      expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
       {
   "manifest_inventory": {
     "verified": false,
@@ -571,10 +571,10 @@ EOF
     specify 'Moab::StorageObjectVersion#verify_signature_catalog' do
       version = @existing_storage_object_version
       result = version.verify_signature_catalog
-      result.verified.should == true
+      expect(result.verified).to eq(true)
       detail_hash=result.to_hash(verbose=true)
       #puts JSON.pretty_generate(detail_hash)
-      detail_hash.should == JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-EOF
       {
   "signature_catalog": {
     "verified": true,
@@ -604,10 +604,10 @@ EOF
     specify 'Moab::StorageObjectVersion#verify_version_inventory' do
       version = @existing_storage_object_version
       result = version.verify_version_inventory
-      result.verified.should == true
+      expect(result.verified).to eq(true)
       detail_hash=result.to_hash(verbose=true)
       #puts JSON.pretty_generate(detail_hash)
-      detail_hash.should == JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-EOF
       {
   "version_inventory": {
     "verified": true,
@@ -643,15 +643,15 @@ EOF
     specify 'Moab::StorageObjectVersion#verify_version_additions' do
       version = @existing_storage_object_version
       result = version.verify_version_additions
-      result.verified.should == true
+      expect(result.verified).to eq(true)
 
       version = @version_with_manifest_errors
       result = version.verify_version_additions
-      result.verified.should == false
+      expect(result.verified).to eq(false)
       detail_hash=result.to_hash(verbose=true)
       detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      JSON.parse(JSON.pretty_generate(detail_hash)).should == JSON.parse(<<-EOF 
+      expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF 
       {
   "version_additions": {
     "verified": false,
@@ -725,9 +725,9 @@ EOF
       version = so.storage_object_version(version_id)
       timestamp = Time.now
       version.deactivate(timestamp)
-      version.exist?.should == false
+      expect(version.exist?).to eq(false)
       inactive_location = @temp_object_dir.join(timestamp.utc.iso8601.gsub(/[-:]/,''))
-      inactive_location.children.size.should == 1
+      expect(inactive_location.children.size).to eq(1)
       @temp_ingests.rmtree if @temp_ingests.exist?
     end
 

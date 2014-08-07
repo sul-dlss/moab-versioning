@@ -32,7 +32,7 @@ describe 'Serializer::Serializable' do
       hash1 = @v1_content.files[0].to_hash
       hash3 = @v3_content.files[0].to_hash
       diff = Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
-      diff["signature"].should hash_match({
+      expect(diff["signature"]).to hash_match({
               "size" => {
                   "v0001" => 41981,
                   "v0003" => 32915
@@ -50,10 +50,10 @@ describe 'Serializer::Serializable' do
                   "v0003" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
               }
           })
-      diff["instances"]["intro-1.jpg"]["v0001"]["path"].should == "intro-1.jpg"
+      expect(diff["instances"]["intro-1.jpg"]["v0001"]["path"]).to eq("intro-1.jpg")
 
       diff = Serializable.deep_diff(hash1, hash3)
-      diff["signature"].should hash_match({
+      expect(diff["signature"]).to hash_match({
             "size" => {
                  :left => 41981,
                 :right => 32915
@@ -72,7 +72,7 @@ describe 'Serializer::Serializable' do
             }
         })
 
-      lambda{Serializable.deep_diff(hash1)}.should raise_exception
+      expect{Serializable.deep_diff(hash1)}.to raise_exception
 
 
       # def Serializable.deep_diff(*hashes)
@@ -111,16 +111,16 @@ describe 'Serializer::Serializable' do
       # test initialization with required parameters (if any)
       opts = {}
       serializable = Serializable.new(opts)
-      serializable.should be_instance_of(Serializable)
+      expect(serializable).to be_instance_of(Serializable)
        
       # test initialization with options hash
       opts = OrderedHash.new
-      lambda{Serializable.new(opts)}.should_not raise_exception
+      expect{Serializable.new(opts)}.not_to raise_exception
        
      # test initialization with options hash containing a bad variable
       opts = OrderedHash.new
       opts[:dummy] = 'dummy'
-      lambda{Serializable.new(opts)}.should raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
+      expect{Serializable.new(opts)}.to raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
 
       # def initialize(opts={})
       #   opts.each do |key, value|
@@ -141,11 +141,11 @@ describe 'Serializer::Serializable' do
     # Which returns: [Array] A list of HappyMapper xml attribute, element and text nodes declared for the class
     # For input parameters: (None)
     specify 'Serializer::Serializable#variables' do
-      FileInstance.new.variables().size.should == 2
-      SignatureCatalog.new.variables().size.should == 7
-      FileSignature.new.variables().size.should == 4
+      expect(FileInstance.new.variables().size).to eq(2)
+      expect(SignatureCatalog.new.variables().size).to eq(7)
+      expect(FileSignature.new.variables().size).to eq(4)
 
-      MyClass.new.variables.size.should == 2
+      expect(MyClass.new.variables.size).to eq(2)
 
       # def variables
       #   attributes = self.class.attributes
@@ -167,10 +167,11 @@ describe 'Serializer::Serializable' do
     # Which returns: [Array] Extract the names of the variables
     # For input parameters: (None)
     specify 'Serializer::Serializable#variable_names' do
-      FileInstance.new.variable_names().should == ["path", "datetime"]
-      SignatureCatalog.new.variable_names().should ==
+      expect(FileInstance.new.variable_names()).to eq(["path", "datetime"])
+      expect(SignatureCatalog.new.variable_names()).to eq(
           ["digital_object_id", "version_id", "catalog_datetime", "file_count", "byte_count", "block_count", "entries"]
-      FileSignature.new.variable_names().should == ["size", "md5", "sha1", "sha256"]
+      )
+      expect(FileSignature.new.variable_names()).to eq(["size", "md5", "sha1", "sha256"])
 
       # def variable_names
       #   variables.collect { |variable| variable.name}
@@ -181,9 +182,9 @@ describe 'Serializer::Serializable' do
     # Which returns: [String] Determine which attribute was marked as an object instance key. Keys are indicated by option :key=true when declaring the object's variables. This follows the same convention as used by DataMapper
     # For input parameters: (None)
     specify 'Serializer::Serializable#key_name' do
-      FileInstance.new.key_name().should == "path"
-      SignatureCatalog.new.key_name().should == "version_id"
-      FileSignature.new.key_name().should == nil
+      expect(FileInstance.new.key_name()).to eq("path")
+      expect(SignatureCatalog.new.key_name()).to eq("version_id")
+      expect(FileSignature.new.key_name()).to eq(nil)
 
       # def key_name
       #   if not defined?(@key_name)
@@ -204,13 +205,13 @@ describe 'Serializer::Serializable' do
     # For input parameters: (None)
     specify 'Serializer::Serializable#key' do
       file_instance = FileInstance.new
-      file_instance.should_receive(:path)
+      expect(file_instance).to receive(:path)
       file_instance.key()
       signature_catalog = SignatureCatalog.new
-      signature_catalog.should_receive(:version_id)
+      expect(signature_catalog).to receive(:version_id)
       signature_catalog.key()
       file_signature = FileSignature.new
-      file_signature.key().should == nil
+      expect(file_signature.key()).to eq(nil)
 
       # def key
       #   return self.send(key_name) if key_name
@@ -224,7 +225,7 @@ describe 'Serializer::Serializable' do
     # * array [Array] = The array to be converted to a hash 
     specify 'Serializer::Serializable#array_to_hash' do
       array = %w{this is an array of words}
-      Serializable.new.array_to_hash(array).should hash_match({
+      expect(Serializable.new.array_to_hash(array)).to hash_match({
           0 => "this",
           1 => "is",
           2 => "an",
@@ -251,7 +252,7 @@ describe 'Serializer::Serializable' do
       additions = FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
       hash = additions.groups[0].to_hash()
       hash['files'][0].delete('instances')
-      hash.should hash_match({
+      expect(hash).to hash_match({
              "group_id" => "content",
           "data_source" => "",
            "file_count" => 1,
@@ -294,7 +295,7 @@ describe 'Serializer::Serializable' do
     specify 'Serializer::Serializable#diff' do
       diff = @v1_content.files[0].diff(@v3_content.files[0])
       diff.delete('instances')
-      diff.should hash_match({
+      expect(diff).to hash_match({
          "signature" => {
              "size" => {
                  :old => 32915,
@@ -322,8 +323,8 @@ describe 'Serializer::Serializable' do
       opts[:path] = @temp.join('path2').to_s
       file_instance2 = FileInstance.new(opts)
       diff = file_instance1.diff(file_instance2)
-      diff.keys[0].should == 'path'
-      diff['path'].should be_instance_of OrderedHash
+      expect(diff.keys[0]).to eq('path')
+      expect(diff['path']).to be_instance_of OrderedHash
        
       # def diff(other)
       #   raise "Cannot compare different classes" if self.class != other.class
@@ -345,7 +346,7 @@ describe 'Serializer::Serializable' do
     # For input parameters: (None)
     specify 'Serializer::Serializable#to_json' do
       #puts JSON.pretty_generate(@v1_content.to_hash)
-     (@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning').should == <<EOF
+     expect((@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning')).to eq <<EOF
 {
   "group_id": "content",
   "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content",

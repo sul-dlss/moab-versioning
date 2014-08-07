@@ -21,7 +21,7 @@ feature "Accessioning of a new digital object version" do
     #        : transfer of the package to DOR workspace
     #        : initiate DOR workflow
 
-    pending("need to implement '#description' functionality")
+    skip("need to implement '#description' functionality")
   end
 
   scenario "Accession a new version with subset of files" do
@@ -38,6 +38,6 @@ feature "Accessioning of a new digital object version" do
     #        : transfer of the package to DOR workspace
     #        : initiate DOR workflow
 
-    pending("need to implement '#description' functionality")
+    skip("need to implement '#description' functionality")
   end
 end

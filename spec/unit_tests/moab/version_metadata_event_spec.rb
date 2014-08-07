@@ -14,15 +14,15 @@ describe 'Moab::VersionMetadataEvent' do
       # test initialization with required parameters (if any)
       opts = {}
       version_metadata_event = VersionMetadataEvent.new(opts)
-      version_metadata_event.should be_instance_of(VersionMetadataEvent)
+      expect(version_metadata_event).to be_instance_of(VersionMetadataEvent)
        
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:type] = 'Test event'
       opts[:datetime] = "Apr 12 19:36:07 UTC 2012"
       version_metadata_event = VersionMetadataEvent.new(opts)
-      version_metadata_event.type.should == opts[:type]
-      version_metadata_event.datetime.should == "2012-04-12T19:36:07Z"
+      expect(version_metadata_event.type).to eq(opts[:type])
+      expect(version_metadata_event.datetime).to eq("2012-04-12T19:36:07Z")
        
       # def initialize(opts={})
       #   super(opts)
@@ -43,7 +43,7 @@ describe 'Moab::VersionMetadataEvent' do
     specify 'Moab::VersionMetadataEvent#type' do
       value = 'Test event'
       @version_metadata_event.type= value
-      @version_metadata_event.type.should == value
+      expect(@version_metadata_event.type).to eq(value)
        
       # attribute :type, String
     end
@@ -52,11 +52,11 @@ describe 'Moab::VersionMetadataEvent' do
     # Which stores: [Time] \@datetime = The date and time of an event
     specify 'Moab::VersionMetadataEvent#datetime' do
       @version_metadata_event.datetime= "Apr 12 19:36:07 UTC 2012"
-      @version_metadata_event.datetime.should == "2012-04-12T19:36:07Z"
+      expect(@version_metadata_event.datetime).to eq("2012-04-12T19:36:07Z")
       @version_metadata_event.datetime= Time.parse("Apr 12 19:36:07 UTC 2012")
-      @version_metadata_event.datetime.should == "2012-04-12T19:36:07Z"
+      expect(@version_metadata_event.datetime).to eq("2012-04-12T19:36:07Z")
       @version_metadata_event.datetime= nil
-      @version_metadata_event.datetime.should == ""
+      expect(@version_metadata_event.datetime).to eq("")
        
       # def datetime=(event_datetime)
       #   @datetime=Time.input(event_datetime)

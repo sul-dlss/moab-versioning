@@ -8,29 +8,29 @@ feature "Create reconstructed digital object for a version" do
 
   end
 
-  scenario "Search for version based on objectId and versionId" do
+  scenario "Search for version based on objectId and versionId" do |example|
     # given: the objectId and versionId
     # action: determine the object and version location
     # outcome: the versionMetadata for the version
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
-  scenario "Search for version based on objectId and datetime" do
+  scenario "Search for version based on objectId and datetime" do |example|
     # given: the objectId and version datetime
     # action: determine the object and version location
     # outcome: the versionMetadata for the version
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
-  scenario "Browse for version based on objectId" do
+  scenario "Browse for version based on objectId" do |example|
     # given: the objectId
     # action: determine the object location
     #       : retrieve copies of all versionMetadata files
     # outcome: a list of versions for the object
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
   scenario "Generate a copy of a full version in a temp location" do
@@ -42,10 +42,10 @@ feature "Create reconstructed digital object for a version" do
     #       : and the versionMetadata manifest to provide original filenames
     # outcome: a temp folder containing the version's files
 
-    pending("need to implement '#description' functionality")
+    skip("need to implement '#description' functionality")
   end
 
-  scenario "Generate a copy of a partial version in a temp location" do
+  scenario "Generate a copy of a partial version in a temp location" do |example|
     # given: the version's data folder containing version's files
     #      : the versionMetadata manifest
     #      : the existing index of storage location by file signature
@@ -55,7 +55,7 @@ feature "Create reconstructed digital object for a version" do
     #       : and the versionMetadata manifest to provide original filenames
     # outcome: a temp folder containing a subset of   the version's files
 
-    pending("need to implement '#{example.description}'")
+    skip("need to implement '#{example.description}'")
   end
 
 end

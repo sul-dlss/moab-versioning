@@ -14,7 +14,7 @@ describe 'Moab::SignatureCatalogEntry' do
       # test initialization with required parameters (if any)
       opts = {}
       signature_catalog_entry = SignatureCatalogEntry.new(opts)
-      signature_catalog_entry.should be_instance_of(SignatureCatalogEntry)
+      expect(signature_catalog_entry).to be_instance_of(SignatureCatalogEntry)
        
       # test initialization with options hash
       opts = OrderedHash.new
@@ -23,10 +23,10 @@ describe 'Moab::SignatureCatalogEntry' do
       opts[:path] = 'Test path'
       opts[:signature] = double(FileSignature.name)
       signature_catalog_entry = SignatureCatalogEntry.new(opts)
-      signature_catalog_entry.version_id.should == opts[:version_id]
-      signature_catalog_entry.group_id.should == opts[:group_id]
-      signature_catalog_entry.path.should == opts[:path]
-      signature_catalog_entry.signature.should == opts[:signature]
+      expect(signature_catalog_entry.version_id).to eq(opts[:version_id])
+      expect(signature_catalog_entry.group_id).to eq(opts[:group_id])
+      expect(signature_catalog_entry.path).to eq(opts[:path])
+      expect(signature_catalog_entry.signature).to eq(opts[:signature])
        
       # def initialize(opts={})
       #   super(opts)
@@ -47,7 +47,7 @@ describe 'Moab::SignatureCatalogEntry' do
     specify 'Moab::SignatureCatalogEntry#version_id' do
       value = 8
       @signature_catalog_entry.version_id= value
-      @signature_catalog_entry.version_id.should == value
+      expect(@signature_catalog_entry.version_id).to eq(value)
        
       # attribute :version_id, Integer, :tag => 'originalVersion', :key => true, :on_save => Proc.new {|n| n.to_s}
     end
@@ -57,7 +57,7 @@ describe 'Moab::SignatureCatalogEntry' do
     specify 'Moab::SignatureCatalogEntry#group_id' do
       value = 'Test group_id'
       @signature_catalog_entry.group_id= value
-      @signature_catalog_entry.group_id.should == value
+      expect(@signature_catalog_entry.group_id).to eq(value)
        
       # attribute :group_id, String, :tag => 'groupId', :key => true
     end
@@ -67,7 +67,7 @@ describe 'Moab::SignatureCatalogEntry' do
     specify 'Moab::SignatureCatalogEntry#path' do
       value = 'Test path'
       @signature_catalog_entry.path= value
-      @signature_catalog_entry.path.should == value
+      expect(@signature_catalog_entry.path).to eq(value)
        
       # attribute :path, String, :key => true, :tag => 'storagePath'
     end
@@ -77,10 +77,10 @@ describe 'Moab::SignatureCatalogEntry' do
     specify 'Moab::SignatureCatalogEntry#signature' do
       value = double(FileSignature.name)
       @signature_catalog_entry.signature= value
-      @signature_catalog_entry.signature.should == value
+      expect(@signature_catalog_entry.signature).to eq(value)
 
       @signature_catalog_entry.signature= [value, 'dummy']
-      @signature_catalog_entry.signature.should == value
+      expect(@signature_catalog_entry.signature).to eq(value)
        
       # def signature=(signature)
       #   @signature = signature.is_a?(Array) ? signature[0] : signature
@@ -110,7 +110,7 @@ describe 'Moab::SignatureCatalogEntry' do
     # Which returns: [String] Returns the storage path to a file, relative to the object storage home directory
     # For input parameters: (None)
     specify 'Moab::SignatureCatalogEntry#storage_path' do
-      @signature_catalog_entry.storage_path().should == "v0005/data/content/title.jpg"
+      expect(@signature_catalog_entry.storage_path()).to eq("v0005/data/content/title.jpg")
        
       # def storage_path
       #   File.join(StorageObject.version_dirname(version_id),'data', group_id, path)

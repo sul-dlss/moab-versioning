@@ -20,12 +20,12 @@ feature "Compare versions" do
     basis_inventory = v1_inventory
     other_inventory = v2_inventory
     diff = file_inventory_difference.compare(basis_inventory, other_inventory)
-    diff.should be_instance_of(FileInventoryDifference)
-    diff.group_differences.size.should == 2
-    diff.basis.should == "v1"
-    diff.other.should == "v2"
-    diff.difference_count.should == 6
-    diff.digital_object_id.should == "druid:jq937jp0017"
+    expect(diff).to be_instance_of(FileInventoryDifference)
+    expect(diff.group_differences.size).to eq(2)
+    expect(diff.basis).to eq("v1")
+    expect(diff.other).to eq("v2")
+    expect(diff.difference_count).to eq(6)
+    expect(diff.digital_object_id).to eq("druid:jq937jp0017")
   end
 
 end

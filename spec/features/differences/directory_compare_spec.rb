@@ -16,11 +16,11 @@ feature "Compare inventory against directory" do
     directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(v1_data_directory)
     diff = FileInventoryDifference.new(opts)
     diff.compare(v1_inventory, directory_inventory)
-    diff.group_differences.size.should == 2
-    diff.basis.should == "v1"
-    diff.other.should include("data/jq937jp0017/v0001/content")
-    diff.difference_count.should == 0
-    diff.digital_object_id.should == "druid:jq937jp0017|"
+    expect(diff.group_differences.size).to eq(2)
+    expect(diff.basis).to eq("v1")
+    expect(diff.other).to include("data/jq937jp0017/v0001/content")
+    expect(diff.difference_count).to eq(0)
+    expect(diff.digital_object_id).to eq("druid:jq937jp0017|")
 
   end
 

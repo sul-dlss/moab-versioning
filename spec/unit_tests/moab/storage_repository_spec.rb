@@ -8,7 +8,7 @@ describe 'Moab::StorageRepository' do
     specify 'Moab::StorageRepository#initialize' do
        
       storage_repository = Moab::StorageRepository.new()
-      storage_repository.should be_instance_of(Moab::StorageRepository)
+      expect(storage_repository).to be_instance_of(Moab::StorageRepository)
     end
   
   end
@@ -22,51 +22,51 @@ describe 'Moab::StorageRepository' do
     end
     
     specify 'Moab::StorageRepository#storage_roots' do
-      @storage_repository.storage_roots[0].should == @fixtures.join('derivatives')
-      @storage_repository.storage_roots[1].should == @fixtures.join('newnode')
+      expect(@storage_repository.storage_roots[0]).to eq(@fixtures.join('derivatives'))
+      expect(@storage_repository.storage_roots[1]).to eq(@fixtures.join('newnode'))
     end
 
     specify 'Moab::StorageRepository#storage_trunk' do
-      @storage_repository.storage_trunk.should == 'ingests'
+      expect(@storage_repository.storage_trunk).to eq('ingests')
     end
 
     specify 'Moab::StorageRepository#deposit_trunk' do
-      @storage_repository.deposit_trunk.should == 'packages'
+      expect(@storage_repository.deposit_trunk).to eq('packages')
     end
 
     specify 'Moab::StorageRepository#storage_branch' do
-      @storage_repository.storage_branch('abcdef').should == 'ab/cd/ef/abcdef'
+      expect(@storage_repository.storage_branch('abcdef')).to eq('ab/cd/ef/abcdef')
     end
 
     specify 'Moab::StorageRepository#deposit_branch' do
-      @storage_repository.deposit_branch('abcdef').should == 'abcdef'
+      expect(@storage_repository.deposit_branch('abcdef')).to eq('abcdef')
     end
 
     specify 'Moab::StorageRepository#find_storage_root' do
-      @storage_repository.find_storage_root('abcdef').should  == @fixtures.join('newnode')
-      @storage_repository.stub(:storage_branch).and_return('jq937jp0017')
-      @storage_repository.find_storage_root('jq937jp0017').should == @derivatives
-      @storage_repository.stub(:storage_trunk).and_return('junk')
-      lambda{@storage_repository.find_storage_root('abcdef')}.should raise_exception(/Storage area not found/)
+      expect(@storage_repository.find_storage_root('abcdef')).to  eq(@fixtures.join('newnode'))
+      allow(@storage_repository).to receive(:storage_branch).and_return('jq937jp0017')
+      expect(@storage_repository.find_storage_root('jq937jp0017')).to eq(@derivatives)
+      allow(@storage_repository).to receive(:storage_trunk).and_return('junk')
+      expect{@storage_repository.find_storage_root('abcdef')}.to raise_exception(/Storage area not found/)
     end
 
     specify 'Moab::StorageRepository#find_storage_object' do
-      @storage_repository.stub(:storage_branch).and_return('jq937jp0017')
+      allow(@storage_repository).to receive(:storage_branch).and_return('jq937jp0017')
       so = @storage_repository.find_storage_object('jq937jp0017')
-      so.object_pathname.should == @derivatives.join('ingests/jq937jp0017')
-      so.deposit_bag_pathname.should == @derivatives.join('packages/jq937jp0017')
+      expect(so.object_pathname).to eq(@derivatives.join('ingests/jq937jp0017'))
+      expect(so.deposit_bag_pathname).to eq(@derivatives.join('packages/jq937jp0017'))
 
     end
 
     specify 'Moab::StorageRepository#storage_object' do
       mock_so = double(StorageObject)
-      @storage_repository.should_receive(:find_storage_object).twice.and_return(mock_so)
+      expect(@storage_repository).to receive(:find_storage_object).twice.and_return(mock_so)
       mock_path = double(Pathname)
-      mock_so.stub(:object_pathname).and_return(mock_path)
-      mock_path.stub(:exist?).and_return(false)
-      lambda{@storage_repository.storage_object('jq937jp0017')}.should raise_exception(Moab::ObjectNotFoundException)
+      allow(mock_so).to receive(:object_pathname).and_return(mock_path)
+      allow(mock_path).to receive(:exist?).and_return(false)
+      expect{@storage_repository.storage_object('jq937jp0017')}.to raise_exception(Moab::ObjectNotFoundException)
 
-      mock_path.should_receive(:mkpath)
+      expect(mock_path).to receive(:mkpath)
       @storage_repository.storage_object('jq937jp0017',create=true)
     end
     
@@ -74,9 +74,9 @@ describe 'Moab::StorageRepository' do
       bag_pathname = double("bag_pathname")
       object_pathname = double("object_pathname")
       storage_object = double(StorageObject)
-      @storage_repository.should_receive(:storage_object).with(@druid,true).and_return(storage_object)
-      storage_object.stub(:object_pathname).and_return(object_pathname)
-      storage_object.should_receive(:ingest_bag).with(bag_pathname)
+      expect(@storage_repository).to receive(:storage_object).with(@druid,true).and_return(storage_object)
+      allow(storage_object).to receive(:object_pathname).and_return(object_pathname)
+      expect(storage_object).to receive(:ingest_bag).with(bag_pathname)
       @storage_repository.store_new_object_version(@druid,bag_pathname)
     end
 

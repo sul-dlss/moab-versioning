@@ -16,9 +16,9 @@ describe 'Stanford::DorMetadata' do
       digital_object_id = 'Test digital_object_id' 
       version_id = 68 
       dor_metadata = DorMetadata.new(digital_object_id, version_id)
-      dor_metadata.should be_instance_of(DorMetadata)
-      dor_metadata.digital_object_id.should == digital_object_id
-      dor_metadata.version_id.should == version_id
+      expect(dor_metadata).to be_instance_of(DorMetadata)
+      expect(dor_metadata.digital_object_id).to eq(digital_object_id)
+      expect(dor_metadata.version_id).to eq(version_id)
        
       # def initialize(digital_object_id, version_id=nil)
       #   @digital_object_id = digital_object_id
@@ -41,7 +41,7 @@ describe 'Stanford::DorMetadata' do
     specify 'Stanford::DorMetadata#digital_object_id' do
       value = 'Test digital_object_id'
       @dor_metadata.digital_object_id= value
-      @dor_metadata.digital_object_id.should == value
+      expect(@dor_metadata.digital_object_id).to eq(value)
        
       # def digital_object_id=(value)
       #   @digital_object_id = value
@@ -57,7 +57,7 @@ describe 'Stanford::DorMetadata' do
     specify 'Stanford::DorMetadata#version_id' do
       value = 10
       @dor_metadata.version_id= value
-      @dor_metadata.version_id.should == value
+      expect(@dor_metadata.version_id).to eq(value)
        
       # def version_id=(value)
       #   @version_id = value
@@ -92,11 +92,11 @@ describe 'Stanford::DorMetadata' do
       directory = @data.join('v0002/metadata')
       version_id = 2
       inventory = @dor_metadata.inventory_from_directory(directory, version_id)
-      inventory.type.should == "version"
-      inventory.digital_object_id.should == "jq937jp0017"
-      inventory.version_id.should == 2
-      inventory.groups.size.should == 2
-      inventory.file_count.should == 9
+      expect(inventory.type).to eq("version")
+      expect(inventory.digital_object_id).to eq("jq937jp0017")
+      expect(inventory.version_id).to eq(2)
+      expect(inventory.groups.size).to eq(2)
+      expect(inventory.file_count).to eq(9)
 
       # def inventory_from_directory(directory, version_id=nil)
       #   version_id ||= @version_id

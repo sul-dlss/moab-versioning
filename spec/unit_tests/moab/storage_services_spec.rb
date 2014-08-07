@@ -12,37 +12,37 @@ describe 'Moab::StorageServices' do
     end
 
     specify 'Moab::StorageServices.storage_roots' do
-      Moab::StorageServices.storage_roots. should == [@derivatives,@fixtures.join('newnode')]
+      expect(Moab::StorageServices.storage_roots). to eq([@derivatives,@fixtures.join('newnode')])
     end
 
     specify 'Moab::StorageServices.deposit_trunk' do
-      Moab::StorageServices.deposit_trunk. should == 'packages'
+      expect(Moab::StorageServices.deposit_trunk). to eq('packages')
     end
 
     specify 'Moab::StorageServices.deposit_branch' do
-      Moab::StorageServices.deposit_branch(@obj).should == 'jq937jp0017'
+      expect(Moab::StorageServices.deposit_branch(@obj)).to eq('jq937jp0017')
     end
 
     specify 'Moab::StorageServices.find_storage_object' do
-      Moab::StorageServices.repository.should_receive(:find_storage_object).with(@obj,false)
+      expect(Moab::StorageServices.repository).to receive(:find_storage_object).with(@obj,false)
       Moab::StorageServices.find_storage_object(@obj)
-      Moab::StorageServices.repository.should_receive(:find_storage_object).with(@obj,true)
+      expect(Moab::StorageServices.repository).to receive(:find_storage_object).with(@obj,true)
       Moab::StorageServices.find_storage_object(@obj,true)
     end
 
     specify 'Moab::StorageServices.storage_object' do
-      Moab::StorageServices.repository.should_receive(:storage_object).with(@obj,false)
+      expect(Moab::StorageServices.repository).to receive(:storage_object).with(@obj,false)
       Moab::StorageServices.storage_object(@obj)
-      Moab::StorageServices.repository.should_receive(:storage_object).with(@obj,true)
+      expect(Moab::StorageServices.repository).to receive(:storage_object).with(@obj,true)
       Moab::StorageServices.storage_object(@obj,true)
     end
 
     specify 'Moab::StorageServices.object_path' do
-      Moab::StorageServices.object_path(@digital_object_id).should match('spec/fixtures/derivatives/ingests/jq937jp0017')
+      expect(Moab::StorageServices.object_path(@digital_object_id)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
     end
 
     specify 'Moab::StorageServices.object_version_path' do
-      Moab::StorageServices.object_version_path(@digital_object_id,1).should match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
+      expect(Moab::StorageServices.object_version_path(@digital_object_id,1)).to match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
     end
 
     # Unit test for method: {Moab::StorageServices.current_version}
@@ -50,7 +50,7 @@ describe 'Moab::StorageServices' do
     # For input parameters:
     # * object_id [String] = The digital object identifier
     specify 'Moab::StorageServices.current_version' do
-      Moab::StorageServices.current_version(@digital_object_id).should == 3
+      expect(Moab::StorageServices.current_version(@digital_object_id)).to eq(3)
 
       # def self.current_version(object_id)
       #   @@repository.storage_object(object_id).current_version_id
@@ -80,7 +80,7 @@ describe 'Moab::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       # def self.version_metadata(object_id)
       #   self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
@@ -94,11 +94,11 @@ describe 'Moab::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file_group' do
       group = Moab::StorageServices.retrieve_file_group('content', @digital_object_id, version_id=2)
-      group.group_id.should == 'content'
+      expect(group.group_id).to eq('content')
       group = Moab::StorageServices.retrieve_file_group('metadata', @digital_object_id, version_id=2)
-      group.group_id.should == 'metadata'
+      expect(group.group_id).to eq('metadata')
       group = Moab::StorageServices.retrieve_file_group('manifest', @digital_object_id, version_id=2)
-      group.group_id.should == 'manifests'
+      expect(group.group_id).to eq('manifests')
 
       # def self.retrieve_file_group(file_category, object_id, version_id=nil)
       #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
@@ -121,14 +121,14 @@ describe 'Moab::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file' do
       content_pathname = Moab::StorageServices.retrieve_file('content', 'page-1.jpg', @digital_object_id, version_id=2)
-      content_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/content\/page-1.jpg/
-      content_pathname.exist?.should == true
+      expect(content_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/content\/page-1.jpg/)
+      expect(content_pathname.exist?).to eq(true)
       metadata_pathname = Moab::StorageServices.retrieve_file('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
-      metadata_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/metadata\/contentMetadata.xml/
-      metadata_pathname.exist?.should == true
+      expect(metadata_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/metadata\/contentMetadata.xml/)
+      expect(metadata_pathname.exist?).to eq(true)
       manifest_pathname = Moab::StorageServices.retrieve_file('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
-      manifest_pathname.to_s.should =~ /spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/manifests\/versionAdditions.xml/
-      manifest_pathname.exist?.should == true
+      expect(manifest_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/manifests\/versionAdditions.xml/)
+      expect(manifest_pathname.exist?).to eq(true)
 
       # def self.retrieve_file(file_category, file_id, object_id, version_id=nil)
       #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
@@ -149,7 +149,7 @@ describe 'Moab::StorageServices' do
       object_id = @digital_object_id
       version_id = 2
       filepath = Moab::StorageServices.retrieve_file_using_signature(file_category, file_signature, object_id, version_id)
-      filepath.to_s.should =~ %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
+      expect(filepath.to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg})
 
       # def self.retrieve_file_using_signature(file_category, file_signature, object_id, version_id=nil)
       #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
@@ -166,11 +166,11 @@ describe 'Moab::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Moab::StorageServices.retrieve_file_signature' do
       content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @digital_object_id, version_id=2)
-      content_signature.fixity.should == {:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"}
+      expect(content_signature.fixity).to eq({:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"})
       metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @digital_object_id, version_id=2)
-      metadata_signature.fixity.should == {:size=>"1303", :md5=>"8672613ac1757cda4e44cc464559cd04", :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9", :sha256=>"02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"}
+      expect(metadata_signature.fixity).to eq({:size=>"1303", :md5=>"8672613ac1757cda4e44cc464559cd04", :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9", :sha256=>"02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"})
       manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @digital_object_id, version_id=2)
-      manifest_signature.size.should == 1631
+      expect(manifest_signature.size).to eq(1631)
 
       # def self.retrieve_file_signature(file_category, file_id, object_id, version_id=nil)
       #   storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
@@ -250,7 +250,7 @@ describe 'Moab::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
     end
 
   end

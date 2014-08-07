@@ -13,6 +13,7 @@ include Stanford
 
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}
+  config.alias_example_to :scenario
 end
 
 def fixtures_directory
@@ -36,7 +37,6 @@ end
 #   outcome: <to generate this result>
 #   ...
 # end
-RSpec::Core::ExampleGroup.alias_example_to :scenario
 
 module RSpec::Core::Hooks
   alias background before

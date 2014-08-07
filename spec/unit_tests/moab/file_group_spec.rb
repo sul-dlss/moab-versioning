@@ -15,23 +15,23 @@ describe 'Moab::FileGroup' do
       # test initialization with required parameters (if any)
       opts = {}
       file_group = FileGroup.new(opts)
-      file_group.should be_instance_of(FileGroup)
+      expect(file_group).to be_instance_of(FileGroup)
        
       # test initialization of arrays and hashes
-      file_group.files.should be_kind_of(Array)
-      file_group.signature_hash.should be_kind_of(Hash)
+      expect(file_group.files).to be_kind_of(Array)
+      expect(file_group.signature_hash).to be_kind_of(Hash)
        
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:group_id] = 'Test group_id'
       opts[:data_source] = 'Test data_source'
       file_group = FileGroup.new(opts)
-      file_group.group_id.should == opts[:group_id]
-      file_group.data_source.should == opts[:data_source]
-      file_group.file_count.should == 0
-      file_group.byte_count.should == 0
-      file_group.block_count.should == 0
-      file_group.files.should == []
+      expect(file_group.group_id).to eq(opts[:group_id])
+      expect(file_group.data_source).to eq(opts[:data_source])
+      expect(file_group.file_count).to eq(0)
+      expect(file_group.byte_count).to eq(0)
+      expect(file_group.block_count).to eq(0)
+      expect(file_group.files).to eq([])
 
       # def initialize(opts={})
       #   @signature_hash = OrderedHash.new
@@ -53,7 +53,7 @@ describe 'Moab::FileGroup' do
     specify 'Moab::FileGroup#group_id' do
       value = 'Test group_id'
       @file_group.group_id= value
-      @file_group.group_id.should == value
+      expect(@file_group.group_id).to eq(value)
        
       # attribute :group_id, String, :tag => 'groupId', :key => true
     end
@@ -63,7 +63,7 @@ describe 'Moab::FileGroup' do
     specify 'Moab::FileGroup#data_source' do
       value = 'Test data_source'
       @file_group.data_source= value
-      @file_group.data_source.should == value
+      expect(@file_group.data_source).to eq(value)
        
       # attribute :data_source, String, :tag => 'dataSource'
     end
@@ -71,7 +71,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#file_count}
     # Which stores: [Integer] The total number of data files (dynamically calculated)
     specify 'Moab::FileGroup#file_count' do
-       @file_group.file_count.should == 11
+       expect(@file_group.file_count).to eq(11)
        
       # attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -83,7 +83,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#byte_count}
     # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
     specify 'Moab::FileGroup#byte_count' do
-      @file_group.byte_count.should == 217820
+      expect(@file_group.byte_count).to eq(217820)
        
       # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -95,7 +95,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#block_count}
     # Which stores: [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
     specify 'Moab::FileGroup#block_count' do
-      @file_group.block_count.should == 216
+      expect(@file_group.block_count).to eq(216)
        
       # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|i| i.to_s}
        
@@ -107,7 +107,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#files}
     # Which stores: [Array<FileManifestation>] The set of files comprising the group
     specify 'Moab::FileGroup#files' do
-      @file_group.files.size.should == 11
+      expect(@file_group.files.size).to eq(11)
        
       # def files=(manifestiation_array)
       #   manifestiation_array.each do |manifestiation|
@@ -123,7 +123,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#signature_hash}
     # Which stores: [OrderedHash<FileSignature, FileManifestation>] The actual in-memory store for the collection of {FileManifestation} objects that are contained in this file group.
     specify 'Moab::FileGroup#signature_hash' do
-      @file_group.signature_hash.size.should == 11
+      expect(@file_group.signature_hash.size).to eq(11)
        
       # def signature_hash=(value)
       #   @signature_hash = value
@@ -137,7 +137,7 @@ describe 'Moab::FileGroup' do
     # Unit test for attribute: {Moab::FileGroup#base_directory}
     # Which stores: [Pathname] The full path used as the basis of the relative paths reported in {FileInstance} objects that are children of the {FileManifestation} objects contained in this file group
     specify 'Moab::FileGroup#base_directory' do
-      @file_group.base_directory.to_s.should include('data/jq937jp0017/v0001')
+      expect(@file_group.base_directory.to_s).to include('data/jq937jp0017/v0001')
        
       # def base_directory=(basepath)
       #   @base_directory = Pathname.new(basepath).realpath
@@ -161,8 +161,9 @@ describe 'Moab::FileGroup' do
     # Which returns: [OrderedHash<String,FileSignature>] An index of file paths, used to test for existence of a filename in this file group
     # For input parameters: (None)
     specify 'Moab::FileGroup#path_hash' do
-       @v1_file_group.path_hash().keys.should ==
+       expect(@v1_file_group.path_hash().keys).to eq(
            ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+       )
        
       # def path_hash
       #   path_hash = OrderedHash.new
@@ -176,8 +177,9 @@ describe 'Moab::FileGroup' do
     end
 
     specify 'Moab::FileGroup#path_list' do
-      @v1_file_group.path_list.should ==
+      expect(@v1_file_group.path_list).to eq(
           ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+      )
     end
 
     # Unit test for method: {Moab::FileGroup#path_hash_subset}
@@ -191,7 +193,7 @@ describe 'Moab::FileGroup' do
         signature_subset << files[index].signature
       end
       subset = @v1_file_group.path_hash_subset(signature_subset)
-      subset.size.should == 3
+      expect(subset.size).to eq(3)
 
       # def path_hash_subset(signature_subset)
       #   path_hash = OrderedHash.new
@@ -212,7 +214,7 @@ describe 'Moab::FileGroup' do
     specify 'Moab::FileGroup#add_file' do
       manifestation = @v1_file_group.files[0] 
       @new_file_group.add_file(manifestation)
-      @new_file_group.files[0].should == manifestation
+      expect(@new_file_group.files[0]).to eq(manifestation)
        
       # def add_file(manifestation)
       #   manifestation.instances.each do |instance|
@@ -231,12 +233,12 @@ describe 'Moab::FileGroup' do
       manifestation.instances.each do |instance|
         @new_file_group.add_file_instance(manifestation.signature, instance)
       end
-      @new_file_group.files[0].should == manifestation
+      expect(@new_file_group.files[0]).to eq(manifestation)
 
       # add a second file instance to an existing manifestation
       new_instance = FileInstance.new(:path => "/my/path")
       @new_file_group.add_file_instance(manifestation.signature, new_instance)
-      @new_file_group.files[0].instances.size.should == 2
+      expect(@new_file_group.files[0].instances.size).to eq(2)
              
       # def add_file_instance(signature,instance)
       #   if @signature_hash.has_key?(signature)
@@ -259,7 +261,7 @@ describe 'Moab::FileGroup' do
       before_file_count = file_group.file_count
       file_group.remove_file_having_path("page-1.jpg")
       after_file_count = file_group.file_count
-      after_file_count.should == before_file_count - 1
+      expect(after_file_count).to eq(before_file_count - 1)
 
       #def remove_file_having_path(path)
       #  signature = self.path_hash[path]
@@ -274,9 +276,9 @@ describe 'Moab::FileGroup' do
     specify 'Moab::FileGroup#is_descendent_of_base?' do
       @new_file_group.base_directory=@fixtures.join('data')
       pathname = @fixtures.join('data/jq937jp0017/v0001')
-      @new_file_group.is_descendent_of_base?(pathname).should == true
+      expect(@new_file_group.is_descendent_of_base?(pathname)).to eq(true)
       pathname = @fixtures.join('derivatives/manifests')
-      lambda{@new_file_group.is_descendent_of_base?(pathname)}.should raise_exception
+      expect{@new_file_group.is_descendent_of_base?(pathname)}.to raise_exception
        
       # def is_descendent_of_base?(pathname)
       #   raise("base_directory has not been set") if @base_directory.nil?
@@ -293,9 +295,9 @@ describe 'Moab::FileGroup' do
       file_digests = 'my_digests'
       recursive = false
       file_group = FileGroup.new
-      file_group.should_receive(:group_from_directory).with(directory, recursive)
+      expect(file_group).to receive(:group_from_directory).with(directory, recursive)
       file_group.group_from_bagit_subdir(directory, file_digests, recursive)
-      file_group.instance_variable_get(:@signatures_from_bag).should == file_digests
+      expect(file_group.instance_variable_get(:@signatures_from_bag)).to eq(file_digests)
 
       #@param  directory [Pathame,String] The directory whose children are to be added to the file group
       #@param digests [Hash<Pathname,Signature>] The fixity data already calculated for the files
@@ -316,11 +318,11 @@ describe 'Moab::FileGroup' do
       directory = @fixtures.join('data/jq937jp0017/v0001/content')
       recursive = true
       group = FileGroup.new
-      group.should_receive(:harvest_directory).with(directory, recursive)
+      expect(group).to receive(:harvest_directory).with(directory, recursive)
       group= group.group_from_directory(directory, recursive)
-      group.should be_instance_of(FileGroup)
-      group.base_directory.should == directory.realpath
-      group.data_source.should == directory.realpath.to_s
+      expect(group).to be_instance_of(FileGroup)
+      expect(group.base_directory).to eq(directory.realpath)
+      expect(group.data_source).to eq(directory.realpath.to_s)
 
       # def group_from_directory(directory, recursive=true)
       #   self.base_directory = directory
@@ -375,23 +377,23 @@ describe 'Moab::FileGroup' do
       group = FileGroup.new
       group.base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
       group.add_physical_file(pathname)
-      group.files.size.should == 1
-      group.files[0].signature.should == FileSignature.new(
-          :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
-      group.files[0].instances[0].path.should == 'title.jpg'
+      expect(group.files.size).to eq(1)
+      expect(group.files[0].signature).to eq(FileSignature.new(
+          :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"))
+      expect(group.files[0].instances[0].path).to eq('title.jpg')
 
       signature = double(FileSignature)
-      FileSignature.stub(:new).and_return(signature)
-      signature.should_receive(:signature_from_file).with(pathname)
+      allow(FileSignature).to receive(:new).and_return(signature)
+      expect(signature).to receive(:signature_from_file).with(pathname)
       group.add_physical_file(pathname)
 
       signature = double(FileSignature)
       signature_for_path = double(Hash)
-      signature_for_path.should_receive(:[]).with(pathname).twice.and_return(signature)
+      expect(signature_for_path).to receive(:[]).with(pathname).twice.and_return(signature)
       group.instance_variable_set(:@signatures_from_bag, signature_for_path)
-      signature.should_receive(:complete?).and_return(false)
-      signature.should_receive(:normalized_signature).with(pathname).and_return(signature)
-      group.should_receive(:add_file_instance)
+      expect(signature).to receive(:complete?).and_return(false)
+      expect(signature).to receive(:normalized_signature).with(pathname).and_return(signature)
+      expect(group).to receive(:add_file_instance)
       group.add_physical_file(pathname)
 
       #def add_physical_file(pathname, validated=nil)

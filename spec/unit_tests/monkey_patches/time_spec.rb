@@ -16,11 +16,11 @@ describe 'UtcTime' do
     # For input parameters:
     # * datetime [Time, String, Nil] = The input datetime 
     specify 'UtcTime.input' do
-      UtcTime.input(nil).should == nil
-      UtcTime.input(@time_string).should == @time_class_instance
-      UtcTime.input(@time_class_instance).should == @time_class_instance
+      expect(UtcTime.input(nil)).to eq(nil)
+      expect(UtcTime.input(@time_string)).to eq(@time_class_instance)
+      expect(UtcTime.input(@time_class_instance)).to eq(@time_class_instance)
       expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      lambda{UtcTime.input(4)}.should raise_exception(RuntimeError,'unknown time format 4')
+      expect{UtcTime.input(4)}.to raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.input(datetime)
       #   case datetime
@@ -41,11 +41,11 @@ describe 'UtcTime' do
     # For input parameters:
     # * datetime [Time, String, Nil] = The datetime value to output 
     specify 'UtcTime.output' do
-      UtcTime.output(nil).should == ""
-      UtcTime.output(@time_string).should == "2012-04-12T19:36:07Z"
-      UtcTime.output(@time_class_instance).should == "2012-04-12T19:36:07Z"
+      expect(UtcTime.output(nil)).to eq("")
+      expect(UtcTime.output(@time_string)).to eq("2012-04-12T19:36:07Z")
+      expect(UtcTime.output(@time_class_instance)).to eq("2012-04-12T19:36:07Z")
       expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      lambda{UtcTime.output(4)}.should raise_exception(RuntimeError,'unknown time format 4')
+      expect{UtcTime.output(4)}.to raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.output(datetime)
       #   case datetime

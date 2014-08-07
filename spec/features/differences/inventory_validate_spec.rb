@@ -16,7 +16,7 @@ feature "Validate inventory against directory" do
     directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(v1_data_directory)
     diff = FileInventoryDifference.new(opts)
     diff.compare(v1_inventory, directory_inventory)
-    diff.difference_count.should == 0
+    expect(diff.difference_count).to eq(0)
   end
 
 end

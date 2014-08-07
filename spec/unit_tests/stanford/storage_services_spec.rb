@@ -53,7 +53,7 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
     end
 
 
@@ -65,7 +65,7 @@ describe 'Stanford::StorageServices' do
     # * version_id [Integer] = The ID of the version whose inventory is to be compared, if nil use latest version 
     specify 'Stanford::StorageServices.compare_cm_to_version_inventory' do
       diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata, @druid, 'all', 1)
-      diff.should be_instance_of(FileInventoryDifference)
+      expect(diff).to be_instance_of(FileInventoryDifference)
       xmlObj1 = Nokogiri::XML(diff.to_xml)
       xmlObj1.xpath('//@reportDatetime').remove
       xmlTest = <<-EOF
@@ -105,12 +105,12 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
-      StorageServices.should_receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
+      expect(StorageServices).to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       xmlObj1 = Nokogiri::XML(diff.to_xml)
       xmlObj1.xpath('//@reportDatetime').remove
@@ -174,7 +174,7 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       druid = "druid:no000non0000"
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
@@ -221,7 +221,7 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
     end
 
@@ -246,13 +246,13 @@ describe 'Stanford::StorageServices' do
       subsets = %w(shelve publish preserve)
       subsets.each do |subset|
         diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
-        diff.should be_instance_of(FileInventoryDifference)
+        expect(diff).to be_instance_of(FileInventoryDifference)
         xmlObj1 = Nokogiri::XML(diff.to_xml)
         xmlObj1.xpath('//@reportDatetime').remove
         xmlObj2 = Nokogiri::XML(inventory_diff)
         xmlObj2.xpath('//@other').each {|o| o.value = o.value.gsub(/xyz/, subset) }
         same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-        same.should be true
+        expect(same).to be true
       end
     end
 
@@ -267,7 +267,7 @@ describe 'Stanford::StorageServices' do
       object_id = 'Test object_id' 
       version_id = 78 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, @druid, 1)
-      adds.should be_instance_of(FileInventory)
+      expect(adds).to be_instance_of(FileInventory)
       xmlObj1 = Nokogiri::XML(adds.to_xml)
       xmlObj1.xpath('//@inventoryDatetime').remove
       xmlTest = <<-EOF
@@ -282,10 +282,10 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, "druid:no000non0000", nil)
-      adds.should be_instance_of(FileInventory)
+      expect(adds).to be_instance_of(FileInventory)
       xmlObj1 = Nokogiri::XML(adds.to_xml)
       xmlObj1.xpath('//@inventoryDatetime').remove
       xmlTest = <<-EOF
@@ -312,7 +312,7 @@ describe 'Stanford::StorageServices' do
       EOF
       xmlObj2 = Nokogiri::XML(xmlTest)
       same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      same.should be true
+      expect(same).to be true
     end
 
   end

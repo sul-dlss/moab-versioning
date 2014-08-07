@@ -46,7 +46,7 @@ feature "Write contentMetadata datastream" do
     EOF
     xmlObj2 = Nokogiri::XML(cm_test)
     same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    same.should be true
+    expect(same).to be true
   end
 
 

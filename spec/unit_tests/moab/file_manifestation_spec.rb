@@ -14,16 +14,16 @@ describe 'Moab::FileManifestation' do
       # test initialization with required parameters (if any)
       opts = {}
       file_manifestation = FileManifestation.new(opts)
-      file_manifestation.should be_instance_of(FileManifestation)
-      file_manifestation.instances.should be_instance_of(Array)
+      expect(file_manifestation).to be_instance_of(FileManifestation)
+      expect(file_manifestation.instances).to be_instance_of(Array)
        
       # test initialization with options hash
       opts = OrderedHash.new
       opts[:signature] = double(FileSignature.name)
       opts[:instances] = double(FileInstance.name)
       file_manifestation = FileManifestation.new(opts)
-      file_manifestation.signature.should == opts[:signature]
-      file_manifestation.instances.should == opts[:instances]
+      expect(file_manifestation.signature).to eq(opts[:signature])
+      expect(file_manifestation.instances).to eq(opts[:instances])
        
       # def initialize(opts={})
       #   @instances = Array.new
@@ -45,9 +45,9 @@ describe 'Moab::FileManifestation' do
     specify 'Moab::FileManifestation#signature' do
       value = double(FileSignature.name)
       @file_manifestation.signature= value
-      @file_manifestation.signature.should == value
+      expect(@file_manifestation.signature).to eq(value)
       @file_manifestation.signature= [value]
-      @file_manifestation.signature.should == value
+      expect(@file_manifestation.signature).to eq(value)
 
       # def signature=(signature)
       #   @signature = signature.is_a?(Array) ? signature[0] : signature
@@ -63,7 +63,7 @@ describe 'Moab::FileManifestation' do
     specify 'Moab::FileManifestation#instances' do
       value = double(FileInstance.name)
       @file_manifestation.instances= value
-      @file_manifestation.instances.should == value
+      expect(@file_manifestation.instances).to eq(value)
        
       # has_many :instances, FileInstance
     end
@@ -94,7 +94,7 @@ describe 'Moab::FileManifestation' do
     # Which returns: [Array<String>] Create an array from all the file paths of the child {FileInstance} objects
     # For input parameters: (None)
     specify 'Moab::FileManifestation#paths' do
-      @file_manifestation.paths().should == ["title.jpg", "page-1.jpg"]
+      expect(@file_manifestation.paths()).to eq(["title.jpg", "page-1.jpg"])
        
       # def paths
       #   instances.collect { |i| i.path}
@@ -105,7 +105,7 @@ describe 'Moab::FileManifestation' do
     # Which returns: [Integer] The total number of {FileInstance} objects in this manifestation. (Number of files that share this manifestation's signature)
     # For input parameters: (None)
     specify 'Moab::FileManifestation#file_count' do
-      @file_manifestation.file_count().should == 2
+      expect(@file_manifestation.file_count()).to eq(2)
        
       # def file_count
       #   instances.size
@@ -116,7 +116,7 @@ describe 'Moab::FileManifestation' do
     # Which returns: [Integer] The total size (in bytes) of all files that share this manifestation's signature
     # For input parameters: (None)
     specify 'Moab::FileManifestation#byte_count' do
-      @file_manifestation.byte_count().should == 81746
+      expect(@file_manifestation.byte_count()).to eq(81746)
        
       # def byte_count
       #   file_count.to_i * signature.size.to_i
@@ -127,7 +127,7 @@ describe 'Moab::FileManifestation' do
     # Which returns: [Integer] The total disk usage (in 1 kB blocks) of all files that share this manifestation's signature (estimating du -k result)
     # For input parameters: (None)
     specify 'Moab::FileManifestation#block_count' do
-      @file_manifestation.block_count().should == 80
+      expect(@file_manifestation.block_count()).to eq(80)
        
       # def block_count
       #   block_size=1024
@@ -142,7 +142,7 @@ describe 'Moab::FileManifestation' do
     # * other [FileManifestation] = The {FileManifestation} object to compare with self
     specify 'Moab::FileManifestation#==' do
       other = @file_manifestation
-      @file_manifestation.==(other).should == true
+      expect(@file_manifestation.==(other)).to eq(true)
 
       # def ==(other)
       #   (self.signature == other.signature) && (self.instances == other.instances)

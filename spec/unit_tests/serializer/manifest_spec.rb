@@ -12,8 +12,8 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_filename' do
 
-      SignatureCatalog.xml_filename().should == "signatureCatalog.xml"
-      SignatureCatalog.xml_filename("dummy").should == "dummy"
+      expect(SignatureCatalog.xml_filename()).to eq("signatureCatalog.xml")
+      expect(SignatureCatalog.xml_filename("dummy")).to eq("dummy")
 
       # def self.xml_filename(filename=nil)
       #   if filename
@@ -32,8 +32,8 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname' do
       parent_dir = Pathname.new("/test/parent_dir")
-      SignatureCatalog.xml_pathname(parent_dir).should == Pathname("/test/parent_dir/signatureCatalog.xml")
-      SignatureCatalog.xml_pathname(parent_dir, "dummy").should == Pathname("/test/parent_dir/dummy")
+      expect(SignatureCatalog.xml_pathname(parent_dir)).to eq(Pathname("/test/parent_dir/signatureCatalog.xml"))
+      expect(SignatureCatalog.xml_pathname(parent_dir, "dummy")).to eq(Pathname("/test/parent_dir/dummy"))
 
       # def self.xml_pathname(parent_dir, filename=nil)
       #   Pathname.new(parent_dir).join(self.xml_filename(filename))
@@ -46,8 +46,8 @@ describe 'Serializer::Manifest' do
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname_exist?' do
-      Manifest.xml_pathname_exist?("/test/parent_dir", "dummy").should == false
-      SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001")).should == true
+      expect(Manifest.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
+      expect(SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
 
       # def self.xml_pathname_exist?(parent_dir, filename=nil)
       #   self.xml_pathname(parent_dir, filename).exist?
@@ -63,9 +63,9 @@ describe 'Serializer::Manifest' do
       parent_dir = @manifests.join("v1")
       mock_pathname = double(Pathname.name)
       mock_xml = double("xml")
-      SignatureCatalog.should_receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
-      mock_pathname.should_receive(:read).and_return(mock_xml)
-      SignatureCatalog.should_receive(:parse).with(mock_xml)
+      expect(SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
+      expect(mock_pathname).to receive(:read).and_return(mock_xml)
+      expect(SignatureCatalog).to receive(:parse).with(mock_xml)
       SignatureCatalog.read_xml_file(parent_dir)
 
       # def self.read_xml_file(parent_dir, filename=nil)
@@ -84,8 +84,8 @@ describe 'Serializer::Manifest' do
       #xml_object.should_receive(:to_xml)
       output_dir = @temp
       mock_pathname = double(Pathname.name)
-      SignatureCatalog.should_receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
-      mock_pathname.should_receive(:open).with('w').and_return(an_instance_of(IO))
+      expect(SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
+      expect(mock_pathname).to receive(:open).with('w').and_return(an_instance_of(IO))
       SignatureCatalog.write_xml_file(xml_object, output_dir)
 
       # def self.write_xml_file(xml_object, parent_dir, filename=nil)
@@ -115,11 +115,11 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest#write_xml_file' do
       output_dir = "/my/temp"
-      FileInventory.should_receive(:write_xml_file).with(@v1_inventory, output_dir, "version")
+      expect(FileInventory).to receive(:write_xml_file).with(@v1_inventory, output_dir, "version")
       @v1_inventory.write_xml_file(output_dir)
 
       signatures = SignatureCatalog.new
-      SignatureCatalog.should_receive(:write_xml_file).with(signatures, output_dir, nil)
+      expect(SignatureCatalog).to receive(:write_xml_file).with(signatures, output_dir, nil)
       signatures.write_xml_file(output_dir)
 
       # def write_xml_file(parent_dir, filename=nil)
