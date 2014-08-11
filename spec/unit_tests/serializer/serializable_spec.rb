@@ -24,7 +24,7 @@ describe 'Serializer::Serializable' do
   describe '=========================== CLASS METHODS ===========================' do
     
     # Unit test for method: {Serializer::Serializable.deep_diff}
-    # Which returns: [OrderedHash] Generate a hash containing the differences between two hashes (recursively descend parallel trees of hashes)
+    # Which returns: [Hash] Generate a hash containing the differences between two hashes (recursively descend parallel trees of hashes)
     # For input parameters:
     # * hashes [Array<Hash>] = The hashes to be compared, with optional name tags 
     specify 'Serializer::Serializable.deep_diff' do
@@ -76,7 +76,7 @@ describe 'Serializer::Serializable' do
 
 
       # def Serializable.deep_diff(*hashes)
-      #   diff = OrderedHash.new
+      #   diff = Hash.new
       #   case hashes.length
       #     when 4
       #       ltag, left, rtag, right = hashes
@@ -90,7 +90,7 @@ describe 'Serializer::Serializable' do
       #       if left[k].is_a?(Hash) && right[k].is_a?(Hash)
       #         diff[k] = deep_diff(ltag, left[k], rtag, right[k])
       #       else
-      #         diff[k] = OrderedHash.[](ltag, left[k], rtag, right[k])
+      #         diff[k] = Hash.[](ltag, left[k], rtag, right[k])
       #       end
       #     end
       #   end
@@ -114,11 +114,11 @@ describe 'Serializer::Serializable' do
       expect(serializable).to be_instance_of(Serializable)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       expect{Serializable.new(opts)}.not_to raise_exception
        
      # test initialization with options hash containing a bad variable
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:dummy] = 'dummy'
       expect{Serializable.new(opts)}.to raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
 
@@ -220,7 +220,7 @@ describe 'Serializer::Serializable' do
     end
     
     # Unit test for method: {Serializer::Serializable#array_to_hash}
-    # Which returns: [OrderedHash] Generate a hash from an array of objects. If the array member has a field tagged as a key, that field will be used as the hash.key. Otherwise the index position of the array member will be used as the key
+    # Which returns: [Hash] Generate a hash from an array of objects. If the array member has a field tagged as a key, that field will be used as the hash.key. Otherwise the index position of the array member will be used as the key
     # For input parameters:
     # * array [Array] = The array to be converted to a hash 
     specify 'Serializer::Serializable#array_to_hash' do
@@ -235,7 +235,7 @@ describe 'Serializer::Serializable' do
       })
        
       # def array_to_hash(array)
-      #   item_hash = OrderedHash.new
+      #   item_hash = Hash.new
       #   array.each_index do |index|
       #     item = array[index]
       #     ikey = item.respond_to?(:key) ?  item.key : index
@@ -246,7 +246,7 @@ describe 'Serializer::Serializable' do
     end
     
     # Unit test for method: {Serializer::Serializable#to_hash}
-    # Which returns: [OrderedHash] Recursively generate an OrderedHash containing the object's properties
+    # Which returns: [Hash] Recursively generate an Hash containing the object's properties
     # For input parameters: (None)
     specify 'Serializer::Serializable#to_hash' do
       additions = FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
@@ -271,7 +271,7 @@ describe 'Serializer::Serializable' do
       })
        
       # def to_hash
-      #   oh = OrderedHash.new
+      #   oh = Hash.new
       #   variables.each do |variable|
       #     key = variable.options[:tag] || variable.name.to_s
       #     value = self.send(variable.name)
@@ -289,7 +289,7 @@ describe 'Serializer::Serializable' do
     end
     
     # Unit test for method: {Serializer::Serializable#diff}
-    # Which returns: [OrderedHash] Generate a hash containing the differences between two objects of the same type
+    # Which returns: [Hash] Generate a hash containing the differences between two objects of the same type
     # For input parameters:
     # * other [Serializable] = The other object being compared 
     specify 'Serializer::Serializable#diff' do
@@ -316,7 +316,7 @@ describe 'Serializer::Serializable' do
           }
       })
 
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:path] = @temp.join('path1').to_s
       opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
       file_instance1 = FileInstance.new(opts)
@@ -324,7 +324,7 @@ describe 'Serializer::Serializable' do
       file_instance2 = FileInstance.new(opts)
       diff = file_instance1.diff(file_instance2)
       expect(diff.keys[0]).to eq('path')
-      expect(diff['path']).to be_instance_of OrderedHash
+      expect(diff['path']).to be_instance_of Hash
        
       # def diff(other)
       #   raise "Cannot compare different classes" if self.class != other.class

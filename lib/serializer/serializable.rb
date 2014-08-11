@@ -77,11 +77,11 @@ module Serializer
 
     # @api internal
     # @param array [Array] The array to be converted to a hash
-    # @return [OrderedHash] Generate a hash from an array of objects.
+    # @return [Hash] Generate a hash from an array of objects.
     #   If the array member has a field tagged as a key, that field will be used as the hash.key.
     #   Otherwise the index position of the array member will be used as the key
     def array_to_hash(array,summary=false)
-      item_hash = OrderedHash.new
+      item_hash = Hash.new
       array.each_index do |index|
         item = array[index]
         ikey = (item.respond_to?(:key) && item.key) ?  item.key : index
@@ -91,10 +91,10 @@ module Serializer
     end
 
     # @api internal
-    # @return [OrderedHash] Recursively generate an OrderedHash containing the object's properties
+    # @return [Hash] Recursively generate an Hash containing the object's properties
     # @param summary [Boolean] Controls the depth and detail of recursion
     def to_hash(summary=false)
-      oh = OrderedHash.new
+      oh = Hash.new
       vars = summary ? variables.select{|v| summary_fields.include?(v.name)} : variables
       vars.each do |variable|
         key = variable.options[:tag] || variable.name.to_s
@@ -111,14 +111,14 @@ module Serializer
       oh
     end
 
-    # @return [OrderedHash] Calls to_hash(summary=true)
+    # @return [Hash] Calls to_hash(summary=true)
     def summary
       self.to_hash(summary=true)
     end
 
     # @api internal
     # @param other [Serializable] The other object being compared
-    # @return [OrderedHash] Generate a hash containing the differences between two objects of the same type
+    # @return [Hash] Generate a hash containing the differences between two objects of the same type
     def diff(other)
       raise "Cannot compare different classes" if self.class != other.class
       left = other.to_hash
@@ -135,11 +135,11 @@ module Serializer
 
     # @api internal
     # @param hashes [Array<Hash>] The hashes to be compared, with optional name tags
-    # @return [OrderedHash] Generate a hash containing the differences between two hashes
+    # @return [Hash] Generate a hash containing the differences between two hashes
     #   (recursively descend parallel trees of hashes)
     # @see https://gist.github.com/146844
     def Serializable.deep_diff(*hashes)
-      diff = OrderedHash.new
+      diff = Hash.new
       case hashes.length
         when 4
           ltag, left, rtag, right = hashes
@@ -153,7 +153,7 @@ module Serializer
           if left[k].is_a?(Hash) && right[k].is_a?(Hash)
             diff[k] = deep_diff(ltag, left[k], rtag, right[k])
           else
-            diff[k] = OrderedHash.[](ltag, left[k], rtag, right[k])
+            diff[k] = Hash.[](ltag, left[k], rtag, right[k])
           end
         end
       end

@@ -21,7 +21,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
       expect(file_group_difference_subset.files.size).to eq(0)
 
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:change] = 'Test change'
       file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
       expect(file_group_difference_subset.change).to eq(opts[:change])

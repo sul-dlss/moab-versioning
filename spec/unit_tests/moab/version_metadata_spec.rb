@@ -20,7 +20,7 @@ describe 'Moab::VersionMetadata' do
       expect(version_metadata.versions).to be_kind_of(Array)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:versions] = [double(VersionMetadataEntry.name)]
       version_metadata = VersionMetadata.new(opts)

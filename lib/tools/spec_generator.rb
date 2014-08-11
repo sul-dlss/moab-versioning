@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'hashery/orderedhash' if RUBY_VERSION < '1.9'
 require 'pathname'
 require 'yard'
 include YARD
@@ -90,8 +89,8 @@ class SpecGenerator
   # @param cls [CodeObjects::ClassObject]
   def categorize_members(cls)
     mhash = {
-        :class_attributes => OrderedHash.new,
-        :instance_attributes => OrderedHash.new,
+        :class_attributes => Hash.new,
+        :instance_attributes => Hash.new,
         :class_methods => Array.new,
         :instance_methods => Array.new
     }
@@ -168,7 +167,7 @@ class SpecGenerator
         if p.name == 'opts'
           output " "
           output "# test initialization with options hash"
-          output "opts = OrderedHash.new"
+          output "opts = Hash.new"
           attribute_name_type_pairs(mhash).each do |name, type|
             output "opts[:#{name}] = #{value_for(name, type)}"
           end
@@ -363,7 +362,7 @@ class SpecGenerator
           case type[0]
             when 'Array'
               "[#{value_for(name, type[1])}]"
-            when 'Hash', 'OrderedHash'
+            when 'Hash'
               key, value = type[1].split(/[,]/)
               "{#{value_for(name, key)} => #{value_for(name, value)}}"
             else
@@ -376,7 +375,7 @@ class SpecGenerator
   end
 
   def attribute_arrays_and_hashes(mhash)
-    arrays_and_hashes = OrderedHash.new
+    arrays_and_hashes = Hash.new
     attribute_name_type_pairs(mhash).each do |name, type|
       if type.include?('Array')
         arrays_and_hashes[name] = 'Array'
@@ -388,7 +387,7 @@ class SpecGenerator
   end
 
   def attribute_name_type_pairs(mhash)
-    pairs = OrderedHash.new
+    pairs = Hash.new
     mhash[:instance_attributes].values.each do |attribute|
       read = attribute[:read]
       return_tag = read.docstring.tag(:return)

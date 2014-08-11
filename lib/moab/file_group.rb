@@ -24,7 +24,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts={})
-      @signature_hash = OrderedHash.new
+      @signature_hash = Hash.new
       @data_source = ""
       super(opts)
     end
@@ -75,15 +75,15 @@ module Moab
       @signature_hash.values
     end
 
-    # @return [OrderedHash<FileSignature, FileManifestation>] The actual in-memory store for the collection
+    # @return [Hash<FileSignature, FileManifestation>] The actual in-memory store for the collection
     #   of {FileManifestation} objects that are contained in this file group.
     attr_accessor :signature_hash
 
     # @api internal
-    # @return [OrderedHash<String,FileSignature>] An index of file paths,
+    # @return [Hash<String,FileSignature>] An index of file paths,
     #   used to test for existence of a filename in this file group
     def path_hash
-      path_hash = OrderedHash.new
+      path_hash = Hash.new
       @signature_hash.each do |signature,manifestation|
         manifestation.instances.each do |instance|
           path_hash[instance.path] = signature
@@ -99,9 +99,9 @@ module Moab
 
     # @api internal
     # @param signature_subset [Array<FileSignature>] The signatures used to select the entries to return
-    # @return [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
+    # @return [Hash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
     def path_hash_subset(signature_subset)
-      path_hash = OrderedHash.new
+      path_hash = Hash.new
       signature_subset.each do |signature|
         manifestation = @signature_hash[signature]
         manifestation.instances.each do |instance|

@@ -54,9 +54,9 @@ module Moab
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @param level [Integer] Used to test the depth of recursion
-    # @return [OrderedHash] The verification result serialized to a hash
+    # @return [Hash] The verification result serialized to a hash
     def to_hash(verbose=false,level=0)
-      hash = OrderedHash.new
+      hash = Hash.new
       hash['verified'] = @verified
       if (verbose or @verified == false)
         hash['details'] = @details ? @details : subentities_to_hash(verbose,level)
@@ -70,9 +70,9 @@ module Moab
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @param level [Integer] Used to increment the depth of recursion
-    # @return [OrderedHash] The verification result of subentities serialized to a hash
+    # @return [Hash] The verification result of subentities serialized to a hash
     def subentities_to_hash(verbose,level)
-      hash = OrderedHash.new
+      hash = Hash.new
       @subentities.each do |s|
        hash[s.entity] = s.to_hash(verbose, level+1)
       end

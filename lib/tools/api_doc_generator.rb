@@ -1,6 +1,5 @@
 #$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', 'lib'))
 require 'rubygems'
-require 'hashery/orderedhash'
 require 'pathname'
 require 'yard'
 include YARD
@@ -69,8 +68,8 @@ class ApiClass
 
   def categorize_members(yard_class)
     mhash = {
-        :class_attributes => OrderedHash.new,
-        :instance_attributes => OrderedHash.new,
+        :class_attributes => Hash.new,
+        :instance_attributes => Hash.new,
         :class_methods => Array.new,
         :instance_methods => Array.new
     }
@@ -254,7 +253,7 @@ class ApiClass
   end
 
   def confluence_translate(input)
-    map = OrderedHash.new
+    map = Hash.new
     map[/\|/] = "\\|"
     map[/====/] = "h4. "
     map[/\*/] = "\\*"

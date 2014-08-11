@@ -17,7 +17,7 @@ describe 'Moab::FileSignature' do
       expect(file_signature).to be_instance_of(FileSignature)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:size] = 75
       opts[:md5] = 'Test md5'
       opts[:sha1] = 'Test sha1'

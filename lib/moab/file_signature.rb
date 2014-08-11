@@ -85,7 +85,7 @@ module Moab
 
    # @return [Hash<Symbol,String>] A hash of the checksum data
     def checksums
-      checksum_hash = OrderedHash.new
+      checksum_hash = Hash.new
       checksum_hash[:md5] = @md5
       checksum_hash[:sha1] = @sha1
       checksum_hash[:sha256] = @sha256
@@ -101,7 +101,7 @@ module Moab
     # @api internal
     # @return [Hash<Symbol,String>] A hash of fixity data from this signataure object
     def fixity
-      fixity_hash = OrderedHash.new
+      fixity_hash = Hash.new
       fixity_hash[:size] = @size.to_s
       fixity_hash.merge!(checksums)
       fixity_hash
@@ -177,7 +177,7 @@ module Moab
 
     # @return [Hash<Symbol,String>] Key is type (e.g. :sha1), value is checksum names (e.g. ['SHA-1', 'SHA1'])
     def FileSignature.checksum_names_for_type
-      names_for_type = OrderedHash.new
+      names_for_type = Hash.new
       names_for_type[:md5] = ['MD5']
       names_for_type[:sha1] = ['SHA-1', 'SHA1']
       names_for_type[:sha256] = ['SHA-256', 'SHA256']
@@ -186,7 +186,7 @@ module Moab
 
    # @return [Hash<String, Symbol>] Key is checksum name (e.g. MD5), value is checksum type (e.g. :md5)
     def FileSignature.checksum_type_for_name
-      type_for_name = OrderedHash.new
+      type_for_name = Hash.new
       self.checksum_names_for_type.each do |type, names|
         names.each do |name|
           type_for_name[name] = type

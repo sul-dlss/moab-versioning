@@ -51,7 +51,7 @@ describe 'Moab::FileInventory' do
       expect(file_inventory.groups.size).to eq(0)
 
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:type] = 'Test type'
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:version_id] = 81

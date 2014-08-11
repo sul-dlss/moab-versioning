@@ -21,7 +21,7 @@ describe 'Moab::FileInventoryDifference' do
       expect(file_inventory_difference.group_differences.size).to eq(0)
 
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:basis] = 'Test basis'
       opts[:other] = 'Test other'

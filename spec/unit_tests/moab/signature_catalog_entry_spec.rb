@@ -17,7 +17,7 @@ describe 'Moab::SignatureCatalogEntry' do
       expect(signature_catalog_entry).to be_instance_of(SignatureCatalogEntry)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:version_id] = 26
       opts[:group_id] = 'Test group_id'
       opts[:path] = 'Test path'

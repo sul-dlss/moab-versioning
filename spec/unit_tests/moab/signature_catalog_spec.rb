@@ -21,7 +21,7 @@ describe 'Moab::SignatureCatalog' do
       expect(signature_catalog.signature_hash).to be_kind_of(Hash)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:version_id] = 9
       opts[:catalog_datetime] = "Apr 12 19:36:07 UTC 2012"
@@ -34,7 +34,7 @@ describe 'Moab::SignatureCatalog' do
 
       # def initialize(opts={})
       #   @entries = Array.new
-      #   @signature_hash = OrderedHash.new
+      #   @signature_hash = Hash.new
       #   super(opts)
       # end
     end
@@ -135,7 +135,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#signature_hash}
-    # Which stores: [OrderedHash] An index having {FileSignature} objects as keys and {SignatureCatalogEntry} objects as values
+    # Which stores: [Hash] An index having {FileSignature} objects as keys and {SignatureCatalogEntry} objects as values
     specify 'Moab::SignatureCatalog#signature_hash' do
       expect(@signature_catalog.signature_hash.size).to eq(11)
        

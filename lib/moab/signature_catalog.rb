@@ -34,7 +34,7 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts={})
       @entries = Array.new
-      @signature_hash = OrderedHash.new
+      @signature_hash = Hash.new
       super(opts)
     end
 
@@ -103,7 +103,7 @@ module Moab
       end
     end
 
-    # @return [OrderedHash] An index having {FileSignature} objects as keys and {SignatureCatalogEntry} objects as values
+    # @return [Hash] An index having {FileSignature} objects as keys and {SignatureCatalogEntry} objects as values
     attr_accessor :signature_hash
 
     # @api internal

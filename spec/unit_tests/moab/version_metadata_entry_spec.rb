@@ -20,7 +20,7 @@ describe 'Moab::VersionMetadataEntry' do
       expect(version_metadata_entry.events).to be_kind_of(Array)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:version_id] = 17
       opts[:significance] = 'Major'
       opts[:description] = 'Test reason'

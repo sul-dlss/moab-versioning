@@ -54,7 +54,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts={})
-      @subset_hash = OrderedHash.new {|hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s)}
+      @subset_hash = Hash.new {|hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s)}
       super(opts)
     end
 
@@ -220,9 +220,9 @@ module Moab
 
     # @api internal
     # @param matching_signatures [Array<FileSignature>] The file signature of the file manifestations being compared
-    # @param basis_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    # @param basis_signature_hash [Hash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the basis of the comparison
-    # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    # @param other_signature_hash [Hash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the being compared to the basis group
     # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'identical'
@@ -245,9 +245,9 @@ module Moab
 
     # @api internal
     # @param matching_signatures [Array<FileSignature>] The file signature of the file manifestations being compared
-    # @param basis_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    # @param basis_signature_hash [Hash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the basis of the comparison
-    # @param other_signature_hash [OrderedHash<FileSignature, FileManifestation>]
+    # @param other_signature_hash [Hash<FileSignature, FileManifestation>]
     #   Signature to file path mapping from the file group that is the being compared to the basis group
     # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'renamed','copyadded', or 'copydeleted'
@@ -280,9 +280,9 @@ module Moab
 
 
     # @api internal
-    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    # @param basis_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the basis group
-    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    # @param other_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the other group
     # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'modified'
@@ -299,9 +299,9 @@ module Moab
     end
 
     # @api internal
-    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    # @param basis_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the basis group
-    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    # @param other_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the other group
     # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'added'
@@ -317,9 +317,9 @@ module Moab
     end
 
     # @api internal
-    # @param basis_path_hash [OrderedHash<String,FileSignature>]
+    # @param basis_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the basis group
-    # @param other_path_hash [OrderedHash<String,FileSignature>]
+    # @param other_path_hash [Hash<String,FileSignature>]
     #   The file paths and associated signatures for manifestations appearing only in the other group
     # @return [FileGroupDifference]
     #   Container for reporting the set of file-level differences of type 'deleted'

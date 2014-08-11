@@ -212,7 +212,7 @@ module Moab
       checksum_types.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type.to_s}.txt")
       end
-      signatures = OrderedHash.new { |hash,path| hash[path] = FileSignature.new }
+      signatures = Hash.new { |hash,path| hash[path] = FileSignature.new }
       checksum_types.each do |type|
         if manifest_pathname[type].exist?
           manifest_pathname[type].each_line do |line|

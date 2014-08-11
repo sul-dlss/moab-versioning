@@ -18,7 +18,7 @@ describe 'Moab::FileManifestation' do
       expect(file_manifestation.instances).to be_instance_of(Array)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:signature] = double(FileSignature.name)
       opts[:instances] = double(FileInstance.name)
       file_manifestation = FileManifestation.new(opts)

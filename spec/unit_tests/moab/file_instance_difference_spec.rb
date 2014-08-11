@@ -21,7 +21,7 @@ describe 'Moab::FileInstanceDifference' do
       expect(file_instance_difference.signatures.size).to eq(0)
 
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:change] = 'Test change'
       opts[:basis_path] = 'Test basis_path'
       opts[:other_path] = 'Test other_path'

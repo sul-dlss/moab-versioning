@@ -17,7 +17,7 @@ describe 'Moab::VersionMetadataEvent' do
       expect(version_metadata_event).to be_instance_of(VersionMetadataEvent)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:type] = 'Test event'
       opts[:datetime] = "Apr 12 19:36:07 UTC 2012"
       version_metadata_event = VersionMetadataEvent.new(opts)

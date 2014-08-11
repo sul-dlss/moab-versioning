@@ -15,14 +15,8 @@ end
 
 require 'nokogiri'
 require 'happymapper'
-if RUBY_VERSION < '1.9'
-  require 'hashery/ordered_hash'
-  include Hashery
-else
-  require 'psych'
-  OrderedHash = Hash
-end
 require 'json'
+require 'psych'
 #require 'json/pure'
 require 'pathname'
 require 'fileutils'

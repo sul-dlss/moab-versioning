@@ -205,7 +205,7 @@ module Stanford
     # @return [void] update the file's checksum elements if data missing, raise exception if inconsistent
     def remediate_checksum_nodes(file_node, signature)
       # collect <checksum> elements for checksum types that are already present
-      checksum_nodes = OrderedHash.new
+      checksum_nodes = Hash.new
       file_node.xpath('checksum').each do |checksum_node|
         type = @type_for_name[checksum_node['type']]
         checksum_nodes[type] = checksum_node

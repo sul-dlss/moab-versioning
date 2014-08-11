@@ -22,7 +22,7 @@ describe 'Moab::FileGroup' do
       expect(file_group.signature_hash).to be_kind_of(Hash)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:group_id] = 'Test group_id'
       opts[:data_source] = 'Test data_source'
       file_group = FileGroup.new(opts)
@@ -34,7 +34,7 @@ describe 'Moab::FileGroup' do
       expect(file_group.files).to eq([])
 
       # def initialize(opts={})
-      #   @signature_hash = OrderedHash.new
+      #   @signature_hash = Hash.new
       #   @data_source = ""
       #   super(opts)
       # end
@@ -121,7 +121,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for attribute: {Moab::FileGroup#signature_hash}
-    # Which stores: [OrderedHash<FileSignature, FileManifestation>] The actual in-memory store for the collection of {FileManifestation} objects that are contained in this file group.
+    # Which stores: [Hash<FileSignature, FileManifestation>] The actual in-memory store for the collection of {FileManifestation} objects that are contained in this file group.
     specify 'Moab::FileGroup#signature_hash' do
       expect(@file_group.signature_hash.size).to eq(11)
        
@@ -158,7 +158,7 @@ describe 'Moab::FileGroup' do
     end
     
     # Unit test for method: {Moab::FileGroup#path_hash}
-    # Which returns: [OrderedHash<String,FileSignature>] An index of file paths, used to test for existence of a filename in this file group
+    # Which returns: [Hash<String,FileSignature>] An index of file paths, used to test for existence of a filename in this file group
     # For input parameters: (None)
     specify 'Moab::FileGroup#path_hash' do
        expect(@v1_file_group.path_hash().keys).to eq(
@@ -166,7 +166,7 @@ describe 'Moab::FileGroup' do
        )
        
       # def path_hash
-      #   path_hash = OrderedHash.new
+      #   path_hash = Hash.new
       #   @signature_hash.each do |signature,manifestation|
       #     manifestation.instances.each do |instance|
       #       path_hash[instance.path] = signature
@@ -183,7 +183,7 @@ describe 'Moab::FileGroup' do
     end
 
     # Unit test for method: {Moab::FileGroup#path_hash_subset}
-    # Which returns: [OrderedHash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
+    # Which returns: [Hash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
     # For input parameters:
     # * signature_subset [Array<FileSignature>] = The signatures used to select the entries to return
     specify 'Moab::FileGroup#path_hash_subset' do
@@ -196,7 +196,7 @@ describe 'Moab::FileGroup' do
       expect(subset.size).to eq(3)
 
       # def path_hash_subset(signature_subset)
-      #   path_hash = OrderedHash.new
+      #   path_hash = Hash.new
       #   signature_subset.each do |signature|
       #     manifestation = @signature_hash[signature]
       #     manifestation.instances.each do |instance|

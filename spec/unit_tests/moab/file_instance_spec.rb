@@ -17,7 +17,7 @@ describe 'Moab::FileInstance' do
       expect(file_instance).to be_instance_of(FileInstance)
        
       # test initialization with options hash
-      opts = OrderedHash.new
+      opts = Hash.new
       opts[:path] = @temp.join('path').to_s
       opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
       file_instance = FileInstance.new(opts)
