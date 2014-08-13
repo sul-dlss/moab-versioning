@@ -97,7 +97,7 @@ module Serializer
       oh = Hash.new
       vars = summary ? variables.select{|v| summary_fields.include?(v.name)} : variables
       vars.each do |variable|
-        key = variable.options[:tag] || variable.name.to_s
+        key = variable.name.to_s
         value = self.send(variable.name)
         case value
           when Array
