@@ -44,7 +44,7 @@ class ApiClass
   def initialize(class_name)
     @class_name = class_name
     @yard_class = @@class_hash[class_name]
-    if yard_class.nil?
+    if @yard_class.nil?
       raise "class_hash[#{class_name}] is Nil"
     end
     @mhash = categorize_members(@yard_class)
