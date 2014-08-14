@@ -7,7 +7,7 @@
 # * <b>{Serializable} = utility methods to faciliate serialization to Hash, JSON, or YAML</b>
 #   * {Manifest} = adds methods for marshalling/unmarshalling data to a persistent XML file format
 #
-# @see https://github.com/jnunemaker/happymapper
+# @see https://github.com/dam5s/happymapper
 # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
 #   All rights reserved.  See {file:LICENSE.rdoc} for details.
 module Serializer

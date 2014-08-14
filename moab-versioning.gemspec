@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'moab-versioning'
-  s.version     = '1.3.3'
+  s.version     = '1.4.0'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Darren Weber', 'Richard Anderson', 'Lynn McRae', 'Hannah Frost']
   s.email       = ['darren.weber@stanford.edu']
@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'confstruct'
   s.add_dependency 'nokogiri'
   s.add_dependency 'nokogiri-happymapper'
-  #s.add_dependency 'happymapper'
   s.add_dependency 'json'
   s.add_dependency 'systemu'
 
