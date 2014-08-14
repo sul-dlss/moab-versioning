@@ -100,3 +100,5 @@ Require the following:
 - <b>1.3.1</b> Merge 1.2.11 changes
 - <b>1.3.2</b> Avoid monkey-patching of Time class to fix a conflict with Rails
 - <b>1.3.3</b> Fix new UtcTime class to output of String when datetime value is nil or empty
+- <b>1.4.0</b> Updates for ruby 2.x and related gems, see details at https://github.com/sul-dlss/moab-versioning/issues/3
+
