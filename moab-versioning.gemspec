@@ -17,15 +17,15 @@ Gem::Specification.new do |s|
   s.add_dependency "confstruct"
   s.add_dependency "nokogiri"
   s.add_dependency "hashery", ">=2.0.0"
-  s.add_dependency "json"
+  s.add_dependency "json_pure"
   s.add_dependency "happymapper"
   s.add_dependency "systemu"
 
   s.add_development_dependency "awesome_print"
-  s.add_development_dependency "equivalent-xml", ">=0.2.2"
+  s.add_development_dependency "equivalent-xml", "= 0.3.0"
   s.add_development_dependency "rake", ">=0.8.7"
   s.add_development_dependency "rdoc"
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "< 3.0"
   s.add_development_dependency "yard"
   s.files        = Dir.glob("lib/**/*")
   s.require_path = 'lib'
