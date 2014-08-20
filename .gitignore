@@ -1,4 +1,6 @@
 Gemfile.lock
+*.gem
+.rvmrc
 .ruby-version
 .bundle/
 .idea/
