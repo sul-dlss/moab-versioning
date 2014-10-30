@@ -82,64 +82,54 @@ def fixture_setup
   (1..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    unless FileInventory.xml_pathname_exist?(manifest_dir, 'version')
-      inventory = FileInventory.new(
-          :type=>'version',
-          :digital_object_id => @druid,
-          :version_id => version )
-      inventory.inventory_from_directory(@data.join(@vname[version]))
-      inventory.write_xml_file(manifest_dir)
-    end
+    inventory = FileInventory.new(
+        :type=>'version',
+        :digital_object_id => @druid,
+        :version_id => version )
+    inventory.inventory_from_directory(@data.join(@vname[version]))
+    inventory.write_xml_file(manifest_dir)
   end
 
   # Derive signature catalogs from inventories
   (1..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    unless SignatureCatalog.xml_pathname_exist?(manifest_dir)
-      inventory = FileInventory.read_xml_file(manifest_dir,'version')
-      case version
-        when 1
-          catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-        else
-          catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
-      end
-      catalog.update(inventory, @data.join(@vname[version]))
-      catalog.write_xml_file(manifest_dir)
+    inventory = FileInventory.read_xml_file(manifest_dir,'version')
+    case version
+      when 1
+        catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+      else
+        catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
     end
+    catalog.update(inventory, @data.join(@vname[version]))
+    catalog.write_xml_file(manifest_dir)
   end
 
   # Generate version addition reports for all version inventories
   (2..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    unless FileInventory.xml_pathname_exist?(manifest_dir,'additions')
-      inventory = FileInventory.read_xml_file(manifest_dir,'version')
-      catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
-      additions = catalog.version_additions(inventory)
-      additions.write_xml_file(manifest_dir)
-    end
+    inventory = FileInventory.read_xml_file(manifest_dir,'version')
+    catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+    additions = catalog.version_additions(inventory)
+    additions.write_xml_file(manifest_dir)
   end
 
   # Generate difference reports
   (2..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    unless FileInventoryDifference.xml_pathname_exist?(manifest_dir)
-      old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version-1]),'version')
-      new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
-      differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
-      differences.write_xml_file(manifest_dir)
-    end
-  end
-  manifest_dir = @manifests.join('all')
-  manifest_dir.mkpath
-  unless FileInventoryDifference.xml_pathname_exist?(manifest_dir)
-    old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[1]),'version')
-    new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[3]),'version')
+    old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version-1]),'version')
+    new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
     differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
     differences.write_xml_file(manifest_dir)
   end
+  manifest_dir = @manifests.join('all')
+  manifest_dir.mkpath
+  old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[1]),'version')
+  new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[3]),'version')
+  differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
+  differences.write_xml_file(manifest_dir)
 
   # Generate packages from inventories and signature catalogs
   (1..3).each do |version|
