@@ -5,11 +5,13 @@ $:.unshift lib unless $:.include?(lib)
 Gem::Specification.new do |s|
   s.name        = 'moab-versioning'
   s.version     = '1.4.1'
+  s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Darren Weber', 'Richard Anderson', 'Lynn McRae', 'Hannah Frost']
   s.email       = ['darren.weber@stanford.edu']
   s.summary     = 'Ruby implmentation of digital object versioning toolkit used by the SULAIR Digital Library'
   s.description = 'Contains classes to process digital object version content and metadata'
+  s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
   s.required_rubygems_version = '>= 1.3.6'
 
