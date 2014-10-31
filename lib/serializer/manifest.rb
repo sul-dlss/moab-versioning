@@ -58,7 +58,6 @@ module Serializer
     # @return [void] Serializize the in-memory object to a xml file instance
     def self.write_xml_file(xml_object, parent_dir, filename=nil)
       parent_dir.mkpath
-      #require 'pry'; binding.pry
       self.xml_pathname(parent_dir, filename).open('w') do |f|
         xmlBuilder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8')
         xmlBuilder = xml_object.to_xml(xmlBuilder)
