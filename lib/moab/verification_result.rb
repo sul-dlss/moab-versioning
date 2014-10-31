@@ -41,6 +41,7 @@ module Moab
     # @return [VerificationResult] The result of evaluating the expression
     def self.verify_truth(entity,expression,details=nil)
       result = VerificationResult.new(entity.to_s)
+      # TODO: add expression.empty?
       result.verified = !(expression.nil? or (expression == false))
       result.details = details
       result
