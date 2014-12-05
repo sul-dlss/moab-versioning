@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature "Create reconstructed digital object for a version" do
+describe "Create reconstructed digital object for a version" do
   #  In order to: disseminate a copy of a digital object version
   #  The application needs to: reconstruct the version's file structure from the storage location
 
-  background(:all) do
+  before(:all) do
 
   end
 

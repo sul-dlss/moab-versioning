@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature "Tape archive" do
+describe "Tape archive" do
   #  In order to: preseve copies of digital objects to tape
   #  The application needs to: archive and retrieve version files
 
-  background(:all) do
+  before(:all) do
 
   end
 

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature "Accessioning of a new digital object version" do
+describe "Accessioning of a new digital object version" do
   #  In order to: incorporate a new version into the DOR workflow
   #  The application needs to: obtain version identity information
 
-  background(:all) do
+  before(:all) do
 
   end
 

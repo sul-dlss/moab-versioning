@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature "Process provenanceMetadata" do
+describe "Process provenanceMetadata" do
   #  In order to: track the event of adding a new version
   #  The application needs to: update provenanceMetadata datastream
 
-  background(:all) do
+  before(:all) do
 
   end
 

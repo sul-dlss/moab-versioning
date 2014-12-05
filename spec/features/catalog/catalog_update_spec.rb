@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Update the signature catalog" do
+describe "Update the signature catalog" do
   #  In order to: add the files that are new or modified in a new version
   #  The application needs to: compare a new version's' file signatures against the signature catalog
 

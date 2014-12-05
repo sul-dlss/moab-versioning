@@ -1,11 +1,11 @@
 require 'spec_helper'
 require 'pp'
 
-feature "Build a version metadata datastream" do
-  #  In order to: 
-  #  The application needs to: 
+describe "Build a version metadata datastream" do
+  #  In order to:
+  #  The application needs to:
 
-  background(:all) do
+  before(:all) do
     @fixtures = File.join(File.dirname(__FILE__), '..', '..','fixtures')
   end
 

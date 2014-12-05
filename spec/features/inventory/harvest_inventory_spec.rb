@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Harvest file properties from a file directory" do
+describe "Harvest file properties from a file directory" do
   # In order to: automate the generation of a file inventory
   # The application needs to: traverse a directory tree and capture file metadata and checksums
 

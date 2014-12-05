@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature "Process technicalMetadata datastream" do
+describe "Process technicalMetadata datastream" do
   #  In order to: update the technicalMetadata datastream
   #  The application needs to: capture JHOVE output for a subset of an object's files
 
-  background(:all) do
+  before(:all) do
 
   end
 

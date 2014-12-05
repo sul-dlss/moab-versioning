@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Darren Weber', 'Richard Anderson', 'Lynn McRae', 'Hannah Frost']
   s.email       = ['darren.weber@stanford.edu']
-  s.summary     = 'Ruby implmentation of digital object versioning toolkit used by the SULAIR Digital Library'
+  s.summary     = 'Ruby implementation of digital object versioning toolkit used by the SULAIR Digital Library'
   s.description = 'Contains classes to process digital object version content and metadata'
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'equivalent-xml'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rspec', '< 3.0.0'
+  s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'pry'
 
