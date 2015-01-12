@@ -2,6 +2,7 @@ Gemfile.lock
 *.gem
 .ruby-version
 .rvmrc
+.binstubs/
 .bundle/
 .idea/
 .yardoc/

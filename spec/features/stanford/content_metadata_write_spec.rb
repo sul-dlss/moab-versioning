@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Write contentMetadata datastream" do
+describe "Write contentMetadata datastream" do
   #  In order to: generate a contentMetadata datastream
   #  The application needs to: transform data from a file inventory's 'content' file group
 

@@ -27,21 +27,6 @@ def fixtures_directory
   File.expand_path('fixtures', File.dirname(__FILE__))
 end
 
-# Use Gherkin DSL syntax in specs for better readability
-# feature "<title>"  do
-#    In order to: <achieve benefit>
-#    The application needs to: <provide functionality>
-#    ...
-# end
-module RSpec::Core::DSL
-  alias feature describe
-end
-
-
-module RSpec::Core::Hooks
-  alias background before
-end
-
 # Custom matcher that returns difference between expected and actual hash
 # Note that enhancements to doing diffs in rspec are in progress:
 # @see https://github.com/rspec/rspec-expectations/pull/79
@@ -55,7 +40,7 @@ RSpec::Matchers.define :hash_match do |expected|
     diff = Serializable.deep_diff(:expected, expected, :detected, detected)
     diff == {}
   end
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     # ai is a kernel mixin that calls AwesomePrint::Inspector
     "Hash difference found: \n#{diff.ai}"
   end

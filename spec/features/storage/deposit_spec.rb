@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Export a digital object version from DOR" do
+describe "Export a digital object version from DOR" do
   #  In order to: tranfer files and metadata from DOR to SDR
   #  The application needs to: create a Bagit bag containing files and manifests
 

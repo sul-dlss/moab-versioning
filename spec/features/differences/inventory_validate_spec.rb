@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Validate inventory against directory" do
+describe "Validate inventory against directory" do
   #  In order to: determine if a file inventory correctly describes a directory
   #  The application needs to: generate a differences report and look for zero changes
 
