@@ -11,7 +11,7 @@ describe "Build a version metadata datastream" do
 
 
   scenario "test" do
-    skip ("needs a rewrite to eliminate events")
+    #skip ("needs a rewrite to eliminate events")
     # given:
     # action:
     # outcome:
