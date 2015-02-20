@@ -77,6 +77,7 @@ module Moab
     # @param other [FileManifestation] The {FileManifestation} object to compare with self
     # @return [Boolean] True if {FileManifestation} objects have same content
     def ==(other)
+      return false unless (other.respond_to?(:signature) && other.respond_to?(:instances)) # Cannot equal an incomparable type!
       (self.signature == other.signature) && (self.instances == other.instances)
     end
 
