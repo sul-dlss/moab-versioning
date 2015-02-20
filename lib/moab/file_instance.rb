@@ -56,6 +56,7 @@ module Moab
     # @param other [FileInstance] The other file instance being compared to this instance
     # @return [Boolean] Returns true if self and other have the same path.
     def eql?(other)
+      return false unless other.respond_to?(:path)  # Cannot equal an incomparable type!
       self.path == other.path
     end
 

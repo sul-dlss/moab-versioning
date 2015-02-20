@@ -111,6 +111,7 @@ module Moab
     # @param other [FileSignature] The other file signature being compared to this signature
     # @return [Boolean] Returns true if self and other have comparable fixity data.
     def eql?(other)
+      return false unless (other.respond_to?(:size) && other.respond_to?(:checksums))
       return false if self.size.to_i != other.size.to_i
       self_checksums = self.checksums
       other_checksums = other.checksums
