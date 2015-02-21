@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'spec_helper'
 
 # Unit tests for class {Moab::FileGroup}
 describe 'Moab::FileGroup' do
