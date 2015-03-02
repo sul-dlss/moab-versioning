@@ -1,5 +1,7 @@
 = moab-versioning
 
+{<img src="https://travis-ci.org/sul-dlss/moab-versioning.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/sul-dlss/moab-versioning]
+
 == License
 
 Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
