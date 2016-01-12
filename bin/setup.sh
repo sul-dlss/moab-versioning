@@ -2,7 +2,10 @@
 
 set -e
 
-bundle install --binstubs .binstubs
+mkdir -p .binstubs
+mkdir -p .gems
+rm -f .binstubs/*
+bundle install --binstubs .binstubs --path .gems/
 bundle package --all --quiet
 
 # see commentary on this practice at
