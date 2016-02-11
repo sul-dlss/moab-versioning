@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class MyClass < Serializable
+class MyClass < Serializer::Serializable
   include HappyMapper
 
   attribute :my_attr, String
@@ -31,7 +31,7 @@ describe 'Serializer::Serializable' do
 
       hash1 = @v1_content.files[0].to_hash
       hash3 = @v3_content.files[0].to_hash
-      diff = Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
+      diff = Serializer::Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
       expect(diff["signature"]).to hash_match({
               "size" => {
                   "v0001" => 41981,
@@ -52,7 +52,7 @@ describe 'Serializer::Serializable' do
           })
       expect(diff["instances"]["intro-1.jpg"]["v0001"]["path"]).to eq("intro-1.jpg")
 
-      diff = Serializable.deep_diff(hash1, hash3)
+      diff = Serializer::Serializable.deep_diff(hash1, hash3)
       expect(diff["signature"]).to hash_match({
             "size" => {
                  :left => 41981,
@@ -72,7 +72,7 @@ describe 'Serializer::Serializable' do
             }
         })
 
-      expect{Serializable.deep_diff(hash1)}.to raise_exception
+      expect{Serializer::Serializable.deep_diff(hash1)}.to raise_exception
 
 
       # def Serializable.deep_diff(*hashes)
@@ -110,17 +110,17 @@ describe 'Serializer::Serializable' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      serializable = Serializable.new(opts)
-      expect(serializable).to be_instance_of(Serializable)
+      serializable = Serializer::Serializable.new(opts)
+      expect(serializable).to be_instance_of(Serializer::Serializable)
        
       # test initialization with options hash
       opts = Hash.new
-      expect{Serializable.new(opts)}.not_to raise_exception
+      expect{Serializer::Serializable.new(opts)}.not_to raise_exception
        
      # test initialization with options hash containing a bad variable
       opts = Hash.new
       opts[:dummy] = 'dummy'
-      expect{Serializable.new(opts)}.to raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
+      expect{Serializer::Serializable.new(opts)}.to raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
 
       # def initialize(opts={})
       #   opts.each do |key, value|
@@ -225,7 +225,7 @@ describe 'Serializer::Serializable' do
     # * array [Array] = The array to be converted to a hash 
     specify 'Serializer::Serializable#array_to_hash' do
       array = %w{this is an array of words}
-      expect(Serializable.new.array_to_hash(array)).to hash_match({
+      expect(Serializer::Serializable.new.array_to_hash(array)).to hash_match({
           0 => "this",
           1 => "is",
           2 => "an",

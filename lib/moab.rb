@@ -32,7 +32,6 @@ module Moab
 end
 
 require 'serializer'
-include Serializer
 require 'confstruct/configuration'
 require 'moab/config'
 require 'moab/file_signature'

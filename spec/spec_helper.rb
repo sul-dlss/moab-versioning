@@ -37,7 +37,7 @@ RSpec::Matchers.define :hash_match do |expected|
   match do |actual|
     expected = expected.is_a?(Hash) ? expected : expected.to_hash
     detected = actual.is_a?(Hash) ? actual : actual.to_hash
-    diff = Serializable.deep_diff(:expected, expected, :detected, detected)
+    diff = Serializer::Serializable.deep_diff(:expected, expected, :detected, detected)
     diff == {}
   end
   failure_message do |actual|

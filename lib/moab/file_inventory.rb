@@ -28,7 +28,7 @@ module Moab
   # @example {include:file:spec/fixtures/derivatives/manifests/v3/versionInventory.xml}
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class FileInventory < Manifest
+  class FileInventory < Serializer::Manifest
 
     include HappyMapper
 

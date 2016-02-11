@@ -25,7 +25,7 @@ module Moab
   # @see Bagger
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class SignatureCatalog < Manifest
+  class SignatureCatalog < Serializer::Manifest
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data

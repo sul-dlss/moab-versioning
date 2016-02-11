@@ -46,7 +46,7 @@ describe 'Serializer::Manifest' do
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname_exist?' do
-      expect(Manifest.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
+      expect(Serializer::Manifest.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
       expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
 
       # def self.xml_pathname_exist?(parent_dir, filename=nil)

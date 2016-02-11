@@ -13,7 +13,7 @@ module Moab
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class FileGroupDifferenceSubset < Serializable
+  class FileGroupDifferenceSubset < Serializer::Serializable
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
