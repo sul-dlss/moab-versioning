@@ -34,6 +34,7 @@ end
 require 'serializer'
 require 'confstruct/configuration'
 require 'moab/config'
+require 'moab/utc_time'
 require 'moab/file_signature'
 require 'moab/file_instance'
 require 'moab/file_manifestation'

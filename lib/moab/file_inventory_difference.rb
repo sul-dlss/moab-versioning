@@ -55,11 +55,11 @@ module Moab
     attribute :report_datetime, String, :tag => 'reportDatetime'
 
     def report_datetime=(datetime)
-      @report_datetime=UtcTime.input(datetime)
+      @report_datetime=Moab::UtcTime.input(datetime)
     end
 
     def report_datetime
-      UtcTime.output(@report_datetime)
+      Moab::UtcTime.output(@report_datetime)
     end
 
     # @attribute

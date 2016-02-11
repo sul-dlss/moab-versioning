@@ -56,11 +56,11 @@ module Moab
     attribute :catalog_datetime, Time, :tag => 'catalogDatetime'
 
     def catalog_datetime=(datetime)
-      @catalog_datetime=UtcTime.input(datetime)
+      @catalog_datetime=Moab::UtcTime.input(datetime)
     end
 
     def catalog_datetime
-      UtcTime.output(@catalog_datetime)
+      Moab::UtcTime.output(@catalog_datetime)
     end
 
     # @attribute

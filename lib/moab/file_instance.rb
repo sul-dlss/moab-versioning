@@ -34,11 +34,11 @@ module Moab
     attribute :datetime, String
 
     def datetime=(event_datetime)
-      @datetime=UtcTime.input(event_datetime)
+      @datetime=Moab::UtcTime.input(event_datetime)
     end
 
     def datetime
-      UtcTime.output(@datetime)
+      Moab::UtcTime.output(@datetime)
     end
 
 

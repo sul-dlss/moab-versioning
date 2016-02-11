@@ -24,7 +24,6 @@ require 'time'
 require 'digest/md5'
 require 'digest/sha1'
 
-require 'monkey_patches'
 require 'serializer/serializable'
 require 'serializer/manifest'
 

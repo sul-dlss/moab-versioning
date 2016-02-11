@@ -64,11 +64,11 @@ module Moab
     attribute :inventory_datetime, String, :tag => 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
-      @inventory_datetime=UtcTime.input(datetime)
+      @inventory_datetime=Moab::UtcTime.input(datetime)
     end
 
     def inventory_datetime
-      UtcTime.output(@inventory_datetime)
+      Moab::UtcTime.output(@inventory_datetime)
     end
 
     # @attribute
