@@ -541,7 +541,7 @@ describe 'Moab::StorageObject' do
       storage_object = Moab::StorageObject.new(@druid,@ingests.join(@obj))
       filepath = storage_object.storage_filepath(catalog_filepath)
       expect(filepath.to_s.include?('ingests/jq937jp0017/v0001/data/content/intro-1.jpg')).to eq(true)
-      expect{storage_object.storage_filepath('dummy')}.to raise_exception
+      expect{storage_object.storage_filepath('dummy')}.to raise_exception Moab::FileNotFoundException
 
       # def storage_filepath(catalog_filepath)
       #   storage_filepath = @object_pathname.join(catalog_filepath)
@@ -596,7 +596,7 @@ describe 'Moab::StorageObject' do
       storage_object = Moab::StorageObject.new(@druid, object_dir)
       version_inventory_3 = double(Moab::FileInventory.name+"3")
       expect(version_inventory_3).to receive(:version_id).twice.and_return(3)
-      expect{storage_object.validate_new_inventory(version_inventory_3)}.to raise_exception
+      expect{storage_object.validate_new_inventory(version_inventory_3)}.to raise_exception /version mismatch/
       version_inventory_4 = double(Moab::FileInventory.name+"4")
       expect(version_inventory_4).to receive(:version_id).and_return(4)
       expect(storage_object.validate_new_inventory(version_inventory_4)).to eq(true)
@@ -628,8 +628,8 @@ describe 'Moab::StorageObject' do
       expect(version_latest.version_name).to eq('v0003')
       expect(version_latest.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0003/)
 
-      expect{storage_object.find_object_version(0)}.to raise_exception
-      expect{storage_object.find_object_version(4)}.to raise_exception
+      expect{storage_object.find_object_version(0)}.to raise_exception /Version ID 0 does not exist/
+      expect{storage_object.find_object_version(4)}.to raise_exception /Version ID 4 does not exist/
 
       # def find_object_version(version_id=nil)
       #   current = current_version_id
@@ -659,7 +659,7 @@ describe 'Moab::StorageObject' do
 
       expect{storage_object.storage_object_version(0)}.not_to raise_exception
       expect{storage_object.storage_object_version(4)}.not_to raise_exception
-      expect{storage_object.storage_object_version(nil)}.to raise_exception
+      expect{storage_object.storage_object_version(nil)}.to raise_exception /Version ID not specified/
 
       # def storage_object_version(version_id)
       #   if version_id

@@ -170,7 +170,7 @@ describe 'Stanford::ContentInventory' do
       group = ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
       expect(group.files.size).to eq(8)
 
-      expect{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception
+      expect{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception /Unknown disposition subset/
 
       # def group_from_cm(content_metadata)
       #   content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')

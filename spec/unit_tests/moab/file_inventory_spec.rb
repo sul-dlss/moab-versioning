@@ -14,7 +14,7 @@ describe 'Moab::FileInventory' do
       expect(Moab::FileInventory.xml_filename("additions")).to eq('versionAdditions.xml')
       expect(Moab::FileInventory.xml_filename("manifests")).to eq('manifestInventory.xml')
       expect(Moab::FileInventory.xml_filename("directory")).to eq('directoryInventory.xml')
-      expect{Moab::FileInventory.xml_filename("other")}.to raise_exception
+      expect{Moab::FileInventory.xml_filename("other")}.to raise_exception /unknown inventory type/
       # def self.xml_filename(type=nil)
       #   case type
       #     when "version"

@@ -163,7 +163,7 @@ describe 'Moab::StorageObjectVersion' do
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
       expect(signature.size).to eq(File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')))
 
-      expect{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.to raise_exception
+      expect{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.to raise_exception Moab::FileNotFoundException
 
       # def find_signature(file_category, file_id)
       #   case file_category
@@ -187,7 +187,7 @@ describe 'Moab::StorageObjectVersion' do
       expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/data/content/page-1.jpg')).to eq(true)
       pathname = @existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')
       expect(pathname.to_s.include?('ingests/jq937jp0017/v0002/manifests/versionInventory.xml')).to eq(true)
-      expect{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.to raise_exception
+      expect{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.to raise_exception Moab::FileNotFoundException
 
       # def find_filepath(file_category, file_id)
       #   this_version_filepath = file_pathname(file_category, file_id)

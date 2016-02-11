@@ -146,7 +146,7 @@ module Serializer
         when 2
           ltag, left, rtag, right = :left, hashes[0], :right, hashes[1]
         else
-          raise "wrong number of arguments (expected 2 or 4)"
+          raise ArgumentError, "wrong number of arguments (#{hashes.length} for 2 or 4)"
       end
       (left.keys | right.keys).each do |k|
         if left[k] != right[k]

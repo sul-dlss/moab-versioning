@@ -72,7 +72,7 @@ describe 'Serializer::Serializable' do
             }
         })
 
-      expect{Serializer::Serializable.deep_diff(hash1)}.to raise_exception
+      expect{Serializer::Serializable.deep_diff(hash1)}.to raise_exception ArgumentError
 
 
       # def Serializable.deep_diff(*hashes)

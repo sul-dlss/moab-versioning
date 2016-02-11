@@ -190,7 +190,7 @@ describe 'Moab::SignatureCatalog' do
       filepath = @signature_catalog.catalog_filepath(file_signature)
       expect(filepath).to eq('v0001/data/content/intro-1.jpg')
       file_signature.size = 0
-      expect{@signature_catalog.catalog_filepath(file_signature)}.to raise_exception
+      expect{@signature_catalog.catalog_filepath(file_signature)}.to raise_exception Moab::FileNotFoundException
     end
 
     specify 'Moab::SignatureCatalog#normalize_group_signatures' do
