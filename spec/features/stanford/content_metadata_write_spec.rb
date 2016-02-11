@@ -14,7 +14,7 @@ describe "Write contentMetadata datastream" do
     group = Moab::FileGroup.new.group_from_directory(directory, recursive)
     digital_object_id = @obj
     version_id = 2
-    cm = ContentInventory.new.generate_content_metadata(group, digital_object_id, version_id)
+    cm = Stanford::ContentInventory.new.generate_content_metadata(group, digital_object_id, version_id)
     xmlObj1 = Nokogiri::XML(cm)
     xmlObj1.xpath('//@datetime').remove
 

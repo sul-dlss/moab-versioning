@@ -9,8 +9,6 @@ require 'moab/stanford'
 require 'spec_config'
 require 'ap'
 
-include Stanford
-
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}
   # Use Gherkin DSL syntax in specs for better readability

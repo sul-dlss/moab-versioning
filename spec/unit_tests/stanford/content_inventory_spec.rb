@@ -10,8 +10,8 @@ describe 'Stanford::ContentInventory' do
     specify 'Stanford::ContentInventory#initialize' do
        
       # test initialization with required parameters (if any)
-      content_inventory = ContentInventory.new()
-      expect(content_inventory).to be_instance_of(ContentInventory)
+      content_inventory = Stanford::ContentInventory.new()
+      expect(content_inventory).to be_instance_of(Stanford::ContentInventory)
 
       # def initialize()
       # end
@@ -30,7 +30,7 @@ describe 'Stanford::ContentInventory' do
    end
 
     before(:each) do
-      @content_inventory = ContentInventory.new()
+      @content_inventory = Stanford::ContentInventory.new()
     end
 
     # Unit test for method: {Stanford::ContentInventory#inventory_from_cm}
@@ -72,7 +72,7 @@ describe 'Stanford::ContentInventory' do
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       version_id = 1
-      inventory = ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
+      inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
       xmlObj1 = Nokogiri::XML(inventory.to_xml)
       xmlObj1.xpath('//@inventoryDatetime').remove
       xmlTest = <<-EOF
@@ -158,19 +158,19 @@ describe 'Stanford::ContentInventory' do
       expect(group.data_source).to eq("contentMetadata-all")
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
-      group = ContentInventory.new.group_from_cm(cm_with_subsets,"all")
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"all")
       expect(group.files.size).to eq(12)
 
-      group = ContentInventory.new.group_from_cm(cm_with_subsets,"shelve")
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"shelve")
       expect(group.files.size).to eq(8)
 
-      group = ContentInventory.new.group_from_cm(cm_with_subsets,"publish")
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"publish")
       expect(group.files.size).to eq(12)
 
-      group = ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
       expect(group.files.size).to eq(8)
 
-      expect{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception /Unknown disposition subset/
+      expect{Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception /Unknown disposition subset/
 
       # def group_from_cm(content_metadata)
       #   content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')

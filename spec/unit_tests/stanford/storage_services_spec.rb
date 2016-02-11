@@ -110,7 +110,7 @@ describe 'Stanford::StorageServices' do
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
-      expect(StorageServices).to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
+      expect(Stanford::StorageServices).to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       xmlObj1 = Nokogiri::XML(diff.to_xml)
       xmlObj1.xpath('//@reportDatetime').remove
