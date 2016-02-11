@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'moab-versioning'
-  s.version     = '1.4.4'
+  s.version     = '2.0.0'
   s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Darren Weber', 'Richard Anderson', 'Lynn McRae', 'Hannah Frost']
@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
   s.required_rubygems_version = '>= 1.3.6'
+  s.required_ruby_version = '~> 2.1'
 
   # Runtime dependencies
   s.add_dependency 'confstruct'
