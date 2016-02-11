@@ -12,8 +12,8 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_filename' do
 
-      expect(SignatureCatalog.xml_filename()).to eq("signatureCatalog.xml")
-      expect(SignatureCatalog.xml_filename("dummy")).to eq("dummy")
+      expect(Moab::SignatureCatalog.xml_filename()).to eq("signatureCatalog.xml")
+      expect(Moab::SignatureCatalog.xml_filename("dummy")).to eq("dummy")
 
       # def self.xml_filename(filename=nil)
       #   if filename
@@ -32,8 +32,8 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname' do
       parent_dir = Pathname.new("/test/parent_dir")
-      expect(SignatureCatalog.xml_pathname(parent_dir)).to eq(Pathname("/test/parent_dir/signatureCatalog.xml"))
-      expect(SignatureCatalog.xml_pathname(parent_dir, "dummy")).to eq(Pathname("/test/parent_dir/dummy"))
+      expect(Moab::SignatureCatalog.xml_pathname(parent_dir)).to eq(Pathname("/test/parent_dir/signatureCatalog.xml"))
+      expect(Moab::SignatureCatalog.xml_pathname(parent_dir, "dummy")).to eq(Pathname("/test/parent_dir/dummy"))
 
       # def self.xml_pathname(parent_dir, filename=nil)
       #   Pathname.new(parent_dir).join(self.xml_filename(filename))
@@ -47,7 +47,7 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.xml_pathname_exist?' do
       expect(Manifest.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
-      expect(SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
+      expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
 
       # def self.xml_pathname_exist?(parent_dir, filename=nil)
       #   self.xml_pathname(parent_dir, filename).exist?
@@ -63,10 +63,10 @@ describe 'Serializer::Manifest' do
       parent_dir = @manifests.join("v1")
       mock_pathname = double(Pathname.name)
       mock_xml = double("xml")
-      expect(SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
+      expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
       expect(mock_pathname).to receive(:read).and_return(mock_xml)
-      expect(SignatureCatalog).to receive(:parse).with(mock_xml)
-      SignatureCatalog.read_xml_file(parent_dir)
+      expect(Moab::SignatureCatalog).to receive(:parse).with(mock_xml)
+      Moab::SignatureCatalog.read_xml_file(parent_dir)
 
       # def self.read_xml_file(parent_dir, filename=nil)
       #   self.parse(self.xml_pathname(parent_dir, filename).read)
@@ -80,13 +80,13 @@ describe 'Serializer::Manifest' do
     # * parent_dir [Pathname, String] = The location of the directory in which the xml file is located
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest.write_xml_file' do
-      xml_object = SignatureCatalog.read_xml_file(@manifests.join("v0001"))
+      xml_object = Moab::SignatureCatalog.read_xml_file(@manifests.join("v0001"))
       #xml_object.should_receive(:to_xml)
       output_dir = @temp
       mock_pathname = double(Pathname.name)
-      expect(SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
+      expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
       expect(mock_pathname).to receive(:open).with('w').and_return(an_instance_of(IO))
-      SignatureCatalog.write_xml_file(xml_object, output_dir)
+      Moab::SignatureCatalog.write_xml_file(xml_object, output_dir)
 
       # def self.write_xml_file(xml_object, parent_dir, filename=nil)
       #   self.xml_pathname(parent_dir, filename).open('w') { |f| f << xml_object.to_xml }
@@ -100,11 +100,11 @@ describe 'Serializer::Manifest' do
 
     before(:all) do
       @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
+      @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
       @v1_content = @v1_inventory.groups[0]
 
       @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-      @v3_inventory = FileInventory.parse(@v3_inventory_pathname.read)
+      @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
       @v3_content = @v3_inventory.groups[0]
     end
 
@@ -115,11 +115,11 @@ describe 'Serializer::Manifest' do
     # * filename [String] = Optional filename if one wishes to override the default filename
     specify 'Serializer::Manifest#write_xml_file' do
       output_dir = "/my/temp"
-      expect(FileInventory).to receive(:write_xml_file).with(@v1_inventory, output_dir, "version")
+      expect(Moab::FileInventory).to receive(:write_xml_file).with(@v1_inventory, output_dir, "version")
       @v1_inventory.write_xml_file(output_dir)
 
-      signatures = SignatureCatalog.new
-      expect(SignatureCatalog).to receive(:write_xml_file).with(signatures, output_dir, nil)
+      signatures = Moab::SignatureCatalog.new
+      expect(Moab::SignatureCatalog).to receive(:write_xml_file).with(signatures, output_dir, nil)
       signatures.write_xml_file(output_dir)
 
       # def write_xml_file(parent_dir, filename=nil)

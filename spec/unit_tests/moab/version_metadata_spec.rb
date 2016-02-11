@@ -13,8 +13,8 @@ describe 'Moab::VersionMetadata' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      version_metadata = VersionMetadata.new(opts)
-      expect(version_metadata).to be_instance_of(VersionMetadata)
+      version_metadata = Moab::VersionMetadata.new(opts)
+      expect(version_metadata).to be_instance_of(Moab::VersionMetadata)
        
       # test initialization of arrays and hashes
       expect(version_metadata.versions).to be_kind_of(Array)
@@ -22,8 +22,8 @@ describe 'Moab::VersionMetadata' do
       # test initialization with options hash
       opts = Hash.new
       opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:versions] = [double(VersionMetadataEntry.name)]
-      version_metadata = VersionMetadata.new(opts)
+      opts[:versions] = [double(Moab::VersionMetadataEntry.name)]
+      version_metadata = Moab::VersionMetadata.new(opts)
       expect(version_metadata.digital_object_id).to eq(opts[:digital_object_id])
       expect(version_metadata.versions).to eq(opts[:versions])
        
@@ -39,7 +39,7 @@ describe 'Moab::VersionMetadata' do
     
     before(:all) do
       opts = {}
-      @version_metadata = VersionMetadata.new(opts)
+      @version_metadata = Moab::VersionMetadata.new(opts)
     end
     
     # Unit test for attribute: {Moab::VersionMetadata#digital_object_id}
@@ -55,11 +55,11 @@ describe 'Moab::VersionMetadata' do
     # Unit test for attribute: {Moab::VersionMetadata#versions}
     # Which stores: [Array<VersionMetadataEntry>] \[<version>] = An array of version metadata entries, one per version
     specify 'Moab::VersionMetadata#versions' do
-      value = [double(VersionMetadataEntry.name)]
+      value = [double(Moab::VersionMetadataEntry.name)]
       @version_metadata.versions= value
       expect(@version_metadata.versions).to eq(value)
        
-      # has_many :versions, VersionMetadataEntry
+      # has_many :versions, Moab::VersionMetadataEntry
     end
   
   end

@@ -8,7 +8,7 @@ describe 'Moab::VerificationResult' do
   describe '=========================== CONSTRUCTOR ===========================' do
 
     specify 'Moab::VerificationResult#initialize' do
-      result = VerificationResult.new('my_entity')
+      result = Moab::VerificationResult.new('my_entity')
       expect(result.entity).to eq('my_entity')
       expect(result.verified).to eq(false)
       expect(result.details).to eq(nil)
@@ -20,7 +20,7 @@ describe 'Moab::VerificationResult' do
   describe '========================= CLASS METHODS ==========================' do
 
     specify 'Moab::VerificationResult.verify_value' do
-      result = VerificationResult.verify_value('greeting',"hello","goodbye")
+      result = Moab::VerificationResult.verify_value('greeting',"hello","goodbye")
       expect(result.entity).to eq('greeting')
       expect(result.verified).to eq(false)
       expect(result.details).to eq({"expected"=>"hello", "found"=>"goodbye"})
@@ -29,7 +29,7 @@ describe 'Moab::VerificationResult' do
     end
 
     specify 'Moab::VerificationResult.verify_truth' do
-      result = VerificationResult.verify_truth('truth',"true")
+      result = Moab::VerificationResult.verify_truth('truth',"true")
       expect(result.entity).to eq('truth')
       expect(result.verified).to eq(true)
       expect(result.details).to eq(nil)
@@ -42,11 +42,11 @@ describe 'Moab::VerificationResult' do
   describe '======================= INSTANCE METHODS ==========================' do
 
     specify 'Moab::VerificationResult.to_hash' do
-      result = VerificationResult.new('my_entity')
+      result = Moab::VerificationResult.new('my_entity')
       result.verified = false
-      result.subentities << VerificationResult.new('subentity_1')
-      result.subentities << VerificationResult.new('subentity_2')
-      result.subentities << VerificationResult.new('subentity_3')
+      result.subentities << Moab::VerificationResult.new('subentity_1')
+      result.subentities << Moab::VerificationResult.new('subentity_2')
+      result.subentities << Moab::VerificationResult.new('subentity_3')
       result.subentities.each do |s|
         if (s.entity == 'subentity_2')
           s.verified = false

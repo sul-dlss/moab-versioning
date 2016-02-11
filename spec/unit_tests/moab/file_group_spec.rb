@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 def basic_expectations(file_group)
-  expect(file_group).to be_instance_of(FileGroup)
+  expect(file_group).to be_instance_of(Moab::FileGroup)
   expect(file_group.files).to be_kind_of(Array)
   expect(file_group.signature_hash).to be_kind_of(Hash)
 end
@@ -9,17 +9,17 @@ end
 describe 'Moab::FileGroup' do
 
   it '#initialize' do
-    basic_expectations(FileGroup.new())
+    basic_expectations(Moab::FileGroup.new())
   end
   it '#initialize with empty hash argument' do
-    basic_expectations(FileGroup.new({}))
+    basic_expectations(Moab::FileGroup.new({}))
   end
   it '#initialize with populated hash argument' do
     # test initialization with options hash
     opts = Hash.new
     opts[:group_id]    = 'Test group_id'
     opts[:data_source] = 'Test data_source'
-    file_group = FileGroup.new(opts)
+    file_group = Moab::FileGroup.new(opts)
     basic_expectations(file_group)
     expect(file_group.group_id   ).to eq(opts[:group_id])
     expect(file_group.data_source).to eq(opts[:data_source])
@@ -30,7 +30,7 @@ describe 'Moab::FileGroup' do
   end
 
   before(:all) do
-    @file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'),recursive=true)
+    @file_group = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'),recursive=true)
   end
 
   it 'Provides instance attribute get/set' do
@@ -49,8 +49,8 @@ describe 'Moab::FileGroup' do
   describe 'INSTANCE METHODS' do
 
     before(:each) do
-      @v1_file_group  = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
-      @new_file_group = FileGroup.new
+      @v1_file_group  = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
+      @new_file_group = Moab::FileGroup.new
     end
 
     it 'provides path_hash, path_list, path_hash_subset' do
@@ -76,12 +76,12 @@ describe 'Moab::FileGroup' do
       expect(@new_file_group.files[0]).to eq(manifestation)
 
       # add a second file instance to an existing manifestation
-      @new_file_group.add_file_instance(manifestation.signature, FileInstance.new(:path => "/my/path"))
+      @new_file_group.add_file_instance(manifestation.signature, Moab::FileInstance.new(:path => "/my/path"))
       expect(@new_file_group.files[0].instances.size).to eq(2)
     end
 
     it '#remove_file_having_path affects file_count' do
-      file_group = FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),true)
+      file_group = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),true)
       before_file_count = file_group.file_count
       file_group.remove_file_having_path("page-1.jpg")
       expect(file_group.file_count).to eq(before_file_count - 1)
@@ -110,13 +110,13 @@ describe 'Moab::FileGroup' do
 
     it '#harvest_directory does something?!?' do         ## TODO: NO EXPECTATIONS DEFINED
       path = @fixtures.join('derivatives/manifests')
-      file_group = FileGroup.new
+      file_group = Moab::FileGroup.new
       file_group.base_directory=path
       file_group.harvest_directory(path,true)
       file_group.file_count=0
 
       path = @fixtures.join('derivatives/packages/v0001')
-      second_group = FileGroup.new
+      second_group = Moab::FileGroup.new
       second_group.base_directory=path
       second_group.harvest_directory(path,false)
       second_group.file_count=0
@@ -124,19 +124,19 @@ describe 'Moab::FileGroup' do
 
     it '#add_physical_file adds data for a physical file to array of files in group' do
       pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
-      group = FileGroup.new
+      group = Moab::FileGroup.new
       group.base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
       group.add_physical_file(pathname)
       expect(group.files.size).to eq(1)
-      expect(group.files[0].signature).to eq(FileSignature.new(
+      expect(group.files[0].signature).to eq(Moab::FileSignature.new(
           :size=>40873, :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"))
       expect(group.files[0].instances[0].path).to eq('title.jpg')
 
-      sig1 = double(FileSignature)
-      sig2 = double(FileSignature)
+      sig1 = double(Moab::FileSignature)
+      sig2 = double(Moab::FileSignature)
       signature_for_path = double(Hash)
 
-      allow(FileSignature).to receive(:new).and_return(sig1)
+      allow(Moab::FileSignature).to receive(:new).and_return(sig1)
       expect(sig1).to receive(:signature_from_file).with(pathname)
       group.add_physical_file(pathname)
 

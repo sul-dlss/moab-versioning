@@ -43,8 +43,8 @@ describe 'Moab::FileInventory' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_inventory = FileInventory.new(opts)
-      expect(file_inventory).to be_instance_of(FileInventory)
+      file_inventory = Moab::FileInventory.new(opts)
+      expect(file_inventory).to be_instance_of(Moab::FileInventory)
        
       # test initialization of arrays and hashes
       expect(file_inventory.groups).to be_kind_of(Array)
@@ -56,7 +56,7 @@ describe 'Moab::FileInventory' do
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:version_id] = 81
       opts[:inventory_datetime] = "Apr 12 19:36:07 UTC 2012"
-      file_inventory = FileInventory.new(opts)
+      file_inventory = Moab::FileInventory.new(opts)
       expect(file_inventory.type).to eq(opts[:type])
       expect(file_inventory.digital_object_id).to eq(opts[:digital_object_id])
       expect(file_inventory.version_id).to eq(opts[:version_id])
@@ -75,7 +75,7 @@ describe 'Moab::FileInventory' do
     
     before(:all) do
       @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @file_inventory = FileInventory.parse(@v1_version_inventory.read)
+      @file_inventory = Moab::FileInventory.parse(@v1_version_inventory.read)
       @file_inventory.inventory_datetime = "2012-04-13T13:16:54Z"
     end
     
@@ -158,11 +158,11 @@ describe 'Moab::FileInventory' do
     end
     
     # Unit test for attribute: {Moab::FileInventory#groups}
-    # Which stores: [Array<FileGroup>] \[<fileGroup>] = The set of data groups comprising the version
+    # Which stores: [Array<Moab::FileGroup>] \[<fileGroup>] = The set of data groups comprising the version
     specify 'Moab::FileInventory#groups' do
       expect(@file_inventory.groups.size).to eq(2)
        
-      # has_many :groups, FileGroup
+      # has_many :groups, Moab::FileGroup
     end
   
   end
@@ -171,14 +171,14 @@ describe 'Moab::FileInventory' do
     
     before(:all) do
       @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @file_inventory = FileInventory.parse(@v1_version_inventory.read)
+      @file_inventory = Moab::FileInventory.parse(@v1_version_inventory.read)
     end
     
     specify 'Moab::FileInventory#non_empty_groups' do
-      inventory = FileInventory.parse(@v1_version_inventory.read)
+      inventory = Moab::FileInventory.parse(@v1_version_inventory.read)
       expect(inventory.groups.size).to eq(2)
       expect(inventory.group_ids).to eq(["content", "metadata"])
-      inventory.groups << FileGroup.new(:group_id => 'empty')
+      inventory.groups << Moab::FileGroup.new(:group_id => 'empty')
       expect(inventory.groups.size).to eq(3)
       expect(inventory.group_ids).to eq(["content", "metadata", "empty"])
       expect(inventory.non_empty_groups.size).to eq(2)
@@ -186,7 +186,7 @@ describe 'Moab::FileInventory' do
     end
 
     # Unit test for method: {Moab::FileInventory#group}
-    # Which returns: [FileGroup] The file group in this inventory for the specified group_id
+    # Which returns: [Moab::FileGroup] The file group in this inventory for the specified group_id
     # For input parameters:
     # * group_id [String] = The identifer of the group to be selected
     specify 'Moab::FileInventory#group' do
@@ -202,7 +202,7 @@ describe 'Moab::FileInventory' do
     end
 
     # Unit test for method: {Moab::FileInventory#file_signature}
-    # Which returns: [FileSignature] The signature of the specified file
+    # Which returns: [Moab::FileSignature] The signature of the specified file
     # For input parameters:
     # * group_id [String] = The identifer of the group to be selected
     # * file_id [String] = The group-relative path of the file (relative to the appropriate home directory)
@@ -223,9 +223,9 @@ describe 'Moab::FileInventory' do
     # Unit test for method: {Moab::FileInventory#copy_ids}
     # Which returns: [void] Copy objectId and versionId values from another class instance into this instance
     # For input parameters:
-    # * other [FileInventory] = another instance of this class from which to clone identity values 
+    # * other [Moab::FileInventory] = another instance of this class from which to clone identity values 
     specify 'Moab::FileInventory#copy_ids' do
-      new_file_inventory = FileInventory.new
+      new_file_inventory = Moab::FileInventory.new
       new_file_inventory.copy_ids(@file_inventory)
       expect(new_file_inventory.digital_object_id).to eq(@file_inventory.digital_object_id)
       expect(new_file_inventory.version_id).to eq(@file_inventory.version_id)
@@ -256,7 +256,7 @@ describe 'Moab::FileInventory' do
     specify 'Moab::FileInventory#data_source' do
       expect(@file_inventory.data_source).to eq("v1")
       directory = @fixtures.join('derivatives/manifests/all')
-      directory_inventory = FileInventory.new(:type=>'directory').inventory_from_directory(directory,group_id="mygroup")
+      directory_inventory = Moab::FileInventory.new(:type=>'directory').inventory_from_directory(directory,group_id="mygroup")
       expect(directory_inventory.data_source).to include "derivatives/manifests/all"
 
       # def data_source
@@ -269,20 +269,20 @@ describe 'Moab::FileInventory' do
     end
 
     # Unit test for method: {Moab::FileInventory#inventory_from_directory}
-    # Which returns: [FileInventory] Traverse a directory and return an inventory of the files it contains
+    # Which returns: [Moab::FileInventory] Traverse a directory and return an inventory of the files it contains
     # For input parameters:
     # * data_dir [Pathname, String] = The location of files to be inventoried
-    # * group_id [String] = if specified, is used to set the group ID of the FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories 
+    # * group_id [String] = if specified, is used to set the group ID of the Moab::FileGroup created from the directory if nil, then the directory is assumed to contain both content and metadata subdirectories 
     specify 'Moab::FileInventory#inventory_from_directory' do
       data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
       group_id = 'Test group_id'
-      inventory_1 = FileInventory.new.inventory_from_directory(data_dir_1,group_id)
+      inventory_1 = Moab::FileInventory.new.inventory_from_directory(data_dir_1,group_id)
       expect(inventory_1.groups.size).to eq(1)
       expect(inventory_1.groups[0].group_id).to eq(group_id)
       expect(inventory_1.file_count).to eq(5)
 
       data_dir_2 = @fixtures.join('data/jq937jp0017/v0001')
-      inventory_2 = FileInventory.new.inventory_from_directory(data_dir_2)
+      inventory_2 = Moab::FileInventory.new.inventory_from_directory(data_dir_2)
       expect(inventory_2.groups.size).to eq(2)
       expect(inventory_2.groups[0].group_id).to eq('content')
       expect(inventory_2.groups[1].group_id).to eq('metadata')
@@ -290,10 +290,10 @@ describe 'Moab::FileInventory' do
 
       # def inventory_from_directory(data_dir,group_id=nil)
       #   if group_id
-      #     @groups << FileGroup.new(:group_id=>group_id).group_from_directory(data_dir)
+      #     @groups << Moab::FileGroup.new(:group_id=>group_id).group_from_directory(data_dir)
       #   else
       #     ['content','metadata'].each do |group_id|
-      #       @groups << FileGroup.new(:group_id=>group_id).group_from_directory(Pathname(data_dir).join(group_id))
+      #       @groups << Moab::FileGroup.new(:group_id=>group_id).group_from_directory(Pathname(data_dir).join(group_id))
       #     end
       #   end
       #   self
@@ -301,12 +301,12 @@ describe 'Moab::FileInventory' do
     end
 
     # Unit test for method: {Moab::FileInventory#inventory_from_bagit_bag}
-    # Which returns: [FileInventory] Traverse a BagIt bag and return an inventory of the files it contains
+    # Which returns: [Moab::FileInventory] Traverse a BagIt bag and return an inventory of the files it contains
     # For input parameters:
     # * bag_dir [Pathname, String] = The location of files to be inventoried
     specify 'Moab::FileInventory#inventory_from_bagit_bag' do
       bag_dir = @packages.join('v0001')
-      inventory = FileInventory.new.inventory_from_bagit_bag(bag_dir)
+      inventory = Moab::FileInventory.new.inventory_from_bagit_bag(bag_dir)
       expect(inventory.groups.size).to eq(2)
       expect(inventory.groups.collect{|group| group.group_id}.sort).to eq(['content','metadata'])
       expect(inventory.file_count).to eq(11)
@@ -316,19 +316,19 @@ describe 'Moab::FileInventory' do
       #  bag_digests = digests_from_bagit_bag(bag_pathname)
       #  bag_data_subdirs = bag_pathname.join('data').children
       #  bag_data_subdirs.each do |subdir|
-      #    @groups << FileGroup.new(:group_id=>subdir.basename).group_from_directory_digests(subdir, bag_digests)
+      #    @groups << Moab::FileGroup.new(:group_id=>subdir.basename).group_from_directory_digests(subdir, bag_digests)
       #  end
       #  self
       #end
     end
 
     # Unit test for method: {Moab::FileInventory#signatures_from_bagit_manifests}
-    # Which returns: [Hash<Pathname,FileSignature>] Parse BagIt manifests and return an hash of the fixity data it contains
+    # Which returns: [Hash<Pathname,Moab::FileSignature>] Parse BagIt manifests and return an hash of the fixity data it contains
     # For input parameters:
     # * bag_dir [Pathname, String] = The location of the BagIt bag
     specify 'Moab::FileInventory#signatures_from_bagit_manifests' do
       bag_pathname = @packages.join('v0001')
-      signature_for_path = FileInventory.new.signatures_from_bagit_manifests(bag_pathname)
+      signature_for_path = Moab::FileInventory.new.signatures_from_bagit_manifests(bag_pathname)
       expect(signature_for_path.size).to eq(11)
       expect(signature_for_path.keys[0]).to eq(@packages.join('v0001/data/content/intro-1.jpg'))
       expect(signature_for_path[@packages.join('v0001/data/content/page-2.jpg')].md5).to eq("82fc107c88446a3119a51a8663d1e955")
@@ -357,14 +357,14 @@ describe 'Moab::FileInventory' do
     end
     
     # Unit test for method: {Moab::FileInventory#write_xml_file}
-    # Which returns: [void] write the {FileInventory} instance to a file
+    # Which returns: [void] write the {Moab::FileInventory} instance to a file
     # For input parameters:
     # * parent_dir [Pathname, String] = The parent directory in which the xml file is to be stored 
     # * type [String] = The inventory type, which governs the filename used for serialization 
     specify 'Moab::FileInventory#write_xml_file' do
       parent_dir = @temp.join('parent_dir')
       type = 'Test type'
-      expect(FileInventory).to receive(:write_xml_file).with(@file_inventory, parent_dir, type)
+      expect(Moab::FileInventory).to receive(:write_xml_file).with(@file_inventory, parent_dir, type)
       @file_inventory.write_xml_file(parent_dir, type)
        
       # def write_xml_file(parent_dir, type=nil)

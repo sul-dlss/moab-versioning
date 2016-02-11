@@ -13,8 +13,8 @@ describe 'Moab::VersionMetadataEntry' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      version_metadata_entry = VersionMetadataEntry.new(opts)
-      expect(version_metadata_entry).to be_instance_of(VersionMetadataEntry)
+      version_metadata_entry = Moab::VersionMetadataEntry.new(opts)
+      expect(version_metadata_entry).to be_instance_of(Moab::VersionMetadataEntry)
        
       # test initialization of arrays and hashes
       expect(version_metadata_entry.events).to be_kind_of(Array)
@@ -25,10 +25,10 @@ describe 'Moab::VersionMetadataEntry' do
       opts[:significance] = 'Major'
       opts[:description] = 'Test reason'
       opts[:note] = 'Test note'
-      opts[:content_changes] = double(FileGroupDifference.name)
-      opts[:metadata_changes] = double(FileGroupDifference.name)
-      opts[:events] = [double(VersionMetadataEvent.name)]
-      version_metadata_entry = VersionMetadataEntry.new(opts)
+      opts[:content_changes] = double(Moab::FileGroupDifference.name)
+      opts[:metadata_changes] = double(Moab::FileGroupDifference.name)
+      opts[:events] = [double(Moab::VersionMetadataEvent.name)]
+      version_metadata_entry = Moab::VersionMetadataEntry.new(opts)
       expect(version_metadata_entry.version_id).to eq(opts[:version_id])
       expect(version_metadata_entry.significance).to eq(opts[:significance])
       expect(version_metadata_entry.description).to eq(opts[:description])
@@ -49,7 +49,7 @@ describe 'Moab::VersionMetadataEntry' do
     
     before(:all) do
       opts = {}
-      @version_metadata_entry = VersionMetadataEntry.new(opts)
+      @version_metadata_entry = Moab::VersionMetadataEntry.new(opts)
     end
     
     # Unit test for attribute: {Moab::VersionMetadataEntry#version_id}
@@ -93,33 +93,33 @@ describe 'Moab::VersionMetadataEntry' do
     end
     
     # Unit test for attribute: {Moab::VersionMetadataEntry#content_changes}
-    # Which stores: [FileGroupDifference] \<fileGroupDifference> = Summary of content file differences since previous version
+    # Which stores: [Moab::FileGroupDifference] \<fileGroupDifference> = Summary of content file differences since previous version
     specify 'Moab::VersionMetadataEntry#content_changes' do
-      value = double(FileGroupDifference.name)
+      value = double(Moab::FileGroupDifference.name)
       @version_metadata_entry.content_changes= value
       expect(@version_metadata_entry.content_changes).to eq(value)
        
-      # element :content_changes, FileGroupDifference
+      # element :content_changes, Moab::FileGroupDifference
     end
     
     # Unit test for attribute: {Moab::VersionMetadataEntry#metadata_changes}
-    # Which stores: [FileGroupDifference] \<fileGroupDifference> = Summary of metadata file differences since previous version
+    # Which stores: [Moab::FileGroupDifference] \<fileGroupDifference> = Summary of metadata file differences since previous version
     specify 'Moab::VersionMetadataEntry#metadata_changes' do
-      value = double(FileGroupDifference.name)
+      value = double(Moab::FileGroupDifference.name)
       @version_metadata_entry.metadata_changes= value
       expect(@version_metadata_entry.metadata_changes).to eq(value)
        
-      # element :metadata_changes, FileGroupDifference
+      # element :metadata_changes, Moab::FileGroupDifference
     end
     
     # Unit test for attribute: {Moab::VersionMetadataEntry#events}
-    # Which stores: [Array<VersionMetadataEvent>] \[<event>] = Array of events with timestamps that track lifecycle stages
+    # Which stores: [Array<Moab::VersionMetadataEvent>] \[<event>] = Array of events with timestamps that track lifecycle stages
     specify 'Moab::VersionMetadataEntry#events' do
-      value = [double(VersionMetadataEvent.name)]
+      value = [double(Moab::VersionMetadataEvent.name)]
       @version_metadata_entry.events= value
       expect(@version_metadata_entry.events).to eq(value)
        
-      # has_many :events, VersionMetadataEvent
+      # has_many :events, Moab::VersionMetadataEvent
     end
   
   end

@@ -13,11 +13,11 @@ describe 'Serializer::Serializable' do
 
   before(:all) do
     @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
+    @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
     @v1_content = @v1_inventory.groups[0]
 
     @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-    @v3_inventory = FileInventory.parse(@v3_inventory_pathname.read)
+    @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
     @v3_content = @v3_inventory.groups[0]
   end
   
@@ -141,9 +141,9 @@ describe 'Serializer::Serializable' do
     # Which returns: [Array] A list of HappyMapper xml attribute, element and text nodes declared for the class
     # For input parameters: (None)
     specify 'Serializer::Serializable#variables' do
-      expect(FileInstance.new.variables().size).to eq(2)
-      expect(SignatureCatalog.new.variables().size).to eq(7)
-      expect(FileSignature.new.variables().size).to eq(4)
+      expect(Moab::FileInstance.new.variables().size).to eq(2)
+      expect(Moab::SignatureCatalog.new.variables().size).to eq(7)
+      expect(Moab::FileSignature.new.variables().size).to eq(4)
 
       expect(MyClass.new.variables.size).to eq(2)
 
@@ -167,11 +167,11 @@ describe 'Serializer::Serializable' do
     # Which returns: [Array] Extract the names of the variables
     # For input parameters: (None)
     specify 'Serializer::Serializable#variable_names' do
-      expect(FileInstance.new.variable_names()).to eq(["path", "datetime"])
-      expect(SignatureCatalog.new.variable_names()).to eq(
+      expect(Moab::FileInstance.new.variable_names()).to eq(["path", "datetime"])
+      expect(Moab::SignatureCatalog.new.variable_names()).to eq(
           ["digital_object_id", "version_id", "catalog_datetime", "file_count", "byte_count", "block_count", "entries"]
       )
-      expect(FileSignature.new.variable_names()).to eq(["size", "md5", "sha1", "sha256"])
+      expect(Moab::FileSignature.new.variable_names()).to eq(["size", "md5", "sha1", "sha256"])
 
       # def variable_names
       #   variables.collect { |variable| variable.name}
@@ -182,9 +182,9 @@ describe 'Serializer::Serializable' do
     # Which returns: [String] Determine which attribute was marked as an object instance key. Keys are indicated by option :key=true when declaring the object's variables. This follows the same convention as used by DataMapper
     # For input parameters: (None)
     specify 'Serializer::Serializable#key_name' do
-      expect(FileInstance.new.key_name()).to eq("path")
-      expect(SignatureCatalog.new.key_name()).to eq("version_id")
-      expect(FileSignature.new.key_name()).to eq(nil)
+      expect(Moab::FileInstance.new.key_name()).to eq("path")
+      expect(Moab::SignatureCatalog.new.key_name()).to eq("version_id")
+      expect(Moab::FileSignature.new.key_name()).to eq(nil)
 
       # def key_name
       #   if not defined?(@key_name)
@@ -204,13 +204,13 @@ describe 'Serializer::Serializable' do
     # Which returns: [String] For the current object instance, return the string to use as a hash key
     # For input parameters: (None)
     specify 'Serializer::Serializable#key' do
-      file_instance = FileInstance.new
+      file_instance = Moab::FileInstance.new
       expect(file_instance).to receive(:path)
       file_instance.key()
-      signature_catalog = SignatureCatalog.new
+      signature_catalog = Moab::SignatureCatalog.new
       expect(signature_catalog).to receive(:version_id)
       signature_catalog.key()
-      file_signature = FileSignature.new
+      file_signature = Moab::FileSignature.new
       expect(file_signature.key()).to eq(nil)
 
       # def key
@@ -249,7 +249,7 @@ describe 'Serializer::Serializable' do
     # Which returns: [Hash] Recursively generate an Hash containing the object's properties
     # For input parameters: (None)
     specify 'Serializer::Serializable#to_hash' do
-      additions = FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
+      additions = Moab::FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
       hash = additions.groups[0].to_hash()
       hash['files'][0].delete('instances')
       expect(hash).to hash_match({
@@ -319,9 +319,9 @@ describe 'Serializer::Serializable' do
       opts = Hash.new
       opts[:path] = @temp.join('path1').to_s
       opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
-      file_instance1 = FileInstance.new(opts)
+      file_instance1 = Moab::FileInstance.new(opts)
       opts[:path] = @temp.join('path2').to_s
-      file_instance2 = FileInstance.new(opts)
+      file_instance2 = Moab::FileInstance.new(opts)
       diff = file_instance1.diff(file_instance2)
       expect(diff.keys[0]).to eq('path')
       expect(diff['path']).to be_instance_of Hash

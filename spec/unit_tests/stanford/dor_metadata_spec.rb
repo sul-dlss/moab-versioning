@@ -84,7 +84,7 @@ describe 'Stanford::DorMetadata' do
     end
     
     # Unit test for method: {Stanford::DorMetadata#inventory_from_directory}
-    # Which returns: [FileInventory] Inventory of the files under the specified directory
+    # Which returns: [Moab::FileInventory] Inventory of the files under the specified directory
     # For input parameters:
     # * directory [String] = The location of the directory to be inventoried 
     # * version_id [Integer] = The ordinal version number 
@@ -100,11 +100,11 @@ describe 'Stanford::DorMetadata' do
 
       # def inventory_from_directory(directory, version_id=nil)
       #   version_id ||= @version_id
-      #   version_inventory = FileInventory.new(:type=>'version',:digital_object_id=>@digital_object_id, :version_id=>version_id)
+      #   version_inventory = Moab::FileInventory.new(:type=>'version',:digital_object_id=>@digital_object_id, :version_id=>version_id)
       #   content_metadata = IO.read(File.join(directory,'contentMetadata.xml'))
       #   content_group = ContentInventory.new.group_from_cm(content_metadata )
       #   version_inventory.groups << content_group
-      #   metadata_group = FileGroup.new(:group_id=>'metadata').group_from_directory(directory)
+      #   metadata_group = Moab::FileGroup.new(:group_id=>'metadata').group_from_directory(directory)
       #   version_inventory.groups << metadata_group
       #   version_inventory
       # end

@@ -13,14 +13,14 @@ describe 'Moab::VersionMetadataEvent' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      version_metadata_event = VersionMetadataEvent.new(opts)
-      expect(version_metadata_event).to be_instance_of(VersionMetadataEvent)
+      version_metadata_event = Moab::VersionMetadataEvent.new(opts)
+      expect(version_metadata_event).to be_instance_of(Moab::VersionMetadataEvent)
        
       # test initialization with options hash
       opts = Hash.new
       opts[:type] = 'Test event'
       opts[:datetime] = "Apr 12 19:36:07 UTC 2012"
-      version_metadata_event = VersionMetadataEvent.new(opts)
+      version_metadata_event = Moab::VersionMetadataEvent.new(opts)
       expect(version_metadata_event.type).to eq(opts[:type])
       expect(version_metadata_event.datetime).to eq("2012-04-12T19:36:07Z")
        
@@ -35,7 +35,7 @@ describe 'Moab::VersionMetadataEvent' do
     
     before(:all) do
       opts = {}
-      @version_metadata_event = VersionMetadataEvent.new(opts)
+      @version_metadata_event = Moab::VersionMetadataEvent.new(opts)
     end
     
     # Unit test for attribute: {Moab::VersionMetadataEvent#type}

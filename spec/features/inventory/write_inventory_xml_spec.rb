@@ -8,7 +8,7 @@ describe "Feature: File Inventory Serialization" do
     # action: a call the object's write_xml_file method
     # outcome: produces a XML document containing all the inventory metadata
 
-    inventory_object = FileInventory.read_xml_file(@manifests.join("v0001"),'version')
+    inventory_object = Moab::FileInventory.read_xml_file(@manifests.join("v0001"),'version')
     output_dir = @temp.join('inventory')
     output_dir.mkpath
     inventory_object.write_xml_file(output_dir,'version')

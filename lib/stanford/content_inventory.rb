@@ -1,4 +1,4 @@
-require 'moab_stanford'
+require 'moab/stanford'
 
 module Stanford
 
@@ -24,7 +24,7 @@ module Stanford
       # Many of these objects have contentMetadata with no child elements, such as this:
       #    <contentMetadata objectId="bd608mj3166" type="file"/>
       # but there are also objects that have no datasteam of this name at all
-      cm_inventory = FileInventory.new(:type=>"version",:digital_object_id=>object_id, :version_id=>version_id)
+      cm_inventory = Moab::FileInventory.new(:type=>"version",:digital_object_id=>object_id, :version_id=>version_id)
       content_group = group_from_cm(content_metadata, subset)
       cm_inventory.groups << content_group
       cm_inventory
@@ -50,7 +50,7 @@ module Stanford
         else
             raise "Unknown disposition subset (#{subset})"
         end
-      content_group = FileGroup.new(:group_id=>'content', :data_source => "contentMetadata-#{subset}")
+      content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => "contentMetadata-#{subset}")
       nodeset.each do |file_node|
         signature = generate_signature(file_node)
         instance = generate_instance(file_node)
@@ -63,7 +63,7 @@ module Stanford
     # @param node [Nokogiri::XML::Node] The XML node containing file information
     # @return [FileSignature] The {FileSignature} object generated from the XML data
     def generate_signature(node)
-      signature = FileSignature.new()
+      signature = Moab::FileSignature.new()
       signature.size = node.attributes['size'].content
       checksum_nodes = node.xpath('checksum')
       checksum_nodes.each do |checksum_node|
@@ -83,7 +83,7 @@ module Stanford
     # @param node (see #generate_signature)
     # @return [FileInstance] The {FileInstance} object generated from the XML data
     def generate_instance(node)
-      instance = FileInstance.new()
+      instance = Moab::FileInstance.new()
       instance.path = node.attributes['id'].content
       instance.datetime = node.attributes['datetime'].content rescue nil
       instance
@@ -175,8 +175,8 @@ module Stanford
       return nil if content_metadata.nil?
       return content_metadata if content_group.nil? or content_group.files.size < 1
       signature_for_path = content_group.path_hash
-      @type_for_name = FileSignature.checksum_type_for_name
-      @names_for_type = FileSignature.checksum_names_for_type
+      @type_for_name = Moab::FileSignature.checksum_type_for_name
+      @names_for_type = Moab::FileSignature.checksum_names_for_type
       ng_doc = Nokogiri::XML(content_metadata) { |x| x.noblanks }
       nodeset = ng_doc.xpath("//file")
       nodeset.each do |file_node|

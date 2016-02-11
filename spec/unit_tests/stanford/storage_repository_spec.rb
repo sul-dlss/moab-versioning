@@ -7,7 +7,7 @@ describe 'Stanford::StorageRepository' do
     
      specify 'Stanford::StorageRepository#initialize' do
        
-      storage_repository = StorageRepository.new()
+      storage_repository = Stanford::StorageRepository.new()
       expect(storage_repository).to be_instance_of(Stanford::StorageRepository)
 
     end
@@ -17,7 +17,7 @@ describe 'Stanford::StorageRepository' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @storage_repository = StorageRepository.new()
+      @storage_repository = Stanford::StorageRepository.new()
       @object_id = @druid
 
     end

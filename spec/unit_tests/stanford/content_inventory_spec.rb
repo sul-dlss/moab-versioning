@@ -34,7 +34,7 @@ describe 'Stanford::ContentInventory' do
     end
 
     # Unit test for method: {Stanford::ContentInventory#inventory_from_cm}
-    # Which returns: [FileInventory] The versionInventory equivalent of the contentMetadata
+    # Which returns: [Moab::FileInventory] The versionInventory equivalent of the contentMetadata
     # For input parameters:
     # * content_metadata [String] = The content metadata to be transformed into a versionInventory
     # * object_id [String] = The identifier of the digital object
@@ -118,7 +118,7 @@ describe 'Stanford::ContentInventory' do
       expect(same).to be true
 
       # def inventory_from_cm(content_metadata, object_id, version_id=nil)
-      #   cm_inventory = FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
+      #   cm_inventory = Moab::FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
       #   content_group = group_from_cm(content_metadata )
       #   cm_inventory.groups << content_group
       #   cm_inventory
@@ -138,7 +138,7 @@ describe 'Stanford::ContentInventory' do
       subsets = %w(shelve publish preserve)
       subsets.each do |subset|
         inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
-        #diff.should be_instance_of(FileInventoryDifference)
+        #diff.should be_instance_of(Moab::FileInventoryDifference)
         xmlObj1 = Nokogiri::XML(inventory.to_xml)
         xmlObj1.xpath('//@inventoryDatetime').remove
         xmlObj2 = Nokogiri::XML(empty_inventory)
@@ -149,12 +149,12 @@ describe 'Stanford::ContentInventory' do
     end
 
     # Unit test for method: {Stanford::ContentInventory#group_from_cm}
-    # Which returns: [FileGroup] The {FileGroup} object generated from a contentMetadata instance
+    # Which returns: [Moab::FileGroup] The {Moab::FileGroup} object generated from a contentMetadata instance
     # For input parameters:
     # * content_metadata [String] = The contentMetadata as a string
     specify 'Stanford::ContentInventory#group_from_cm' do
       group = @content_inventory.group_from_cm(@content_metadata,'all')
-      expect(group).to be_instance_of(FileGroup)
+      expect(group).to be_instance_of(Moab::FileGroup)
       expect(group.data_source).to eq("contentMetadata-all")
 
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
@@ -173,7 +173,7 @@ describe 'Stanford::ContentInventory' do
       expect{ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception
 
       # def group_from_cm(content_metadata)
-      #   content_group = FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')
+      #   content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')
       #   Nokogiri::XML(content_metadata).xpath('//file').each do |file_node|
       #     signature = generate_signature(file_node)
       #     instance = generate_instance(file_node)
@@ -184,7 +184,7 @@ describe 'Stanford::ContentInventory' do
     end
 
     # Unit test for method: {Stanford::ContentInventory#generate_signature}
-    # Which returns: [FileSignature] The {FileSignature} object generated from the XML data
+    # Which returns: [Moab::FileSignature] The {Moab::FileSignature} object generated from the XML data
     # For input parameters:
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_signature' do
@@ -205,7 +205,7 @@ describe 'Stanford::ContentInventory' do
     end
 
     # Unit test for method: {Stanford::ContentInventory#generate_instance}
-    # Which returns: [FileInstance] The {FileInstance} object generated from the XML data
+    # Which returns: [Moab::FileInstance] The {Moab::FileInstance} object generated from the XML data
     # For input parameters:
     # * node [Nokogiri::XML::Node] = The XML node containing file information
     specify 'Stanford::ContentInventory#generate_instance' do
@@ -216,7 +216,7 @@ describe 'Stanford::ContentInventory' do
       })
 
       # def generate_instance(node)
-      #   instance = FileInstance.new()
+      #   instance = Moab::FileInstance.new()
       #   instance.path = node.attributes['id'].content
       #   instance.datetime = node.attributes['datetime'].content rescue nil
       #   instance
@@ -224,13 +224,13 @@ describe 'Stanford::ContentInventory' do
     end
 
     # Unit test for method: {Stanford::ContentInventory#generate_content_metadata}
-    # Which returns: [String] The contentMetadata instance generated from the FileGroup
+    # Which returns: [String] The contentMetadata instance generated from the Moab::FileGroup
     # For input parameters:
-    # * file_group [FileGroup] = The {FileGroup} object used as the data source
+    # * file_group [Moab::FileGroup] = The {Moab::FileGroup} object used as the data source
     specify 'Stanford::ContentInventory#generate_content_metadata' do
       directory = @data.join('v0002/content')
       recursive = true
-      group= FileGroup.new.group_from_directory(directory, recursive)
+      group= Moab::FileGroup.new.group_from_directory(directory, recursive)
       cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
       xmlObj1 = Nokogiri::XML(cm)
       xmlObj1.xpath('//@datetime').remove
@@ -310,7 +310,7 @@ describe 'Stanford::ContentInventory' do
     specify 'Stanford::ContentInventory#remediate_content_metadata' do
       cm = @fixtures.join('bad_data','contentMetadata-missing-fixity.xml').read
       directory = @data.join('v0001/content')
-      group = FileGroup.new.group_from_directory(directory, recursive=true)
+      group = Moab::FileGroup.new.group_from_directory(directory, recursive=true)
       ng_xml = @content_inventory.remediate_content_metadata(cm, group)
       xmlObj1 = Nokogiri::XML(ng_xml)
       xmlTest = <<-EOF

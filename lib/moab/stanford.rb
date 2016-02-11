@@ -1,5 +1,4 @@
 require 'moab'
-include Moab
 require 'stanford/content_inventory'
 require 'stanford/dor_metadata'
 require 'stanford/storage_repository'

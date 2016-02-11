@@ -13,7 +13,7 @@ describe 'Stanford::StorageServices' do
     end
 
     specify 'Stanford::StorageServices.cm_remediate' do
-      remediated_cm = StorageServices.cm_remediate(@digital_object_id,1)
+      remediated_cm = Stanford::StorageServices.cm_remediate(@digital_object_id,1)
       xmlObj1 = Nokogiri::XML(remediated_cm)
       xmlTest = <<-EOF
       <contentMetadata type="sample" objectId="druid:jq937jp0017">
@@ -58,14 +58,14 @@ describe 'Stanford::StorageServices' do
 
 
     # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
-    # Which returns: [FileInventoryDifference] The report of differences between the content metadata and the specified version
+    # Which returns: [Moab::FileInventoryDifference] The report of differences between the content metadata and the specified version
     # For input parameters:
     # * content_metadata [String] = The content metadata to be compared 
     # * object_id [String] = The digital object identifier of the object whose version inventory is the basis of the comparison 
     # * version_id [Integer] = The ID of the version whose inventory is to be compared, if nil use latest version 
     specify 'Stanford::StorageServices.compare_cm_to_version_inventory' do
       diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata, @druid, 'all', 1)
-      expect(diff).to be_instance_of(FileInventoryDifference)
+      expect(diff).to be_instance_of(Moab::FileInventoryDifference)
       xmlObj1 = Nokogiri::XML(diff.to_xml)
       xmlObj1.xpath('//@reportDatetime').remove
       xmlTest = <<-EOF
@@ -246,7 +246,7 @@ describe 'Stanford::StorageServices' do
       subsets = %w(shelve publish preserve)
       subsets.each do |subset|
         diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
-        expect(diff).to be_instance_of(FileInventoryDifference)
+        expect(diff).to be_instance_of(Moab::FileInventoryDifference)
         xmlObj1 = Nokogiri::XML(diff.to_xml)
         xmlObj1.xpath('//@reportDatetime').remove
         xmlObj2 = Nokogiri::XML(inventory_diff)
@@ -257,7 +257,7 @@ describe 'Stanford::StorageServices' do
     end
 
     # Unit test for method: {Stanford::StorageServices.cm_version_additions}
-    # Which returns: [FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
+    # Which returns: [Moab::FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
     # For input parameters:
     # * content_metadata [String] = The content metadata to be evaluated 
     # * object_id [String] = The digital object identifier of the object whose signature catalog is to be used 
@@ -267,7 +267,7 @@ describe 'Stanford::StorageServices' do
       object_id = 'Test object_id' 
       version_id = 78 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, @druid, 1)
-      expect(adds).to be_instance_of(FileInventory)
+      expect(adds).to be_instance_of(Moab::FileInventory)
       xmlObj1 = Nokogiri::XML(adds.to_xml)
       xmlObj1.xpath('//@inventoryDatetime').remove
       xmlTest = <<-EOF
@@ -285,7 +285,7 @@ describe 'Stanford::StorageServices' do
       expect(same).to be true
 
       adds = Stanford::StorageServices.cm_version_additions(@content_metadata, "druid:no000non0000", nil)
-      expect(adds).to be_instance_of(FileInventory)
+      expect(adds).to be_instance_of(Moab::FileInventory)
       xmlObj1 = Nokogiri::XML(adds.to_xml)
       xmlObj1.xpath('//@inventoryDatetime').remove
       xmlTest = <<-EOF

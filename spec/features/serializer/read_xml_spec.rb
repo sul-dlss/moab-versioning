@@ -14,9 +14,9 @@ describe "Manifest file parsing" do
     # outcome: an in-memory representation of the manifest
 
     parent_dir = @manifests.join("v0001")
-    expect(SignatureCatalog.xml_pathname(parent_dir)).to eq(parent_dir.join('signatureCatalog.xml'))
-    catalog = SignatureCatalog.read_xml_file(parent_dir)
-    expect(catalog).to be_instance_of(SignatureCatalog)
+    expect(Moab::SignatureCatalog.xml_pathname(parent_dir)).to eq(parent_dir.join('signatureCatalog.xml'))
+    catalog = Moab::SignatureCatalog.read_xml_file(parent_dir)
+    expect(catalog).to be_instance_of(Moab::SignatureCatalog)
     expect(catalog.entries.size).to eq(11)
   end
 

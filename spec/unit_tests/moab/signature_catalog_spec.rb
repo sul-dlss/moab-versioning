@@ -13,8 +13,8 @@ describe 'Moab::SignatureCatalog' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      signature_catalog = SignatureCatalog.new(opts)
-      expect(signature_catalog).to be_instance_of(SignatureCatalog)
+      signature_catalog = Moab::SignatureCatalog.new(opts)
+      expect(signature_catalog).to be_instance_of(Moab::SignatureCatalog)
        
       # test initialization of arrays and hashes
       expect(signature_catalog.entries).to be_kind_of(Array)
@@ -25,7 +25,7 @@ describe 'Moab::SignatureCatalog' do
       opts[:digital_object_id] = 'Test digital_object_id'
       opts[:version_id] = 9
       opts[:catalog_datetime] = "Apr 12 19:36:07 UTC 2012"
-      signature_catalog = SignatureCatalog.new(opts)
+      signature_catalog = Moab::SignatureCatalog.new(opts)
       expect(signature_catalog.digital_object_id).to eq(opts[:digital_object_id])
       expect(signature_catalog.version_id).to eq(opts[:version_id])
       expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
@@ -45,7 +45,7 @@ describe 'Moab::SignatureCatalog' do
     
     before(:all) do
       @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
-      @signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
+      @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#digital_object_id}
@@ -121,7 +121,7 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#entries}
-    # Which stores: [Array<SignatureCatalogEntry>] The set of data groups comprising the version
+    # Which stores: [Array<Moab::SignatureCatalogEntry>] The set of data groups comprising the version
     specify 'Moab::SignatureCatalog#entries' do
       expect(@signature_catalog.entries.size).to eq(11)
        
@@ -131,11 +131,11 @@ describe 'Moab::SignatureCatalog' do
       #   end
       # end
        
-      # has_many :entries, SignatureCatalogEntry, :tag => 'entry'
+      # has_many :entries, Moab::SignatureCatalogEntry, :tag => 'entry'
     end
     
     # Unit test for attribute: {Moab::SignatureCatalog#signature_hash}
-    # Which stores: [Hash] An index having {FileSignature} objects as keys and {SignatureCatalogEntry} objects as values
+    # Which stores: [Hash] An index having {Moab::FileSignature} objects as keys and {Moab::SignatureCatalogEntry} objects as values
     specify 'Moab::SignatureCatalog#signature_hash' do
       expect(@signature_catalog.signature_hash.size).to eq(11)
        
@@ -154,11 +154,11 @@ describe 'Moab::SignatureCatalog' do
     
     before(:each) do
       @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
-      @signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
+      @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
       @original_entry_count = @signature_catalog.entries.count
 
       @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
-      @v2_inventory = FileInventory.parse(@v2_inventory_pathname.read)
+      @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
     end
 
     specify 'Moab::SignatureCatalog#composite_key' do
@@ -168,10 +168,10 @@ describe 'Moab::SignatureCatalog' do
     # Unit test for method: {Moab::SignatureCatalog#add_entry}
     # Which returns: [void] Add a new entry to the catalog and to the {#signature_hash} index
     # For input parameters:
-    # * entry [SignatureCatalogEntry] = The new catalog entry 
+    # * entry [Moab::SignatureCatalogEntry] = The new catalog entry 
     specify 'Moab::SignatureCatalog#add_entry' do
-      entry = double(SignatureCatalogEntry.name)
-      expect(entry).to receive(:signature).and_return(double(FileSignature.name))
+      entry = double(Moab::SignatureCatalogEntry.name)
+      expect(entry).to receive(:signature).and_return(double(Moab::FileSignature.name))
       @signature_catalog.add_entry(entry)
       expect(@signature_catalog.entries.count).to eq(@original_entry_count + 1)
        
@@ -184,7 +184,7 @@ describe 'Moab::SignatureCatalog' do
     # Unit test for method: {Moab::SignatureCatalog#catalog_filepath}
     # Which returns: [String] The object-relative path of the file having the specified signature
     # For input parameters:
-    # * file_signature [FileSignature] = The signature of the file whose path is sought
+    # * file_signature [Moab::FileSignature] = The signature of the file whose path is sought
     specify 'Moab::SignatureCatalog#catalog_filepath' do
       file_signature = @signature_catalog.entries[0].signature
       filepath = @signature_catalog.catalog_filepath(file_signature)
@@ -217,9 +217,9 @@ describe 'Moab::SignatureCatalog' do
     end
 
     # Unit test for method: {Moab::SignatureCatalog#update}
-    # Which returns: [void] Compares the {FileSignature} entries in the new versions {FileInventory} against the signatures in this catalog and create new {SignatureCatalogEntry} addtions to the catalog
+    # Which returns: [void] Compares the {Moab::FileSignature} entries in the new versions {Moab::FileInventory} against the signatures in this catalog and create new {Moab::SignatureCatalogEntry} addtions to the catalog
     # For input parameters:
-    # * version_inventory [FileInventory] = The complete inventory of the files comprising a digital object version 
+    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object version 
     specify 'Moab::SignatureCatalog#update' do
       @v2_inventory.groups.each do |group|
         if group.group_id == 'metadata'
@@ -240,9 +240,9 @@ describe 'Moab::SignatureCatalog' do
     end
     
     # Unit test for method: {Moab::SignatureCatalog#version_additions}
-    # Which returns: [FileInventory] Retrurns a filtered copy of the input inventory containing only those files that were added in this version
+    # Which returns: [Moab::FileInventory] Retrurns a filtered copy of the input inventory containing only those files that were added in this version
     # For input parameters:
-    # * version_inventory [FileInventory] = The complete inventory of the files comprising a digital object version 
+    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object version 
     specify 'Moab::SignatureCatalog#version_additions' do
       version_additions = @signature_catalog.version_additions(@v2_inventory)
       expect(version_additions.groups.count).to eq(2)
@@ -251,10 +251,10 @@ describe 'Moab::SignatureCatalog' do
       expect(version_additions.block_count).to eq(37)
 
       # def version_additions(version_inventory)
-      #   version_additions = FileInventory.new(:type=>'additions')
+      #   version_additions = Moab::FileInventory.new(:type=>'additions')
       #   version_additions.copy_ids(version_inventory)
       #   version_inventory.groups.each do |group|
-      #     group_addtions = FileGroup.new(:group_id => group.group_id)
+      #     group_addtions = Moab::FileGroup.new(:group_id => group.group_id)
       #     group.files.each do |file|
       #       unless @signature_hash.has_key?(file.signature)
       #         group_addtions.add_file_instance(file.signature,file.instances[0])
@@ -280,7 +280,7 @@ describe 'Moab::SignatureCatalog' do
     end
 
     specify "Serialization to string using HappyMapper to_xml" do
-      signature_catalog = SignatureCatalog.parse(@v1_catalog_pathname.read)
+      signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
       signature_catalog.catalog_datetime=""
       text = signature_catalog.to_xml
       expect(text).to match(/signatureCatalog/)

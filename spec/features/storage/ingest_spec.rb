@@ -22,7 +22,7 @@ describe "Import digital object version to SDR" do
       object_dir.mkpath
       unless object_dir.join("v000#{version}").exist?
         bag_dir = @packages.join(vname)
-        StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
+        Moab::StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
       end
     end
 

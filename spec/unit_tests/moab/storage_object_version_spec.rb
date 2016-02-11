@@ -17,23 +17,23 @@ describe 'Moab::StorageObjectVersion' do
     # Unit test for constructor: {Moab::StorageObjectVersion#initialize}
     # Which returns an instance of: [Moab::StorageObjectVersion]
     # For input parameters:
-    # * storage_object [StorageObject] = The object representing the digital object's storage location 
+    # * storage_object [Moab::StorageObject] = The object representing the digital object's storage location 
     # * version_id [Integer] = The ordinal version number
     specify 'Moab::StorageObjectVersion#initialize' do
 
       # test initialization with required parameters (if any)
-      storage_object = StorageObject.new(@druid, @temp_object_dir)
+      storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
       version_id = 2
-      storage_object_version = StorageObjectVersion.new(storage_object, version_id)
-      expect(storage_object_version).to be_instance_of(StorageObjectVersion)
+      storage_object_version = Moab::StorageObjectVersion.new(storage_object, version_id)
+      expect(storage_object_version).to be_instance_of(Moab::StorageObjectVersion)
       expect(storage_object_version.storage_object).to eq(storage_object)
       expect(storage_object_version.version_id).to eq(version_id)
-      v0003 = StorageObjectVersion.new(storage_object, 'v0003')
+      v0003 = Moab::StorageObjectVersion.new(storage_object, 'v0003')
       expect(v0003.version_id).to eq(3)
 
       # def initialize(storage_object, version_id)
       #   @version_id = version_id
-      #   @version_name = StorageObject.version_dirname(version_id)
+      #   @version_name = Moab::StorageObject.version_dirname(version_id)
       #   @version_pathname = storage_object.object_pathname.join(@version_name)
       #   @storage_object=storage_object
       # end
@@ -44,9 +44,9 @@ describe 'Moab::StorageObjectVersion' do
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
 
     before(:all) do
-      storage_object = StorageObject.new(@druid, @ingests.join(@obj))
+      storage_object = Moab::StorageObject.new(@druid, @ingests.join(@obj))
       version_id = 2
-      @storage_object_version = StorageObjectVersion.new(storage_object, version_id)
+      @storage_object_version = Moab::StorageObjectVersion.new(storage_object, version_id)
     end
 
     # Unit test for attribute: {Moab::StorageObjectVersion#version_id}
@@ -119,17 +119,17 @@ describe 'Moab::StorageObjectVersion' do
 
     before(:all) do
       @existing_object_pathname = @ingests.join(@obj)
-      @existing_storage_object = StorageObject.new(@druid, @existing_object_pathname)
-      @existing_storage_object_version = StorageObjectVersion.new(@existing_storage_object, version_id=2)
+      @existing_storage_object = Moab::StorageObject.new(@druid, @existing_object_pathname)
+      @existing_storage_object_version = Moab::StorageObjectVersion.new(@existing_storage_object, version_id=2)
       @temp_ingests = @temp.join("ingests")
       @temp_object_dir = @temp_ingests.join(@obj)
-      @temp_storage_object = StorageObject.new(@druid, @temp_object_dir)
+      @temp_storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
       @temp_package_pathname = @temp.join("packages")
       bad_object_pathname = @temp.join(@obj)
       bad_object_pathname.rmtree if bad_object_pathname.exist?
       bad_object_pathname.mkpath
       FileUtils.cp_r(@existing_object_pathname.join('v0001').to_s, bad_object_pathname.join('v0001').to_s)
-      @object_with_manifest_errors = StorageObject.new(@druid,bad_object_pathname)
+      @object_with_manifest_errors = Moab::StorageObject.new(@druid,bad_object_pathname)
       @version_with_manifest_errors = @object_with_manifest_errors.storage_object_version(1)
       new_manifest_file = @version_with_manifest_errors.version_pathname.join('manifests','dummy1.xml')
       new_manifest_file.open('w'){|f| f.puts "dummy"}
@@ -151,7 +151,7 @@ describe 'Moab::StorageObjectVersion' do
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#find_signature}
-    # Which returns: [FileSignature] signature of the specified file
+    # Which returns: [Moab::FileSignature] signature of the specified file
     # For input parameters:
     # * file_category [String] = The category of file ('content', 'metadata', or 'manifest'))
     # * file_id [String] = The name of the file (path relative to base directory)
@@ -203,10 +203,10 @@ describe 'Moab::StorageObjectVersion' do
     # Which returns: [Pathname] Pathname object containing the full path for the specified file
     # For input parameters:
     # * file_category [String] = The category of file ('content', 'metadata', or 'manifest')
-    # * file_signature [FileSignature] = The signature of the file
+    # * file_signature [Moab::FileSignature] = The signature of the file
     specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
       file_category = 'content'
-      file_signature = FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      file_signature = Moab::FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
       expect(@existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
           to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg})
 
@@ -265,19 +265,19 @@ describe 'Moab::StorageObjectVersion' do
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#file_inventory}
-    # Which returns: [FileInventory] The file inventory of the specified type for this version
+    # Which returns: [Moab::FileInventory] The file inventory of the specified type for this version
     # For input parameters:
     # * type [String] = The type of inventory to return (version|additions|manifests)
     specify 'Moab::StorageObjectVersion#file_inventory' do
       type = 'version'
-      expect(@existing_storage_object_version.file_inventory(type)).to be_an_instance_of(FileInventory)
+      expect(@existing_storage_object_version.file_inventory(type)).to be_an_instance_of(Moab::FileInventory)
 
       # def file_inventory(type)
       #   if version_id > 0
-      #   FileInventory.read_xml_file(@version_pathname, type)
+      #   Moab::FileInventory.read_xml_file(@version_pathname, type)
       #   else
-      #     groups = ['content','metadata'].collect { |id| FileGroup.new(:group_id=>id)}
-      #     FileInventory.new(
+      #     groups = ['content','metadata'].collect { |id| Moab::FileGroup.new(:group_id=>id)}
+      #     Moab::FileInventory.new(
       #         :type=>'version',
       #         :digital_object_id => @storage_object.digital_object_id,
       #         :version_id => @version_id,
@@ -288,16 +288,16 @@ describe 'Moab::StorageObjectVersion' do
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#signature_catalog}
-    # Which returns: [SignatureCatalog] The signature catalog of the digital object as of this version
+    # Which returns: [Moab::SignatureCatalog] The signature catalog of the digital object as of this version
     # For input parameters: (None)
     specify 'Moab::StorageObjectVersion#signature_catalog' do
-      expect(@existing_storage_object_version.signature_catalog()).to be_instance_of(SignatureCatalog)
+      expect(@existing_storage_object_version.signature_catalog()).to be_instance_of(Moab::SignatureCatalog)
 
       # def signature_catalog
       #   if version_id > 0
-      #     SignatureCatalog.read_xml_file(@version_pathname)
+      #     Moab::SignatureCatalog.read_xml_file(@version_pathname)
       #   else
-      #     SignatureCatalog.new(:digital_object_id => @storage_object.digital_object_id)
+      #     Moab::SignatureCatalog.new(:digital_object_id => @storage_object.digital_object_id)
       #   end
       # end
     end
@@ -308,7 +308,7 @@ describe 'Moab::StorageObjectVersion' do
     # * bag_dir [Pathname, String] = The location of the bag to be ingested
     specify 'Moab::StorageObjectVersion#ingest_bag_data' do
       version_id = 1
-      temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
+      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, version_id)
       bag_dir = @packages.join("v0001")
       temp_storage_object_version.ingest_bag_data(bag_dir)
       files = Array.new
@@ -340,8 +340,8 @@ describe 'Moab::StorageObjectVersion' do
       #   @version_pathname.mkpath
       #   bag_dir=Pathname(bag_dir)
       #   ingest_dir(bag_dir.join('data'),@version_pathname.join('data'))
-      #   ingest_file(bag_dir.join(FileInventory.xml_filename('version')),@version_pathname)
-      #   ingest_file(bag_dir.join(FileInventory.xml_filename('additions')),@version_pathname)
+      #   ingest_file(bag_dir.join(Moab::FileInventory.xml_filename('version')),@version_pathname)
+      #   ingest_file(bag_dir.join(Moab::FileInventory.xml_filename('additions')),@version_pathname)
       # end
     end
 
@@ -353,7 +353,7 @@ describe 'Moab::StorageObjectVersion' do
     # * use_links [Boolean] = If true, use hard links; if false, make copies
     specify 'Moab::StorageObjectVersion#ingest_dir' do
       source_dir = @packages.join("v0001/data")
-      temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 1)
+      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 1)
       target_dir = temp_storage_object_version.version_pathname.join('data')
       use_links = true
       temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
@@ -399,7 +399,7 @@ describe 'Moab::StorageObjectVersion' do
     # * use_links [Boolean] = If true, use hard links; if false, make copies
     specify 'Moab::StorageObjectVersion#ingest_file' do
       version_id = 2
-      temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
+      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, version_id)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
       source_file = @packages.join("v0002").join( 'versionInventory.xml')
@@ -434,12 +434,12 @@ describe 'Moab::StorageObjectVersion' do
     # Unit test for method: {Moab::StorageObjectVersion#update_catalog}
     # Which returns: [void] Updates the catalog to include newly added files, then saves it to disk
     # For input parameters:
-    # * signature_catalog [SignatureCatalog] = The current version's catalog
-    # * new_inventory [FileInventory] = The new version's inventory
+    # * signature_catalog [Moab::SignatureCatalog] = The current version's catalog
+    # * new_inventory [Moab::FileInventory] = The new version's inventory
     specify 'Moab::StorageObjectVersion#update_catalog' do
-      temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, 4)
-      signature_catalog = double(SignatureCatalog.name)
-      new_inventory = double(FileInventory.name)
+      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 4)
+      signature_catalog = double(Moab::SignatureCatalog.name)
+      new_inventory = double(Moab::FileInventory.name)
       expect(signature_catalog).to receive(:update).with(new_inventory,temp_storage_object_version.version_pathname.join('data'))
       expect(signature_catalog).to receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
@@ -453,29 +453,29 @@ describe 'Moab::StorageObjectVersion' do
     # Unit test for method: {Moab::StorageObjectVersion#generate_differences_report}
     # Which returns: [void] generate a file inventory differences report and save to disk
     # For input parameters:
-    # * old_inventory [FileInventory] = The old version's inventory
-    # * new_inventory [FileInventory] = The new version's inventory
+    # * old_inventory [Moab::FileInventory] = The old version's inventory
+    # * new_inventory [Moab::FileInventory] = The new version's inventory
     specify 'Moab::StorageObjectVersion#generate_differences_report' do
-      old_inventory = double(FileInventory.name)
-      new_inventory = double(FileInventory.name)
-      mock_fid = double(FileInventoryDifference.name)
-      expect(FileInventoryDifference).to receive(:new).and_return(mock_fid)
+      old_inventory = double(Moab::FileInventory.name)
+      new_inventory = double(Moab::FileInventory.name)
+      mock_fid = double(Moab::FileInventoryDifference.name)
+      expect(Moab::FileInventoryDifference).to receive(:new).and_return(mock_fid)
       expect(mock_fid).to receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
       expect(mock_fid).to receive(:write_xml_file)
       @existing_storage_object_version.generate_differences_report(old_inventory, new_inventory)
 
       # def generate_differences_report(old_inventory,new_inventory)
-      #   differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
+      #   differences = Moab::FileInventoryDifference.new.compare(old_inventory, new_inventory)
       #   differences.write_xml_file(@version_pathname)
       # end
     end
 
     # Unit test for method: {Moab::StorageObjectVersion#generate_manifest_inventory}
-    # Which returns: [void] examine the version's directory and create/serialize a {FileInventory} containing the manifest files
+    # Which returns: [void] examine the version's directory and create/serialize a {Moab::FileInventory} containing the manifest files
     # For input parameters: (None)
     specify 'Moab::StorageObjectVersion#generate_manifest_inventory' do
       version_id = 2
-      temp_storage_object_version = StorageObjectVersion.new(@temp_storage_object, version_id)
+      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, version_id)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
       source_file = @packages.join("v0002").join( 'versionInventory.xml')
@@ -483,14 +483,14 @@ describe 'Moab::StorageObjectVersion' do
       source_file = @packages.join("v0002").join( 'versionAdditions.xml')
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
       temp_storage_object_version.generate_manifest_inventory()
-      expect(FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'),'manifests')).to eq(true)
+      expect(Moab::FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'),'manifests')).to eq(true)
 
       # def generate_manifest_inventory
-      #   manifest_inventory = FileInventory.new(
+      #   manifest_inventory = Moab::FileInventory.new(
       #       :type=>'manifests',
       #       :digital_object_id=>@storage_object.digital_object_id,
       #       :version_id=>@version_id)
-      #   manifest_inventory.groups << FileGroup.new(:group_id=>'manifests').group_from_directory(@version_pathname, recursive=false)
+      #   manifest_inventory.groups << Moab::FileGroup.new(:group_id=>'manifests').group_from_directory(@version_pathname, recursive=false)
       #   manifest_inventory.write_xml_file(@version_pathname)
       # end
     end
@@ -721,7 +721,7 @@ EOF
       @temp_object_dir.mkpath
       version_id = @existing_storage_object_version.version_id
       FileUtils.cp_r @existing_storage_object_version.version_pathname, @temp_object_dir
-      so = StorageObject.new(@druid, @temp_object_dir)
+      so = Moab::StorageObject.new(@druid, @temp_object_dir)
       version = so.storage_object_version(version_id)
       timestamp = Time.now
       version.deactivate(timestamp)

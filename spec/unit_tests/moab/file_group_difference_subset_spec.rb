@@ -13,8 +13,8 @@ describe 'Moab::FileGroupDifferenceSubset' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
-      expect(file_group_difference_subset).to be_instance_of(FileGroupDifferenceSubset)
+      file_group_difference_subset = Moab::FileGroupDifferenceSubset.new(opts)
+      expect(file_group_difference_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
        
       # test initialization of arrays and hashes
       expect(file_group_difference_subset.files).to be_kind_of(Array)
@@ -23,7 +23,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
       # test initialization with options hash
       opts = Hash.new
       opts[:change] = 'Test change'
-      file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
+      file_group_difference_subset = Moab::FileGroupDifferenceSubset.new(opts)
       expect(file_group_difference_subset.change).to eq(opts[:change])
       expect(file_group_difference_subset.count).to eq(0)
 
@@ -39,7 +39,7 @@ describe 'Moab::FileGroupDifferenceSubset' do
     
     before(:all) do
       opts = {}
-      @file_group_difference_subset = FileGroupDifferenceSubset.new(opts)
+      @file_group_difference_subset = Moab::FileGroupDifferenceSubset.new(opts)
     end
     
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#change}
@@ -63,11 +63,11 @@ describe 'Moab::FileGroupDifferenceSubset' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifferenceSubset#files}
-    # Which stores: [Array<FileInstanceDifference>] The set of file instances having this type of change
+    # Which stores: [Array<Moab::FileInstanceDifference>] The set of file instances having this type of change
     specify 'Moab::FileGroupDifferenceSubset#files' do
       expect(@file_group_difference_subset.files.size).to eq(0)
        
-      # has_many :files, FileInstanceDifference
+      # has_many :files, Moab::FileInstanceDifference
     end
   
   end
