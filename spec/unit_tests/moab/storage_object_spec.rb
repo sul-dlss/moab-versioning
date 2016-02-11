@@ -44,8 +44,8 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#initialize' do
        
       # test initialization with required parameters (if any)
-      storage_object = StorageObject.new(@druid, @temp_object_dir)
-      expect(storage_object).to be_instance_of(StorageObject)
+      storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
+      expect(storage_object).to be_instance_of(Moab::StorageObject)
       expect(storage_object.digital_object_id).to eq(@druid)
       expect(storage_object.object_pathname.to_s).to include('temp/ingests/jq937jp0017')
 
@@ -64,7 +64,7 @@ describe 'Moab::StorageObject' do
       object_id = 'Test object_id' 
       @temp_ingests = @temp.join("ingests")
       @temp_object_dir = @temp_ingests.join(@obj)
-      @storage_object = StorageObject.new(object_id, @temp_object_dir)
+      @storage_object = Moab::StorageObject.new(object_id, @temp_object_dir)
     end
 
     after(:all) do
@@ -120,7 +120,7 @@ describe 'Moab::StorageObject' do
       @temp_ingests = @temp.join("ingests")
       #@temp_ingests.rmtree if @temp_ingests.exist?  # DLW, huh?
       @temp_object_dir = @temp_ingests.join(@obj)
-      @storage_object = StorageObject.new(@druid,@temp_object_dir)
+      @storage_object = Moab::StorageObject.new(@druid,@temp_object_dir)
       @storage_object.initialize_storage
       @storage_object.storage_root= @fixtures.join('derivatives')
     end
@@ -162,13 +162,13 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#ingest_bag' do
       #bag_dir = @temp.join('bag_dir')
       #current_version = double('version_2')
-      #signature_catalog = double(SignatureCatalog.name)
+      #signature_catalog = double(Moab::SignatureCatalog.name)
       #new_version = double('version_3')
-      #new_inventory = double(FileInventory.name)
+      #new_inventory = double(Moab::FileInventory.name)
       #@storage_object.should_receive(:current_version_id).and_return(2)
-      #StorageObjectVersion.should_receive(:new).with(@storage_object,2).and_return(current_version)
-      #StorageObjectVersion.should_receive(:new).with(@storage_object,3).and_return(new_version)
-      #FileInventory.should_receive(:read_xml_file).with(bag_dir,'version').and_return(new_inventory)
+      #Moab::StorageObjectVersion.should_receive(:new).with(@storage_object,2).and_return(current_version)
+      #Moab::StorageObjectVersion.should_receive(:new).with(@storage_object,3).and_return(new_version)
+      #Moab::FileInventory.should_receive(:read_xml_file).with(bag_dir,'version').and_return(new_inventory)
       #@storage_object.should_receive(:validate_new_inventory).with(new_inventory)
       #new_version.should_receive(:ingest_bag_data).with(bag_dir)
       #current_version.should_receive(:signature_catalog).and_return(signature_catalog)
@@ -183,7 +183,7 @@ describe 'Moab::StorageObject' do
         object_dir.mkpath
         unless object_dir.join("v000#{version}").exist?
           bag_dir = @packages.join(@vname[version])
-          StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
+          Moab::StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
         end
       end
 
@@ -253,7 +253,7 @@ describe 'Moab::StorageObject' do
       bag_dir.join('versionAdditions.xml').delete
       expect(bag_dir.join('versionInventory.xml').exist?).to eq(false)
       expect(bag_dir.join('versionAdditions.xml').exist?).to eq(false)
-      StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
+      Moab::StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
       expect(bag_dir.join('versionInventory.xml').exist?).to eq(true)
       expect(bag_dir.join('versionAdditions.xml').exist?).to eq(true)
 
@@ -261,11 +261,11 @@ describe 'Moab::StorageObject' do
 
       # def ingest_bag(bag_dir)
       #   bag_dir = Pathname.new(bag_dir)
-      #   current_version = StorageObjectVersion.new(self,current_version_id)
+      #   current_version = Moab::StorageObjectVersion.new(self,current_version_id)
       #   current_inventory = current_version.file_inventory('version')
-      #   new_version = StorageObjectVersion.new(self,current_version_id + 1)
-      #   if FileInventory.xml_pathname_exist?(bag_dir,'version')
-      #   new_inventory = FileInventory.read_xml_file(bag_dir,'version')
+      #   new_version = Moab::StorageObjectVersion.new(self,current_version_id + 1)
+      #   if Moab::FileInventory.xml_pathname_exist?(bag_dir,'version')
+      #   new_inventory = Moab::FileInventory.read_xml_file(bag_dir,'version')
       #   elsif current_version.version_id == 0
       #     new_inventory = versionize_bag(bag_dir,current_version,new_version)
       #   end
@@ -279,11 +279,11 @@ describe 'Moab::StorageObject' do
     end
     
     # Unit test for method: {Moab::StorageObject#versionize_bag}
-    # Which returns: [FileInventory] The file inventory of the specified type for this version
+    # Which returns: [Moab::FileInventory] The file inventory of the specified type for this version
     # For input parameters:
     # * bag_dir [Pathname] = The location of the bag to be ingested
-    # * current_version [StorageObjectVersion] = The current latest version of the object
-    # * new_version [StorageObjectVersion] = The version to be added
+    # * current_version [Moab::StorageObjectVersion] = The current latest version of the object
+    # * new_version [Moab::StorageObjectVersion] = The version to be added
     specify 'Moab::StorageObject#versionize_bag' do
       bag_dir = @temp.join('plain_bag')
       bag_dir.rmtree if bag_dir.exist?
@@ -416,7 +416,7 @@ describe 'Moab::StorageObject' do
       bag_dir.rmtree if bag_dir.exist?
 
       # def versionize_bag(bag_dir,current_version,new_version)
-      #   new_inventory = FileInventory.new(
+      #   new_inventory = Moab::FileInventory.new(
       #       :type=>'version',
       #       :digital_object_id=>@digital_object_id,
       #       :version_id=>new_version.version_id,
@@ -442,7 +442,7 @@ describe 'Moab::StorageObject' do
         bag_dir = reconstructs_dir.join(@vname[version])
         unless bag_dir.exist?
           object_dir = @ingests.join(@obj)
-          StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
+          Moab::StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
         end
       end
 
@@ -524,10 +524,10 @@ describe 'Moab::StorageObject' do
       reconstructs_dir.rmtree if reconstructs_dir.exist?
 
       # def reconstruct_version(version_id, bag_dir)
-      #   storage_version = StorageObjectVersion.new(self,version_id)
+      #   storage_version = Moab::StorageObjectVersion.new(self,version_id)
       #   version_inventory = storage_version.file_inventory('version')
       #   signature_catalog = storage_version.signature_catalog
-      #   bagger = Bagger.new(version_inventory, signature_catalog, @object_pathname, bag_dir)
+      #   bagger = Moab::Bagger.new(version_inventory, signature_catalog, @object_pathname, bag_dir)
       #   bagger.fill_bag(:reconstructor)
       # end
     end
@@ -538,10 +538,10 @@ describe 'Moab::StorageObject' do
     # * catalog_filepath [String] = The object-relative path of the file
     specify 'Moab::StorageObject#storage_filepath' do
       catalog_filepath = 'v0001/data/content/intro-1.jpg'
-      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
+      storage_object = Moab::StorageObject.new(@druid,@ingests.join(@obj))
       filepath = storage_object.storage_filepath(catalog_filepath)
       expect(filepath.to_s.include?('ingests/jq937jp0017/v0001/data/content/intro-1.jpg')).to eq(true)
-      expect{storage_object.storage_filepath('dummy')}.to raise_exception
+      expect{storage_object.storage_filepath('dummy')}.to raise_exception Moab::FileNotFoundException
 
       # def storage_filepath(catalog_filepath)
       #   storage_filepath = @object_pathname.join(catalog_filepath)
@@ -554,14 +554,14 @@ describe 'Moab::StorageObject' do
     specify 'Moab::StorageObject#version_id_list' do
       expect(@storage_object.version_id_list.size).to eq(0)
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object = Moab::StorageObject.new(@druid, object_dir)
       expect(storage_object.version_id_list.size).to eq(3)
     end
 
     specify 'Moab::StorageObject#version_list' do
       expect(@storage_object.version_list.size).to eq(0)
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object = Moab::StorageObject.new(@druid, object_dir)
       version_list = storage_object.version_list
       expect(version_list.size).to eq(3)
       expect(version_list[1].version_id).to eq(2)
@@ -575,14 +575,14 @@ describe 'Moab::StorageObject' do
       expect(@storage_object.current_version_id).to eq(0)
       object_id = @obj
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(object_id, object_dir)
+      storage_object = Moab::StorageObject.new(object_id, object_dir)
       expect(storage_object.current_version_id).to eq(3)
     end
 
     specify 'Moab::StorageObject#current_version' do
       expect(@storage_object.current_version.version_id).to eq(0)
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object = Moab::StorageObject.new(@druid, object_dir)
       expect(storage_object.current_version.version_id).to eq(3)
     end
 
@@ -590,14 +590,14 @@ describe 'Moab::StorageObject' do
     # Unit test for method: {Moab::StorageObject#validate_new_inventory}
     # Which returns: [Boolean] Tests whether the new version number is one higher than the current version number
     # For input parameters:
-    # * version_inventory [FileInventory] = The inventory of the object version to be ingested 
+    # * version_inventory [Moab::FileInventory] = The inventory of the object version to be ingested 
     specify 'Moab::StorageObject#validate_new_inventory' do
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(@druid, object_dir)
-      version_inventory_3 = double(FileInventory.name+"3")
+      storage_object = Moab::StorageObject.new(@druid, object_dir)
+      version_inventory_3 = double(Moab::FileInventory.name+"3")
       expect(version_inventory_3).to receive(:version_id).twice.and_return(3)
-      expect{storage_object.validate_new_inventory(version_inventory_3)}.to raise_exception
-      version_inventory_4 = double(FileInventory.name+"4")
+      expect{storage_object.validate_new_inventory(version_inventory_3)}.to raise_exception /version mismatch/
+      version_inventory_4 = double(Moab::FileInventory.name+"4")
       expect(version_inventory_4).to receive(:version_id).and_return(4)
       expect(storage_object.validate_new_inventory(version_inventory_4)).to eq(true)
 
@@ -610,34 +610,34 @@ describe 'Moab::StorageObject' do
     end
 
     # Unit test for method: {Moab::StorageObject#find_object_version}
-    # Which returns: [StorageObjectVersion] The representation of an existing version's storage area
+    # Which returns: [Moab::StorageObjectVersion] The representation of an existing version's storage area
     # For input parameters:
     # * version_id [Integer] = The existing version to return.  If nil, return latest version
     specify 'Moab::StorageObject#find_object_version' do
-      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
+      storage_object = Moab::StorageObject.new(@druid,@ingests.join(@obj))
 
       version_2 = storage_object.find_object_version(2)
-      expect(version_2).to be_instance_of(StorageObjectVersion)
+      expect(version_2).to be_instance_of(Moab::StorageObjectVersion)
       expect(version_2.version_id).to eq(2)
       expect(version_2.version_name).to eq('v0002')
       expect(version_2.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0002/)
 
       version_latest = storage_object.find_object_version()
-      expect(version_latest).to be_instance_of(StorageObjectVersion)
+      expect(version_latest).to be_instance_of(Moab::StorageObjectVersion)
       expect(version_latest.version_id).to eq(3)
       expect(version_latest.version_name).to eq('v0003')
       expect(version_latest.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0003/)
 
-      expect{storage_object.find_object_version(0)}.to raise_exception
-      expect{storage_object.find_object_version(4)}.to raise_exception
+      expect{storage_object.find_object_version(0)}.to raise_exception /Version ID 0 does not exist/
+      expect{storage_object.find_object_version(4)}.to raise_exception /Version ID 4 does not exist/
 
       # def find_object_version(version_id=nil)
       #   current = current_version_id
       #   case version_id
       #     when nil
-      #       StorageObjectVersion.new(self,current)
+      #       Moab::StorageObjectVersion.new(self,current)
       #     when 1..current
-      #       StorageObjectVersion.new(self,version_id)
+      #       Moab::StorageObjectVersion.new(self,version_id)
       #     else
       #       raise "Version ID #{version_id} does not exist"
       #   end
@@ -645,25 +645,25 @@ describe 'Moab::StorageObject' do
     end
 
     # Unit test for method: {Moab::StorageObject#storage_object_version}
-    # Which returns: [StorageObjectVersion] The representation of a specified version.
+    # Which returns: [Moab::StorageObjectVersion] The representation of a specified version.
     # For input parameters:
     # * version_id [Integer] = The version to return. OK if version does not exist
     specify 'Moab::StorageObject#storage_object_version' do
-      storage_object = StorageObject.new(@druid,@ingests.join(@obj))
+      storage_object = Moab::StorageObject.new(@druid,@ingests.join(@obj))
 
       version_2 = storage_object.storage_object_version(2)
-      expect(version_2).to be_instance_of(StorageObjectVersion)
+      expect(version_2).to be_instance_of(Moab::StorageObjectVersion)
       expect(version_2.version_id).to eq(2)
       expect(version_2.version_name).to eq('v0002')
       expect(version_2.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0002/)
 
       expect{storage_object.storage_object_version(0)}.not_to raise_exception
       expect{storage_object.storage_object_version(4)}.not_to raise_exception
-      expect{storage_object.storage_object_version(nil)}.to raise_exception
+      expect{storage_object.storage_object_version(nil)}.to raise_exception /Version ID not specified/
 
       # def storage_object_version(version_id)
       #   if version_id
-      #     StorageObjectVersion.new(self,version_id)
+      #     Moab::StorageObjectVersion.new(self,version_id)
       #   else
       #     raise "Version ID not specified"
       #   end
@@ -672,7 +672,7 @@ describe 'Moab::StorageObject' do
 
     specify 'Moab::StorageObject#verify_object_storage' do
       object_dir = @ingests.join(@obj)
-      storage_object = StorageObject.new(@druid, object_dir)
+      storage_object = Moab::StorageObject.new(@druid, object_dir)
       result = storage_object.verify_object_storage
       expect(result.verified).to eq(true)
     end

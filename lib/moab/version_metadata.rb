@@ -12,7 +12,7 @@ module Moab
   # @example {include:file:spec/fixtures/data/jq937jp0017/v3/metadata/versionMetadata.xml}
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class VersionMetadata < Manifest
+  class VersionMetadata < Serializer::Manifest
 
     include HappyMapper
 

@@ -20,7 +20,7 @@ describe "Create reconstructed digital object for a version" do
       bag_dir = reconstructs_dir.join(vname)
       unless bag_dir.exist?
         object_dir = @ingests.join(@obj)
-        StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
+        Moab::StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
       end
     end
 

@@ -13,8 +13,8 @@ describe 'Stanford::ActiveFedoraObject' do
        
       # test initialization with required parameters (if any)
       fedora_object = double('FedoraObject')
-      active_fedora_object = ActiveFedoraObject.new(fedora_object)
-      expect(active_fedora_object).to be_instance_of(ActiveFedoraObject)
+      active_fedora_object = Stanford::ActiveFedoraObject.new(fedora_object)
+      expect(active_fedora_object).to be_instance_of(Stanford::ActiveFedoraObject)
       expect(active_fedora_object.fedora_object).to eq(fedora_object)
        
       # def initialize(fedora_object)
@@ -28,7 +28,7 @@ describe 'Stanford::ActiveFedoraObject' do
     
     before(:each) do
       fedora_object = double('FedoraObject')
-      @active_fedora_object = ActiveFedoraObject.new(fedora_object)
+      @active_fedora_object = Stanford::ActiveFedoraObject.new(fedora_object)
     end
     
     # Unit test for attribute: {Stanford::ActiveFedoraObject#fedora_object}
@@ -53,7 +53,7 @@ describe 'Stanford::ActiveFedoraObject' do
     
     before(:each) do
       @fedora_object = double('FedoraObject')
-      @active_fedora_object = ActiveFedoraObject.new(@fedora_object)
+      @active_fedora_object = Stanford::ActiveFedoraObject.new(@fedora_object)
     end
     
     # Unit test for method: {Stanford::ActiveFedoraObject#get_datastream_content}

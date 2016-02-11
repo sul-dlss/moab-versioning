@@ -13,14 +13,14 @@ describe 'Moab::FileInstance' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_instance = FileInstance.new(opts)
-      expect(file_instance).to be_instance_of(FileInstance)
+      file_instance = Moab::FileInstance.new(opts)
+      expect(file_instance).to be_instance_of(Moab::FileInstance)
        
       # test initialization with options hash
       opts = Hash.new
       opts[:path] = @temp.join('path').to_s
       opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
-      file_instance = FileInstance.new(opts)
+      file_instance = Moab::FileInstance.new(opts)
       expect(file_instance.path).to eq(opts[:path])
       expect(file_instance.datetime).to eq("2012-04-18T21:51:31Z")
        
@@ -35,7 +35,7 @@ describe 'Moab::FileInstance' do
     
     before(:all) do
       opts = {}
-      @file_instance = FileInstance.new(opts)
+      @file_instance = Moab::FileInstance.new(opts)
     end
     
     # Unit test for attribute: {Moab::FileInstance#path}
@@ -70,21 +70,21 @@ describe 'Moab::FileInstance' do
       @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
       @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
 
-      @title_v1_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
-      @title_v2_instance = FileInstance.new.instance_from_file(@title_v2_pathname,@v2_base_directory)
-      @page1_v1_instance = FileInstance.new.instance_from_file(@page1_v1_pathname,@v1_base_directory)
-      @page1_v2_instance = FileInstance.new.instance_from_file(@page1_v2_pathname,@v2_base_directory)
+      @title_v1_instance = Moab::FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
+      @title_v2_instance = Moab::FileInstance.new.instance_from_file(@title_v2_pathname,@v2_base_directory)
+      @page1_v1_instance = Moab::FileInstance.new.instance_from_file(@page1_v1_pathname,@v1_base_directory)
+      @page1_v2_instance = Moab::FileInstance.new.instance_from_file(@page1_v2_pathname,@v2_base_directory)
       
     end
     
     # Unit test for method: {Moab::FileInstance#instance_from_file}
-    # Which returns: [FileInstance] Returns a file instance containing a physical file's' properties
+    # Which returns: [Moab::FileInstance] Returns a file instance containing a physical file's' properties
     # For input parameters:
     # * pathname [Pathname] = The location of the physical file
     # * base_directory [Pathname] The full path used as the basis of the relative paths reported
 
     specify 'Moab::FileInstance#instance_from_file' do
-      file_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
+      file_instance = Moab::FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
       expect(file_instance.path).to eq("title.jpg")
       expect(file_instance.datetime).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
        
@@ -98,7 +98,7 @@ describe 'Moab::FileInstance' do
     # Unit test for method: {Moab::FileInstance#eql?}
     # Which returns: [Boolean] Returns true if self and other have the same path.
     # For input parameters:
-    # * other [FileInstance] = The other file instance being compared to this instance 
+    # * other [Moab::FileInstance] = The other file instance being compared to this instance 
     specify 'Moab::FileInstance#eql?' do
       expect(@title_v1_instance.eql?(@title_v2_instance)).to eq(true)
       expect(@page1_v1_instance.eql?(@page1_v2_instance)).to eq(true)
@@ -112,7 +112,7 @@ describe 'Moab::FileInstance' do
     # Unit test for method: {Moab::FileInstance#==}
     # Which returns: [Boolean] Returns true if self and other have the same path.
     # For input parameters:
-    # * other [FileInstance] = The other file instance being compared to this instance 
+    # * other [Moab::FileInstance] = The other file instance being compared to this instance 
     specify 'Moab::FileInstance#==' do
       expect(@title_v1_instance == @title_v2_instance).to eq(true)
       expect(@page1_v1_instance == @page1_v2_instance).to eq(true)

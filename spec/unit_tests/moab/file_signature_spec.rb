@@ -13,15 +13,15 @@ describe 'Moab::FileSignature' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_signature = FileSignature.new(opts)
-      expect(file_signature).to be_instance_of(FileSignature)
+      file_signature = Moab::FileSignature.new(opts)
+      expect(file_signature).to be_instance_of(Moab::FileSignature)
        
       # test initialization with options hash
       opts = Hash.new
       opts[:size] = 75
       opts[:md5] = 'Test md5'
       opts[:sha1] = 'Test sha1'
-      file_signature = FileSignature.new(opts)
+      file_signature = Moab::FileSignature.new(opts)
       expect(file_signature.size).to eq(opts[:size])
       expect(file_signature.md5).to eq(opts[:md5])
       expect(file_signature.sha1).to eq(opts[:sha1])
@@ -37,7 +37,7 @@ describe 'Moab::FileSignature' do
     
     before(:all) do
       opts = {}
-      @file_signature = FileSignature.new(opts)
+      @file_signature = Moab::FileSignature.new(opts)
     end
     
     # Unit test for attribute: {Moab::FileSignature#size}
@@ -80,14 +80,14 @@ describe 'Moab::FileSignature' do
       @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
       @page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
 
-      @title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
-      @title_v2_signature = FileSignature.new.signature_from_file(@title_v2_pathname)
-      @page1_v1_signature = FileSignature.new.signature_from_file(@page1_v1_pathname)
-      @page1_v2_signature = FileSignature.new.signature_from_file(@page1_v2_pathname)
+      @title_v1_signature = Moab::FileSignature.new.signature_from_file(@title_v1_pathname)
+      @title_v2_signature = Moab::FileSignature.new.signature_from_file(@title_v2_pathname)
+      @page1_v1_signature = Moab::FileSignature.new.signature_from_file(@page1_v1_pathname)
+      @page1_v2_signature = Moab::FileSignature.new.signature_from_file(@page1_v2_pathname)
     end
 
     specify 'Moab::FileSignature#set_checksum' do
-      signature = FileSignature.new
+      signature = Moab::FileSignature.new
       signature.set_checksum(:md5,'1a726cd7963bd6d3ceb10a8c353ec166')
       signature.set_checksum(:sha1,'583220e0572640abcd3ddd97393d224e8053a6ad')
       signature.set_checksum(:sha256,'8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5')
@@ -126,7 +126,7 @@ describe 'Moab::FileSignature' do
     # Unit test for method: {Moab::FileSignature#eql?}
     # Which returns: [Boolean] Returns true if self and other have the same fixity data.
     # For input parameters:
-    # * other [FileSignature] = The other file signature being compared to this signature 
+    # * other [Moab::FileSignature] = The other file signature being compared to this signature 
     specify 'Moab::FileSignature#eql?' do
       expect(@title_v1_signature.eql?(@title_v2_signature)).to eq(true)
       expect(@page1_v1_signature.eql?(@page1_v2_signature)).to eq(false)
@@ -135,7 +135,7 @@ describe 'Moab::FileSignature' do
     # Unit test for method: {Moab::FileSignature#==}
     # Which returns: [Boolean] Returns true if self and other have the same fixity data.
     # For input parameters:
-    # * other [FileSignature] = The other file signature being compared to this signature 
+    # * other [Moab::FileSignature] = The other file signature being compared to this signature 
     specify 'Moab::FileSignature#==' do
       expect(@title_v1_signature == @title_v2_signature).to eq(true)
       expect(@page1_v1_signature == @page1_v2_signature).to eq(false)
@@ -154,11 +154,11 @@ describe 'Moab::FileSignature' do
     end
 
     # Unit test for method: {Moab::FileSignature#signature_from_file}
-    # Which returns: [FileSignature] Generate a FileSignature instance containing size and checksums for a physical file
+    # Which returns: [Moab::FileSignature] Generate a Moab::FileSignature instance containing size and checksums for a physical file
     # For input parameters:
     # * pathname [Pathname] = The location of the file to be digested 
     specify 'Moab::FileSignature#signature_from_file' do
-      title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
+      title_v1_signature = Moab::FileSignature.new.signature_from_file(@title_v1_pathname)
       expect(title_v1_signature.size).to eq(40873)
       expect(title_v1_signature.md5).to eq("1a726cd7963bd6d3ceb10a8c353ec166")
       expect(title_v1_signature.sha1).to eq("583220e0572640abcd3ddd97393d224e8053a6ad")
@@ -170,25 +170,25 @@ describe 'Moab::FileSignature' do
           :md5=>"82fc107c88446a3119a51a8663d1e955",
           :sha1=>"d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
           :sha256=>"235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"}
-      source = FileSignature.new(file_fixity)
+      source = Moab::FileSignature.new(file_fixity)
       signature = source.normalized_signature(pathname)
       expect(signature.fixity).to eq(file_fixity)
-      source = FileSignature.new(:size=>"39450", :sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
+      source = Moab::FileSignature.new(:size=>"39450", :sha1 => 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = source.normalized_signature(pathname)
       expect(signature.fixity).to eq(file_fixity)
-      source = FileSignature.new( :sha1 => 'dummy')
+      source = Moab::FileSignature.new( :sha1 => 'dummy')
       expect{source.normalized_signature(pathname)}.to raise_exception(/Signature inconsistent between inventory and file/)
     end
 
 
     specify 'Moab::FileSignature.checksum_names_for_type' do
-      expect(FileSignature.checksum_names_for_type).to eq(
+      expect(Moab::FileSignature.checksum_names_for_type).to eq(
           {:md5=>["MD5"], :sha1=>["SHA-1", "SHA1"],:sha256=>["SHA-256", "SHA256"]}
       )
     end
 
     specify 'Moab::FileSignature.checksum_type_for_name' do
-      expect(FileSignature.checksum_type_for_name).to eq(
+      expect(Moab::FileSignature.checksum_type_for_name).to eq(
           {"MD5"=>:md5, "SHA1"=>:sha1, "SHA-1"=>:sha1, "SHA256"=>:sha256, "SHA-256"=>:sha256}
       )
     end

@@ -15,8 +15,8 @@ describe 'Stanford::DorMetadata' do
       # test initialization with required parameters (if any)
       digital_object_id = 'Test digital_object_id' 
       version_id = 68 
-      dor_metadata = DorMetadata.new(digital_object_id, version_id)
-      expect(dor_metadata).to be_instance_of(DorMetadata)
+      dor_metadata = Stanford::DorMetadata.new(digital_object_id, version_id)
+      expect(dor_metadata).to be_instance_of(Stanford::DorMetadata)
       expect(dor_metadata.digital_object_id).to eq(digital_object_id)
       expect(dor_metadata.version_id).to eq(version_id)
        
@@ -33,7 +33,7 @@ describe 'Stanford::DorMetadata' do
     before(:all) do
       digital_object_id = 'Test digital_object_id' 
       version_id = 27 
-      @dor_metadata = DorMetadata.new(digital_object_id, version_id)
+      @dor_metadata = Stanford::DorMetadata.new(digital_object_id, version_id)
     end
     
     # Unit test for attribute: {Stanford::DorMetadata#digital_object_id}
@@ -80,11 +80,11 @@ describe 'Stanford::DorMetadata' do
     end
 
     before(:each) do
-      @dor_metadata = DorMetadata.new(@digital_object_id, @version_id)
+      @dor_metadata = Stanford::DorMetadata.new(@digital_object_id, @version_id)
     end
     
     # Unit test for method: {Stanford::DorMetadata#inventory_from_directory}
-    # Which returns: [FileInventory] Inventory of the files under the specified directory
+    # Which returns: [Moab::FileInventory] Inventory of the files under the specified directory
     # For input parameters:
     # * directory [String] = The location of the directory to be inventoried 
     # * version_id [Integer] = The ordinal version number 
@@ -100,11 +100,11 @@ describe 'Stanford::DorMetadata' do
 
       # def inventory_from_directory(directory, version_id=nil)
       #   version_id ||= @version_id
-      #   version_inventory = FileInventory.new(:type=>'version',:digital_object_id=>@digital_object_id, :version_id=>version_id)
+      #   version_inventory = Moab::FileInventory.new(:type=>'version',:digital_object_id=>@digital_object_id, :version_id=>version_id)
       #   content_metadata = IO.read(File.join(directory,'contentMetadata.xml'))
-      #   content_group = ContentInventory.new.group_from_cm(content_metadata )
+      #   content_group = Stanford::ContentInventory.new.group_from_cm(content_metadata )
       #   version_inventory.groups << content_group
-      #   metadata_group = FileGroup.new(:group_id=>'metadata').group_from_directory(directory)
+      #   metadata_group = Moab::FileGroup.new(:group_id=>'metadata').group_from_directory(directory)
       #   version_inventory.groups << metadata_group
       #   version_inventory
       # end

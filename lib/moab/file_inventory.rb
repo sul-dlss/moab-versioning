@@ -28,7 +28,7 @@ module Moab
   # @example {include:file:spec/fixtures/derivatives/manifests/v3/versionInventory.xml}
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class FileInventory < Manifest
+  class FileInventory < Serializer::Manifest
 
     include HappyMapper
 
@@ -64,11 +64,11 @@ module Moab
     attribute :inventory_datetime, String, :tag => 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
-      @inventory_datetime=UtcTime.input(datetime)
+      @inventory_datetime=Moab::UtcTime.input(datetime)
     end
 
     def inventory_datetime
-      UtcTime.output(@inventory_datetime)
+      Moab::UtcTime.output(@inventory_datetime)
     end
 
     # @attribute

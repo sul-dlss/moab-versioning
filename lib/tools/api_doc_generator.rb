@@ -3,7 +3,7 @@ require 'rubygems'
 require 'pathname'
 require 'yard'
 include YARD
-require 'moab_stanford'
+require 'moab/stanford'
 include Serializer
 include Moab
 include Stanford

@@ -15,14 +15,14 @@ describe "Build a version metadata datastream" do
     # given:
     # action:
     # outcome:
-    vm = VersionMetadata.new(:digital_object_id => 'druid:ab123cd4567')
+    vm = Moab::VersionMetadata.new(:digital_object_id => 'druid:ab123cd4567')
 
-    vme = VersionMetadataEntry.new
+    vme = Moab::VersionMetadataEntry.new
     vme.version_id=1
     vme.significance = 'major'
     vme.description = 'Preserve my data please'
     vme.note = 'Initial object submission'
-    vme.content_changes = FileGroupDifference.new(
+    vme.content_changes = Moab::FileGroupDifference.new(
         :group_id => 'content',
         :identical => 20,
         :renamed => 2,
@@ -30,7 +30,7 @@ describe "Build a version metadata datastream" do
         :added => 1,
         :deleted => 0
     )
-    vme.metadata_changes = FileGroupDifference.new(
+    vme.metadata_changes = Moab::FileGroupDifference.new(
         :group_id => 'metadata',
         :identical => 4,
         :renamed => 0,
@@ -38,15 +38,15 @@ describe "Build a version metadata datastream" do
         :added => 0,
         :deleted => 0
     )
-    vme.events << VersionMetadataEvent.new(
+    vme.events << Moab::VersionMetadataEvent.new(
         :type => "reopen",
         :datetime => Time.now
     )
-    vme.events << VersionMetadataEvent.new(
+    vme.events << Moab::VersionMetadataEvent.new(
         :type => "submit",
         :datetime => Time.now
     )
-    vme.events << VersionMetadataEvent.new(
+    vme.events << Moab::VersionMetadataEvent.new(
         :type => "accession",
         :datetime => Time.now
     )

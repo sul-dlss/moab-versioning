@@ -17,7 +17,7 @@ module Moab
   # @example {include:file:spec/fixtures/derivatives/manifests/all/fileInventoryDifference.xml}
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class FileInventoryDifference < Manifest
+  class FileInventoryDifference < Serializer::Manifest
 
     include HappyMapper
 
@@ -55,11 +55,11 @@ module Moab
     attribute :report_datetime, String, :tag => 'reportDatetime'
 
     def report_datetime=(datetime)
-      @report_datetime=UtcTime.input(datetime)
+      @report_datetime=Moab::UtcTime.input(datetime)
     end
 
     def report_datetime
-      UtcTime.output(@report_datetime)
+      Moab::UtcTime.output(@report_datetime)
     end
 
     # @attribute

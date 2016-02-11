@@ -5,11 +5,9 @@ require 'rubygems'
 require 'rspec'
 require 'rspec/core'
 require 'equivalent-xml'
-require 'moab_stanford'
+require 'moab/stanford'
 require 'spec_config'
 require 'ap'
-
-include Stanford
 
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}
@@ -37,7 +35,7 @@ RSpec::Matchers.define :hash_match do |expected|
   match do |actual|
     expected = expected.is_a?(Hash) ? expected : expected.to_hash
     detected = actual.is_a?(Hash) ? actual : actual.to_hash
-    diff = Serializable.deep_diff(:expected, expected, :detected, detected)
+    diff = Serializer::Serializable.deep_diff(:expected, expected, :detected, detected)
     diff == {}
   end
   failure_message do |actual|
@@ -67,7 +65,7 @@ def fixture_setup
   (1..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    inventory = FileInventory.new(
+    inventory = Moab::FileInventory.new(
         :type=>'version',
         :digital_object_id => @druid,
         :version_id => version )
@@ -79,12 +77,12 @@ def fixture_setup
   (1..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    inventory = FileInventory.read_xml_file(manifest_dir,'version')
+    inventory = Moab::FileInventory.read_xml_file(manifest_dir,'version')
     case version
       when 1
-        catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+        catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
       else
-        catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+        catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
     end
     catalog.update(inventory, @data.join(@vname[version]))
     catalog.write_xml_file(manifest_dir)
@@ -94,8 +92,8 @@ def fixture_setup
   (2..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    inventory = FileInventory.read_xml_file(manifest_dir,'version')
-    catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+    inventory = Moab::FileInventory.read_xml_file(manifest_dir,'version')
+    catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
     additions = catalog.version_additions(inventory)
     additions.write_xml_file(manifest_dir)
   end
@@ -104,16 +102,16 @@ def fixture_setup
   (2..3).each do |version|
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
-    old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version-1]),'version')
-    new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
-    differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
+    old_inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version-1]),'version')
+    new_inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
+    differences = Moab::FileInventoryDifference.new.compare(old_inventory, new_inventory)
     differences.write_xml_file(manifest_dir)
   end
   manifest_dir = @manifests.join('all')
   manifest_dir.mkpath
-  old_inventory = FileInventory.read_xml_file(@manifests.join(@vname[1]),'version')
-  new_inventory = FileInventory.read_xml_file(@manifests.join(@vname[3]),'version')
-  differences = FileInventoryDifference.new.compare(old_inventory, new_inventory)
+  old_inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[1]),'version')
+  new_inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[3]),'version')
+  differences = Moab::FileInventoryDifference.new.compare(old_inventory, new_inventory)
   differences.write_xml_file(manifest_dir)
 
   # Generate packages from inventories and signature catalogs
@@ -121,14 +119,14 @@ def fixture_setup
     package_dir  = @packages.join(@vname[version])
     unless package_dir.join('data').exist?
       data_dir = @data.join(@vname[version])
-      inventory = FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
+      inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
       case version
         when 1
-          catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+          catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
         else
-          catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+          catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
       end
-      Bagger.new(inventory,catalog,package_dir).fill_bag(:depositor,data_dir)
+      Moab::Bagger.new(inventory,catalog,package_dir).fill_bag(:depositor,data_dir)
     end
   end
 
@@ -138,7 +136,7 @@ def fixture_setup
     object_dir.mkpath
     unless object_dir.join("v000#{version}").exist?
       bag_dir = @packages.join(@vname[version])
-      StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
+      Moab::StorageObject.new(@druid,object_dir).ingest_bag(bag_dir)
     end
   end
 
@@ -147,7 +145,7 @@ def fixture_setup
     bag_dir = @reconstructs.join(@vname[version])
     unless bag_dir.exist?
       object_dir = @ingests.join(@obj)
-      StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
+      Moab::StorageObject.new(@druid,object_dir).reconstruct_version(version, bag_dir)
     end
   end
 
@@ -157,14 +155,14 @@ def fixture_setup
   #  package_dir  = @packages.join(@vname[version])
   #  unless package_dir.join('data').exist?
   #    data_dir = @data.join(@vname[version])
-  #    inventory = FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
+  #    inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
   #    case version
   #      when 1
-  #        catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+  #        catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
   #      else
-  #        catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+  #        catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
   #    end
-  #    StorageObject.package(inventory,catalog,data_dir,package_dir)
+  #    Moab::StorageObject.package(inventory,catalog,data_dir,package_dir)
   #  end
   #end
 

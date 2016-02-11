@@ -1,4 +1,4 @@
-require 'moab_stanford'
+require 'moab/stanford'
 
 module Stanford
 

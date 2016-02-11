@@ -7,7 +7,7 @@ describe 'Stanford::StorageRepository' do
     
      specify 'Stanford::StorageRepository#initialize' do
        
-      storage_repository = StorageRepository.new()
+      storage_repository = Stanford::StorageRepository.new()
       expect(storage_repository).to be_instance_of(Stanford::StorageRepository)
 
     end
@@ -17,7 +17,7 @@ describe 'Stanford::StorageRepository' do
   describe '=========================== INSTANCE METHODS ===========================' do
     
     before(:each) do
-      @storage_repository = StorageRepository.new()
+      @storage_repository = Stanford::StorageRepository.new()
       @object_id = @druid
 
     end
@@ -38,7 +38,7 @@ describe 'Stanford::StorageRepository' do
     
     specify 'Stanford::StorageRepository#druid_tree' do
       expect(@storage_repository.druid_tree(@object_id)).to eq("jq/937/jp/0017/jq937jp0017")
-      expect{@storage_repository.druid_tree('123cd456nm')}.to raise_exception
+      expect{@storage_repository.druid_tree('123cd456nm')}.to raise_exception /Identifier has invalid suri syntax/
     end
   
   end

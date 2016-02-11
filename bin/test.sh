@@ -3,4 +3,5 @@
 set -e
 
 .binstubs/rspec
+#.binstubs/cucumber --strict
 

@@ -13,8 +13,8 @@ describe 'Moab::FileInstanceDifference' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_instance_difference = FileInstanceDifference.new(opts)
-      expect(file_instance_difference).to be_instance_of(FileInstanceDifference)
+      file_instance_difference = Moab::FileInstanceDifference.new(opts)
+      expect(file_instance_difference).to be_instance_of(Moab::FileInstanceDifference)
        
       # test initialization of arrays and hashes
       expect(file_instance_difference.signatures).to be_kind_of(Array)
@@ -25,7 +25,7 @@ describe 'Moab::FileInstanceDifference' do
       opts[:change] = 'Test change'
       opts[:basis_path] = 'Test basis_path'
       opts[:other_path] = 'Test other_path'
-      file_instance_difference = FileInstanceDifference.new(opts)
+      file_instance_difference = Moab::FileInstanceDifference.new(opts)
       expect(file_instance_difference.change).to eq(opts[:change])
       expect(file_instance_difference.basis_path).to eq(opts[:basis_path])
       expect(file_instance_difference.other_path).to eq(opts[:other_path])
@@ -42,7 +42,7 @@ describe 'Moab::FileInstanceDifference' do
     
     before(:all) do
       opts = {}
-      @file_instance_difference = FileInstanceDifference.new(opts)
+      @file_instance_difference = Moab::FileInstanceDifference.new(opts)
     end
     
     # Unit test for attribute: {Moab::FileInstanceDifference#change}
@@ -76,11 +76,11 @@ describe 'Moab::FileInstanceDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInstanceDifference#signatures}
-    # Which stores: [Array<FileSignature>] \[<fileSignature>] = The fixity data of the file manifestation(s) (plural if change was a content modification)
+    # Which stores: [Array<Moab::FileSignature>] \[<fileSignature>] = The fixity data of the file manifestation(s) (plural if change was a content modification)
     specify 'Moab::FileInstanceDifference#signatures' do
       expect(@file_instance_difference.signatures.size).to eq(0)
        
-      # has_many :signatures, FileSignature
+      # has_many :signatures, Moab::FileSignature
     end
   
   end

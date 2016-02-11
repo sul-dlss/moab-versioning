@@ -13,8 +13,8 @@ describe 'Moab::FileGroupDifference' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_group_difference = FileGroupDifference.new(opts)
-      expect(file_group_difference).to be_instance_of(FileGroupDifference)
+      file_group_difference = Moab::FileGroupDifference.new(opts)
+      expect(file_group_difference).to be_instance_of(Moab::FileGroupDifference)
        
       # test initialization of arrays and hashes
       expect(file_group_difference.subsets).to be_kind_of(Array)
@@ -23,7 +23,7 @@ describe 'Moab::FileGroupDifference' do
       # test initialization with options hash
       opts = Hash.new
       opts[:group_id] = 'Test group_id'
-      file_group_difference = FileGroupDifference.new(opts)
+      file_group_difference = Moab::FileGroupDifference.new(opts)
       expect(file_group_difference.group_id).to eq(opts[:group_id])
 
       # def initialize(opts={})
@@ -38,13 +38,13 @@ describe 'Moab::FileGroupDifference' do
     
     before(:all) do
       @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
+      @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
 
       @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-      @v3_inventory = FileInventory.parse(@v3_inventory_pathname.read)
+      @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
 
       opts = {}
-      @file_inventory_difference = FileInventoryDifference.new(opts)
+      @file_inventory_difference = Moab::FileInventoryDifference.new(opts)
       @file_inventory_difference.compare(@v1_inventory,@v3_inventory)
 
       @file_group_difference = @file_inventory_difference.group_differences[0]
@@ -111,11 +111,11 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for attribute: {Moab::FileGroupDifference#subsets}
-    # Which stores: [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type), each of which contains an collection of file-level differences having that change type.
+    # Which stores: [Array<Moab::FileGroupDifferenceSubset>] A set of Arrays (one for each change type), each of which contains an collection of file-level differences having that change type.
     specify 'Moab::FileGroupDifference#subsets' do
       expect(@file_group_difference.subsets.size).to be >= 5
        
-      # has_many :subsets, FileGroupDifferenceSubset
+      # has_many :subsets, Moab::FileGroupDifferenceSubset
     end
   
   end
@@ -124,27 +124,27 @@ describe 'Moab::FileGroupDifference' do
     
     before(:all) do
       @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @v1_inventory = FileInventory.parse(@v1_inventory_pathname.read)
+      @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
       @v1_content = @v1_inventory.groups[0]
 
       @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-      @v3_inventory = FileInventory.parse(@v3_inventory_pathname.read)
+      @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
       @v3_content = @v3_inventory.groups[0]
     end
 
     before(:each) do
-      @diff = FileGroupDifference.new
+      @diff = Moab::FileGroupDifference.new
     end
 
     # Unit test for method: {Moab::FileGroupDifference#summary}
-    # Which returns: [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
+    # Which returns: [Moab::FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
     # For input parameters: (None)
     specify 'Moab::FileGroupDifference#summary' do
       basis_group = @v1_content
       other_group = @v3_content
       @diff.compare_file_groups(basis_group, other_group)
       summary = @diff.summary()
-      expect(summary).to be_instance_of(FileGroupDifference)
+      expect(summary).to be_instance_of(Moab::FileGroupDifference)
       summary.group_id = ''
       summary.difference_count = 1
       summary.identical = 1
@@ -156,7 +156,7 @@ describe 'Moab::FileGroupDifference' do
       
        
       # def summary()
-      #   FileGroupDifference.new(
+      #   Moab::FileGroupDifference.new(
       #       :group_id => @group_id,
       #       :identical => @identical,
       #       :renamed => @renamed,
@@ -225,10 +225,10 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#compare_file_groups}
-    # Which returns: [FileGroupDifference] Compare two file groups and return a differences report
+    # Which returns: [Moab::FileGroupDifference] Compare two file groups and return a differences report
     # For input parameters:
-    # * basis_group [FileGroup] = The file group that is the basis of the comparison 
-    # * other_group [FileGroup] = The file group that is compared against the basis group 
+    # * basis_group [Moab::FileGroup] = The file group that is the basis of the comparison 
+    # * other_group [Moab::FileGroup] = The file group that is compared against the basis group 
     specify 'Moab::FileGroupDifference#compare_file_groups' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -251,7 +251,7 @@ describe 'Moab::FileGroupDifference' do
 
     specify 'Moab::FileGroupDifference#compare_file_groups with empty group' do
       basis_group = @v1_content
-      other_group = FileGroup.new(:group_id => "content")
+      other_group = Moab::FileGroup.new(:group_id => "content")
       diff = @diff.compare_file_groups(basis_group, other_group)
       expect(diff.difference_count).to eq(6)
       expect(diff.deleted).to eq(6)
@@ -293,8 +293,8 @@ describe 'Moab::FileGroupDifference' do
             </file>
           </fileGroup>
       EOF
-      basis_group = FileGroup.parse(basis_group_string)
-      other_group = FileGroup.parse(other_group_string)
+      basis_group = Moab::FileGroup.parse(basis_group_string)
+      other_group = Moab::FileGroup.parse(other_group_string)
       diff = @diff.compare_file_groups(basis_group, other_group)
       #puts diff.to_xml
       expect(diff.difference_count).to eq(3)
@@ -343,8 +343,8 @@ describe 'Moab::FileGroupDifference' do
     # Unit test for method: {Moab::FileGroupDifference#compare_matching_signatures}
     # Which returns: [void] For signatures that are present in both groups, report which file instances are identical or renamed
     # For input parameters:
-    # * basis_group [FileGroup] = The file group that is the basis of the comparison 
-    # * other_group [FileGroup] = The file group that is compared against the basis group 
+    # * basis_group [Moab::FileGroup] = The file group that is the basis of the comparison 
+    # * other_group [Moab::FileGroup] = The file group that is compared against the basis group 
     specify 'Moab::FileGroupDifference#compare_matching_signatures' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -365,8 +365,8 @@ describe 'Moab::FileGroupDifference' do
     # Unit test for method: {Moab::FileGroupDifference#compare_non_matching_signatures}
     # Which returns: [void] For signatures that are present in only one or the other group, report which file instances are modified, deleted, or added
     # For input parameters:
-    # * basis_group [FileGroup] = The file group that is the basis of the comparison 
-    # * other_group [FileGroup] = The file group that is compared against the basis group 
+    # * basis_group [Moab::FileGroup] = The file group that is the basis of the comparison 
+    # * other_group [Moab::FileGroup] = The file group that is compared against the basis group 
     specify 'Moab::FileGroupDifference#compare_non_matching_signatures' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -390,11 +390,11 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#tabulate_unchanged_files}
-    # Which returns: [FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'identical'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'identical'
     # For input parameters:
-    # * matching_signatures [Array<FileSignature>] = The file signature of the file manifestations being compared
-    # * basis_signature_hash [Hash<FileSignature, FileManifestation>] = Signature to file path mapping from the file group that is the basis of the comparison
-    # * other_signature_hash [Hash<FileSignature, FileManifestation>] = Signature to file path mapping from the file group that is the being compared to the basis group
+    # * matching_signatures [Array<Moab::FileSignature>] = The file signature of the file manifestations being compared
+    # * basis_signature_hash [Hash<Moab::FileSignature, Moab::FileManifestation>] = Moab::Signature to file path mapping from the file group that is the basis of the comparison
+    # * other_signature_hash [Hash<Moab::FileSignature, Moab::FileManifestation>] = Moab::Signature to file path mapping from the file group that is the being compared to the basis group
     specify 'Moab::FileGroupDifference#tabulate_unchanged_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -406,7 +406,7 @@ describe 'Moab::FileGroupDifference' do
 
       @diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
       unchanged_subset = @diff.subset('identical')
-      expect(unchanged_subset).to be_instance_of(FileGroupDifferenceSubset)
+      expect(unchanged_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
       expect(unchanged_subset.change).to eq('identical')
       expect(unchanged_subset.files.size).to eq(1)
       expect(@diff.identical).to eq(1)
@@ -423,14 +423,14 @@ describe 'Moab::FileGroupDifference' do
       #     other_paths = other_signature_hash[signature].paths
       #     matching_paths = basis_paths & other_paths
       #     matching_paths.each do |path|
-      #       fid = FileInstanceDifference.new(:change => 'identical')
+      #       fid = Moab::FileInstanceDifference.new(:change => 'identical')
       #       fid.basis_path = path
       #       fid.other_path = "same"
       #       fid.signatures << signature
       #       unchanged_files << fid
       #     end
       #   end
-      #   unchanged_subset = FileGroupDifferenceSubset.new(:change => 'identical')
+      #   unchanged_subset = Moab::FileGroupDifferenceSubset.new(:change => 'identical')
       #   unchanged_subset.files = unchanged_files
       #   @subsets << unchanged_subset
       #   @identical = unchanged_subset.count
@@ -439,11 +439,11 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#tabulate_renamed_files}
-    # Which returns: [FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'renamed'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'renamed'
     # For input parameters:
-    # * matching_signatures [Array<FileSignature>] = The file signature of the file manifestations being compared
-    # * basis_signature_hash [Hash<FileSignature, FileManifestation>] = Signature to file path mapping from the file group that is the basis of the comparison
-    # * other_signature_hash [Hash<FileSignature, FileManifestation>] = Signature to file path mapping from the file group that is the being compared to the basis group
+    # * matching_signatures [Array<Moab::FileSignature>] = The file signature of the file manifestations being compared
+    # * basis_signature_hash [Hash<Moab::FileSignature, Moab::FileManifestation>] = Moab::Signature to file path mapping from the file group that is the basis of the comparison
+    # * other_signature_hash [Hash<Moab::FileSignature, Moab::FileManifestation>] = Moab::Signature to file path mapping from the file group that is the being compared to the basis group
     specify 'Moab::FileGroupDifference#tabulate_renamed_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -454,7 +454,7 @@ describe 'Moab::FileGroupDifference' do
           {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"}])
       @diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
       renamed_subset = @diff.subset('renamed')
-      expect(renamed_subset).to be_instance_of(FileGroupDifferenceSubset)
+      expect(renamed_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
       expect(renamed_subset.change).to eq('renamed')
       expect(renamed_subset.files.size).to eq(2)
       expect(@diff.renamed).to eq(2)
@@ -478,14 +478,14 @@ describe 'Moab::FileGroupDifference' do
       #     other_only_paths = other_paths - basis_paths
       #     maxsize = [basis_only_paths.size,other_only_paths.size].max
       #     (0..maxsize-1).each do |n|
-      #       fid = FileInstanceDifference.new(:change => 'renamed')
+      #       fid = Moab::FileInstanceDifference.new(:change => 'renamed')
       #       fid.basis_path = basis_only_paths[n]
       #       fid.other_path = other_only_paths[n]
       #       fid.signatures << signature
       #       renamed_files << fid
       #     end
       #   end
-      #   renamed_subset = FileGroupDifferenceSubset.new(:change => 'renamed')
+      #   renamed_subset = Moab::FileGroupDifferenceSubset.new(:change => 'renamed')
       #   renamed_subset.files = renamed_files
       #   @subsets << renamed_subset
       #   @renamed = renamed_subset.count
@@ -494,10 +494,10 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#tabulate_modified_files}
-    # Which returns: [FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'modified'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'modified'
     # For input parameters:
-    # * basis_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_modified_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -515,7 +515,7 @@ describe 'Moab::FileGroupDifference' do
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
       @diff.tabulate_modified_files(basis_path_hash, other_path_hash)
       modified_subset = @diff.subset('modified')
-      expect(modified_subset).to be_instance_of(FileGroupDifferenceSubset)
+      expect(modified_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
       expect(modified_subset.change).to eq('modified')
       expect(modified_subset.files.size).to eq(1)
       expect(@diff.modified).to eq(1)
@@ -528,14 +528,14 @@ describe 'Moab::FileGroupDifference' do
       # def tabulate_modified_files(basis_path_hash, other_path_hash)
       #   modified_files = Array.new
       #   matching_keys(basis_path_hash, other_path_hash).each do |path|
-      #     fid = FileInstanceDifference.new(:change => 'modified')
+      #     fid = Moab::FileInstanceDifference.new(:change => 'modified')
       #     fid.basis_path = path
       #     fid.other_path = "same"
       #     fid.signatures << basis_path_hash[path]
       #     fid.signatures << other_path_hash[path]
       #     modified_files << fid
       #   end
-      #   modified_subset = FileGroupDifferenceSubset.new(:change => 'modified')
+      #   modified_subset = Moab::FileGroupDifferenceSubset.new(:change => 'modified')
       #   modified_subset.files = modified_files
       #   @subsets << modified_subset
       #   @modified = modified_subset.count
@@ -544,10 +544,10 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#tabulate_deleted_files}
-    # Which returns: [FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'deleted'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'deleted'
     # For input parameters:
-    # * basis_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_deleted_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -565,7 +565,7 @@ describe 'Moab::FileGroupDifference' do
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
       @diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
       deleted_subset = @diff.subset('deleted')
-      expect(deleted_subset).to be_instance_of(FileGroupDifferenceSubset)
+      expect(deleted_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
       expect(deleted_subset.change).to eq('deleted')
       expect(deleted_subset.files.size).to eq(2)
       expect(@diff.deleted).to eq(2)
@@ -583,13 +583,13 @@ describe 'Moab::FileGroupDifference' do
       # def tabulate_deleted_files(basis_path_hash, other_path_hash)
       #   deleted_files = Array.new
       #   basis_only_keys(basis_path_hash, other_path_hash).each do |path|
-      #     fid = FileInstanceDifference.new(:change => 'deleted')
+      #     fid = Moab::FileInstanceDifference.new(:change => 'deleted')
       #     fid.basis_path = path
       #     fid.other_path = ""
       #     fid.signatures << basis_path_hash[path]
       #     deleted_files << fid
       #   end
-      #   deleted_subset = FileGroupDifferenceSubset.new(:change => 'deleted')
+      #   deleted_subset = Moab::FileGroupDifferenceSubset.new(:change => 'deleted')
       #   deleted_subset.files = deleted_files
       #   @subsets << deleted_subset
       #   @deleted = deleted_subset.count
@@ -598,10 +598,10 @@ describe 'Moab::FileGroupDifference' do
     end
     
     # Unit test for method: {Moab::FileGroupDifference#tabulate_added_files}
-    # Which returns: [FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'added'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'added'
     # For input parameters:
-    # * basis_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_added_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -615,7 +615,7 @@ describe 'Moab::FileGroupDifference' do
       other_path_hash = other_group.path_hash_subset(other_only_signatures)
       @diff.tabulate_added_files(basis_path_hash, other_path_hash)
       added_subset = @diff.subset('added')
-      expect(added_subset).to be_instance_of(FileGroupDifferenceSubset)
+      expect(added_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
       expect(added_subset.change).to eq('added')
       expect(added_subset.files.size).to eq(1)
       expect(@diff.added).to eq(1)
@@ -628,13 +628,13 @@ describe 'Moab::FileGroupDifference' do
       # def tabulate_added_files(basis_path_hash, other_path_hash)
       #   added_files = Array.new
       #   other_only_keys(basis_path_hash, other_path_hash).each do |path|
-      #     fid = FileInstanceDifference.new(:change => 'added')
+      #     fid = Moab::FileInstanceDifference.new(:change => 'added')
       #     fid.basis_path = ""
       #     fid.other_path = path
       #     fid.signatures << other_path_hash[path]
       #     added_files << fid
       #   end
-      #   added_subset = FileGroupDifferenceSubset.new(:change => 'added')
+      #   added_subset = Moab::FileGroupDifferenceSubset.new(:change => 'added')
       #   added_subset.files = added_files
       #   @subsets << added_subset
       #   @added = added_subset.count
@@ -644,7 +644,7 @@ describe 'Moab::FileGroupDifference' do
 
     specify 'Moab::FileGroupDifference  parse xml' do
       fixture = @ingests.join('jq937jp0017','v0003','manifests','fileInventoryDifference.xml')
-      fid = FileInventoryDifference.parse(IO.read(fixture))
+      fid = Moab::FileInventoryDifference.parse(IO.read(fixture))
       fgd = fid.group_difference('content')
       expect(fgd.subsets.count).to be >= 5
       expect(fgd.subset('identical').files.count).to eq(2)

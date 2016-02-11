@@ -13,16 +13,16 @@ describe 'Moab::SignatureCatalogEntry' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      signature_catalog_entry = SignatureCatalogEntry.new(opts)
-      expect(signature_catalog_entry).to be_instance_of(SignatureCatalogEntry)
+      signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
+      expect(signature_catalog_entry).to be_instance_of(Moab::SignatureCatalogEntry)
        
       # test initialization with options hash
       opts = Hash.new
       opts[:version_id] = 26
       opts[:group_id] = 'Test group_id'
       opts[:path] = 'Test path'
-      opts[:signature] = double(FileSignature.name)
-      signature_catalog_entry = SignatureCatalogEntry.new(opts)
+      opts[:signature] = double(Moab::FileSignature.name)
+      signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
       expect(signature_catalog_entry.version_id).to eq(opts[:version_id])
       expect(signature_catalog_entry.group_id).to eq(opts[:group_id])
       expect(signature_catalog_entry.path).to eq(opts[:path])
@@ -39,7 +39,7 @@ describe 'Moab::SignatureCatalogEntry' do
     
     before(:all) do
       opts = {}
-      @signature_catalog_entry = SignatureCatalogEntry.new(opts)
+      @signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#version_id}
@@ -73,9 +73,9 @@ describe 'Moab::SignatureCatalogEntry' do
     end
     
     # Unit test for attribute: {Moab::SignatureCatalogEntry#signature}
-    # Which stores: [FileSignature] The fixity data of the file instance
+    # Which stores: [Moab::FileSignature] The fixity data of the file instance
     specify 'Moab::SignatureCatalogEntry#signature' do
-      value = double(FileSignature.name)
+      value = double(Moab::FileSignature.name)
       @signature_catalog_entry.signature= value
       expect(@signature_catalog_entry.signature).to eq(value)
 
@@ -98,12 +98,12 @@ describe 'Moab::SignatureCatalogEntry' do
     
     before(:each) do
       @opts = {}
-      @signature_catalog_entry = SignatureCatalogEntry.new(@opts)
+      @signature_catalog_entry = Moab::SignatureCatalogEntry.new(@opts)
       
       @signature_catalog_entry.version_id = 5
       @signature_catalog_entry.group_id = 'content'
       @signature_catalog_entry.path = 'title.jpg'
-      @signature_catalog_entry.signature = double(FileSignature.name)
+      @signature_catalog_entry.signature = double(Moab::FileSignature.name)
     end
     
     # Unit test for method: {Moab::SignatureCatalogEntry#storage_path}
@@ -113,7 +113,7 @@ describe 'Moab::SignatureCatalogEntry' do
       expect(@signature_catalog_entry.storage_path()).to eq("v0005/data/content/title.jpg")
        
       # def storage_path
-      #   File.join(StorageObject.version_dirname(version_id),'data', group_id, path)
+      #   File.join(Moab::StorageObject.version_dirname(version_id),'data', group_id, path)
       # end
     end
   

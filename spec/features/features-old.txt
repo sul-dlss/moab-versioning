@@ -4,18 +4,18 @@
 h3.  Feature - _Version Metadata object creation_
   bq. In order to: flexibly create in-memory objects containing the metadata
   bq. The application needs to: initialize objects and assign values to object variables
-  h4.  scenario - _Create a Version Metadata object_
+  h4.  scenario - _Create a Moab::Version Metadata object_
     bq. given: a druid
     bq. action: call class initialize method
-    bq. outcome: new VersionMetadata object
-  h4.  scenario - _Create a VersionIdentity object_
+    bq. outcome: new Moab::VersionMetadata object
+  h4.  scenario - _Create a Moab::VersionIdentity object_
     bq. given: version number, label, timestamp, description
     bq. action: call class initialize method
-    bq. outcome: new VersionIdentity object
-  h4.  scenario - _Create a VersionData object_
+    bq. outcome: new Moab::VersionIdentity object
+  h4.  scenario - _Create a Moab::VersionData object_
     bq. given: no parameters
     bq. action: call class initialize method
-    bq. outcome: new VersionData object
+    bq. outcome: new Moab::VersionData object
   h4.  scenario - _Create a DataGroup object_
     bq. given: group name and base directory
     bq. action: call class initialize method
@@ -63,7 +63,7 @@ h3.  Feature - _Harvest file properties from a file folder_
 
 ----
 
-h3.  Feature - _Feature: Version Metadata Serialization_
+h3.  Feature - _Feature: Moab::Version Metadata Serialization_
   bq. In order to: preserve the version metadata held by in-memory objects
   bq. The application needs to: generate a byte-stream rendition of the metadata for disk storage
     bq. given: values for version identification properties

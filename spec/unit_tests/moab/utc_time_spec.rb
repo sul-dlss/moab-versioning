@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-# Unit tests for class {UtcTime}
-describe 'UtcTime' do
+# Unit tests for class {Moab::UtcTime}
+describe 'Moab::UtcTime' do
   
   describe '=========================== CLASS METHODS ===========================' do
     
@@ -15,12 +15,12 @@ describe 'UtcTime' do
     # Which returns: [void] Store the input datetime as a Time object
     # For input parameters:
     # * datetime [Time, String, Nil] = The input datetime 
-    specify 'UtcTime.input' do
-      expect(UtcTime.input(nil)).to eq(nil)
-      expect(UtcTime.input(@time_string)).to eq(@time_class_instance)
-      expect(UtcTime.input(@time_class_instance)).to eq(@time_class_instance)
-      expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      expect{UtcTime.input(4)}.to raise_exception(RuntimeError,'unknown time format 4')
+    specify 'Moab::UtcTime.input' do
+      expect(Moab::UtcTime.input(nil)).to eq(nil)
+      expect(Moab::UtcTime.input(@time_string)).to eq(@time_class_instance)
+      expect(Moab::UtcTime.input(@time_class_instance)).to eq(@time_class_instance)
+      expect { Moab::UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
+      expect{Moab::UtcTime.input(4)}.to raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.input(datetime)
       #   case datetime
@@ -40,12 +40,12 @@ describe 'UtcTime' do
     # Which returns: [String] Format the datetime into a ISO 8601 formatted string
     # For input parameters:
     # * datetime [Time, String, Nil] = The datetime value to output 
-    specify 'UtcTime.output' do
-      expect(UtcTime.output(nil)).to eq("")
-      expect(UtcTime.output(@time_string)).to eq("2012-04-12T19:36:07Z")
-      expect(UtcTime.output(@time_class_instance)).to eq("2012-04-12T19:36:07Z")
-      expect { UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
-      expect{UtcTime.output(4)}.to raise_exception(RuntimeError,'unknown time format 4')
+    specify 'Moab::UtcTime.output' do
+      expect(Moab::UtcTime.output(nil)).to eq("")
+      expect(Moab::UtcTime.output(@time_string)).to eq("2012-04-12T19:36:07Z")
+      expect(Moab::UtcTime.output(@time_class_instance)).to eq("2012-04-12T19:36:07Z")
+      expect { Moab::UtcTime.input("jgkerf") }.to raise_exception(ArgumentError) unless RUBY_VERSION < "1.9"
+      expect{Moab::UtcTime.output(4)}.to raise_exception(RuntimeError,'unknown time format 4')
 
       # def self.output(datetime)
       #   case datetime

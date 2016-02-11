@@ -10,7 +10,7 @@ describe "Feature: Manifest Serialization" do
 
     output_dir = @temp.join('catalog')
     output_dir.mkpath
-    catalog_object = SignatureCatalog.read_xml_file(@manifests.join("v0001"))
+    catalog_object = Moab::SignatureCatalog.read_xml_file(@manifests.join("v0001"))
     catalog_object.write_xml_file(output_dir)
     catalog_pathname = output_dir.join('signatureCatalog.xml')
     xmlObj1 = Nokogiri::XML(catalog_pathname.read)

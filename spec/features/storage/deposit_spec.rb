@@ -15,16 +15,16 @@ describe "Export a digital object version from DOR" do
     (1..3).each do |version|
       vname = [nil,'v0001','v0002','v0003'][version]
       data_dir = @data.join(vname)
-      inventory = FileInventory.read_xml_file(@manifests.join(vname),'version')
+      inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname),'version')
       case version
         when 1
-          catalog = SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+          catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
         else
-          catalog = SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+          catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
       end
       bag_dir = @temp.join('packages',vname)
       bag_dir.rmtree if bag_dir.exist?
-      Bagger.new(inventory,catalog,bag_dir).fill_bag(:depositor,data_dir)
+      Moab::Bagger.new(inventory,catalog,bag_dir).fill_bag(:depositor,data_dir)
     end
 
     files = Array.new

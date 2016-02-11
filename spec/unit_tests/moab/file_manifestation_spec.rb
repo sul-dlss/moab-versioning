@@ -13,15 +13,15 @@ describe 'Moab::FileManifestation' do
        
       # test initialization with required parameters (if any)
       opts = {}
-      file_manifestation = FileManifestation.new(opts)
-      expect(file_manifestation).to be_instance_of(FileManifestation)
+      file_manifestation = Moab::FileManifestation.new(opts)
+      expect(file_manifestation).to be_instance_of(Moab::FileManifestation)
       expect(file_manifestation.instances).to be_instance_of(Array)
        
       # test initialization with options hash
       opts = Hash.new
-      opts[:signature] = double(FileSignature.name)
-      opts[:instances] = double(FileInstance.name)
-      file_manifestation = FileManifestation.new(opts)
+      opts[:signature] = double(Moab::FileSignature.name)
+      opts[:instances] = double(Moab::FileInstance.name)
+      file_manifestation = Moab::FileManifestation.new(opts)
       expect(file_manifestation.signature).to eq(opts[:signature])
       expect(file_manifestation.instances).to eq(opts[:instances])
        
@@ -37,13 +37,13 @@ describe 'Moab::FileManifestation' do
     
     before(:all) do
       opts = {}
-      @file_manifestation = FileManifestation.new(opts)
+      @file_manifestation = Moab::FileManifestation.new(opts)
     end
     
     # Unit test for attribute: {Moab::FileManifestation#signature}
-    # Which stores: [FileSignature] The fixity data of the file instance
+    # Which stores: [Moab::FileSignature] The fixity data of the file instance
     specify 'Moab::FileManifestation#signature' do
-      value = double(FileSignature.name)
+      value = double(Moab::FileSignature.name)
       @file_manifestation.signature= value
       expect(@file_manifestation.signature).to eq(value)
       @file_manifestation.signature= [value]
@@ -59,13 +59,13 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for attribute: {Moab::FileManifestation#instances}
-    # Which stores: [Array<FileInstance>] The location(s) of the file manifestation's file instances
+    # Which stores: [Array<Moab::FileInstance>] The location(s) of the file manifestation's file instances
     specify 'Moab::FileManifestation#instances' do
-      value = double(FileInstance.name)
+      value = double(Moab::FileInstance.name)
       @file_manifestation.instances= value
       expect(@file_manifestation.instances).to eq(value)
        
-      # has_many :instances, FileInstance
+      # has_many :instances, Moab::FileInstance
     end
   
   end
@@ -77,13 +77,13 @@ describe 'Moab::FileManifestation' do
       @title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
       @page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
 
-      @title_v1_signature = FileSignature.new.signature_from_file(@title_v1_pathname)
+      @title_v1_signature = Moab::FileSignature.new.signature_from_file(@title_v1_pathname)
 
-      @title_v1_instance = FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
-      @page1_v1_instance = FileInstance.new.instance_from_file(@page1_v1_pathname,@v1_base_directory)
+      @title_v1_instance = Moab::FileInstance.new.instance_from_file(@title_v1_pathname,@v1_base_directory)
+      @page1_v1_instance = Moab::FileInstance.new.instance_from_file(@page1_v1_pathname,@v1_base_directory)
 
       @opts = {}
-      @file_manifestation = FileManifestation.new(@opts)
+      @file_manifestation = Moab::FileManifestation.new(@opts)
 
       @file_manifestation.signature = @title_v1_signature
       @file_manifestation.instances << @title_v1_instance
@@ -91,7 +91,7 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for method: {Moab::FileManifestation#paths}
-    # Which returns: [Array<String>] Create an array from all the file paths of the child {FileInstance} objects
+    # Which returns: [Array<String>] Create an array from all the file paths of the child {Moab::FileInstance} objects
     # For input parameters: (None)
     specify 'Moab::FileManifestation#paths' do
       expect(@file_manifestation.paths()).to eq(["title.jpg", "page-1.jpg"])
@@ -102,7 +102,7 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for method: {Moab::FileManifestation#file_count}
-    # Which returns: [Integer] The total number of {FileInstance} objects in this manifestation. (Number of files that share this manifestation's signature)
+    # Which returns: [Integer] The total number of {Moab::FileInstance} objects in this manifestation. (Number of files that share this manifestation's signature)
     # For input parameters: (None)
     specify 'Moab::FileManifestation#file_count' do
       expect(@file_manifestation.file_count()).to eq(2)
@@ -137,9 +137,9 @@ describe 'Moab::FileManifestation' do
     end
 
     # Unit test for method: {Moab::FileManifestation#==}
-    # Which returns: [Boolean] True if {FileManifestation} objects have same content
+    # Which returns: [Boolean] True if {Moab::FileManifestation} objects have same content
     # For input parameters:
-    # * other [FileManifestation] = The {FileManifestation} object to compare with self
+    # * other [Moab::FileManifestation] = The {Moab::FileManifestation} object to compare with self
     specify 'Moab::FileManifestation#==' do
       other = @file_manifestation
       expect(@file_manifestation.==(other)).to eq(true)

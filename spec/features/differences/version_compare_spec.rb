@@ -12,15 +12,15 @@ describe "Compare versions" do
 
    # @v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    v1_inventory = FileInventory.parse(v1_inventory_pathname.read)
+    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
     v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
-    v2_inventory = FileInventory.parse(v2_inventory_pathname.read)
+    v2_inventory = Moab::FileInventory.parse(v2_inventory_pathname.read)
     opts = {}
-    file_inventory_difference = FileInventoryDifference.new(opts)
+    file_inventory_difference = Moab::FileInventoryDifference.new(opts)
     basis_inventory = v1_inventory
     other_inventory = v2_inventory
     diff = file_inventory_difference.compare(basis_inventory, other_inventory)
-    expect(diff).to be_instance_of(FileInventoryDifference)
+    expect(diff).to be_instance_of(Moab::FileInventoryDifference)
     expect(diff.group_differences.size).to eq(2)
     expect(diff.basis).to eq("v1")
     expect(diff.other).to eq("v2")
