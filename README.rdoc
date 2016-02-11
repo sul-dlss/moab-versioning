@@ -69,48 +69,5 @@ depending on whether XML serialization is required.
 Require the following:
   require 'moab'
 
-== Releases
-- <b>0.1</b> Initial Release
-- <b>0.2</b> Add support for RESTful service interface to storage, add config data
-- <b>0.3</b> Revise configuration invocation and repository_home usage
-- <b>0.4</b> Revise group differences methods, refactor storage repository & services, add service methods
-- <b>0.5</b> StorageService file retrieval now using the signature catalog.  Added or revised spec tests
-- <b>0.6</b> StorageService now supports retrieving file lists and files by signature
-- <b>0.7</b> Generation of fileInventory from contentMetadata now utilizes a disposition filter.  Revised test data
-- <b>0.8</b> Upgrade hashery gem to v 2.0.0
-- <b>0.8.1</b> Change Stanford::StorageServices to allow diffing against object not yet ingested
-- <b>0.8.2</b> Added methods for verification of version inventories against the storage files
-- <b>0.8.3</b> Revised methods for verification of version inventories against the storage files
-- <b>0.8.4</b> Added validation methods for Stanford's contentMetadata
-- <b>0.8.5</b> Fixed bugs in creation of deposit bag and creation of new version's repository directory
-- <b>0.8.6</b> Fixed Unit Tests related to previous release
-- <b>0.8.7</b> Added method FileGroupDifference#file_deltas to facilitate updates of shelve space, techMD, etc.
-- <b>0.8.8</b> Permit content directory to be empty when generating a version inventory
-- <b>1.0.0</b> Make ready for production, allow fixity data to be copied from Bagit manifests to inventory
-- <b>1.0.1</b> Added SHA256 to the checksums stored in a FileSignature object
-- <b>1.1.0</b> More SHA256 enhancements plus isolation of manifest files in a separate folder
-- <b>1.1.1</b> Add support for generation of signature query param for inclusion in URLs
-- <b>1.1.2</b> Revise use of fixity and checksums hash
-- <b>1.1.3</b> All Moab manifests should now include all checksum types even if missing from source inventory
-- <b>1.2.0</b> Content and metadata groups can be separately added to bag.  Added create_tarfile method.
-- <b>1.2.1</b> Correctly handle situations in which content group is empty
-- <b>1.2.2</b> Added capability to remediate contentMetadata that is missing fixity data
-- <b>1.2.3</b> Remediated contentMetadata now formatted with proper line breaks & indents
-- <b>1.2.4</b> Eliminate use of Pathname#realpath in favor of Pathname#expand_path
-- <b>1.2.5</b> Add Moab::ValidationException. Add support for restoration of objects & special service requests
-- <b>1.2.6</b> Fix Moab::ValidationException when manifest file not found
-- <b>1.2.7</b> Revise digital object and version storage verification to return a VerificationResult object
-- <b>1.2.8</b> Fixed Bagger initialization in spec_helper.rb
-- <b>1.2.9</b> Fixed Stanford::StorageServices.compare_cm_to_version to trap FileNotFoundException when fetching contentMetadata file
-- <b>1.2.10</b> Changed object storage and deposit model to allow use of multiple filesystems as storage roots
-- <b>1.2.11</b> Enhanced FileGroupDifferences report to include duplicate copy added or deleted
-- <b>1.3.0</b> Make compatible with Ruby 1.9
-- <b>1.3.1</b> Merge 1.2.11 changes
-- <b>1.3.2</b> Avoid monkey-patching of Time class to fix a conflict with Rails
-- <b>1.3.3</b> Fix new Moab::UtcTime class to output of String when datetime value is nil or empty
-- <b>1.4.0</b> Updates for ruby 2.x and related gems, see details at https://github.com/sul-dlss/moab-versioning/issues/3
-- <b>1.4.1</b> Ensure xml output has UTF-8 encodings
-- <b>1.4.3</b> Tidy rspec tests; confirm specs passing after bundle update
-- <b>1.4.4</b> Fixed == methods to allow comparison with objects of differing classes without exceptions
 
 
