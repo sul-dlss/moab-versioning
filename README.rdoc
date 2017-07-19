@@ -106,5 +106,6 @@ Require the following:
 - <b>1.4.1</b> Ensure xml output has UTF-8 encodings
 - <b>1.4.3</b> Tidy rspec tests; confirm specs passing after bundle update
 - <b>1.4.4</b> Fixed == methods to allow comparison with objects of differing classes without exceptions
+- <b>1.5.0</b> Removed monkeypatches which were incompatible with Devise 3
 
 
