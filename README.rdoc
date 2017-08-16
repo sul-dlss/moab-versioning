@@ -31,7 +31,7 @@ depending on whether XML serialization is required.
 
 === Moab
 
-{Moab} is a module that provides a distintive namespace for the collection of classes it contains.
+{Moab} is a module that provides a distinctive namespace for the collection of classes it contains.
 
 * <b>{FileInventory} = container for recording information about a collection of related files</b>
   * {FileGroup} [1..*] = subset allow segregation of content and metadata files
