@@ -216,9 +216,15 @@ describe 'Moab::StorageObjectVersion' do
     # * file_signature [Moab::FileSignature] = The signature of the file
     specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
       file_category = 'content'
-      file_signature = Moab::FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      fixity_hash = {
+        :size=>40873,
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      }
+      file_signature = Moab::FileSignature.new(fixity_hash)
+      exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
       expect(@existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
-          to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg})
+          to_s).to match(exp_regex)
 
       # def find_filepath_using_signature(file_category, file_signature)
       #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)

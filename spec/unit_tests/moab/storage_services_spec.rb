@@ -145,7 +145,12 @@ describe 'Stanford::StorageServices' do
     # * version_id [Integer] = The ID of the version, if nil use latest version
     specify 'Stanford::StorageServices.retrieve_file_using_signature' do
       file_category = 'content'
-      file_signature = Moab::FileSignature.new(:size=>"40873",:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      fixity_hash = {
+        :size=>"40873",
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      }
+      file_signature = Moab::FileSignature.new(fixity_hash)
       object_id = @digital_object_id
       version_id = 2
       filepath = Stanford::StorageServices.retrieve_file_using_signature(file_category, file_signature, object_id, version_id)

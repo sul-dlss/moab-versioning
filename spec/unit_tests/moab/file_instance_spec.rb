@@ -2,20 +2,21 @@ require 'spec_helper'
 
 # Unit tests for class {Moab::FileInstance}
 describe 'Moab::FileInstance' do
-  
+
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Moab::FileInstance#initialize}
     # Which returns an instance of: [Moab::FileInstance]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #   correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileInstance#initialize' do
-       
+
       # test initialization with required parameters (if any)
       opts = {}
       file_instance = Moab::FileInstance.new(opts)
       expect(file_instance).to be_instance_of(Moab::FileInstance)
-       
+
       # test initialization with options hash
       opts = Hash.new
       opts[:path] = @temp.join('path').to_s

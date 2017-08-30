@@ -8,7 +8,8 @@ describe 'Moab::FileGroupDifference' do
     # Unit test for constructor: {Moab::FileGroupDifference#initialize}
     # Which returns an instance of: [Moab::FileGroupDifference]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #   correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileGroupDifference#initialize' do
 
       # test initialization with required parameters (if any)
@@ -364,7 +365,8 @@ describe 'Moab::FileGroupDifference' do
     end
 
     # Unit test for method: {Moab::FileGroupDifference#compare_non_matching_signatures}
-    # Which returns: [void] For signatures that are present in only one or the other group, report which file instances are modified, deleted, or added
+    # Which returns: [void] For signatures that are present in only one or the other group, report which file
+    #   instances are modified, deleted, or added
     # For input parameters:
     # * basis_group [Moab::FileGroup] = The file group that is the basis of the comparison
     # * other_group [Moab::FileGroup] = The file group that is compared against the basis group
@@ -546,10 +548,13 @@ describe 'Moab::FileGroupDifference' do
     end
 
     # Unit test for method: {Moab::FileGroupDifference#tabulate_modified_files}
-    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'modified'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of
+    #  type 'modified'
     # For input parameters:
-    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_modified_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -617,10 +622,13 @@ describe 'Moab::FileGroupDifference' do
     end
 
     # Unit test for method: {Moab::FileGroupDifference#tabulate_deleted_files}
-    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'deleted'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of
+    #  type 'deleted'
     # For input parameters:
-    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_deleted_files' do
       basis_group = @v1_content
       other_group = @v3_content
@@ -698,10 +706,13 @@ describe 'Moab::FileGroupDifference' do
     end
 
     # Unit test for method: {Moab::FileGroupDifference#tabulate_added_files}
-    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of type 'added'
+    # Which returns: [Moab::FileGroupDifferenceSubset] Container for reporting the set of file-level differences of
+    #  type 'added'
     # For input parameters:
-    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the basis group
-    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for manifestations appearing only in the other group
+    # * basis_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the basis group
+    # * other_path_hash [Hash<String,Moab::FileSignature>] = The file paths and associated signatures for
+    #  manifestations appearing only in the other group
     specify 'Moab::FileGroupDifference#tabulate_added_files' do
       basis_group = @v1_content
       other_group = @v3_content

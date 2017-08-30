@@ -105,7 +105,8 @@ describe 'Serializer::Serializable' do
     # Unit test for constructor: {Serializer::Serializable#initialize}
     # Which returns an instance of: [Serializer::Serializable]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Serializer::Serializable#initialize' do
 
       # test initialization with required parameters (if any)

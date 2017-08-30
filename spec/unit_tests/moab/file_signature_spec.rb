@@ -8,7 +8,8 @@ describe 'Moab::FileSignature' do
     # Unit test for constructor: {Moab::FileSignature#initialize}
     # Which returns an instance of: [Moab::FileSignature]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileSignature#initialize' do
 
       # test initialization with required parameters (if any)

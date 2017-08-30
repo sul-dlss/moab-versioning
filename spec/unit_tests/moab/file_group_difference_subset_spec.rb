@@ -2,20 +2,21 @@ require 'spec_helper'
 
 # Unit tests for class {Moab::FileGroupDifferenceSubset}
 describe 'Moab::FileGroupDifferenceSubset' do
-  
+
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Moab::FileGroupDifferenceSubset#initialize}
     # Which returns an instance of: [Moab::FileGroupDifferenceSubset]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax 
     specify 'Moab::FileGroupDifferenceSubset#initialize' do
-       
+
       # test initialization with required parameters (if any)
       opts = {}
       file_group_difference_subset = Moab::FileGroupDifferenceSubset.new(opts)
       expect(file_group_difference_subset).to be_instance_of(Moab::FileGroupDifferenceSubset)
-       
+
       # test initialization of arrays and hashes
       expect(file_group_difference_subset.files).to be_kind_of(Array)
       expect(file_group_difference_subset.files.size).to eq(0)

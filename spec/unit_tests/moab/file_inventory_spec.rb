@@ -38,7 +38,8 @@ describe 'Moab::FileInventory' do
     # Unit test for constructor: {Moab::FileInventory#initialize}
     # Which returns an instance of: [Moab::FileInventory]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileInventory#initialize' do
 
       # test initialization with required parameters (if any)
@@ -256,7 +257,8 @@ describe 'Moab::FileInventory' do
     end
 
     # Unit test for method: {Moab::FileInventory#data_source}
-    # Which returns: [String] Returns either the version ID (if inventory is a version manifest) or the name of the directory that was harvested to create the inventory
+    # Which returns: [String] Returns either the version ID (if inventory is a version manifest) or the name of
+    #   the directory that was harvested to create the inventory
     # For input parameters: (None)
     specify 'Moab::FileInventory#data_source' do
       expect(@file_inventory.data_source).to eq("v1")

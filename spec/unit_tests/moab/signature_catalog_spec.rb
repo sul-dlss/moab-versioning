@@ -8,7 +8,8 @@ describe 'Moab::SignatureCatalog' do
     # Unit test for constructor: {Moab::SignatureCatalog#initialize}
     # Which returns an instance of: [Moab::SignatureCatalog]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Moab::SignatureCatalog#initialize' do
 
       # test initialization with required parameters (if any)

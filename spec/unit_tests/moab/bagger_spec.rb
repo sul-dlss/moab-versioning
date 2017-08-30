@@ -181,9 +181,11 @@ describe 'Moab::Bagger' do
     end
 
     # Unit test for method: {Moab::Bagger#fill_bag}
-    # Which returns: [Moab::Bagger] Perform all the operations required to fill the bag payload, write the manifests and tagfiles, and checksum the tagfiles
+    # Which returns: [Moab::Bagger] Perform all the operations required to fill the bag payload, write the manifests
+    #   and tagfiles, and checksum the tagfiles
     # For input parameters:
-    # * package_mode [Symbol] = The operational mode controlling what gets bagged and the full path of source files (Moab::Bagger#fill_payload)
+    # * package_mode [Symbol] = The operational mode controlling what gets bagged and the full path of source files
+    #  (Moab::Bagger#fill_payload)
     specify 'Moab::Bagger#fill_bag' do
       packages_dir = @temp.join('packages')
       packages_dir.rmtree if packages_dir.exist?
