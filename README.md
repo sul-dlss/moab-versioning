@@ -12,7 +12,7 @@
 
 ```ruby
 Moab::Config.configure do
-  storage_roots 'yer_first_storage_root_dir_except_last_part_of_path'
+  storage_roots ['storage_root_dir/except_last_part_of_path', 'second/storage_root_dir', 'and/so/on']
   storage_trunk 'the_last_piece_of_the_path_containing_objects'
   deposit_trunk 'presumably_last_piece_of_path_where_you_want_to_put_new_objects'
 end
@@ -45,6 +45,8 @@ end
 - when path_method is `:druid`, expect this directory structure: 'jq937jp0017'
 
 #### Get Latest Version number
+
+Note the below has "Stanford::StorageServices", which can be necessary if there are druid paths
 
 ```ruby
 current_version = Stanford::StorageServices.current_version('oo000oo0000') # where oo000oo0000 is the druid
