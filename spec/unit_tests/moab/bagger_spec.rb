@@ -8,8 +8,10 @@ describe 'Moab::Bagger' do
     # Unit test for constructor: {Moab::Bagger#initialize}
     # Which returns an instance of: [Moab::Bagger]
     # For input parameters:
-    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object version
-    # * signature_catalog [Moab::SignatureCatalog] = The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode)
+    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object
+    #   version
+    # * signature_catalog [Moab::SignatureCatalog] = The signature catalog, used to specify source paths (in
+    #   :reconstructor mode), or to filter the version inventory (in :depositor mode)
     # * bag_pathname [Pathname, String] = The location of the Bagit bag to be created
     specify 'Moab::Bagger#initialize' do
 
@@ -54,7 +56,8 @@ describe 'Moab::Bagger' do
     end
 
     # Unit test for attribute: {Moab::Bagger#signature_catalog}
-    # Which stores: [Moab::SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode)
+    # Which stores: [Moab::SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor
+    #  mode), or to filter the version inventory (in :depositor mode)
     specify 'Moab::Bagger#signature_catalog' do
       value = double(Moab::SignatureCatalog.name)
       @bagger.signature_catalog= value
