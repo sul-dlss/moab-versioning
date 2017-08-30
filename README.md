@@ -1,9 +1,9 @@
 # moab-versioning
 
 [![Build Status](https://travis-ci.org/sul-dlss/moab-versioning.svg?branch=master)](https://travis-ci.org/sul-dlss/moab-versioning)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/moab-versioning/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/moab-versioning?branch=master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/sul-dlss/moab-versioning.svg)](https://gemnasium.com/github.com/sul-dlss/moab-versioning)
 [![Gem Version](https://badge.fury.io/rb/moab-versioning.svg)](https://badge.fury.io/rb/moab-versioning)
-
 
 ## Usage
 
