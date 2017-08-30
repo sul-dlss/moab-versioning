@@ -16,7 +16,7 @@ AllCops:
 
 # because this isn't 1994
 Metrics/LineLength:
-  Max: 120
+  Max: 150 # would like to reduce this to 120
 
 
 Style/FileName:
