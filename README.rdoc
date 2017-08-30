@@ -69,5 +69,41 @@ depending on whether XML serialization is required.
 Require the following:
   require 'moab'
 
+=== Configuration
+
+```ruby
+Moab::Config.configure do
+  storage_roots yer_first_storage_root_dir_except_last_part_of_path
+  storage_trunk the_last_piece_of_the_path_containing_objects
+  deposit_trunk presumably_last_piece_of_path_where_you_want_to_put_new_objects
+  path_method :druid # part of Stanford::StorageRepository;  valid values are :druid or :druid_tree
+end
+```
+
+==== Get Latest Version number
+
+```ruby
+current_version = StorageServices.current_version('666') # where 666 is the id
+expect(current_version).to be_an_instance_of Integer
+```
 
 
+=== Stanford
+
+==== Configuration
+
+```ruby
+Moab::Config.configure do
+  path_method :druid # valid values are :druid or :druid_tree
+end
+```
+
+- when path_method is :druid_tree, expect this directory structure: 'jq/937/jp/0017/jq937jp0017'
+- when path_method is :druid, expect this directory structure: 'jq937jp0017'
+
+==== Get Latest Version number
+
+```ruby
+current_version = Stanford::StorageServices.current_version('oo000oo0000') # where oo000oo0000 is the id
+expect(current_version).to be_an_instance_of Integer
+```
