@@ -12,3 +12,5 @@ doc/
 spec/fixtures/derivatives/
 spec/temp/
 pkg/
+
+.pry_history
