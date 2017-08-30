@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'pry'
+  s.add_development_dependency 'rubocop', '~> 0.49.1'
 
   s.files        = Dir.glob('lib/**/*')
   s.require_path = 'lib'

@@ -28,6 +28,9 @@ RSpec::Core::RakeTask.new(:rcov) do |spec|
   spec.rcov_opts = %w{--exclude spec\/*,gems\/*,ruby\/* --aggregate coverage.data}
 end
 
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
+
 task :clean do
   puts 'Cleaning old coverage'
   FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
@@ -39,4 +42,4 @@ task :clean do
   FileUtils.rm_r('spec/fixtures/derivatives') if(File.exists? 'spec/fixtures/derivatives')
 end
 
-task :default => [:spec]
+task :default => [:spec, :rubocop]
