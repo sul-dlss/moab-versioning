@@ -2,68 +2,68 @@ require 'spec_helper'
 
 # Unit tests for class {Moab::Bagger}
 describe 'Moab::Bagger' do
-  
+
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Moab::Bagger#initialize}
     # Which returns an instance of: [Moab::Bagger]
     # For input parameters:
-    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object version 
-    # * signature_catalog [Moab::SignatureCatalog] = The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode) 
+    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object version
+    # * signature_catalog [Moab::SignatureCatalog] = The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode)
     # * bag_pathname [Pathname, String] = The location of the Bagit bag to be created
     specify 'Moab::Bagger#initialize' do
-       
+
       # test initialization with required parameters (if any)
-      version_inventory = double(Moab::FileInventory.name) 
-      signature_catalog = double(Moab::SignatureCatalog.name) 
+      version_inventory = double(Moab::FileInventory.name)
+      signature_catalog = double(Moab::SignatureCatalog.name)
       bag_pathname = @temp.join('bag_pathname')
       bagger = Moab::Bagger.new(version_inventory, signature_catalog,  bag_pathname)
       expect(bagger).to be_instance_of(Moab::Bagger)
       expect(bagger.version_inventory).to eq(version_inventory)
       expect(bagger.signature_catalog).to eq(signature_catalog)
       expect(bagger.bag_pathname).to eq(bag_pathname)
-       
+
     end
-  
+
   end
-  
+
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
 
-    
+
     before(:all) do
       @inventory = Moab::FileInventory.read_xml_file(@manifests.join('v0002'),'version')
       @catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001'))
       @bag_pathname = @temp.join('bag_pathname')
       @bagger = Moab::Bagger.new(@inventory, @catalog, @bag_pathname)
     end
-    
+
     # Unit test for attribute: {Moab::Bagger#version_inventory}
     # Which stores: [Moab::FileInventory] The complete inventory of the files comprising a digital object version
     specify 'Moab::Bagger#version_inventory' do
       value = double(Moab::FileInventory.name)
       @bagger.version_inventory= value
       expect(@bagger.version_inventory).to eq(value)
-       
+
       # def version_inventory=(value)
       #   @version_inventory = value
       # end
-       
+
       # def version_inventory
       #   @version_inventory
       # end
     end
-    
+
     # Unit test for attribute: {Moab::Bagger#signature_catalog}
     # Which stores: [Moab::SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode), or to filter the version inventory (in :depositor mode)
     specify 'Moab::Bagger#signature_catalog' do
       value = double(Moab::SignatureCatalog.name)
       @bagger.signature_catalog= value
       expect(@bagger.signature_catalog).to eq(value)
-       
+
       # def signature_catalog=(value)
       #   @signature_catalog = value
       # end
-       
+
       # def signature_catalog
       #   @signature_catalog
       # end
@@ -75,50 +75,50 @@ describe 'Moab::Bagger' do
       value = @temp.join('bag_pathname')
       @bagger.bag_pathname= value
       expect(@bagger.bag_pathname).to eq(value)
-       
+
       # def bag_pathname=(value)
       #   @bag_pathname = value
       # end
-       
+
       # def bag_pathname
       #   @bag_pathname
       # end
     end
-    
+
     # Unit test for attribute: {Moab::Bagger#bag_inventory}
     # Which stores: [Moab::FileInventory] The actual inventory of the files to be packaged (derived from @version_inventory in {#fill_bag})
     specify 'Moab::Bagger#bag_inventory' do
       value = double(Moab::FileInventory.name)
       @bagger.bag_inventory= value
       expect(@bagger.bag_inventory).to eq(value)
-       
+
       # def bag_inventory=(value)
       #   @bag_inventory = value
       # end
-       
+
       # def bag_inventory
       #   @bag_inventory
       # end
     end
-    
+
     # Unit test for attribute: {Moab::Bagger#package_mode}
     # Which stores: [Symbol] The operational mode controlling what gets bagged {#fill_bag} and the full path of source files {#fill_payload}
     specify 'Moab::Bagger#package_mode' do
       value = :test_package_mode
       @bagger.package_mode= value
       expect(@bagger.package_mode).to eq(value)
-       
+
       # def package_mode=(value)
       #   @package_mode = value
       # end
-       
+
       # def package_mode
       #   @package_mode
       # end
     end
-  
+
   end
-  
+
   describe '=========================== INSTANCE METHODS ===========================' do
 
     before(:all) do
@@ -176,11 +176,11 @@ describe 'Moab::Bagger' do
       bagger.delete_tarfile
       expect(tar_file.exist?).to eq(false)
     end
-    
+
     # Unit test for method: {Moab::Bagger#fill_bag}
     # Which returns: [Moab::Bagger] Perform all the operations required to fill the bag payload, write the manifests and tagfiles, and checksum the tagfiles
     # For input parameters:
-    # * package_mode [Symbol] = The operational mode controlling what gets bagged and the full path of source files (Moab::Bagger#fill_payload) 
+    # * package_mode [Symbol] = The operational mode controlling what gets bagged and the full path of source files (Moab::Bagger#fill_payload)
     specify 'Moab::Bagger#fill_bag' do
       packages_dir = @temp.join('packages')
       packages_dir.rmtree if packages_dir.exist?
@@ -190,12 +190,12 @@ describe 'Moab::Bagger' do
         unless package.join('data').exist?
           data_dir = @data.join(vname)
           inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname),'version')
-          case version
-            when 1
-              catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-            else
-              catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
-          end
+          catalog = case version
+                      when 1
+                        Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                      else
+                        Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+                    end
           Moab::Bagger.new(inventory,catalog,package).fill_bag(:depositor, data_dir)
         end
       end
@@ -332,7 +332,7 @@ describe 'Moab::Bagger' do
       ])
 
     end
-    
+
     # Unit test for method: {Moab::Bagger#create_payload_manifests}
     # Which returns: [void] Using the checksum information from the inventory, create md5 and sha1 manifest files for the payload
     # For input parameters: (None)
@@ -374,7 +374,7 @@ describe 'Moab::Bagger' do
       #   sha1.close if sha1
       # end
     end
-    
+
     # Unit test for method: {Moab::Bagger#create_bag_info_txt}
     # Which returns: [void] Generate the bag-info.txt tag file
     # For input parameters: (None)
@@ -397,7 +397,7 @@ describe 'Moab::Bagger' do
       #   end
       # end
     end
-    
+
     # Unit test for method: {Moab::Bagger#create_bagit_txt}
     # Which returns: [void] Generate the bagit.txt tag file
     # For input parameters: (None)
@@ -418,7 +418,7 @@ describe 'Moab::Bagger' do
       #   end
       # end
     end
-    
+
     # Unit test for method: {Moab::Bagger#create_tagfile_manifests}
     # Which returns: [void] create md5 and sha1 manifest files containing checksums for all files in the bag's root directory
     # For input parameters: (None)
@@ -471,7 +471,7 @@ describe 'Moab::Bagger' do
       expect(bagger).to receive(:shell_execute).with("cd '#{@packages}'; tar --dereference --force-local -cf  '#{@temp}/test.tar' 'v0001'")
       expect{bagger.create_tarfile(tarfile)}.to raise_exception(/Unable to create tarfile/)
     end
-  
+
   end
 
 end

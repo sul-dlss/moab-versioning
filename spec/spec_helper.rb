@@ -80,12 +80,12 @@ def fixture_setup
     manifest_dir = @manifests.join(@vname[version])
     manifest_dir.mkpath
     inventory = Moab::FileInventory.read_xml_file(manifest_dir,'version')
-    case version
-      when 1
-        catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-      else
-        catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
-    end
+    catalog = case version
+                when 1
+                  Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                else
+                  Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+              end
     catalog.update(inventory, @data.join(@vname[version]))
     catalog.write_xml_file(manifest_dir)
   end
@@ -122,12 +122,12 @@ def fixture_setup
     unless package_dir.join('data').exist?
       data_dir = @data.join(@vname[version])
       inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]),'version')
-      case version
-        when 1
-          catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-        else
-          catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
-      end
+      catalog = case version
+                  when 1
+                    Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                  else
+                    Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+                end
       Moab::Bagger.new(inventory,catalog,package_dir).fill_bag(:depositor,data_dir)
     end
   end
