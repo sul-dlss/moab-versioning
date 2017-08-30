@@ -1,74 +1,59 @@
 require 'spec_helper'
 
-# Unit tests for class {Stanford::StorageServices}
 describe 'Stanford::StorageServices' do
-  
-  describe '=========================== CLASS METHODS ===========================' do
+  let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:content_metadata) { IO.read(@data.join('v0002/metadata/contentMetadata.xml')) }
 
-    before (:all) do
-      @digital_object_id = @obj
-      @version_id = 2
-      @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
-      @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
-    end
+  specify '.cm_remediate' do
+    remediated_cm = Stanford::StorageServices.cm_remediate(@obj, 1)
+    remediated_cm_ng_xml = Nokogiri::XML(remediated_cm)
+    exp_xml = <<-EOF
+    <contentMetadata type="sample" objectId="druid:jq937jp0017">
+        <resource type="version" sequence="1" id="version-1">
+            <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
+                <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
+                <checksum type="SHA-256">8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5</checksum>
+            </file>
+            <file datetime="2012-03-26T08:20:35-06:00" size="41981" id="intro-1.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">915c0305bf50c55143f1506295dc122c</checksum>
+                <checksum type="SHA-1">60448956fbe069979fce6a6e55dba4ce1f915178</checksum>
+                <checksum type="SHA-256">4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a</checksum>
+            </file>
+            <file datetime="2012-03-26T08:19:30-06:00" size="39850" id="intro-2.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">77f1a4efdcea6a476505df9b9fba82a7</checksum>
+                <checksum type="SHA-1">a49ae3f3771d99ceea13ec825c9c2b73fc1a9915</checksum>
+                <checksum type="SHA-256">3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7</checksum>
+            </file>
+            <file datetime="2012-03-26T09:59:14-06:00" size="25153" id="page-1.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">3dee12fb4f1c28351c7482b76ff76ae4</checksum>
+                <checksum type="SHA-1">906c1314f3ab344563acbbbe2c7930f08429e35b</checksum>
+                <checksum type="SHA-256">41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad</checksum>
+            </file>
+            <file datetime="2012-03-26T09:23:36-06:00" size="39450" id="page-2.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
+                <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
+                <checksum type="SHA-256">235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0</checksum>
+            </file>
+            <file datetime="2012-03-26T09:24:39-06:00" size="19125" id="page-3.jpg" shelve="yes" publish="yes" preserve="yes">
+                <checksum type="MD5">a5099878de7e2e064432d6df44ca8827</checksum>
+                <checksum type="SHA-1">c0ccac433cf02a6cee89c14f9ba6072a184447a2</checksum>
+                <checksum type="SHA-256">7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271</checksum>
+            </file>
+        </resource>
+    </contentMetadata>
+    EOF
+    exp_ng_xml = Nokogiri::XML(exp_xml)
+    expect(EquivalentXml.equivalent?(remediated_cm_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+  end
 
-    specify 'Stanford::StorageServices.cm_remediate' do
-      remediated_cm = Stanford::StorageServices.cm_remediate(@digital_object_id,1)
-      xmlObj1 = Nokogiri::XML(remediated_cm)
-      xmlTest = <<-EOF
-      <contentMetadata type="sample" objectId="druid:jq937jp0017">
-          <resource type="version" sequence="1" id="version-1">
-              <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
-                  <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
-                  <checksum type="SHA-256">8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5</checksum>
-              </file>
-              <file datetime="2012-03-26T08:20:35-06:00" size="41981" id="intro-1.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">915c0305bf50c55143f1506295dc122c</checksum>
-                  <checksum type="SHA-1">60448956fbe069979fce6a6e55dba4ce1f915178</checksum>
-                  <checksum type="SHA-256">4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a</checksum>
-              </file>
-              <file datetime="2012-03-26T08:19:30-06:00" size="39850" id="intro-2.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">77f1a4efdcea6a476505df9b9fba82a7</checksum>
-                  <checksum type="SHA-1">a49ae3f3771d99ceea13ec825c9c2b73fc1a9915</checksum>
-                  <checksum type="SHA-256">3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7</checksum>
-              </file>
-              <file datetime="2012-03-26T09:59:14-06:00" size="25153" id="page-1.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">3dee12fb4f1c28351c7482b76ff76ae4</checksum>
-                  <checksum type="SHA-1">906c1314f3ab344563acbbbe2c7930f08429e35b</checksum>
-                  <checksum type="SHA-256">41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad</checksum>
-              </file>
-              <file datetime="2012-03-26T09:23:36-06:00" size="39450" id="page-2.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
-                  <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
-                  <checksum type="SHA-256">235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0</checksum>
-              </file>
-              <file datetime="2012-03-26T09:24:39-06:00" size="19125" id="page-3.jpg" shelve="yes" publish="yes" preserve="yes">
-                  <checksum type="MD5">a5099878de7e2e064432d6df44ca8827</checksum>
-                  <checksum type="SHA-1">c0ccac433cf02a6cee89c14f9ba6072a184447a2</checksum>
-                  <checksum type="SHA-256">7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271</checksum>
-              </file>
-          </resource>
-      </contentMetadata>
-      EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-    end
-
-
-    # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
-    # Which returns: [Moab::FileInventoryDifference] The report of differences between the content metadata and the specified version
-    # For input parameters:
-    # * content_metadata [String] = The content metadata to be compared 
-    # * object_id [String] = The digital object identifier of the object whose version inventory is the basis of the comparison 
-    # * version_id [Integer] = The ID of the version whose inventory is to be compared, if nil use latest version 
-    specify 'Stanford::StorageServices.compare_cm_to_version_inventory' do
-      diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata, @druid, 'all', 1)
+  context '.compare_cm_to_version_inventory' do
+    it 'returns expected Moab::FileInventoryDifference (all subset)' do
+      diff = Stanford::StorageServices.compare_cm_to_version(content_metadata, @druid, 'all', 1)
       expect(diff).to be_instance_of(Moab::FileInventoryDifference)
-      xmlObj1 = Nokogiri::XML(diff.to_xml)
-      xmlObj1.xpath('//@reportDatetime').remove
-      xmlTest = <<-EOF
+      diff_ng_xml = Nokogiri::XML(diff.to_xml)
+      diff_ng_xml.xpath('//@reportDatetime').remove
+      exp_xml = <<-EOF
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="3" basis="v1-contentMetadata-all" other="new-contentMetadata-all" >
           <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" deleted="2" added="0">
             <subset change="identical" count="3">
@@ -103,18 +88,19 @@ describe 'Stanford::StorageServices' do
           </fileGroupDifference>
         </fileInventoryDifference>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
 
+    it 'shelve subset' do
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       expect(Stanford::StorageServices).to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
-      xmlObj1 = Nokogiri::XML(diff.to_xml)
-      xmlObj1.xpath('//@reportDatetime').remove
-      xmlTest = <<-EOF
+      diff_ng_xml = Nokogiri::XML(diff.to_xml)
+      diff_ng_xml.xpath('//@reportDatetime').remove
+      exp_xml = <<-EOF
         <fileInventoryDifference objectId="druid:dd116zh0343" differenceCount="12" basis="v1-contentMetadata-shelve" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="12" identical="1" copyadded="0" copydeleted="0" renamed="1" modified="1" deleted="5" added="5">
             <subset change="identical" count="1">
@@ -172,16 +158,17 @@ describe 'Stanford::StorageServices' do
           </fileGroupDifference>
         </fileInventoryDifference>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
 
+    it 'shelve subset without specified version' do
       druid = "druid:no000non0000"
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
-      xmlObj1 = Nokogiri::XML(diff.to_xml)
-      xmlObj1.xpath('//@reportDatetime').remove
-      xmlTest = <<-EOF
+      diff_ng_xml = Nokogiri::XML(diff.to_xml)
+      diff_ng_xml.xpath('//@reportDatetime').remove
+      exp_xml = <<-EOF
         <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="8" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="8">
             <subset change="identical" count="0"/>
@@ -219,15 +206,11 @@ describe 'Stanford::StorageServices' do
           </fileGroupDifference>
         </fileInventoryDifference>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
 
-    # Unit test for method: {Stanford::StorageServices.compare_cm_to_version_inventory}
-    # testing boundary case where all subset attributes ar no (e.g. shelve='no')
-    specify 'Stanford::StorageServices.compare_cm_to_version_inventory with emtpy subset' do
+    it 'empty subset' do
       inventory_diff = <<-EOF
         <fileInventoryDifference objectId="druid:ms205ty4764" differenceCount="0" basis="v0" other="new-contentMetadata-xyz" >
           <fileGroupDifference groupId="content" differenceCount="0" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="0">
@@ -244,33 +227,26 @@ describe 'Stanford::StorageServices' do
       druid = 'druid:ms205ty4764'
       version_id = 1
       subsets = %w(shelve publish preserve)
+      content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
       subsets.each do |subset|
-        diff = Stanford::StorageServices.compare_cm_to_version(@content_metadata_empty_subset, druid, subset, version_id)
+        diff = Stanford::StorageServices.compare_cm_to_version(content_metadata_empty_subset, druid, subset, version_id)
         expect(diff).to be_instance_of(Moab::FileInventoryDifference)
-        xmlObj1 = Nokogiri::XML(diff.to_xml)
-        xmlObj1.xpath('//@reportDatetime').remove
-        xmlObj2 = Nokogiri::XML(inventory_diff)
-        xmlObj2.xpath('//@other').each {|o| o.value = o.value.gsub(/xyz/, subset) }
-        same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-        expect(same).to be true
+        diff_ng_xml = Nokogiri::XML(diff.to_xml)
+        diff_ng_xml.xpath('//@reportDatetime').remove
+        exp_ng_xml = Nokogiri::XML(inventory_diff)
+        exp_ng_xml.xpath('//@other').each {|o| o.value = o.value.gsub(/xyz/, subset) }
+        expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
     end
+  end
 
-    # Unit test for method: {Stanford::StorageServices.cm_version_additions}
-    # Which returns: [Moab::FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
-    # For input parameters:
-    # * content_metadata [String] = The content metadata to be evaluated 
-    # * object_id [String] = The digital object identifier of the object whose signature catalog is to be used 
-    # * version_id [Integer] = The ID of the version whose signature catalog is to be used, if nil use latest version 
-    specify 'Stanford::StorageServices.cm_version_additions' do
-      content_metadata = 'Test content_metadata' 
-      object_id = 'Test object_id' 
-      version_id = 78 
-      adds = Stanford::StorageServices.cm_version_additions(@content_metadata, @druid, 1)
+  context '.cm_version_additions' do
+    it 'returns expected Moab::FileInventory' do
+      adds = Stanford::StorageServices.cm_version_additions(content_metadata, @druid, 1)
       expect(adds).to be_instance_of(Moab::FileInventory)
-      xmlObj1 = Nokogiri::XML(adds.to_xml)
-      xmlObj1.xpath('//@inventoryDatetime').remove
-      xmlTest = <<-EOF
+      adds_ng_xml = Nokogiri::XML(adds.to_xml)
+      adds_ng_xml.xpath('//@inventoryDatetime').remove
+      exp_xml = <<-EOF
         <fileInventory type="additions" objectId="druid:jq937jp0017" versionId=""  fileCount="1" byteCount="32915" blockCount="33">
           <fileGroup groupId="content" dataSource="" fileCount="1" byteCount="32915" blockCount="33">
             <file>
@@ -280,15 +256,16 @@ describe 'Stanford::StorageServices' do
           </fileGroup>
         </fileInventory>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
 
-      adds = Stanford::StorageServices.cm_version_additions(@content_metadata, "druid:no000non0000", nil)
+    it 'nil version' do
+      adds = Stanford::StorageServices.cm_version_additions(content_metadata, "druid:no000non0000", nil)
       expect(adds).to be_instance_of(Moab::FileInventory)
-      xmlObj1 = Nokogiri::XML(adds.to_xml)
-      xmlObj1.xpath('//@inventoryDatetime').remove
-      xmlTest = <<-EOF
+      adds_ng_xml = Nokogiri::XML(adds.to_xml)
+      adds_ng_xml.xpath('//@inventoryDatetime').remove
+      exp_xml = <<-EOF
         <fileInventory type="additions" objectId="druid:no000non0000" versionId=""  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -310,11 +287,8 @@ describe 'Stanford::StorageServices' do
           </fileGroup>
         </fileInventory>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
-
   end
-
 end
