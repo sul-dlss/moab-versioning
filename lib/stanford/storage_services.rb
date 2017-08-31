@@ -9,8 +9,10 @@ module Stanford
     @@repository = Stanford::StorageRepository.new
 
     # @param new_content_metadata [String] The content metadata to be compared to the base
-    # @param object_id [String] The digital object identifier of the object whose version inventory is the basis of the comparison
-    # @param subset [String] Speciifes which subset of files to list in the inventories extracted from the contentMetadata (all|preserve|publish|shelve)
+    # @param object_id [String] The digital object identifier of the object whose version inventory is the basis of the
+    #  comparison
+    # @param subset [String] Speciifes which subset of files to list in the inventories extracted from the
+    #  contentMetadata (all|preserve|publish|shelve)
     # @param base_version [Integer] The ID of the version whose inventory is the basis of, if nil use latest version
     # @return [FileInventoryDifference] The report of differences between the content metadata and the specified version
     def self.compare_cm_to_version(new_content_metadata, object_id, subset, base_version=nil)

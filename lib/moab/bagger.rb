@@ -6,8 +6,10 @@ module Moab
   # A class used to create a BagIt package from a version inventory and a set of source files.
   # The {#fill_bag} method is called with a package_mode parameter that specifies
   # whether the bag is being created for deposit into the repository or is to contain the output of a version reconstruction.
-  # * In <b>:depositor</b> mode, the version inventory is filtered using the digital object's signature catalog so that only new files are included
-  # * In <b>:reconstructor</b> mode, the version inventory and signature catalog are used together to regenerate the complete set of files for the version.
+  # * In <b>:depositor</b> mode, the version inventory is filtered using the digital object's signature catalog so that only
+  #  new files are included
+  # * In <b>:reconstructor</b> mode, the version inventory and signature catalog are used together to regenerate the complete
+  #  set of files for the version.
   #
   # ====Data Model
   # * {StorageRepository} = represents a digital object repository storage node

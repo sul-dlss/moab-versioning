@@ -1,0 +1,25 @@
+inherit_from: .rubocop_todo.yml
+
+# Turn on RSpec cops
+require: rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  Include:
+    - Rakefile
+    - lib/**/*.rake
+  Exclude:
+    - 'Gemfile.lock'
+    - '**/*.md'
+    - 'api/**/*'
+    - 'bin/**/*'
+
+# because this isn't 1994
+Metrics/LineLength:
+  Max: 150 # would like to reduce this to 120
+
+
+Style/FileName:
+  Exclude:
+    - 'Gemfile'
+    - 'moab-versioning.gemspec'

@@ -4,18 +4,19 @@ require 'spec_helper'
 describe 'Moab::FileInventoryDifference' do
 
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Moab::FileInventoryDifference#initialize}
     # Which returns an instance of: [Moab::FileInventoryDifference]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #   correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileInventoryDifference#initialize' do
-       
+
       # test initialization with required parameters (if any)
       opts = {}
       file_inventory_difference = Moab::FileInventoryDifference.new(opts)
       expect(file_inventory_difference).to be_instance_of(Moab::FileInventoryDifference)
-       
+
       # test initialization of arrays and hashes
       expect(file_inventory_difference.group_differences).to be_kind_of(Array)
       expect(file_inventory_difference.group_differences.size).to eq(0)
@@ -64,7 +65,8 @@ describe 'Moab::FileInventoryDifference' do
     end
     
     # Unit test for attribute: {Moab::FileInventoryDifference#difference_count}
-    # Which stores: [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
+    # Which stores: [Integer] the number of differences found between the two inventories that were compared
+    #  (dynamically calculated)
     specify 'Moab::FileInventoryDifference#difference_count' do
       expect(@file_inventory_difference.difference_count).to eq(6)
        

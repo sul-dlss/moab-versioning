@@ -2,21 +2,22 @@ require 'spec_helper'
 
 # Unit tests for class {Moab::FileManifestation}
 describe 'Moab::FileManifestation' do
-  
+
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Moab::FileManifestation#initialize}
     # Which returns an instance of: [Moab::FileManifestation]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Moab::FileManifestation#initialize' do
-       
+
       # test initialization with required parameters (if any)
       opts = {}
       file_manifestation = Moab::FileManifestation.new(opts)
       expect(file_manifestation).to be_instance_of(Moab::FileManifestation)
       expect(file_manifestation.instances).to be_instance_of(Array)
-       
+
       # test initialization with options hash
       opts = Hash.new
       opts[:signature] = double(Moab::FileSignature.name)
@@ -102,8 +103,8 @@ describe 'Moab::FileManifestation' do
     end
     
     # Unit test for method: {Moab::FileManifestation#file_count}
-    # Which returns: [Integer] The total number of {Moab::FileInstance} objects in this manifestation. (Number of files that share this manifestation's signature)
-    # For input parameters: (None)
+    # Which returns: [Integer] The total number of {Moab::FileInstance} objects in this manifestation.
+    #  (Number of files that share this manifestation's signature)
     specify 'Moab::FileManifestation#file_count' do
       expect(@file_manifestation.file_count()).to eq(2)
        

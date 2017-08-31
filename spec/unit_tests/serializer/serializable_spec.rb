@@ -20,13 +20,13 @@ describe 'Serializer::Serializable' do
     @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
     @v3_content = @v3_inventory.groups[0]
   end
-  
+
   describe '=========================== CLASS METHODS ===========================' do
-    
+
     # Unit test for method: {Serializer::Serializable.deep_diff}
     # Which returns: [Hash] Generate a hash containing the differences between two hashes (recursively descend parallel trees of hashes)
     # For input parameters:
-    # * hashes [Array<Hash>] = The hashes to be compared, with optional name tags 
+    # * hashes [Array<Hash>] = The hashes to be compared, with optional name tags
     specify 'Serializer::Serializable.deep_diff' do
 
       hash1 = @v1_content.files[0].to_hash
@@ -97,26 +97,27 @@ describe 'Serializer::Serializable' do
       #   diff
       # end
     end
-  
+
   end
-  
+
   describe '=========================== CONSTRUCTOR ===========================' do
-    
+
     # Unit test for constructor: {Serializer::Serializable#initialize}
     # Which returns an instance of: [Serializer::Serializable]
     # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should correspond to attributes declared using HappyMapper syntax 
+    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
+    #  correspond to attributes declared using HappyMapper syntax
     specify 'Serializer::Serializable#initialize' do
-       
+
       # test initialization with required parameters (if any)
       opts = {}
       serializable = Serializer::Serializable.new(opts)
       expect(serializable).to be_instance_of(Serializer::Serializable)
-       
+
       # test initialization with options hash
       opts = Hash.new
       expect{Serializer::Serializable.new(opts)}.not_to raise_exception
-       
+
      # test initialization with options hash containing a bad variable
       opts = Hash.new
       opts[:dummy] = 'dummy'
@@ -132,9 +133,9 @@ describe 'Serializer::Serializable' do
       #   end
       # end
     end
-  
+
   end
-  
+
   describe '=========================== INSTANCE METHODS ===========================' do
 
     # Unit test for method: {Serializer::Serializable#variables}
@@ -162,7 +163,7 @@ describe 'Serializer::Serializable' do
       #   attributes + elements + text_node
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#variable_names}
     # Which returns: [Array] Extract the names of the variables
     # For input parameters: (None)
@@ -177,9 +178,10 @@ describe 'Serializer::Serializable' do
       #   variables.collect { |variable| variable.name}
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#key_name}
-    # Which returns: [String] Determine which attribute was marked as an object instance key. Keys are indicated by option :key=true when declaring the object's variables. This follows the same convention as used by DataMapper
+    # Which returns: [String] Determine which attribute was marked as an object instance key. Keys are indicated by
+    #  option :key=true when declaring the object's variables. This follows the same convention as used by DataMapper
     # For input parameters: (None)
     specify 'Serializer::Serializable#key_name' do
       expect(Moab::FileInstance.new.key_name()).to eq("path")
@@ -199,7 +201,7 @@ describe 'Serializer::Serializable' do
       #   @key_name
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#key}
     # Which returns: [String] For the current object instance, return the string to use as a hash key
     # For input parameters: (None)
@@ -218,11 +220,13 @@ describe 'Serializer::Serializable' do
       #   nil
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#array_to_hash}
-    # Which returns: [Hash] Generate a hash from an array of objects. If the array member has a field tagged as a key, that field will be used as the hash.key. Otherwise the index position of the array member will be used as the key
+    # Which returns: [Hash] Generate a hash from an array of objects. If the array member has a field tagged as a
+    #   key, that field will be used as the hash.key. Otherwise the index position of the array member will be
+    #   used as the key
     # For input parameters:
-    # * array [Array] = The array to be converted to a hash 
+    # * array [Array] = The array to be converted to a hash
     specify 'Serializer::Serializable#array_to_hash' do
       array = %w{this is an array of words}
       expect(Serializer::Serializable.new.array_to_hash(array)).to hash_match({
@@ -233,7 +237,7 @@ describe 'Serializer::Serializable' do
           4 => "of",
           5 => "words"
       })
-       
+
       # def array_to_hash(array)
       #   item_hash = Hash.new
       #   array.each_index do |index|
@@ -244,7 +248,7 @@ describe 'Serializer::Serializable' do
       #   item_hash
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#to_hash}
     # Which returns: [Hash] Recursively generate an Hash containing the object's properties
     # For input parameters: (None)
@@ -269,7 +273,7 @@ describe 'Serializer::Serializable' do
               }
           }
       })
-       
+
       # def to_hash
       #   oh = Hash.new
       #   variables.each do |variable|
@@ -287,11 +291,11 @@ describe 'Serializer::Serializable' do
       #   oh
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#diff}
     # Which returns: [Hash] Generate a hash containing the differences between two objects of the same type
     # For input parameters:
-    # * other [Serializable] = The other object being compared 
+    # * other [Serializable] = The other object being compared
     specify 'Serializer::Serializable#diff' do
       diff = @v1_content.files[0].diff(@v3_content.files[0])
       diff.delete('instances')
@@ -325,7 +329,7 @@ describe 'Serializer::Serializable' do
       diff = file_instance1.diff(file_instance2)
       expect(diff.keys[0]).to eq('path')
       expect(diff['path']).to be_instance_of Hash
-       
+
       # def diff(other)
       #   raise "Cannot compare different classes" if self.class != other.class
       #   left = other.to_hash
@@ -340,7 +344,7 @@ describe 'Serializer::Serializable' do
       #   Serializable.deep_diff(ltag, left, rtag, right)
       # end
     end
-    
+
     # Unit test for method: {Serializer::Serializable#to_json}
     # Which returns: [String] Generate JSON output from a hash of the object's variables
     # For input parameters: (None)

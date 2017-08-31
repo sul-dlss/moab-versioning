@@ -7,9 +7,9 @@ describe 'Moab::StorageObjectVersion' do
 
     before(:all) do
       @temp_ingests = @temp.join("ingests")
-      @temp_object_dir = @temp_ingests.join(@obj)      
+      @temp_object_dir = @temp_ingests.join(@obj)
     end
-    
+
     after(:all) do
       @temp_ingests.rmtree if @temp_ingests.exist?
     end
@@ -17,7 +17,7 @@ describe 'Moab::StorageObjectVersion' do
     # Unit test for constructor: {Moab::StorageObjectVersion#initialize}
     # Which returns an instance of: [Moab::StorageObjectVersion]
     # For input parameters:
-    # * storage_object [Moab::StorageObject] = The object representing the digital object's storage location 
+    # * storage_object [Moab::StorageObject] = The object representing the digital object's storage location
     # * version_id [Integer] = The ordinal version number
     specify 'Moab::StorageObjectVersion#initialize' do
 
@@ -157,9 +157,19 @@ describe 'Moab::StorageObjectVersion' do
     # * file_id [String] = The name of the file (path relative to base directory)
     specify 'Moab::StorageObjectVersion#find_signature' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
-      expect(signature.fixity).to eq({:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"})
+      expected_sig_fixity = {
+        :size=>"40873",
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad", :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+      }
+      expect(signature.fixity).to eq(expected_sig_fixity)
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
-      expect(signature.fixity).to eq({:size=>"32915", :md5=>"c1c34634e2f18a354cd3e3e1574c3194", :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"})
+      expected_sig_fixity = {
+        :size=>"32915",
+        :md5=>"c1c34634e2f18a354cd3e3e1574c3194",
+        :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed", :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+      }
+      expect(signature.fixity).to eq(expected_sig_fixity)
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
       expect(signature.size).to eq(File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')))
 
@@ -206,9 +216,15 @@ describe 'Moab::StorageObjectVersion' do
     # * file_signature [Moab::FileSignature] = The signature of the file
     specify 'Moab::StorageObjectVersion#find_filepath_using_signature' do
       file_category = 'content'
-      file_signature = Moab::FileSignature.new(:size=>40873,:md5=>"1a726cd7963bd6d3ceb10a8c353ec166",:sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad")
+      fixity_hash = {
+        :size=>40873,
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      }
+      file_signature = Moab::FileSignature.new(fixity_hash)
+      exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
       expect(@existing_storage_object_version.find_filepath_using_signature(file_category, file_signature).
-          to_s).to match(%r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg})
+          to_s).to match(exp_regex)
 
       # def find_filepath_using_signature(file_category, file_signature)
       #   catalog_filepath = signature_catalog.catalog_filepath(file_signature)
@@ -651,7 +667,7 @@ EOF
       detail_hash=result.to_hash(verbose=true)
       detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
       #puts JSON.pretty_generate(detail_hash)
-      expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF 
+      expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
       {
   "version_additions": {
     "verified": false,
@@ -735,7 +751,3 @@ EOF
   end
 
 end
-
-
-
-
