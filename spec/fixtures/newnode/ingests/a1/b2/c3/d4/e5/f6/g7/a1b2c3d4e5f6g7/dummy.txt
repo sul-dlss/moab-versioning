@@ -1,0 +1,5 @@
+here's some text.
+
+this isn't a real/well-formed moab.
+
+it was initially added to test the method for getting the size of a moab on disk.
