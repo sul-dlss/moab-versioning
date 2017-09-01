@@ -18,8 +18,11 @@ AllCops:
 Metrics/LineLength:
   Max: 150 # would like to reduce this to 120
 
-
 Style/FileName:
   Exclude:
     - 'Gemfile'
     - 'moab-versioning.gemspec'
+
+# because it's expensive to care
+Style/StringLiterals:
+  Enabled: false
