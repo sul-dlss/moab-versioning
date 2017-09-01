@@ -57,6 +57,15 @@ describe 'Moab::StorageRepository' do
       expect(so.deposit_bag_pathname).to eq(@derivatives.join('packages/jq937jp0017'))
 
     end
+    
+    it 'Moab::StorageRepository#object_size returns the size of a moab object' do
+      # values may differ from file system to file system (which is to be expected).
+      # if this test fails on your mac, make sure you don't have any extraneous .DS_Store files
+      # lingering in the fixture directories.
+      allow(@storage_repository).to receive(:storage_branch).and_return('jq937jp0017')
+      expect(@storage_repository.object_size('jq937jp0017')).to be_between(345_000, 346_000)
+    end
+
 
     specify 'Moab::StorageRepository#storage_object' do
       mock_so = double(Moab::StorageObject)
