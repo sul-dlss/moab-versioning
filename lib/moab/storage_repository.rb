@@ -102,6 +102,23 @@ module Moab
       storage_object
     end
 
+    def object_size(object_id)
+      root = find_storage_root(object_id)
+      p root
+      storage_pathname = root.join(storage_trunk,storage_branch(object_id)).to_s
+      
+      p storage_pathname
+      size = 0
+      Find.find(storage_pathname) do |path|
+        if FileTest.directory?(path)
+          Find.prune if File.basename(path)[0] == '.'
+        else
+          size += FileTest.size(path)
+        end
+      end
+      size
+    end
+
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param create [Boolean] If true, the object home directory should be created if it does not exist
     # @return [StorageObject] The representation of a digitial object's storage directory, which must exist.

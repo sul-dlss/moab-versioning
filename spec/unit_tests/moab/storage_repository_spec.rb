@@ -58,6 +58,11 @@ describe 'Moab::StorageRepository' do
 
     end
 
+    it 'will return the size of a moab object' do
+      expect(@storage_repository.object_size('jq937jp0017')).to eq(10230)
+    end
+
+
     specify 'Moab::StorageRepository#storage_object' do
       mock_so = double(Moab::StorageObject)
       expect(@storage_repository).to receive(:find_storage_object).twice.and_return(mock_so)
