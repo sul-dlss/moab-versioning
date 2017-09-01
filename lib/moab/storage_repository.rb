@@ -103,11 +103,8 @@ module Moab
     end
 
     def object_size(object_id)
-      root = find_storage_root(object_id)
-      p root
-      storage_pathname = root.join(storage_trunk,storage_branch(object_id)).to_s
-      
-      p storage_pathname
+      storage_pathname = find_storage_object(object_id).object_pathname
+      p "#{object_id} storage_pathname=#{storage_pathname}"
       size = 0
       Find.find(storage_pathname) do |path|
         if FileTest.directory?(path)
