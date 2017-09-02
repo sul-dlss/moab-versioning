@@ -37,7 +37,10 @@ describe 'Stanford::StorageRepository' do
     end
 
     it 'Stanford::StorageRepository#object_size returns the size of a moab object' do
-      expect(@storage_repository.object_size('jq937jp0017')).to eq(388471)
+      # values may differ from file system to file system (which is to be expected).
+      # if this test fails on your mac, make sure you don't have any extraneous .DS_Store files
+      # lingering in the fixture directories.
+      expect(@storage_repository.object_size('jq937jp0017')).to be_between(345_000, 346_000)
     end
     
     specify 'Stanford::StorageRepository#druid_tree' do
