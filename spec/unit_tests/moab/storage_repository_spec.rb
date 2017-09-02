@@ -59,7 +59,8 @@ describe 'Moab::StorageRepository' do
     end
 
     it 'Moab::StorageRepository#object_size returns the size of a moab object' do
-      expect(@storage_repository.object_size('a1b2c3d4e5f6g7')).to eq(138)
+      allow(@storage_repository).to receive(:storage_branch).and_return('jq937jp0017')
+      expect(@storage_repository.object_size('jq937jp0017')).to eq(388471)
     end
 
 
