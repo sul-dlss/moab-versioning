@@ -1,36 +1,22 @@
 require 'spec_helper'
 
-class MyClass < Serializer::Serializable
-  include HappyMapper
-
-  attribute :my_attr, String
-  element :my_element, String
-
-end
-
-# Unit tests for class {Serializer::Serializable}
 describe 'Serializer::Serializable' do
 
   before(:all) do
-    @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
-    @v1_content = @v1_inventory.groups[0]
+    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+    @v1_content = v1_inventory.groups[0]
 
-    @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-    @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
-    @v3_content = @v3_inventory.groups[0]
+    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
+    @v3_content = v3_inventory.groups[0]
   end
 
-  describe '=========================== CLASS METHODS ===========================' do
+  context '.deep_diff' do
+    let(:hash1) { @v1_content.files[0].to_hash }
+    let(:hash3) { @v3_content.files[0].to_hash }
 
-    # Unit test for method: {Serializer::Serializable.deep_diff}
-    # Which returns: [Hash] Generate a hash containing the differences between two hashes (recursively descend parallel trees of hashes)
-    # For input parameters:
-    # * hashes [Array<Hash>] = The hashes to be compared, with optional name tags
-    specify 'Serializer::Serializable.deep_diff' do
-
-      hash1 = @v1_content.files[0].to_hash
-      hash3 = @v3_content.files[0].to_hash
+    it 'specified versions' do
       diff = Serializer::Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
       expect(diff["signature"]).to hash_match({
               "size" => {
@@ -51,7 +37,9 @@ describe 'Serializer::Serializable' do
               }
           })
       expect(diff["instances"]["intro-1.jpg"]["v0001"]["path"]).to eq("intro-1.jpg")
+    end
 
+    it 'no versions specified' do
       diff = Serializer::Serializable.deep_diff(hash1, hash3)
       expect(diff["signature"]).to hash_match({
             "size" => {
@@ -71,232 +59,126 @@ describe 'Serializer::Serializable' do
                 :right => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
             }
         })
+    end
 
+    it 'single argument raises ArgumentError' do
       expect{Serializer::Serializable.deep_diff(hash1)}.to raise_exception ArgumentError
-
-
-      # def Serializable.deep_diff(*hashes)
-      #   diff = Hash.new
-      #   case hashes.length
-      #     when 4
-      #       ltag, left, rtag, right = hashes
-      #     when 2
-      #       ltag, left, rtag, right = :left, hashes[0], :right, hashes[1]
-      #     else
-      #       raise "wrong number of arguments (expected 2 or 4)"
-      #   end
-      #   (left.keys | right.keys).each do |k|
-      #     if left[k] != right[k]
-      #       if left[k].is_a?(Hash) && right[k].is_a?(Hash)
-      #         diff[k] = deep_diff(ltag, left[k], rtag, right[k])
-      #       else
-      #         diff[k] = Hash.[](ltag, left[k], rtag, right[k])
-      #       end
-      #     end
-      #   end
-      #   diff
-      # end
     end
-
   end
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Serializer::Serializable#initialize}
-    # Which returns an instance of: [Serializer::Serializable]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Serializer::Serializable#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      serializable = Serializer::Serializable.new(opts)
-      expect(serializable).to be_instance_of(Serializer::Serializable)
-
-      # test initialization with options hash
-      opts = Hash.new
-      expect{Serializer::Serializable.new(opts)}.not_to raise_exception
-
-     # test initialization with options hash containing a bad variable
-      opts = Hash.new
-      opts[:dummy] = 'dummy'
-      expect{Serializer::Serializable.new(opts)}.to raise_exception(RuntimeError, 'dummy is not a variable name in Serializer::Serializable')
-
-      # def initialize(opts={})
-      #   opts.each do |key, value|
-      #     if variable_names.include?(key.to_s) || key == :test
-      #       instance_variable_set("@#{key}", value)
-      #     else
-      #       raise "#{key} is not a variable name in #{self.class.name}"
-      #     end
-      #   end
-      # end
+  context '#initialize' do
+    it 'empty options Hash does not raise exception' do
+      expect{Serializer::Serializable.new(Hash.new)}.not_to raise_exception
     end
 
+    it 'options hash with bad variable raises exception' do
+      opts = { dummy: 'dummy' }
+      err_msg = 'dummy is not a variable name in Serializer::Serializable'
+      expect{Serializer::Serializable.new(opts)}.to raise_exception(RuntimeError, err_msg)
+    end
   end
 
-  describe '=========================== INSTANCE METHODS ===========================' do
-
-    # Unit test for method: {Serializer::Serializable#variables}
-    # Which returns: [Array] A list of HappyMapper xml attribute, element and text nodes declared for the class
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#variables' do
+  context '#variables' do
+    it 'FileInstance has 2' do
       expect(Moab::FileInstance.new.variables().size).to eq(2)
-      expect(Moab::SignatureCatalog.new.variables().size).to eq(7)
-      expect(Moab::FileSignature.new.variables().size).to eq(4)
-
-      expect(MyClass.new.variables.size).to eq(2)
-
-      # def variables
-      #   attributes = self.class.attributes
-      #   elements   = self.class.elements
-      #   attributes + elements
-      #   # text_node enhancement added by unhappymapper, which is not being used
-      #   # It enables elements having both attributes and a text value
-      #   #text_node = []
-      #   #if self.class.instance_variable_defined?("@text_node")
-      #   #  text_node << self.class.instance_variable_get("@text_node")
-      #   #end
-      #   #attributes + elements + text_node
-      #   end
-      #   attributes + elements + text_node
-      # end
     end
+    it 'SignatureCatalog has 7' do
+      expect(Moab::SignatureCatalog.new.variables().size).to eq(7)
+    end
+    it 'FileSignature has 4' do
+      expect(Moab::FileSignature.new.variables().size).to eq(4)
+    end
+    it 'subclass has attributes and elements' do
+      class MyClass < Serializer::Serializable
+        include HappyMapper
 
-    # Unit test for method: {Serializer::Serializable#variable_names}
-    # Which returns: [Array] Extract the names of the variables
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#variable_names' do
+        attribute :my_attr, String
+        element :my_element, String
+      end
+      expect(MyClass.new.variables.size).to eq(2)
+    end
+  end
+
+  context '#variable_names' do
+    it 'FileInstance' do
       expect(Moab::FileInstance.new.variable_names()).to eq(["path", "datetime"])
+    end
+    it 'SignatureCatalog' do
       expect(Moab::SignatureCatalog.new.variable_names()).to eq(
           ["digital_object_id", "version_id", "catalog_datetime", "file_count", "byte_count", "block_count", "entries"]
       )
+    end
+    it 'FileSignature' do
       expect(Moab::FileSignature.new.variable_names()).to eq(["size", "md5", "sha1", "sha256"])
-
-      # def variable_names
-      #   variables.collect { |variable| variable.name}
-      # end
     end
+  end
 
-    # Unit test for method: {Serializer::Serializable#key_name}
-    # Which returns: [String] Determine which attribute was marked as an object instance key. Keys are indicated by
-    #  option :key=true when declaring the object's variables. This follows the same convention as used by DataMapper
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#key_name' do
+  context '#key_name' do
+    it 'path for FileInstance' do
       expect(Moab::FileInstance.new.key_name()).to eq("path")
-      expect(Moab::SignatureCatalog.new.key_name()).to eq("version_id")
-      expect(Moab::FileSignature.new.key_name()).to eq(nil)
-
-      # def key_name
-      #   if not defined?(@key_name)
-      #     @key_name = nil
-      #     self.class.attributes.each do |attribute|
-      #       if attribute.options[:key]
-      #         @key_name = attribute.name
-      #         break
-      #       end
-      #     end
-      #   end
-      #   @key_name
-      # end
     end
+    it 'version_id for SignatureCatalog' do
+      expect(Moab::SignatureCatalog.new.key_name()).to eq("version_id")
+    end
+    it 'nil for FileSignature' do
+      expect(Moab::FileSignature.new.key_name()).to eq(nil)
+    end
+  end
 
-    # Unit test for method: {Serializer::Serializable#key}
-    # Which returns: [String] For the current object instance, return the string to use as a hash key
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#key' do
+  context '#key' do
+    it 'FileInstance' do
       file_instance = Moab::FileInstance.new
       expect(file_instance).to receive(:path)
       file_instance.key()
+    end
+    it 'SignatureCatalog' do
       signature_catalog = Moab::SignatureCatalog.new
       expect(signature_catalog).to receive(:version_id)
       signature_catalog.key()
+    end
+    it 'FileSignature key is nil' do
       file_signature = Moab::FileSignature.new
       expect(file_signature.key()).to eq(nil)
-
-      # def key
-      #   return self.send(key_name) if key_name
-      #   nil
-      # end
     end
+  end
 
-    # Unit test for method: {Serializer::Serializable#array_to_hash}
-    # Which returns: [Hash] Generate a hash from an array of objects. If the array member has a field tagged as a
-    #   key, that field will be used as the hash.key. Otherwise the index position of the array member will be
-    #   used as the key
-    # For input parameters:
-    # * array [Array] = The array to be converted to a hash
-    specify 'Serializer::Serializable#array_to_hash' do
-      array = %w{this is an array of words}
-      expect(Serializer::Serializable.new.array_to_hash(array)).to hash_match({
-          0 => "this",
-          1 => "is",
-          2 => "an",
-          3 => "array",
-          4 => "of",
-          5 => "words"
-      })
+  specify '#array_to_hash' do
+    array = %w{this is an array of words}
+    expect(Serializer::Serializable.new.array_to_hash(array)).to hash_match({
+        0 => "this",
+        1 => "is",
+        2 => "an",
+        3 => "array",
+        4 => "of",
+        5 => "words"
+    })
+  end
 
-      # def array_to_hash(array)
-      #   item_hash = Hash.new
-      #   array.each_index do |index|
-      #     item = array[index]
-      #     ikey = item.respond_to?(:key) ?  item.key : index
-      #     item_hash[ikey] =  item.respond_to?(:to_hash) ? item.to_hash : item
-      #   end
-      #   item_hash
-      # end
-    end
+  specify '#to_hash' do
+    additions = Moab::FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
+    hash = additions.groups[0].to_hash()
+    hash['files'][0].delete('instances')
+    expect(hash).to hash_match({
+           "group_id" => "content",
+        "data_source" => "",
+         "file_count" => 1,
+         "byte_count" => 32915,
+        "block_count" => 33,
+              "files" => {
+            0 => {
+                "signature" => {
+                    "size" => 32915,
+                     "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
+                    "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                    "sha256" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+                }
+            }
+        }
+    })
+  end
 
-    # Unit test for method: {Serializer::Serializable#to_hash}
-    # Which returns: [Hash] Recursively generate an Hash containing the object's properties
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#to_hash' do
-      additions = Moab::FileInventory.read_xml_file(@manifests.join("v0002"),'additions')
-      hash = additions.groups[0].to_hash()
-      hash['files'][0].delete('instances')
-      expect(hash).to hash_match({
-             "group_id" => "content",
-          "data_source" => "",
-           "file_count" => 1,
-           "byte_count" => 32915,
-          "block_count" => 33,
-                "files" => {
-              0 => {
-                  "signature" => {
-                      "size" => 32915,
-                       "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
-                      "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                      "sha256" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
-                  }
-              }
-          }
-      })
-
-      # def to_hash
-      #   oh = Hash.new
-      #   variables.each do |variable|
-      #     key = variable.options[:tag] || variable.name.to_s
-      #     value = self.send(variable.name)
-      #     case value
-      #       when Array
-      #         oh[key] = array_to_hash(value)
-      #       when Serializable
-      #         oh[key] = value.to_hash
-      #       else
-      #         oh[key] = value
-      #     end
-      #   end
-      #   oh
-      # end
-    end
-
-    # Unit test for method: {Serializer::Serializable#diff}
-    # Which returns: [Hash] Generate a hash containing the differences between two objects of the same type
-    # For input parameters:
-    # * other [Serializable] = The other object being compared
-    specify 'Serializer::Serializable#diff' do
+  context '#diff' do
+    it 'file read from disk' do
       diff = @v1_content.files[0].diff(@v3_content.files[0])
       diff.delete('instances')
       expect(diff).to hash_match({
@@ -319,38 +201,20 @@ describe 'Serializer::Serializable' do
              }
           }
       })
-
-      opts = Hash.new
-      opts[:path] = @temp.join('path1').to_s
-      opts[:datetime] = "Apr 18 21:51:31 UTC 2012"
+    end
+    it 'FileInstance diff' do
+      opts = { path: @temp.join('path1').to_s, datetime: "Apr 18 21:51:31 UTC 2012" }
       file_instance1 = Moab::FileInstance.new(opts)
       opts[:path] = @temp.join('path2').to_s
       file_instance2 = Moab::FileInstance.new(opts)
       diff = file_instance1.diff(file_instance2)
       expect(diff.keys[0]).to eq('path')
       expect(diff['path']).to be_instance_of Hash
-
-      # def diff(other)
-      #   raise "Cannot compare different classes" if self.class != other.class
-      #   left = other.to_hash
-      #   right = self.to_hash
-      #   if self.key.nil? or other.key.nil?
-      #     ltag = :old
-      #     rtag = :new
-      #   else
-      #     ltag = other.key
-      #     rtag = self.key
-      #   end
-      #   Serializable.deep_diff(ltag, left, rtag, right)
-      # end
     end
+  end
 
-    # Unit test for method: {Serializer::Serializable#to_json}
-    # Which returns: [String] Generate JSON output from a hash of the object's variables
-    # For input parameters: (None)
-    specify 'Serializer::Serializable#to_json' do
-      #puts JSON.pretty_generate(@v1_content.to_hash)
-     expect((@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning')).to eq <<EOF
+  specify '#to_json' do
+    expect((@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning')).to eq <<EOF
 {
   "group_id": "content",
   "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content",
@@ -445,8 +309,5 @@ describe 'Serializer::Serializable' do
   }
 }
 EOF
-    end
-
   end
-
 end
