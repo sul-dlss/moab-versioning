@@ -1,46 +1,30 @@
 require 'spec_helper'
 
-# Unit tests for class {Stanford::StorageRepository}
 describe 'Stanford::StorageRepository' do
-  
-  describe '=========================== CONSTRUCTOR ===========================' do
-    
-     specify 'Stanford::StorageRepository#initialize' do
-       
-      storage_repository = Stanford::StorageRepository.new()
-      expect(storage_repository).to be_instance_of(Stanford::StorageRepository)
 
-    end
-  
-  end
-  
-  describe '=========================== INSTANCE METHODS ===========================' do
-    
-    before(:each) do
-      @storage_repository = Stanford::StorageRepository.new()
-      @object_id = @druid
+  let(:storage_repository) { Stanford::StorageRepository.new() }
 
-    end
-
-    
-    specify 'Stanford::StorageRepository#storage_branch' do
+  context '#storage_branch' do
+    it 'Moab::Config.path_method :druid_tree' do
       Moab::Config.configure do
         path_method :druid_tree
       end
-      expect(@storage_repository.storage_branch(@object_id).to_s).to eq('jq/937/jp/0017/jq937jp0017')
-
+      expect(storage_repository.storage_branch(@druid).to_s).to eq('jq/937/jp/0017/jq937jp0017')
+    end
+    it 'Moab::Config.path_method :druid' do
       Moab::Config.configure do
         path_method :druid
       end
-      expect(@storage_repository.storage_branch(@object_id).to_s).to eq('jq937jp0017')
-
+      expect(storage_repository.storage_branch(@druid).to_s).to eq('jq937jp0017')
     end
-    
-    specify 'Stanford::StorageRepository#druid_tree' do
-      expect(@storage_repository.druid_tree(@object_id)).to eq("jq/937/jp/0017/jq937jp0017")
-      expect{@storage_repository.druid_tree('123cd456nm')}.to raise_exception /Identifier has invalid suri syntax/
-    end
-  
   end
 
+  context '#druid_tree' do
+    it 'has expected value for valid druid' do
+      expect(storage_repository.druid_tree(@druid)).to eq("jq/937/jp/0017/jq937jp0017")
+    end
+    it 'raises exception for invalid druid' do
+      expect{storage_repository.druid_tree('123cd456nm')}.to raise_exception /Identifier has invalid suri syntax/
+    end
+  end
 end

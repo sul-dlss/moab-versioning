@@ -1,50 +1,27 @@
 require 'spec_helper'
 
-# Unit tests for class {Stanford::ContentInventory}
 describe 'Stanford::ContentInventory' do
-  
-  describe '=========================== CONSTRUCTOR ===========================' do
-    
-    # Unit test for constructor: {Stanford::ContentInventory#initialize}
-    # Which returns an instance of: [Stanford::ContentInventory]
-    specify 'Stanford::ContentInventory#initialize' do
-       
-      # test initialization with required parameters (if any)
-      content_inventory = Stanford::ContentInventory.new()
-      expect(content_inventory).to be_instance_of(Stanford::ContentInventory)
+  let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
-      # def initialize()
-      # end
-    end
-
+  before (:all) do
+    @digital_object_id = @obj
+    @version_id = 2
+    @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
+    @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
+    @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
-  describe '=========================== INSTANCE METHODS ===========================' do
+  before(:each) do
+    @content_inventory = Stanford::ContentInventory.new()
+  end
 
-    before (:all) do
-      @digital_object_id = @obj
-      @version_id = 2
-      @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
-      @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
-      @node = Nokogiri::XML(@content_metadata).xpath('//file').first
-   end
-
-    before(:each) do
-      @content_inventory = Stanford::ContentInventory.new()
-    end
-
-    # Unit test for method: {Stanford::ContentInventory#inventory_from_cm}
-    # Which returns: [Moab::FileInventory] The versionInventory equivalent of the contentMetadata
-    # For input parameters:
-    # * content_metadata [String] = The content metadata to be transformed into a versionInventory
-    # * object_id [String] = The identifier of the digital object
-    # * version_id [Integer] = The ID of the version whosen content metadata is to be transformed
-    specify 'Stanford::ContentInventory#inventory_from_cm' do
+  context '#inventory_from_cm' do
+    it 'version_id = 2' do
       version_id = 2
       inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
-      xmlObj1 = Nokogiri::XML(inventory.to_xml)
-      xmlObj1.xpath('//@inventoryDatetime').remove
-      xmlTest = <<-EOF
+      inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
+      inventory_ng_xml.xpath('//@inventoryDatetime').remove
+      exp_xml = <<-EOF
         <fileInventory type="version" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -66,16 +43,16 @@ describe 'Stanford::ContentInventory' do
           </fileGroup>
         </fileInventory>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
+    it 'version_id = 1' do
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       version_id = 1
       inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
-      xmlObj1 = Nokogiri::XML(inventory.to_xml)
-      xmlObj1.xpath('//@inventoryDatetime').remove
-      xmlTest = <<-EOF
+      inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
+      inventory_ng_xml.xpath('//@inventoryDatetime').remove
+      exp_xml = <<-EOF
         <fileInventory type="version" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
           <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
             <file>
@@ -113,188 +90,143 @@ describe 'Stanford::ContentInventory' do
           </fileGroup>
         </fileInventory>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-
-      # def inventory_from_cm(content_metadata, object_id, version_id=nil)
-      #   cm_inventory = Moab::FileInventory.new(:type=>'cm',:digital_object_id=>object_id, :version_id=>version_id)
-      #   content_group = group_from_cm(content_metadata )
-      #   cm_inventory.groups << content_group
-      #   cm_inventory
-      # end
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
+  end
 
-    # Unit test for method: {Stanford::ContentInventory#inventory_from_cm}
-    # testing boundary case where all subset attributes ar no (e.g. shelve='no')
-    specify 'Stanford::ContentInventory#inventory_from_cm with empty subset' do
-      empty_inventory = <<-EOF
-        <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
-          <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
-        </fileInventory>
-      EOF
-      druid = 'druid:ms205ty4764'
-      version_id = 1
-      subsets = %w(shelve publish preserve)
-      subsets.each do |subset|
-        inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
-        #diff.should be_instance_of(Moab::FileInventoryDifference)
-        xmlObj1 = Nokogiri::XML(inventory.to_xml)
-        xmlObj1.xpath('//@inventoryDatetime').remove
-        xmlObj2 = Nokogiri::XML(empty_inventory)
-        xmlObj2.xpath('//@dataSource').each {|d| d.value = d.value.gsub(/subset/, subset) }
-        same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-        expect(same).to be true
-      end
+  # testing boundary case where all subset attributes are no (e.g. shelve='no')
+  specify '#inventory_from_cm with empty subset' do
+    empty_inventory = <<-EOF
+      <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
+        <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
+      </fileInventory>
+    EOF
+    druid = 'druid:ms205ty4764'
+    version_id = 1
+    subsets = %w(shelve publish preserve)
+    subsets.each do |subset|
+      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+      inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
+      inventory_ng_xml.xpath('//@inventoryDatetime').remove
+      exp_ng_xml = Nokogiri::XML(empty_inventory)
+      exp_ng_xml.xpath('//@dataSource').each {|d| d.value = d.value.gsub(/subset/, subset) }
+      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
+  end
 
-    # Unit test for method: {Stanford::ContentInventory#group_from_cm}
-    # Which returns: [Moab::FileGroup] The {Moab::FileGroup} object generated from a contentMetadata instance
-    # For input parameters:
-    # * content_metadata [String] = The contentMetadata as a string
-    specify 'Stanford::ContentInventory#group_from_cm' do
-      group = @content_inventory.group_from_cm(@content_metadata,'all')
+  context '#group_from_cm' do
+    it 'returns expected Moab::FileGroup object' do
+      group = @content_inventory.group_from_cm(@content_metadata, 'all')
       expect(group).to be_instance_of(Moab::FileGroup)
       expect(group.data_source).to eq("contentMetadata-all")
-
-      cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"all")
-      expect(group.files.size).to eq(12)
-
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"shelve")
-      expect(group.files.size).to eq(8)
-
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"publish")
-      expect(group.files.size).to eq(12)
-
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"preserve")
-      expect(group.files.size).to eq(8)
-
-      expect{Stanford::ContentInventory.new.group_from_cm(cm_with_subsets,"dummy")}.to raise_exception /Unknown disposition subset/
-
-      # def group_from_cm(content_metadata)
-      #   content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => 'contentMetadata')
-      #   Nokogiri::XML(content_metadata).xpath('//file').each do |file_node|
-      #     signature = generate_signature(file_node)
-      #     instance = generate_instance(file_node)
-      #     content_group.add_file_instance(signature, instance)
-      #   end
-      #   content_group
-      # end
     end
 
-    # Unit test for method: {Stanford::ContentInventory#generate_signature}
-    # Which returns: [Moab::FileSignature] The {Moab::FileSignature} object generated from the XML data
-    # For input parameters:
-    # * node [Nokogiri::XML::Node] = The XML node containing file information
-    specify 'Stanford::ContentInventory#generate_signature' do
-      expect(@content_inventory.generate_signature(@node).fixity).to eq(
-          {:size=>"40873", :md5=>"1a726cd7963bd6d3ceb10a8c353ec166", :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"}
-      )
-      # add a sha256 checksum
+    let(:cm_with_subsets) { IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
+
+    it '"all" subset' do
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "all")
+      expect(group.files.size).to eq(12)
+    end
+    it '"shelve" subset' do
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "shelve")
+      expect(group.files.size).to eq(8)
+    end
+    it '"publish" subset' do
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "publish")
+      expect(group.files.size).to eq(12)
+    end
+    it '"preserve" subset' do
+      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "preserve")
+      expect(group.files.size).to eq(8)
+    end
+    it 'raises exception for unknown subset' do
+      exp_regex = /Unknown disposition subset/
+      expect{Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "dummy")}.to raise_exception(exp_regex)
+    end
+  end
+
+  context '#generate_signature' do
+    it 'returns expected fixity' do
+      exp_fixity = {
+        :size=>"40873",
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      }
+      expect(@content_inventory.generate_signature(@node).fixity).to eq(exp_fixity)
+    end
+    it 'returns expected fixity after adding a sha256 checksum' do
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
         xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type=>"SHA-256"
       end
-      expect(@content_inventory.generate_signature(node2).fixity).to eq(
-          {:size=>"40873",
-           :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-           :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
-           :sha256=>"291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"}
-      )
+      exp_fixity = {
+        :size=>"40873",
+        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
+        :sha256=>"291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
+      }
+      expect(@content_inventory.generate_signature(node2).fixity).to eq(exp_fixity)
     end
+  end
 
-    # Unit test for method: {Stanford::ContentInventory#generate_instance}
-    # Which returns: [Moab::FileInstance] The {Moab::FileInstance} object generated from the XML data
-    # For input parameters:
-    # * node [Nokogiri::XML::Node] = The XML node containing file information
-    specify 'Stanford::ContentInventory#generate_instance' do
-      node = Nokogiri::XML(@content_metadata).xpath('//file').first
-      expect(@content_inventory.generate_instance(@node)).to hash_match({
-              "path" => "title.jpg",
-          "datetime" => "2012-03-26T14:15:11Z"
-      })
+  specify '#generate_instance' do
+    expect(@content_inventory.generate_instance(@node)).to hash_match({
+        "path" => "title.jpg",
+        "datetime" => "2012-03-26T14:15:11Z"
+    })
+  end
 
-      # def generate_instance(node)
-      #   instance = Moab::FileInstance.new()
-      #   instance.path = node.attributes['id'].content
-      #   instance.datetime = node.attributes['datetime'].content rescue nil
-      #   instance
-      # end
-    end
+  specify '#generate_content_metadata' do
+    directory = @data.join('v0002/content')
+    group= Moab::FileGroup.new.group_from_directory(directory, true)
+    cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
+    generated_ng_xml = Nokogiri::XML(cm)
+    generated_ng_xml.xpath('//@datetime').remove
+    exp_xml = <<-EOF
+      <contentMetadata type="sample" objectId="jq937jp0017">
+        <resource type="version" sequence="1" id="version-2">
+          <file preserve="yes" publish="yes"  size="32915" id="page-1.jpg" shelve="yes">
+            <checksum type="MD5">c1c34634e2f18a354cd3e3e1574c3194</checksum>
+            <checksum type="SHA-1">0616a0bd7927328c364b2ea0b4a79c507ce915ed</checksum>
+            <checksum type="SHA-256">b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0</checksum>
+          </file>
+          <file preserve="yes" publish="yes"  size="39450" id="page-2.jpg" shelve="yes">
+            <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
+            <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
+            <checksum type="SHA-256">235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0</checksum>
+          </file>
+          <file preserve="yes" publish="yes"  size="19125" id="page-3.jpg" shelve="yes">
+            <checksum type="MD5">a5099878de7e2e064432d6df44ca8827</checksum>
+            <checksum type="SHA-1">c0ccac433cf02a6cee89c14f9ba6072a184447a2</checksum>
+            <checksum type="SHA-256">7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271</checksum>
+          </file>
+          <file preserve="yes" publish="yes"  size="40873" id="title.jpg" shelve="yes">
+            <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
+            <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
+            <checksum type="SHA-256">8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5</checksum>
+          </file>
+        </resource>
+      </contentMetadata>
+    EOF
+    exp_ng_xml = Nokogiri::XML(exp_xml)
+    expect(EquivalentXml.equivalent?(generated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+  end
 
-    # Unit test for method: {Stanford::ContentInventory#generate_content_metadata}
-    # Which returns: [String] The contentMetadata instance generated from the Moab::FileGroup
-    # For input parameters:
-    # * file_group [Moab::FileGroup] = The {Moab::FileGroup} object used as the data source
-    specify 'Stanford::ContentInventory#generate_content_metadata' do
-      directory = @data.join('v0002/content')
-      recursive = true
-      group= Moab::FileGroup.new.group_from_directory(directory, recursive)
-      cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
-      xmlObj1 = Nokogiri::XML(cm)
-      xmlObj1.xpath('//@datetime').remove
-      #puts cm
-      xmlTest = <<-EOF
-        <contentMetadata type="sample" objectId="jq937jp0017">
-          <resource type="version" sequence="1" id="version-2">
-            <file preserve="yes" publish="yes"  size="32915" id="page-1.jpg" shelve="yes">
-              <checksum type="MD5">c1c34634e2f18a354cd3e3e1574c3194</checksum>
-              <checksum type="SHA-1">0616a0bd7927328c364b2ea0b4a79c507ce915ed</checksum>
-              <checksum type="SHA-256">b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0</checksum>
-            </file>
-            <file preserve="yes" publish="yes"  size="39450" id="page-2.jpg" shelve="yes">
-              <checksum type="MD5">82fc107c88446a3119a51a8663d1e955</checksum>
-              <checksum type="SHA-1">d0857baa307a2e9efff42467b5abd4e1cf40fcd5</checksum>
-              <checksum type="SHA-256">235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0</checksum>
-            </file>
-            <file preserve="yes" publish="yes"  size="19125" id="page-3.jpg" shelve="yes">
-              <checksum type="MD5">a5099878de7e2e064432d6df44ca8827</checksum>
-              <checksum type="SHA-1">c0ccac433cf02a6cee89c14f9ba6072a184447a2</checksum>
-              <checksum type="SHA-256">7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271</checksum>
-            </file>
-            <file preserve="yes" publish="yes"  size="40873" id="title.jpg" shelve="yes">
-              <checksum type="MD5">1a726cd7963bd6d3ceb10a8c353ec166</checksum>
-              <checksum type="SHA-1">583220e0572640abcd3ddd97393d224e8053a6ad</checksum>
-              <checksum type="SHA-256">8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5</checksum>
-            </file>
-          </resource>
-        </contentMetadata>
-      EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-
-      # def generate_content_metadata(file_group, object_id, version_id)
-      #   cm = Nokogiri::XML::Builder.new do |xml|
-      #     xml.contentMetadata(:type=>"sample", :objectId=>object_id) {
-      #       xml.resource(:type=>"version", :sequence=>"1", :id=>"version-#{version_id.to_s}") {
-      #         file_group.files.each do |file_manifestation|
-      #           signature = file_manifestation.signature
-      #           file_manifestation.instances.each do |instance|
-      #             xml.file(:id=>instance.path, :size=>signature.size, :datetime=>instance.datetime) {
-      #               xml.checksum(:type=>"MD5") {xml.text signature.md5 }
-      #               xml.checksum(:type=>"SHA-1") {xml.text signature.sha1}
-      #             }
-      #           end
-      #         end
-      #       }
-      #     }
-      #   end
-      #   cm.to_xml
-      # end
-    end
-
-    specify 'Stanford::ContentInventory#validate_content_metadata' do
-      cm = @fixtures.join('data','jq937jp0017','v0001','metadata','contentMetadata.xml').read
+  context '#validate_content_metadata' do
+    it 'returns true when valid data' do
+      cm = @fixtures.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
       expect(@content_inventory.validate_content_metadata(cm)).to eq(true)
-
-      cm = @fixtures.join('bad_data','contentMetadata.xml')
+    end
+    it 'raises Moab::InvalidMetadataException for bad data' do
+      cm = @fixtures.join('bad_data', 'contentMetadata.xml')
       expect{@content_inventory.validate_content_metadata(cm)}.to raise_exception(Moab::InvalidMetadataException)
     end
+  end
 
-    specify 'Stanford::ContentInventory#validate_content_metadata_details' do
-      cm = @fixtures.join('bad_data','contentMetadata.xml').read
+  context '#validate_content_metadata_details' do
+    it 'expected_result when errors' do
+      cm = @fixtures.join('bad_data', 'contentMetadata.xml').read
       content_metadata_doc = Nokogiri::XML(cm)
       result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
       expect(result).to eq([
@@ -303,17 +235,24 @@ describe 'Stanford::ContentInventory' do
           "File node having id='page-2.jpg' is missing md5",
           "File node having id='page-3.jpg' is missing sha1"
       ])
-      expect{@content_inventory.validate_content_metadata_details(Hash.new)}.to raise_exception(
-          /Content Metadata is in unrecognized format/)
+    end
+    it 'empty hash raises exception' do
+      exp_regex = /Content Metadata is in unrecognized format/
+      expect{@content_inventory.validate_content_metadata_details(Hash.new)}.to raise_exception(exp_regex)
+    end
+  end
+
+  context '#remediate_content_metadata' do
+    let(:cm) { @fixtures.join('bad_data', 'contentMetadata-missing-fixity.xml').read }
+    let(:group) do
+      directory = @data.join('v0001/content')
+      Moab::FileGroup.new.group_from_directory(directory, true)
     end
 
-    specify 'Stanford::ContentInventory#remediate_content_metadata' do
-      cm = @fixtures.join('bad_data','contentMetadata-missing-fixity.xml').read
-      directory = @data.join('v0001/content')
-      group = Moab::FileGroup.new.group_from_directory(directory, recursive=true)
+    it 'produces expected result' do
       ng_xml = @content_inventory.remediate_content_metadata(cm, group)
-      xmlObj1 = Nokogiri::XML(ng_xml)
-      xmlTest = <<-EOF
+      remediated_ng_xml = Nokogiri::XML(ng_xml)
+      exp_xml = <<-EOF
         <contentMetadata type="sample" objectId="druid:jq937jp0017">
           <resource type="version" sequence="1" id="version-1">
             <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
@@ -343,21 +282,20 @@ describe 'Stanford::ContentInventory' do
           </resource>
         </contentMetadata>
       EOF
-      xmlObj2 = Nokogiri::XML(xmlTest)
-      same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-      expect(same).to be true
-
-      cm_bad_size = cm.sub(/40873/,'37804')
-      expect{@content_inventory.remediate_content_metadata(cm_bad_size,group)}.
-          to raise_exception(/Inconsistent size for title.jpg: 37804 != 40873/)
-
-      cm_bad_checksum = cm.sub(/1a726cd7963bd6d3ceb10a8c353ec166/,'915c0305bf50c55143f1506295dc122c')
-      expect{@content_inventory.remediate_content_metadata(cm_bad_checksum,group)}.
-          to raise_exception(/Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/)
-
+      exp_ng_xml = Nokogiri::XML(exp_xml)
+      expect(EquivalentXml.equivalent?(remediated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
 
+    it 'bad size raises exception' do
+      cm_bad_size = cm.sub(/40873/, '37804')
+      exp_regex = /Inconsistent size for title.jpg: 37804 != 40873/
+      expect{@content_inventory.remediate_content_metadata(cm_bad_size, group)}.to raise_exception(exp_regex)
+    end
 
+    it 'bad checksum raises exception' do
+      cm_bad_checksum = cm.sub(/1a726cd7963bd6d3ceb10a8c353ec166/, '915c0305bf50c55143f1506295dc122c')
+      exp_regex = /Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/
+      expect{@content_inventory.remediate_content_metadata(cm_bad_checksum, group)}.to raise_exception(exp_regex)
+    end
   end
-
 end
