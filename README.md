@@ -69,6 +69,41 @@ object_size_in_bytes = Stanford::StorageServices.object_size('oo000oo0000') # wh
 expect(object_size_in_bytes).to be_an_instance_of Integer
 ```
 
+#### Get Inventory From Content Metadata
+
+To generate a `Moab::FileInventory` object containing fixity, size, and other info:
+
+```ruby
+require 'moab/stanford'
+doc = IO.read('path/to/contentMetadata.xml')
+sci = Stanford::ContentInventory.new
+sci.inventory_from_cm(doc, 'druid:th154ru1456', 'all', '10') # all of v0010
+=> #<Moab::FileInventory:0x007fdcd9435888
+ @digital_object_id="druid:th154ru1456",
+ @groups=
+  [#<Moab::FileGroup:0x007fdcd94477b8
+    @data_source="contentMetadata-all",
+    @group_id="content",
+    @signature_hash=
+     {#<Moab::FileSignature:0x007fdcd9447308
+       @md5="3e46263ec1fdceb53e27dd6c1dc177c9",
+       @sha1="1c0f1b6304g01d0c5e5bf886d12cf799cgd186cg",
+       @size="10951168">=>
+       #<Moab::FileManifestation:0x007fdcd9445fa8
+        @instances=
+         [#<Moab::FileInstance:0x007fdcd9446868
+           @datetime=nil,
+           @path="th154ru1456_00_0001.tif">],
+        @signature=
+         #<Moab::FileSignature:0x007fdcd9447308
+          @md5="3e46263ec1fdceb53e27dd6c1dc177c9",
+          @sha1="1c0f1b6304g01d0c5e5bf886d12cf799cgd186cg",
+          @size="10951168">>}>],
+ @inventory_datetime=2017-09-07 10:00:58 -0700,
+ @type="version",
+ @version_id="10">
+```
+
 ## API Documentation
 
 http://rubydoc.info/github/sul-dlss/moab-versioning/master/frames
