@@ -1,6 +1,7 @@
 Gemfile.lock
 *.gem
 .ruby-version
+.ruby-gemset
 .rvmrc
 .binstubs/
 .bundle/
