@@ -102,6 +102,22 @@ module Moab
       storage_object
     end
 
+    # @param object_id [String] The identifier of the digital object whose size is desired
+    # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
+    # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).
+    def object_size(object_id, include_deposit=false)
+      storage_pathname = find_storage_object(object_id, include_deposit).object_pathname
+      size = 0
+      Find.find(storage_pathname) do |path|
+        if FileTest.directory?(path)
+          Find.prune if File.basename(path)[0] == '.'
+        else
+          size += FileTest.size(path)
+        end
+      end
+      size
+    end
+
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param create [Boolean] If true, the object home directory should be created if it does not exist
     # @return [StorageObject] The representation of a digitial object's storage directory, which must exist.

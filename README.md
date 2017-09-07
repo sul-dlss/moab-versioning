@@ -34,6 +34,12 @@ current_version = StorageServices.current_version('666') # where 666 is the id
 expect(current_version).to be_an_instance_of Integer
 ```
 
+#### Get Size of Moab Object
+```ruby
+object_size_in_bytes = StorageServices.object_size('666') # where 666 is the id
+expect(current_version).to be_an_instance_of Integer
+```
+
 ### Stanford-Specific
 
 #### Configuration
@@ -54,6 +60,13 @@ Note the below has "Stanford::StorageServices", which can be necessary if there 
 ```ruby
 current_version = Stanford::StorageServices.current_version('oo000oo0000') # where oo000oo0000 is the druid
 expect(current_version).to be_an_instance_of Integer
+```
+
+#### Get Size of Moab Object
+
+```ruby
+object_size_in_bytes = Stanford::StorageServices.object_size('oo000oo0000') # where oo000oo0000 is the druid
+expect(object_size_in_bytes).to be_an_instance_of Integer
 ```
 
 ## API Documentation

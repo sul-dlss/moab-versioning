@@ -49,6 +49,10 @@ describe 'Moab::StorageServices' do
     expect(Moab::StorageServices.current_version(@obj)).to eq 3
   end
 
+  specify '.object_size' do
+    expect(Moab::StorageServices.object_size(@obj)).to be_between(340000,350000)
+  end
+
   specify '.version_metadata' do
     vm_ng_xml = Nokogiri::XML(Moab::StorageServices.version_metadata(@obj).read)
     exp_xml = <<-EOF

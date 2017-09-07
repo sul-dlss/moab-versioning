@@ -57,13 +57,23 @@ describe 'Moab::StorageRepository' do
       allow(mock_storage_obj).to receive(:object_pathname).and_return(@mock_path)
       allow(@mock_path).to receive(:exist?).and_return(false)
     end
+
     it 'raises exception when object not found' do
       expect{storage_repo.storage_object('jq937jp0017')}.to raise_exception(Moab::ObjectNotFoundException)
     end
+
     it 'creates path when create set to true' do
       expect(@mock_path).to receive(:mkpath)
       storage_repo.storage_object('jq937jp0017', true)
     end
+  end
+
+  it '#object_size returns the size of a moab object' do
+    # values may differ from file system to file system (which is to be expected).
+    # if this test fails on your mac, make sure you don't have any extraneous .DS_Store files
+    # lingering in the fixture directories.
+    allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
+    expect(storage_repo.object_size('jq937jp0017')).to be_between(345_000, 346_000)
   end
 
   specify "#store_new_object_version" do
