@@ -1,68 +1,37 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::VersionMetadata}
 describe 'Moab::VersionMetadata' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
+  let(:version_metadata) { Moab::VersionMetadata.new({}) }
 
-    # Unit test for constructor: {Moab::VersionMetadata#initialize}
-    # Which returns an instance of: [Moab::VersionMetadata]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::VersionMetadata#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      version_metadata = Moab::VersionMetadata.new(opts)
-      expect(version_metadata).to be_instance_of(Moab::VersionMetadata)
-
-      # test initialization of arrays and hashes
+  context '#initialize' do
+    it 'empty options' do
       expect(version_metadata.versions).to be_kind_of(Array)
+      expect(version_metadata.versions.size).to eq 0
+    end
 
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:versions] = [double(Moab::VersionMetadataEntry.name)]
+    it 'default options' do
+      vm = Moab::VersionMetadata.new()
+      expect(vm.versions).to be_kind_of(Array)
+      expect(vm.versions.size).to eq 0
+    end
+
+    it 'populated options hash' do
+      opts = {
+        digital_object_id: 'Test digital_object_id',
+        versions: [double(Moab::VersionMetadataEntry.name)]
+      }
       version_metadata = Moab::VersionMetadata.new(opts)
-      expect(version_metadata.digital_object_id).to eq(opts[:digital_object_id])
-      expect(version_metadata.versions).to eq(opts[:versions])
-
-      # def initialize(opts={})
-      #   @versions = Array.new
-      #   super(opts)
-      # end
+      expect(version_metadata.digital_object_id).to eq opts[:digital_object_id]
+      expect(version_metadata.versions).to eq opts[:versions]
     end
-
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      opts = {}
-      @version_metadata = Moab::VersionMetadata.new(opts)
-    end
-
-    # Unit test for attribute: {Moab::VersionMetadata#digital_object_id}
-    # Which stores: [String] \@objectId = The digital object identifier
-    specify 'Moab::VersionMetadata#digital_object_id' do
-      value = 'Test digital_object_id'
-      @version_metadata.digital_object_id= value
-      expect(@version_metadata.digital_object_id).to eq(value)
-
-      # attribute :digital_object_id, String, :tag => 'objectId'
-    end
-
-    # Unit test for attribute: {Moab::VersionMetadata#versions}
-    # Which stores: [Array<VersionMetadataEntry>] \[<version>] = An array of version metadata entries, one per version
-    specify 'Moab::VersionMetadata#versions' do
+  context '#versions' do
+    it 'expected values when set' do
       value = [double(Moab::VersionMetadataEntry.name)]
-      @version_metadata.versions= value
-      expect(@version_metadata.versions).to eq(value)
-
-      # has_many :versions, Moab::VersionMetadataEntry
+      version_metadata.versions = value
+      expect(version_metadata.versions).to eq value
     end
-
   end
-
 end
