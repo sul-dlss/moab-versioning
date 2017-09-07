@@ -1,3 +1,8 @@
+Release 2.1.0
+=============
+
+* Add object_size method to Moab::StorageRepository
+
 Release 2.0.0
 =============
 
