@@ -1,45 +1,25 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::SignatureCatalog}
 describe 'Moab::SignatureCatalog' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::SignatureCatalog#initialize}
-    # Which returns an instance of: [Moab::SignatureCatalog]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::SignatureCatalog#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      signature_catalog = Moab::SignatureCatalog.new(opts)
-      expect(signature_catalog).to be_instance_of(Moab::SignatureCatalog)
-
-      # test initialization of arrays and hashes
+  context '#initialize' do
+    it 'empty options hash' do
+      signature_catalog = Moab::SignatureCatalog.new({})
       expect(signature_catalog.entries).to be_kind_of(Array)
       expect(signature_catalog.signature_hash).to be_kind_of(Hash)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:version_id] = 9
-      opts[:catalog_datetime] = "Apr 12 19:36:07 UTC 2012"
+    end
+    it 'options passed in' do
+      opts = {
+        digital_object_id: 'Test digital_object_id',
+        version_id: 9,
+        catalog_datetime: "Apr 12 19:36:07 UTC 2012"
+      }
       signature_catalog = Moab::SignatureCatalog.new(opts)
       expect(signature_catalog.digital_object_id).to eq(opts[:digital_object_id])
       expect(signature_catalog.version_id).to eq(opts[:version_id])
       expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
-
       expect(signature_catalog.file_count).to eq(0)
-
-      # def initialize(opts={})
-      #   @entries = Array.new
-      #   @signature_hash = Hash.new
-      #   super(opts)
-      # end
     end
-
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
