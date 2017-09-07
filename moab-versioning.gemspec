@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yard'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rubocop', '~> 0.49.1' # avoid code churn due to rubocop changes
-  s.add_development_dependency 'rubocop-rspec'
+  s.add_development_dependency 'rubocop-rspec', '~> 1.16.0' # avoid code churn due to rubocop-rspec changes
 
   s.files        = Dir.glob('lib/**/*')
   s.require_path = 'lib'

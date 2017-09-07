@@ -87,10 +87,17 @@ describe 'Moab::FileGroup' do
       expect(file_group.file_count).to eq(before_file_count - 1)
     end
 
-    it '#is_descendent_of_base?' do
-      @new_file_group.base_directory = @fixtures.join('data')
-      expect(@new_file_group.is_descendent_of_base?(@fixtures.join('data/jq937jp0017/v0001'))).to be_truthy
-      expect{@new_file_group.is_descendent_of_base?(@fixtures.join('derivatives/manifests'))}.to raise_exception /is not a descendent of/
+    context "#is_descendent_of_base?" do
+      # FIXME:  shouldn't this method be named descendent_of_base?
+      before(:each) { @new_file_group.base_directory = @fixtures.join('data') }
+      it "true when condition met" do
+        expect(@new_file_group).to be_is_descendent_of_base(@fixtures.join('data/jq937jp0017/v0001'))
+      end
+
+      it "raises exception if false (FIXME!)" do
+        # FIXME:  shouldn't it simply return false?
+        expect{@new_file_group.is_descendent_of_base?(@fixtures.join('derivatives/manifests'))}.to raise_exception /is not a descendent of/
+      end
     end
 
     it 'Can group from bagit subdirectory' do

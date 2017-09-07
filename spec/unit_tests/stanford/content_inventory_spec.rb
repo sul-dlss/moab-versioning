@@ -116,13 +116,13 @@ describe 'Stanford::ContentInventory' do
   end
 
   context '#group_from_cm' do
+    let(:cm_with_subsets) { IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
+
     it 'returns expected Moab::FileGroup object' do
       group = @content_inventory.group_from_cm(@content_metadata, 'all')
       expect(group).to be_instance_of(Moab::FileGroup)
       expect(group.data_source).to eq("contentMetadata-all")
     end
-
-    let(:cm_with_subsets) { IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
 
     it '"all" subset' do
       group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "all")
