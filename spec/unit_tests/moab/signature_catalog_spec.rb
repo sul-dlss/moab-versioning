@@ -22,113 +22,47 @@ describe 'Moab::SignatureCatalog' do
     end
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
+  before(:all) do
+    @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+  end
 
+  describe '.parse sets attributes' do
     before(:all) do
-      @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
       @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
     end
 
-    # Unit test for attribute: {Moab::SignatureCatalog#digital_object_id}
-    # Which stores: [String] The object ID (druid)
-    specify 'Moab::SignatureCatalog#digital_object_id' do
+    specify 'digital_object_id' do
       expect(@signature_catalog.digital_object_id).to eq('druid:jq937jp0017')
-
-      # attribute :digital_object_id, String, :tag => 'objectId'
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#version_id}
-    # Which stores: [Integer] The ordinal version number
-    specify 'Moab::SignatureCatalog#version_id' do
+    specify 'version_id' do
       expect(@signature_catalog.version_id).to eq(1)
-
-      # attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#catalog_datetime}
-    # Which stores: [Time] The datetime at which the catalog was updated
-    specify 'Moab::SignatureCatalog#catalog_datetime' do
+    specify 'catalog_datetime' do
       expect(Time.parse(@signature_catalog.catalog_datetime)).to be_instance_of(Time)
-      @signature_catalog.catalog_datetime= "Apr 12 19:36:07 UTC 2012"
-      expect(@signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
-
-      # attribute :catalog_datetime, Time, :tag => 'catalogDatetime', :on_save => Proc.new {|t| t.to_s}
-
-      # def catalog_datetime=(event_datetime)
-      #   @catalog_datetime=Time.input(event_datetime)
-      # end
-      #
-      # def catalog_datetime
-      #   Time.output(@catalog_datetime)
-      # end
-
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#file_count}
-    # Which stores: [Integer] The total number of data files (dynamically calculated)
-    specify 'Moab::SignatureCatalog#file_count' do
+    specify 'file_count' do
       expect(@signature_catalog.file_count).to eq(11)
-
-      # attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def file_count
-      #   entries.size
-      # end
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#byte_count}
-    # Which stores: [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    specify 'Moab::SignatureCatalog#byte_count' do
+    specify 'byte_count' do
       expect(@signature_catalog.byte_count).to eq(217820)
-
-      # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def byte_count
-      #   entries.inject(0) { |sum, entry| sum + entry.signature.size.to_i }
-      # end
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#block_count}
-    # Which stores: [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    specify 'Moab::SignatureCatalog#block_count' do
+    specify 'block_count' do
       expect(@signature_catalog.block_count).to eq(216)
-
-      # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def block_count
-      #   block_size=1024
-      #   entries.inject(0) { |sum, entry| sum + (entry.signature.size.to_i + block_size - 1)/block_size }
-      # end
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#entries}
-    # Which stores: [Array<Moab::SignatureCatalogEntry>] The set of data groups comprising the version
-    specify 'Moab::SignatureCatalog#entries' do
+    specify 'entries' do
       expect(@signature_catalog.entries.size).to eq(11)
-
-      # def entries=(entry_array)
-      #   entry_array.each do |entry|
-      #     add_entry(entry)
-      #   end
-      # end
-
-      # has_many :entries, Moab::SignatureCatalogEntry, :tag => 'entry'
     end
-
-    # Unit test for attribute: {Moab::SignatureCatalog#signature_hash}
-    # Which stores: [Hash] An index having {Moab::FileSignature} objects as keys and {Moab::SignatureCatalogEntry} objects as values
-    specify 'Moab::SignatureCatalog#signature_hash' do
+    specify 'signature_hash' do
       expect(@signature_catalog.signature_hash.size).to eq(11)
-
-      # def signature_hash=(value)
-      #   @signature_hash = value
-      # end
-
-      # def signature_hash
-      #   @signature_hash
-      # end
     end
+  end
 
+  describe '#catalog_datetime' do
+    it 'reformats date as ISO8601 (UTC Z format)' do
+      signature_catalog = Moab::SignatureCatalog.new
+      signature_catalog.catalog_datetime = "Apr 12 19:36:07 UTC 2012"
+      expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
+    end
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
