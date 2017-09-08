@@ -24,13 +24,15 @@ describe 'Moab::SignatureCatalog' do
 
   before(:all) do
     @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+    @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
+  end
+  before(:each) do
+    @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
+    @original_entry_count = @signature_catalog.entries.count
   end
 
   describe '.parse sets attributes' do
-    before(:all) do
-      @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
-    end
-
     specify 'digital_object_id' do
       expect(@signature_catalog.digital_object_id).to eq('druid:jq937jp0017')
     end
@@ -66,14 +68,6 @@ describe 'Moab::SignatureCatalog' do
       signature_catalog.catalog_datetime = "Apr 12 19:36:07 UTC 2012"
       expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
     end
-  end
-
-  before(:each) do
-    @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
-    @original_entry_count = @signature_catalog.entries.count
-
-    @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
-    @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
   end
 
   specify '#add_entry' do
