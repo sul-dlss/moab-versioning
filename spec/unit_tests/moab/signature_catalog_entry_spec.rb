@@ -1,39 +1,19 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::SignatureCatalogEntry}
 describe 'Moab::SignatureCatalogEntry' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::SignatureCatalogEntry#initialize}
-    # Which returns an instance of: [Moab::SignatureCatalogEntry]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::SignatureCatalogEntry#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
-      expect(signature_catalog_entry).to be_instance_of(Moab::SignatureCatalogEntry)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:version_id] = 26
-      opts[:group_id] = 'Test group_id'
-      opts[:path] = 'Test path'
-      opts[:signature] = double(Moab::FileSignature.name)
-      signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
-      expect(signature_catalog_entry.version_id).to eq(opts[:version_id])
-      expect(signature_catalog_entry.group_id).to eq(opts[:group_id])
-      expect(signature_catalog_entry.path).to eq(opts[:path])
-      expect(signature_catalog_entry.signature).to eq(opts[:signature])
-
-      # def initialize(opts={})
-      #   super(opts)
-      # end
-    end
-
+  specify '#initialize' do
+    opts = {
+      version_id: 26,
+      group_id: 'Test group_id',
+      path: 'Test path',
+      signature: double(Moab::FileSignature.name)
+    }
+    signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
+    expect(signature_catalog_entry.version_id).to eq(opts[:version_id])
+    expect(signature_catalog_entry.group_id).to eq(opts[:group_id])
+    expect(signature_catalog_entry.path).to eq(opts[:path])
+    expect(signature_catalog_entry.signature).to eq(opts[:signature])
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
