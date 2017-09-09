@@ -1,19 +1,6 @@
 require 'spec_helper'
 
 describe 'Moab::FileSignature' do
-
-  specify '#initialize' do
-    opts = {
-      size: 75,
-      md5: 'Test md5',
-      sha1: 'Test sha1'
-    }
-    file_signature = Moab::FileSignature.new(opts)
-    expect(file_signature.size).to eq opts[:size]
-    expect(file_signature.md5).to eq opts[:md5]
-    expect(file_signature.sha1).to eq opts[:sha1]
-  end
-
   let(:title_v1_pathname) { @fixtures.join('data/jq937jp0017/v0001/content/title.jpg') }
   let(:title_v1_signature) { Moab::FileSignature.new.signature_from_file(title_v1_pathname) }
   let(:title_v2_signature) do
@@ -27,6 +14,18 @@ describe 'Moab::FileSignature' do
   let(:page1_v2_signature) do
     page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
     Moab::FileSignature.new.signature_from_file(page1_v2_pathname)
+  end
+
+  specify '#initialize' do
+    opts = {
+      size: 75,
+      md5: 'Test md5',
+      sha1: 'Test sha1'
+    }
+    file_signature = Moab::FileSignature.new(opts)
+    expect(file_signature.size).to eq opts[:size]
+    expect(file_signature.md5).to eq opts[:md5]
+    expect(file_signature.sha1).to eq opts[:sha1]
   end
 
   describe '#set_checksum' do
