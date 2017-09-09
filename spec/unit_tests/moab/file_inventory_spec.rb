@@ -186,39 +186,39 @@ describe 'Moab::FileInventory' do
     file_inventory.write_xml_file(parent_dir, type)
   end
 
-  specify "#summary_fields" do
-    hash = file_inventory.summary
-    expect(hash).to eq({
-      "type" => "version",
-      "digital_object_id" => "druid:jq937jp0017",
-      "version_id" => 1,
-      "file_count" => 11,
-      "byte_count" => 217820,
-      "block_count" => 216,
-      "inventory_datetime" => file_inventory.inventory_datetime,
-      "groups" =>
-        {
-          "metadata" =>
-            {
-              "group_id" => "metadata",
-              "file_count" => 5,
-              "byte_count" => 11388,
-              "block_count" => 13
-            },
-          "content" =>
-            {
-              "group_id" => "content",
-              "file_count" => 6,
-              "byte_count" => 206432,
-              "block_count"=>203
-            }
-        }
-      })
-    expect(hash["type"]).to eq "version"
-    expect(hash["groups"]["metadata"]["file_count"]).to eq 5
-
-    json = file_inventory.to_json(summary=true)
-    expect("#{json}\n").to eq <<-EOF
+  describe "#summary_fields" do
+    specify '#summary' do
+      hash = file_inventory.summary
+      expect(hash).to eq({
+        "type" => "version",
+        "digital_object_id" => "druid:jq937jp0017",
+        "version_id" => 1,
+        "file_count" => 11,
+        "byte_count" => 217820,
+        "block_count" => 216,
+        "inventory_datetime" => file_inventory.inventory_datetime,
+        "groups" =>
+          {
+            "metadata" =>
+              {
+                "group_id" => "metadata",
+                "file_count" => 5,
+                "byte_count" => 11388,
+                "block_count" => 13
+              },
+            "content" =>
+              {
+                "group_id" => "content",
+                "file_count" => 6,
+                "byte_count" => 206432,
+                "block_count"=>203
+              }
+          }
+        })
+    end
+    specify '#to_json summary' do
+      json = file_inventory.to_json(summary=true)
+      expect("#{json}\n").to eq <<-EOF
 {
   "type": "version",
   "digital_object_id": "druid:jq937jp0017",
@@ -242,6 +242,7 @@ describe 'Moab::FileInventory' do
     }
   }
 }
-    EOF
+      EOF
+    end
   end
 end
