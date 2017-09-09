@@ -44,7 +44,7 @@ describe 'Moab::FileSignature' do
       )
     end
     it 'unknown checksum type' do
-      expect{file_sig.set_checksum('xyz', 'dummy')}.to raise_exception(/Unknown checksum type 'xyz'/)
+      expect{file_sig.set_checksum('xyz', 'dummy')}.to raise_exception(ArgumentError, /Unknown checksum type 'xyz'/)
     end
   end
 
