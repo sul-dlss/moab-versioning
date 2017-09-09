@@ -18,41 +18,18 @@ describe 'Moab::FileManifestation' do
     end
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
+  describe '#signature' do
+    let(:file_manifestation) { Moab::FileManifestation.new({}) }
+    let(:value) { double(Moab::FileSignature.name) }
 
-    before(:all) do
-      opts = {}
-      @file_manifestation = Moab::FileManifestation.new(opts)
+    specify 'single value' do
+      file_manifestation.signature = value
+      expect(file_manifestation.signature).to eq value
     end
-
-    # Unit test for attribute: {Moab::FileManifestation#signature}
-    # Which stores: [Moab::FileSignature] The fixity data of the file instance
-    specify 'Moab::FileManifestation#signature' do
-      value = double(Moab::FileSignature.name)
-      @file_manifestation.signature= value
-      expect(@file_manifestation.signature).to eq(value)
-      @file_manifestation.signature= [value]
-      expect(@file_manifestation.signature).to eq(value)
-
-      # def signature=(signature)
-      #   @signature = signature.is_a?(Array) ? signature[0] : signature
-      # end
-
-      # def signature
-      #   @signature.is_a?(Array) ? @signature[0] : @signature
-      # end
+    specify 'becomes first value if set to Array of values' do
+      file_manifestation.signature = [value]
+      expect(file_manifestation.signature).to eq value
     end
-
-    # Unit test for attribute: {Moab::FileManifestation#instances}
-    # Which stores: [Array<Moab::FileInstance>] The location(s) of the file manifestation's file instances
-    specify 'Moab::FileManifestation#instances' do
-      value = double(Moab::FileInstance.name)
-      @file_manifestation.instances= value
-      expect(@file_manifestation.instances).to eq(value)
-
-      # has_many :instances, Moab::FileInstance
-    end
-
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
