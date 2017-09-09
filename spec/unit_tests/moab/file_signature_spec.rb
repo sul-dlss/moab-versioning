@@ -1,37 +1,17 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::FileSignature}
 describe 'Moab::FileSignature' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::FileSignature#initialize}
-    # Which returns an instance of: [Moab::FileSignature]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::FileSignature#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      file_signature = Moab::FileSignature.new(opts)
-      expect(file_signature).to be_instance_of(Moab::FileSignature)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:size] = 75
-      opts[:md5] = 'Test md5'
-      opts[:sha1] = 'Test sha1'
-      file_signature = Moab::FileSignature.new(opts)
-      expect(file_signature.size).to eq(opts[:size])
-      expect(file_signature.md5).to eq(opts[:md5])
-      expect(file_signature.sha1).to eq(opts[:sha1])
-
-      # def initialize(opts={})
-      #   super(opts)
-      # end
-    end
-
+  specify '#initialize' do
+    opts = {
+      size: 75,
+      md5: 'Test md5',
+      sha1: 'Test sha1'
+    }
+    file_signature = Moab::FileSignature.new(opts)
+    expect(file_signature.size).to eq opts[:size]
+    expect(file_signature.md5).to eq opts[:md5]
+    expect(file_signature.sha1).to eq opts[:sha1]
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
