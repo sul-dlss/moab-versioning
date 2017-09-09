@@ -13,6 +13,7 @@ AllCops:
     - '**/*.md'
     - 'api/**/*'
     - 'bin/**/*'
+    - 'vendor/**/*' # avoid running rubocop on travis cached bundler
 
 # because this isn't 1994
 Metrics/LineLength:
