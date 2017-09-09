@@ -1,36 +1,23 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::FileInventory}
 describe 'Moab::FileInventory' do
 
-  describe '=========================== CLASS METHODS ===========================' do
-
-    # Unit test for method: {Moab::FileInventory.xml_filename}
-    # Which returns: [String] The standard name for the serialized inventory file of the given type
-    # For input parameters:
-    # * type [String] = Specifies the type of inventory, and thus the filename used for storage
-    specify 'Moab::FileInventory.xml_filename' do
-      expect(Moab::FileInventory.xml_filename('version')).to eq('versionInventory.xml')
-      expect(Moab::FileInventory.xml_filename("additions")).to eq('versionAdditions.xml')
-      expect(Moab::FileInventory.xml_filename("manifests")).to eq('manifestInventory.xml')
-      expect(Moab::FileInventory.xml_filename("directory")).to eq('directoryInventory.xml')
-      expect{Moab::FileInventory.xml_filename("other")}.to raise_exception /unknown inventory type/
-      # def self.xml_filename(type=nil)
-      #   case type
-      #     when "version"
-      #       'versionInventory.xml'
-      #     when "additions"
-      #       'versionAdditions.xml'
-      #     when "manifests"
-      #       'manifestInventory.xml'
-      #     when "directory"
-      #       'directoryInventory.xml'
-      #     else
-      #       raise "unknown inventory type: #{filename.to_s}"
-      #   end
-      # end
+  describe '.xml_filename' do
+    specify 'version' do
+      expect(Moab::FileInventory.xml_filename('version')).to eq 'versionInventory.xml'
     end
-
+    specify 'additions' do
+      expect(Moab::FileInventory.xml_filename("additions")).to eq 'versionAdditions.xml'
+    end
+    specify 'manifests' do
+      expect(Moab::FileInventory.xml_filename("manifests")).to eq 'manifestInventory.xml'
+    end
+    specify 'directory' do
+      expect(Moab::FileInventory.xml_filename("directory")).to eq 'directoryInventory.xml'
+    end
+    specify '"other" raises exception' do
+      expect { Moab::FileInventory.xml_filename("other") }.to raise_exception(/unknown inventory type/)
+    end
   end
 
   describe '=========================== CONSTRUCTOR ===========================' do
