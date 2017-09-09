@@ -16,63 +16,11 @@ describe 'Moab::SignatureCatalogEntry' do
     expect(signature_catalog_entry.signature).to eq(opts[:signature])
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      opts = {}
-      @signature_catalog_entry = Moab::SignatureCatalogEntry.new(opts)
-    end
-
-    # Unit test for attribute: {Moab::SignatureCatalogEntry#version_id}
-    # Which stores: [Integer] The ordinal version number
-    specify 'Moab::SignatureCatalogEntry#version_id' do
-      value = 8
-      @signature_catalog_entry.version_id= value
-      expect(@signature_catalog_entry.version_id).to eq(value)
-
-      # attribute :version_id, Integer, :tag => 'originalVersion', :key => true, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::SignatureCatalogEntry#group_id}
-    # Which stores: [String] The name of the file group
-    specify 'Moab::SignatureCatalogEntry#group_id' do
-      value = 'Test group_id'
-      @signature_catalog_entry.group_id= value
-      expect(@signature_catalog_entry.group_id).to eq(value)
-
-      # attribute :group_id, String, :tag => 'groupId', :key => true
-    end
-
-    # Unit test for attribute: {Moab::SignatureCatalogEntry#path}
-    # Which stores: [String] The id is the filename path, relative to the file group's base directory
-    specify 'Moab::SignatureCatalogEntry#path' do
-      value = 'Test path'
-      @signature_catalog_entry.path= value
-      expect(@signature_catalog_entry.path).to eq(value)
-
-      # attribute :path, String, :key => true, :tag => 'storagePath'
-    end
-
-    # Unit test for attribute: {Moab::SignatureCatalogEntry#signature}
-    # Which stores: [Moab::FileSignature] The fixity data of the file instance
-    specify 'Moab::SignatureCatalogEntry#signature' do
-      value = double(Moab::FileSignature.name)
-      @signature_catalog_entry.signature= value
-      expect(@signature_catalog_entry.signature).to eq(value)
-
-      @signature_catalog_entry.signature= [value, 'dummy']
-      expect(@signature_catalog_entry.signature).to eq(value)
-
-      # def signature=(signature)
-      #   @signature = signature.is_a?(Array) ? signature[0] : signature
-      # end
-
-      # def signature
-      #   # HappyMapper's parser tries to put an array of signatures in the signature field
-      #   @signature.is_a?(Array) ? @signature[0] : @signature
-      # end
-    end
-
+  specify '#signature becomes first value if set to Array' do
+    sce = Moab::SignatureCatalogEntry.new()
+    value = double(Moab::FileSignature.name)
+    sce.signature = [value, 'dummy']
+    expect(sce.signature).to eq value
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
