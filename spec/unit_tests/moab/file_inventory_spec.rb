@@ -20,43 +20,25 @@ describe 'Moab::FileInventory' do
     end
   end
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::FileInventory#initialize}
-    # Which returns an instance of: [Moab::FileInventory]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #  correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::FileInventory#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      file_inventory = Moab::FileInventory.new(opts)
-      expect(file_inventory).to be_instance_of(Moab::FileInventory)
-
-      # test initialization of arrays and hashes
-      expect(file_inventory.groups).to be_kind_of(Array)
-      expect(file_inventory.groups.size).to eq(0)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:type] = 'Test type'
-      opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:version_id] = 81
-      opts[:inventory_datetime] = "Apr 12 19:36:07 UTC 2012"
-      file_inventory = Moab::FileInventory.new(opts)
-      expect(file_inventory.type).to eq(opts[:type])
-      expect(file_inventory.digital_object_id).to eq(opts[:digital_object_id])
-      expect(file_inventory.version_id).to eq(opts[:version_id])
-      expect(file_inventory.inventory_datetime).to eq("2012-04-12T19:36:07Z")
-
-      # def initialize(opts={})
-      #   @groups = Array.new
-      #   @inventory_datetime = Time.now
-      #   super(opts)
-      # end
+  describe '#initialize' do
+    specify 'empty options hash' do
+      file_inventory = Moab::FileInventory.new({})
+      expect(file_inventory.groups).to be_kind_of Array
+      expect(file_inventory.groups.size).to eq 0
     end
-
+    specify 'options passed in' do
+      opts = {
+        type: 'Test type',
+        digital_object_id: 'Test digital_object_id',
+        version_id: 81,
+        inventory_datetime: "Apr 12 19:36:07 UTC 2012"
+      }
+      file_inventory = Moab::FileInventory.new(opts)
+      expect(file_inventory.type).to eq opts[:type]
+      expect(file_inventory.digital_object_id).to eq opts[:digital_object_id]
+      expect(file_inventory.version_id).to eq opts[:version_id]
+      expect(file_inventory.inventory_datetime).to eq "2012-04-12T19:36:07Z"
+    end
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
