@@ -41,100 +41,49 @@ describe 'Moab::FileInventory' do
     end
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      @v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @file_inventory = Moab::FileInventory.parse(@v1_version_inventory.read)
-      @file_inventory.inventory_datetime = "2012-04-13T13:16:54Z"
+  describe '.parse sets attributes' do
+    let(:parsed_file_inventory) do
+      v1_version_inventory = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+      fi = Moab::FileInventory.parse(v1_version_inventory.read)
+      fi.inventory_datetime = "2012-04-13T13:16:54Z"
+      fi
     end
 
-    # Unit test for attribute: {Moab::FileInventory#type}
-    # Which stores: [String] \@type = The type of inventory (version|additions|manifests|directory)
-    specify 'Moab::FileInventory#type' do
-      expect(@file_inventory.type).to eq('version')
-
-      # attribute :type, String
+    specify '#type' do
+      expect(parsed_file_inventory.type).to eq 'version'
     end
 
-    # Unit test for attribute: {Moab::FileInventory#digital_object_id}
-    # Which stores: [String] \@objectId = The digital object identifier (druid)
-    specify 'Moab::FileInventory#digital_object_id' do
-       expect(@file_inventory.digital_object_id).to eq('druid:jq937jp0017')
-
-      # attribute :digital_object_id, String, :tag => 'objectId'
+    specify '#digital_object_id' do
+      expect(parsed_file_inventory.digital_object_id).to eq 'druid:jq937jp0017'
     end
 
-    # Unit test for attribute: {Moab::FileInventory#version_id}
-    # Which stores: [Integer] \@versionId = The ordinal version number
-    specify 'Moab::FileInventory#version_id' do
-      expect(@file_inventory.version_id).to eq(1)
-
-      # attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
+    specify '#version_id' do
+      expect(parsed_file_inventory.version_id).to eq 1
     end
 
-    specify 'Moab::FileInventory#composite_key' do
-      expect(@file_inventory.composite_key).to eq("druid:jq937jp0017-v0001")
+    specify '#composite_key' do
+      expect(parsed_file_inventory.composite_key).to eq "druid:jq937jp0017-v0001"
     end
 
-    # Unit test for attribute: {Moab::FileInventory#inventory_datetime}
-    # Which stores: [Time] \@inventoryDatetime = The datetime at which the inventory was created
-    specify 'Moab::FileInventory#inventory_datetime' do
-      expect(@file_inventory.inventory_datetime).to eq("2012-04-13T13:16:54Z")
-
-      # def inventory_datetime=(datetime)
-      #   @inventory_datetime=Time.input(datetime)
-      # end
-
-      # def inventory_datetime
-      #   Time.output(@inventory_datetime)
-      # end
+    specify '#inventory_datetime' do
+      expect(parsed_file_inventory.inventory_datetime).to eq "2012-04-13T13:16:54Z"
     end
 
-    # Unit test for attribute: {Moab::FileInventory#file_count}
-    # Which stores: [Integer] \@fileCount = The total number of data files in the inventory
-    specify 'Moab::FileInventory#file_count' do
-      expect(@file_inventory.file_count).to eq(11)
-
-      # attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def file_count
-      #   groups.inject(0) { |sum, group| sum + group.file_count }
-      # end
+    specify '#file_count' do
+      expect(parsed_file_inventory.file_count).to eq 11
     end
 
-    # Unit test for attribute: {Moab::FileInventory#byte_count}
-    # Which stores: [Integer] \@byteCount = The total number of bytes in all files of all files in the inventory
-    specify 'Moab::FileInventory#byte_count' do
-      expect(@file_inventory.byte_count).to eq(217820)
-
-      # attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def byte_count
-      #   groups.inject(0) { |sum, group| sum + group.byte_count }
-      # end
+    specify '#byte_count' do
+      expect(parsed_file_inventory.byte_count).to eq 217820
     end
 
-    # Unit test for attribute: {Moab::FileInventory#block_count}
-    # Which stores: [Integer] \@blockCount = The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
-    specify 'Moab::FileInventory#block_count' do
-      expect(@file_inventory.block_count).to eq(216)
-
-      # attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
-
-      # def block_count
-      #   groups.inject(0) { |sum, group| sum + group.block_count }
-      # end
+    specify '#block_count' do
+      expect(parsed_file_inventory.block_count).to eq 216
     end
 
-    # Unit test for attribute: {Moab::FileInventory#groups}
-    # Which stores: [Array<Moab::FileGroup>] \[<fileGroup>] = The set of data groups comprising the version
-    specify 'Moab::FileInventory#groups' do
-      expect(@file_inventory.groups.size).to eq(2)
-
-      # has_many :groups, Moab::FileGroup
+    specify '#groups' do
+      expect(parsed_file_inventory.groups.size).to eq 2
     end
-
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
