@@ -14,45 +14,6 @@ describe 'Moab::FileSignature' do
     expect(file_signature.sha1).to eq opts[:sha1]
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      opts = {}
-      @file_signature = Moab::FileSignature.new(opts)
-    end
-
-    # Unit test for attribute: {Moab::FileSignature#size}
-    # Which stores: [Integer] The size of the file in bytes
-    specify 'Moab::FileSignature#size' do
-      value = 19
-      @file_signature.size= value
-      expect(@file_signature.size).to eq(value)
-
-      # attribute :size, Integer, :on_save => Proc.new { |n| n.to_s }
-    end
-
-    # Unit test for attribute: {Moab::FileSignature#md5}
-    # Which stores: [String] The MD5 checksum value of the file
-    specify 'Moab::FileSignature#md5' do
-      value = 'Test md5'
-      @file_signature.md5= value
-      expect(@file_signature.md5).to eq(value)
-
-      # attribute :md5, String
-    end
-
-    # Unit test for attribute: {Moab::FileSignature#sha1}
-    # Which stores: [String] The SHA1 checksum value of the file
-    specify 'Moab::FileSignature#sha1' do
-      value = 'Test sha1'
-      @file_signature.sha1= value
-      expect(@file_signature.sha1).to eq(value)
-
-      # attribute :sha1, String
-    end
-
-  end
-
   describe '=========================== INSTANCE METHODS ===========================' do
 
     before(:all) do
