@@ -52,37 +52,35 @@ describe 'Moab::FileInventory' do
     specify '#type' do
       expect(parsed_file_inventory.type).to eq 'version'
     end
-
     specify '#digital_object_id' do
       expect(parsed_file_inventory.digital_object_id).to eq 'druid:jq937jp0017'
     end
-
     specify '#version_id' do
       expect(parsed_file_inventory.version_id).to eq 1
     end
-
     specify '#composite_key' do
       expect(parsed_file_inventory.composite_key).to eq "druid:jq937jp0017-v0001"
     end
-
     specify '#inventory_datetime' do
       expect(parsed_file_inventory.inventory_datetime).to eq "2012-04-13T13:16:54Z"
     end
-
     specify '#file_count' do
       expect(parsed_file_inventory.file_count).to eq 11
     end
-
     specify '#byte_count' do
       expect(parsed_file_inventory.byte_count).to eq 217820
     end
-
     specify '#block_count' do
       expect(parsed_file_inventory.block_count).to eq 216
     end
-
     specify '#groups' do
       expect(parsed_file_inventory.groups.size).to eq 2
+    end
+    specify '#human_size' do
+      expect(parsed_file_inventory.human_size).to eq "212.71 KB"
+    end
+    specify '#package_id' do
+      expect(parsed_file_inventory.package_id).to eq "druid:jq937jp0017-v1"
     end
   end
 
@@ -132,10 +130,6 @@ describe 'Moab::FileInventory' do
     expect(new_file_inventory.inventory_datetime).to eq file_inventory.inventory_datetime
   end
 
-  specify '#package_id' do
-    expect(file_inventory.package_id()).to eq "druid:jq937jp0017-v1"
-  end
-
   specify '#data_source' do
     expect(file_inventory.data_source).to eq "v1"
     directory = @fixtures.join('derivatives/manifests/all')
@@ -173,10 +167,6 @@ describe 'Moab::FileInventory' do
     expect(signature_for_path.size).to eq 11
     expect(signature_for_path.keys[0]).to eq @packages.join('v0001/data/content/intro-1.jpg')
     expect(signature_for_path[@packages.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
-  end
-
-  specify '#human_size' do
-    expect(file_inventory.human_size()).to eq "212.71 KB"
   end
 
   specify '#write_xml_file' do
