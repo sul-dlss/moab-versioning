@@ -1,24 +1,6 @@
 require 'spec_helper'
 
 describe 'Moab::FileInstance' do
-
-  specify '#initialize' do
-    opts = {
-      path: @temp.join('path').to_s,
-      datetime: "Apr 18 21:51:31 UTC 2012"
-    }
-    file_instance = Moab::FileInstance.new(opts)
-    expect(file_instance.path).to eq opts[:path]
-    expect(file_instance.datetime).to eq "2012-04-18T21:51:31Z"
-  end
-
-  specify '#datetime reformats as ISO8601 (UTC Z format)' do
-    fi = Moab::FileInstance.new
-    value = "Wed Apr 18 21:51:31 UTC 2012"
-    fi.datetime = value
-    expect(fi.datetime).to eq "2012-04-18T21:51:31Z"
-  end
-
   let(:v1_base_directory) { @fixtures.join('data/jq937jp0017/v0001/content') }
   let(:v2_base_directory) { @fixtures.join('data/jq937jp0017/v0002/content') }
   let(:title_v1_instance) do
@@ -36,6 +18,23 @@ describe 'Moab::FileInstance' do
   let(:page1_v2_instance) do
     page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
     Moab::FileInstance.new.instance_from_file(page1_v2_pathname, v2_base_directory)
+  end
+
+  specify '#initialize' do
+    opts = {
+      path: @temp.join('path').to_s,
+      datetime: "Apr 18 21:51:31 UTC 2012"
+    }
+    file_instance = Moab::FileInstance.new(opts)
+    expect(file_instance.path).to eq opts[:path]
+    expect(file_instance.datetime).to eq "2012-04-18T21:51:31Z"
+  end
+
+  specify '#datetime reformats as ISO8601 (UTC Z format)' do
+    fi = Moab::FileInstance.new
+    value = "Wed Apr 18 21:51:31 UTC 2012"
+    fi.datetime = value
+    expect(fi.datetime).to eq "2012-04-18T21:51:31Z"
   end
 
   specify '#instance_from_file' do
