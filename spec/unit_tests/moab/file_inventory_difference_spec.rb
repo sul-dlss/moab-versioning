@@ -1,49 +1,32 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::FileInventoryDifference}
 describe 'Moab::FileInventoryDifference' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::FileInventoryDifference#initialize}
-    # Which returns an instance of: [Moab::FileInventoryDifference]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #   correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::FileInventoryDifference#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      file_inventory_difference = Moab::FileInventoryDifference.new(opts)
-      expect(file_inventory_difference).to be_instance_of(Moab::FileInventoryDifference)
-
-      # test initialization of arrays and hashes
-      expect(file_inventory_difference.group_differences).to be_kind_of(Array)
-      expect(file_inventory_difference.group_differences.size).to eq(0)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:digital_object_id] = 'Test digital_object_id'
-      opts[:basis] = 'Test basis'
-      opts[:other] = 'Test other'
-      opts[:report_datetime] = 'Apr 12 19:36:07 UTC 2012'
-      file_inventory_difference = Moab::FileInventoryDifference.new(opts)
-      expect(file_inventory_difference.digital_object_id).to eq(opts[:digital_object_id])
-      expect(file_inventory_difference.difference_count).to eq(0)
-      expect(file_inventory_difference.basis).to eq(opts[:basis])
-      expect(file_inventory_difference.other).to eq(opts[:other])
-      expect(file_inventory_difference.report_datetime).to eq('2012-04-12T19:36:07Z')
-
-      # def initialize(opts={})
-      #   @group_differences = Array.new
-      #   super(opts)
-      # end
+  describe '#initialize' do
+    specify 'empty options hash' do
+      fid = Moab::FileInventoryDifference.new({})
+      group_diffs = fid.group_differences
+      expect(group_diffs).to be_kind_of Array
+      expect(group_diffs.size).to eq 0
     end
-  
+    specify 'options passed in' do
+      opts = {
+        digital_object_id: 'Test digital_object_id',
+        basis: 'Test basis',
+        other: 'Test other',
+        report_datetime: 'Apr 12 19:36:07 UTC 2012'
+      }
+      fid = Moab::FileInventoryDifference.new(opts)
+      expect(fid.digital_object_id).to eq opts[:digital_object_id]
+      expect(fid.difference_count).to eq 0
+      expect(fid.basis).to eq opts[:basis]
+      expect(fid.other).to eq opts[:other]
+      expect(fid.report_datetime).to eq '2012-04-12T19:36:07Z'
+    end
   end
-  
+
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-    
+
     before(:all) do
       @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
@@ -55,36 +38,36 @@ describe 'Moab::FileInventoryDifference' do
       @file_inventory_difference = Moab::FileInventoryDifference.new(opts)
       @file_inventory_difference.compare(@v1_inventory,@v2_inventory)
       end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#digital_object_id}
     # Which stores: [String] The digital object ID (druid)
     specify 'Moab::FileInventoryDifference#digital_object_id' do
       expect(@file_inventory_difference.digital_object_id).to eq('druid:jq937jp0017')
-       
+
       # attribute :digital_object_id, String, :tag => 'objectId'
     end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#difference_count}
     # Which stores: [Integer] the number of differences found between the two inventories that were compared
     #  (dynamically calculated)
     specify 'Moab::FileInventoryDifference#difference_count' do
       expect(@file_inventory_difference.difference_count).to eq(6)
-       
+
       # attribute :difference_count, Integer, :tag=> 'differenceCount',:on_save => Proc.new {|i| i.to_s}
-       
+
       # def difference_count
       #   @group_differences.inject(0) { |sum, group| sum + group.difference_count }
       # end
     end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#basis}
     # Which stores: [String] Id information from the version inventory used as the basis for comparison
     specify 'Moab::FileInventoryDifference#basis' do
       expect(@file_inventory_difference.basis).to eq('v1')
-       
+
       # attribute :basis, String
     end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#other}
     # Which stores: [String] Id information about the version inventory compared to the basis
     specify 'Moab::FileInventoryDifference#other' do
@@ -92,35 +75,35 @@ describe 'Moab::FileInventoryDifference' do
 
       # attribute :other, String
     end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#report_datetime}
     # Which stores: [Time] The datetime at which the report was run
     specify 'Moab::FileInventoryDifference#report_datetime' do
       expect(Time.parse(@file_inventory_difference.report_datetime)).to be_instance_of(Time)
       @file_inventory_difference.report_datetime = 'Apr 12 19:36:07 UTC 2012'
       expect(@file_inventory_difference.report_datetime).to eq('2012-04-12T19:36:07Z')
-       
+
       # def report_datetime=(datetime)
       #   @report_datetime=Time.input(datetime)
       # end
-       
+
       # def report_datetime
       #   Time.output(@report_datetime)
       # end
     end
-    
+
     # Unit test for attribute: {Moab::FileInventoryDifference#group_differences}
     # Which stores: [Array<Moab::FileGroupDifference>] The set of data groups comprising the version
     specify 'Moab::FileInventoryDifference#group_differences' do
       expect(@file_inventory_difference.group_differences.size).to eq(2)
-       
+
       # has_many :group_differences, Moab::FileGroupDifference
     end
-  
+
   end
-  
+
   describe '=========================== INSTANCE METHODS ===========================' do
-    
+
     before(:all) do
       @v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
       @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
@@ -133,12 +116,12 @@ describe 'Moab::FileInventoryDifference' do
       opts = {}
       @file_inventory_difference = Moab::FileInventoryDifference.new(opts)
     end
-    
+
     # Unit test for method: {Moab::FileInventoryDifference#compare}
     # Which returns: [Moab::FileInventoryDifference] Returns a report showing the differences, if any, between two inventories
     # For input parameters:
-    # * basis_inventory [Moab::FileInventory] = The inventory that is the basis of the comparison 
-    # * other_inventory [Moab::FileInventory] = The inventory that is compared against the basis inventory 
+    # * basis_inventory [Moab::FileInventory] = The inventory that is the basis of the comparison
+    # * other_inventory [Moab::FileInventory] = The inventory that is compared against the basis inventory
       specify 'Moab::FileInventoryDifference#compare' do
       basis_inventory = @v1_inventory
       other_inventory = @v2_inventory
@@ -179,8 +162,8 @@ describe 'Moab::FileInventoryDifference' do
     # Unit test for method: {Moab::FileInventoryDifference#common_object_id}
     # Which returns: [String] Returns either the common digitial object ID, or a concatenation of both inventory's IDs
     # For input parameters:
-    # * basis_inventory [Moab::FileInventory] = The inventory that is the basis of the comparison 
-    # * other_inventory [Moab::FileInventory] = The inventory that is compared against the basis inventory 
+    # * basis_inventory [Moab::FileInventory] = The inventory that is the basis of the comparison
+    # * other_inventory [Moab::FileInventory] = The inventory that is compared against the basis inventory
     specify 'Moab::FileInventoryDifference#common_object_id' do
       basis_inventory=Moab::FileInventory.new(:digital_object_id=>'druid:aa111bb2222')
       other_inventory=Moab::FileInventory.new(:digital_object_id=>'druid:cc444dd5555')
