@@ -12,33 +12,11 @@ describe 'Moab::FileInstance' do
     expect(file_instance.datetime).to eq "2012-04-18T21:51:31Z"
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      opts = {}
-      @file_instance = Moab::FileInstance.new(opts)
-    end
-
-    # Unit test for attribute: {Moab::FileInstance#path}
-    # Which stores: [String] \@ = The id is the filename path, relative to the file group's base directory
-    specify 'Moab::FileInstance#path' do
-      value = 'Test path'
-      @file_instance.path= value
-      expect(@file_instance.path).to eq(value)
-
-      # attribute :path, String, :key => true
-    end
-
-    # Unit test for attribute: {Moab::FileInstance#datetime}
-    # Which stores: [Time] \@ = gsub(/\n/,' ')
-    specify 'Moab::FileInstance#datetime' do
-      value = "Wed Apr 18 21:51:31 UTC 2012"
-      @file_instance.datetime= value
-      expect(@file_instance.datetime).to eq("2012-04-18T21:51:31Z")
-
-      # attribute :datetime, Time, :on_save => Proc.new {|t| t.to_s}
-    end
-
+  specify '#datetime reformats as ISO8601 (UTC Z format)' do
+    fi = Moab::FileInstance.new
+    value = "Wed Apr 18 21:51:31 UTC 2012"
+    fi.datetime = value
+    expect(fi.datetime).to eq "2012-04-18T21:51:31Z"
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
