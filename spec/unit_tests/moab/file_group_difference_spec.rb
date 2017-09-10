@@ -75,34 +75,26 @@ describe 'Moab::FileGroupDifference' do
     expect(summary.subsets.size).to eq 0
   end
 
-  specify '#matching_keys' do
-    basis_hash = v1_content.path_hash
-    other_hash = v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    matching_keys = new_diff.matching_keys(basis_hash, other_hash)
-    expect(matching_keys.size).to eq 4
-    expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-  end
-
-  specify '#basis_only_keys' do
-    basis_hash = v1_content.path_hash
-    other_hash = v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
-    expect(basis_only_keys.size).to eq 2
-    expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
-  end
-
-  specify '#other_only_keys' do
-    basis_hash = v1_content.path_hash
-    other_hash = v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
-    expect(other_only_keys.size).to eq 1
-    expect(other_only_keys).to eq ["page-4.jpg"]
+  context 'key comparison methods' do
+    let(:basis_hash) { v1_content.path_hash }
+    let(:other_hash) { v3_content.path_hash }
+    # basis_hash.keys: ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+    # other_hash.keys: ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
+    specify '#matching_keys' do
+      matching_keys = new_diff.matching_keys(basis_hash, other_hash)
+      expect(matching_keys.size).to eq 4
+      expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+    end
+    specify '#basis_only_keys' do
+      basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
+      expect(basis_only_keys.size).to eq 2
+      expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
+    end
+    specify '#other_only_keys' do
+      other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
+      expect(other_only_keys.size).to eq 1
+      expect(other_only_keys).to eq ["page-4.jpg"]
+    end
   end
 
   specify '#compare_file_groups' do
