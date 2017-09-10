@@ -21,8 +21,8 @@ describe 'Moab::FileInventory' do
     specify 'directory' do
       expect(Moab::FileInventory.xml_filename("directory")).to eq 'directoryInventory.xml'
     end
-    specify '"other" raises exception' do
-      expect { Moab::FileInventory.xml_filename("other") }.to raise_exception(/unknown inventory type/)
+    specify 'unknown type raises ArgumentError' do
+      expect { Moab::FileInventory.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
     end
   end
 

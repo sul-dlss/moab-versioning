@@ -261,7 +261,7 @@ module Moab
         when "directory"
           'directoryInventory.xml'
         else
-          raise "unknown inventory type: #{type.to_s}"
+          raise ArgumentError, "unknown inventory type: #{type.to_s}"
       end
     end
 
