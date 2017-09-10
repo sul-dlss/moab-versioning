@@ -130,8 +130,11 @@ describe 'Moab::FileGroupDifference' do
     expect(diff.deleted).to eq 6
   end
 
-  specify '#compare_file_groups copyadded, copydeleted, renamed' do
-    basis_group_string = <<-XML
+  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
+
+  describe '#compare_file_groups' do
+    let(:comp_file_groups_diff) do
+      basis_group_string = <<-XML
         <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="3" byteCount="6368941" blockCount="6222">
           <file>
             <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
@@ -147,8 +150,8 @@ describe 'Moab::FileGroupDifference' do
             <fileInstance path="Original-3" datetime=""/>
           </file>
         </fileGroup>
-    XML
-    other_group_string = <<-XML
+      XML
+      other_group_string = <<-XML
         <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="2" byteCount="3186054" blockCount="3113">
           <file>
             <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
@@ -164,51 +167,58 @@ describe 'Moab::FileGroupDifference' do
             <fileInstance path="File-renamed" datetime=""/>
           </file>
         </fileGroup>
-    XML
-    basis_group = Moab::FileGroup.parse(basis_group_string)
-    other_group = Moab::FileGroup.parse(other_group_string)
-    diff = @diff.compare_file_groups(basis_group, other_group)
-    expect(diff.difference_count).to eq 3
-    expect(diff.identical).to eq 2
-    expect(diff.copyadded).to eq 1
-    expect(diff.copydeleted).to eq 1
-    expect(diff.renamed).to eq 1
+      XML
+      basis_file_group = Moab::FileGroup.parse(basis_group_string)
+      other_file_group = Moab::FileGroup.parse(other_group_string)
+      @diff.compare_file_groups(basis_file_group, other_file_group)
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:copyadded].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="copyadded" count="1">
-        <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
-          <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'sets attributes' do
+      expect(comp_file_groups_diff.difference_count).to eq 3
+      expect(comp_file_groups_diff.identical).to eq 2
+      expect(comp_file_groups_diff.copyadded).to eq 1
+      expect(comp_file_groups_diff.copydeleted).to eq 1
+      expect(comp_file_groups_diff.renamed).to eq 1
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:copydeleted].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="copydeleted" count="1">
-        <file change="copydeleted" basisPath="Copy-removed" otherPath="">
-          <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'copyadded subset' do
+      copyadded_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copyadded].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="copyadded" count="1">
+          <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
+            <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(copyadded_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:renamed].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="renamed" count="1">
-        <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
-          <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'copydeleted subset' do
+      copydeleted_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copydeleted].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="copydeleted" count="1">
+          <file change="copydeleted" basisPath="Copy-removed" otherPath="">
+            <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(copydeleted_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
+
+    specify 'renamed subset' do
+      renamed_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:renamed].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="renamed" count="1">
+          <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
+            <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(renamed_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
   end
 
   specify '#compare_matching_signatures' do
