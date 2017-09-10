@@ -1,38 +1,18 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::FileGroupDifference}
 describe 'Moab::FileGroupDifference' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::FileGroupDifference#initialize}
-    # Which returns an instance of: [Moab::FileGroupDifference]
-    # For input parameters:
-    # * opts [Hash<Symbol,Object>] = a hash containing any number of symbol => value pairs. The symbols should
-    #   correspond to attributes declared using HappyMapper syntax
-    specify 'Moab::FileGroupDifference#initialize' do
-
-      # test initialization with required parameters (if any)
-      opts = {}
-      file_group_difference = Moab::FileGroupDifference.new(opts)
-      expect(file_group_difference).to be_instance_of(Moab::FileGroupDifference)
-
-      # test initialization of arrays and hashes
-      expect(file_group_difference.subsets).to be_kind_of(Array)
-      expect(file_group_difference.subsets.size).to eq(0)
-
-      # test initialization with options hash
-      opts = Hash.new
-      opts[:group_id] = 'Test group_id'
-      file_group_difference = Moab::FileGroupDifference.new(opts)
-      expect(file_group_difference.group_id).to eq(opts[:group_id])
-
-      # def initialize(opts={})
-      #   @subsets = Array.new
-      #   super(opts)
-      # end
+  describe '#initialize' do
+    specify 'empty options hash' do
+      diff = Moab::FileGroupDifference.new({})
+      expect(diff.subsets).to be_kind_of Array
+      expect(diff.subsets.size).to eq 0
     end
-
+    specify 'options passed in' do
+      opts = { group_id: 'Test group_id' }
+      diff = Moab::FileGroupDifference.new(opts)
+      expect(diff.group_id).to eq opts[:group_id]
+    end
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
