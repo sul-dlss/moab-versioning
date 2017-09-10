@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Moab::FileGroupDifferenceSubset' do
+  let(:diff_subset) { Moab::FileGroupDifferenceSubset.new }
 
   describe '#initialize' do
     specify 'empty options hash' do
@@ -15,8 +16,6 @@ describe 'Moab::FileGroupDifferenceSubset' do
       expect(diff_subset.count).to eq 0
     end
   end
-
-  let(:diff_subset) { Moab::FileGroupDifferenceSubset.new }
 
   specify '#count is computed, not set' do
     value = 52
