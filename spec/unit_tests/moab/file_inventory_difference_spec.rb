@@ -25,81 +25,43 @@ describe 'Moab::FileInventoryDifference' do
     end
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
-
-    before(:all) do
-      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
-
-      @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
-      @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
-
-      opts = {}
-      @file_inventory_difference = Moab::FileInventoryDifference.new(opts)
-      @file_inventory_difference.compare(@v1_inventory,@v2_inventory)
-      end
-
-    # Unit test for attribute: {Moab::FileInventoryDifference#digital_object_id}
-    # Which stores: [String] The digital object ID (druid)
-    specify 'Moab::FileInventoryDifference#digital_object_id' do
-      expect(@file_inventory_difference.digital_object_id).to eq('druid:jq937jp0017')
-
-      # attribute :digital_object_id, String, :tag => 'objectId'
+  describe '.compare sets attributes' do
+    let(:compared_file_inv_diff) do
+      v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+      v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+      v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+      v2_inventory = Moab::FileInventory.parse(v2_inventory_pathname.read)
+      fid = Moab::FileInventoryDifference.new
+      fid.compare(v1_inventory, v2_inventory)
+      fid
     end
 
-    # Unit test for attribute: {Moab::FileInventoryDifference#difference_count}
-    # Which stores: [Integer] the number of differences found between the two inventories that were compared
-    #  (dynamically calculated)
-    specify 'Moab::FileInventoryDifference#difference_count' do
-      expect(@file_inventory_difference.difference_count).to eq(6)
-
-      # attribute :difference_count, Integer, :tag=> 'differenceCount',:on_save => Proc.new {|i| i.to_s}
-
-      # def difference_count
-      #   @group_differences.inject(0) { |sum, group| sum + group.difference_count }
-      # end
+    specify '#digital_object_id' do
+      expect(compared_file_inv_diff.digital_object_id).to eq 'druid:jq937jp0017'
     end
-
-    # Unit test for attribute: {Moab::FileInventoryDifference#basis}
-    # Which stores: [String] Id information from the version inventory used as the basis for comparison
-    specify 'Moab::FileInventoryDifference#basis' do
-      expect(@file_inventory_difference.basis).to eq('v1')
-
-      # attribute :basis, String
+    specify '#difference_count' do
+      expect(compared_file_inv_diff.difference_count).to eq 6
     end
-
-    # Unit test for attribute: {Moab::FileInventoryDifference#other}
-    # Which stores: [String] Id information about the version inventory compared to the basis
-    specify 'Moab::FileInventoryDifference#other' do
-      expect(@file_inventory_difference.other).to eq('v2')
-
-      # attribute :other, String
+    specify '#basis' do
+      expect(compared_file_inv_diff.basis).to eq 'v1'
     end
-
-    # Unit test for attribute: {Moab::FileInventoryDifference#report_datetime}
-    # Which stores: [Time] The datetime at which the report was run
-    specify 'Moab::FileInventoryDifference#report_datetime' do
-      expect(Time.parse(@file_inventory_difference.report_datetime)).to be_instance_of(Time)
-      @file_inventory_difference.report_datetime = 'Apr 12 19:36:07 UTC 2012'
-      expect(@file_inventory_difference.report_datetime).to eq('2012-04-12T19:36:07Z')
-
-      # def report_datetime=(datetime)
-      #   @report_datetime=Time.input(datetime)
-      # end
-
-      # def report_datetime
-      #   Time.output(@report_datetime)
-      # end
+    specify '#other' do
+      expect(compared_file_inv_diff.other).to eq 'v2'
     end
-
-    # Unit test for attribute: {Moab::FileInventoryDifference#group_differences}
-    # Which stores: [Array<Moab::FileGroupDifference>] The set of data groups comprising the version
-    specify 'Moab::FileInventoryDifference#group_differences' do
-      expect(@file_inventory_difference.group_differences.size).to eq(2)
-
-      # has_many :group_differences, Moab::FileGroupDifference
+    specify '#report_datetime' do
+      expect(Time.parse(compared_file_inv_diff.report_datetime)).to be_instance_of(Time)
     end
+    specify '#group_differences' do
+      expect(compared_file_inv_diff.group_differences.size).to eq 2
+    end
+  end
 
+  describe '#report_datetime' do
+    specify 'reformats date as ISO8601 (UTC Z format)' do
+      fid = Moab::FileInventoryDifference.new
+      fid.report_datetime = 'Apr 12 19:36:07 UTC 2012'
+      expect(fid.report_datetime).to eq '2012-04-12T19:36:07Z'
+    end
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
