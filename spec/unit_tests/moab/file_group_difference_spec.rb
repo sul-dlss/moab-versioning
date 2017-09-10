@@ -15,91 +15,39 @@ describe 'Moab::FileGroupDifference' do
     end
   end
 
-  describe '=========================== INSTANCE ATTRIBUTES ===========================' do
+  let(:group_diff) do
+    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
+    file_inventory_diff = Moab::FileInventoryDifference.new
+    file_inventory_diff.compare(v1_inventory, v3_inventory)
+    file_inventory_diff.group_differences[0]
+  end
 
-    before(:all) do
-      @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
-
-      @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-      @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
-
-      opts = {}
-      @file_inventory_difference = Moab::FileInventoryDifference.new(opts)
-      @file_inventory_difference.compare(@v1_inventory,@v3_inventory)
-
-      @file_group_difference = @file_inventory_difference.group_differences[0]
-      end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#group_id}
-    # Which stores: [String] \@groupId = The name of the file group
-    specify 'Moab::FileGroupDifference#group_id' do
-      expect(@file_group_difference.group_id).to eq("content")
-
-      # attribute :group_id, String, :tag => 'groupId', :key => true
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#difference_count}
-    # Which stores: [Integer] the total number of differences found between the two inventories that were compared  (dynamically calculated)
-    specify 'Moab::FileGroupDifference#difference_count' do
-      expect(@file_group_difference.difference_count).to eq(6)
-
-      # attribute :difference_count, Integer, :tag=> 'differenceCount',:on_save => Proc.new {|i| i.to_s}
-
-      # def difference_count
-      #   @renamed + @modified + @deleted +@added
-      # end
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#identical}
-    # Which stores: [Integer] How many files were unchanged
-    specify 'Moab::FileGroupDifference#identical' do
-      expect(@file_group_difference.identical).to eq(1)
-
-      # attribute :identical, Integer, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#renamed}
-    # Which stores: [Integer] How many files were renamed
-    specify 'Moab::FileGroupDifference#renamed' do
-      expect(@file_group_difference.renamed).to eq(2)
-
-      # attribute :renamed, Integer, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#modified}
-    # Which stores: [Integer] How many files were modified
-    specify 'Moab::FileGroupDifference#modified' do
-      expect(@file_group_difference.modified).to eq(1)
-
-      # attribute :modified, Integer, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#deleted}
-    # Which stores: [Integer] How many files were deleted
-    specify 'Moab::FileGroupDifference#deleted' do
-      expect(@file_group_difference.deleted).to eq(2)
-
-      # attribute :deleted, Integer, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#added}
-    # Which stores: [Integer] How many files were added
-    specify 'Moab::FileGroupDifference#added' do
-      expect(@file_group_difference.added).to eq(1)
-
-      # attribute :added, Integer, :on_save => Proc.new {|n| n.to_s}
-    end
-
-    # Unit test for attribute: {Moab::FileGroupDifference#subsets}
-    # Which stores: [Array<Moab::FileGroupDifferenceSubset>] A set of Arrays (one for each change type), each of which
-    #  contains an collection of file-level differences having that change type.
-    specify 'Moab::FileGroupDifference#subsets' do
-      expect(@file_group_difference.subsets.size).to be >= 5
-
-      # has_many :subsets, Moab::FileGroupDifferenceSubset
-    end
-
+  specify '#group_id' do
+    expect(group_diff.group_id).to eq "content"
+  end
+  specify '#difference_count' do
+    expect(group_diff.difference_count).to eq 6
+  end
+  specify '#identical' do
+    expect(group_diff.identical).to eq 1
+  end
+  specify '#renamed' do
+    expect(group_diff.renamed).to eq 2
+  end
+  specify '#modified' do
+    expect(group_diff.modified).to eq 1
+  end
+  specify '#deleted' do
+    expect(group_diff.deleted).to eq 2
+  end
+  specify '#added' do
+    expect(group_diff.added).to eq 1
+  end
+  specify '#subsets' do
+    expect(group_diff.subsets.size).to be >= 5
   end
 
   describe '=========================== INSTANCE METHODS ===========================' do
