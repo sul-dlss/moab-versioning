@@ -345,44 +345,23 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_added_files' do
-    basis_group = v1_content
-    other_group = v3_content
-    signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    expected_sig_fixity1 = {
-      size: "32915",
-      md5: "c1c34634e2f18a354cd3e3e1574c3194",
-      sha1: "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-      sha256: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
-    }
-    expected_sig_fixity2 = {
-      size: "39539",
-      md5: "fe6e3ffa1b02ced189db640f68da0cc2",
-      sha1: "43ced73681687bc8e6f483618f0dcff7665e0ba7",
-      sha256: "42c0cd1fe06615d8fdb8c2e3400d6fe38461310b4ecc252e1774e0c9e3981afa"
-    }
-    expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2]
-
-    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
-    other_path_hash = other_group.path_hash_subset(other_only_signatures)
     new_diff.tabulate_added_files(basis_path_hash, other_path_hash)
     added_subset = new_diff.subset('added')
     expect(added_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(added_subset.change).to eq 'added'
     expect(added_subset.files.size).to eq 1
     expect(new_diff.added).to eq 1
-    file0 = added_subset.files[0]
-    expect(file0.change).to eq 'added'
-    expect(file0.basis_path).to eq ''
-    expect(file0.other_path).to eq 'page-2.jpg'
-    expected_sig_fixity = {
+    added_file = added_subset.files[0]
+    expect(added_file.change).to eq 'added'
+    expect(added_file.basis_path).to eq ''
+    expect(added_file.other_path).to eq 'page-2.jpg'
+    page_2_jpg_fixity = {
       size: "39539",
       md5: "fe6e3ffa1b02ced189db640f68da0cc2",
       sha1: "43ced73681687bc8e6f483618f0dcff7665e0ba7",
       sha256: "42c0cd1fe06615d8fdb8c2e3400d6fe38461310b4ecc252e1774e0c9e3981afa"
     }
-    expect(file0.signatures[0].fixity).to eq expected_sig_fixity
+    expect(added_file.signatures[0].fixity).to eq page_2_jpg_fixity
   end
 
   specify '.parse' do
