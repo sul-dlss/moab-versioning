@@ -79,7 +79,7 @@ module Moab
         when :sha256
           @sha256 = value
         else
-          raise "Unknown checksum type '#{type.to_s}'"
+          raise ArgumentError, "Unknown checksum type '#{type.to_s}'"
       end
     end
 
