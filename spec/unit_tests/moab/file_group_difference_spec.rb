@@ -289,53 +289,34 @@ describe 'Moab::FileGroupDifference' do
     expect(renamed_file_2.signatures[0].fixity).to eq page_3_jpg_fixity
   end
 
+  let(:basis_path_hash) do
+    basis_only_signatures = new_diff.basis_only_keys(v1_content.signature_hash, v3_content.signature_hash)
+    v1_content.path_hash_subset(basis_only_signatures)
+    # note: basis_path_hash.keys: intro-1.jpg, intro-2.jpg
+  end
+  let(:other_path_hash) do
+    other_only_signatures = new_diff.other_only_keys(v1_content.signature_hash, v3_content.signature_hash)
+    v3_content.path_hash_subset(other_only_signatures)
+    # note: other_path_hash.keys: page-1.jpg, page-2.jpg, page-3.jpg, page-4.jpg, title.jpg
+  end
   specify '#tabulate_modified_files' do
-    basis_group = v1_content
-    other_group = v3_content
-    expect((other_path_hash = other_group.path_hash).keys).to eq(
-      ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    )
-    signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    expected_sig_fixity1 = {
-      size: "41981",
-      md5: "915c0305bf50c55143f1506295dc122c",
-      sha1: "60448956fbe069979fce6a6e55dba4ce1f915178",
-      sha256: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
-    }
-    expected_sig_fixity2 = {
-      size: "39850",
-      md5: "77f1a4efdcea6a476505df9b9fba82a7",
-      sha1: "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915",
-      sha256: "3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7"
-    }
-    expected_sig_fixity3 = {
-      size: "25153",
-      md5: "3dee12fb4f1c28351c7482b76ff76ae4",
-      sha1: "906c1314f3ab344563acbbbe2c7930f08429e35b",
-      sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
-    }
-    expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
-    other_path_hash = other_group.path_hash_subset(other_only_signatures)
     new_diff.tabulate_modified_files(basis_path_hash, other_path_hash)
     modified_subset = new_diff.subset('modified')
     expect(modified_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(modified_subset.change).to eq 'modified'
     expect(modified_subset.files.size).to eq 1
     expect(new_diff.modified).to eq 1
-    file0 = modified_subset.files[0]
-    expect(file0.change).to eq 'modified'
-    expect(file0.basis_path).to eq 'page-1.jpg'
-    expect(file0.other_path).to eq 'same'
-    expected_sig_fixity = {
+    modified_file = modified_subset.files[0]
+    expect(modified_file.change).to eq 'modified'
+    expect(modified_file.basis_path).to eq 'page-1.jpg'
+    expect(modified_file.other_path).to eq 'same'
+    page_1_jpg_fixity = {
       size: "25153",
       md5: "3dee12fb4f1c28351c7482b76ff76ae4",
       sha1: "906c1314f3ab344563acbbbe2c7930f08429e35b",
       sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
     }
-    expect(file0.signatures[0].fixity).to eq expected_sig_fixity
+    expect(modified_file.signatures[0].fixity).to eq page_1_jpg_fixity
   end
 
   specify '#tabulate_deleted_files' do
