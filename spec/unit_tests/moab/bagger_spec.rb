@@ -1,32 +1,15 @@
 require 'spec_helper'
 
-# Unit tests for class {Moab::Bagger}
 describe 'Moab::Bagger' do
 
-  describe '=========================== CONSTRUCTOR ===========================' do
-
-    # Unit test for constructor: {Moab::Bagger#initialize}
-    # Which returns an instance of: [Moab::Bagger]
-    # For input parameters:
-    # * version_inventory [Moab::FileInventory] = The complete inventory of the files comprising a digital object
-    #   version
-    # * signature_catalog [Moab::SignatureCatalog] = The signature catalog, used to specify source paths (in
-    #   :reconstructor mode), or to filter the version inventory (in :depositor mode)
-    # * bag_pathname [Pathname, String] = The location of the Bagit bag to be created
-    specify 'Moab::Bagger#initialize' do
-
-      # test initialization with required parameters (if any)
-      version_inventory = double(Moab::FileInventory.name)
-      signature_catalog = double(Moab::SignatureCatalog.name)
-      bag_pathname = @temp.join('bag_pathname')
-      bagger = Moab::Bagger.new(version_inventory, signature_catalog,  bag_pathname)
-      expect(bagger).to be_instance_of(Moab::Bagger)
-      expect(bagger.version_inventory).to eq(version_inventory)
-      expect(bagger.signature_catalog).to eq(signature_catalog)
-      expect(bagger.bag_pathname).to eq(bag_pathname)
-
-    end
-
+  specify '#initialize' do
+    version_inventory = double(Moab::FileInventory.name)
+    signature_catalog = double(Moab::SignatureCatalog.name)
+    bag_pathname = @temp.join('bag_pathname')
+    bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_pathname)
+    expect(bagger.version_inventory).to eq version_inventory
+    expect(bagger.signature_catalog).to eq signature_catalog
+    expect(bagger.bag_pathname).to eq bag_pathname
   end
 
   describe '=========================== INSTANCE ATTRIBUTES ===========================' do
