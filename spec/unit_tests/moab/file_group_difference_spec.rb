@@ -320,63 +320,34 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_deleted_files' do
-    basis_group = v1_content
-    other_group = v3_content
-    expect((other_path_hash = other_group.path_hash).keys).to eq(
-      ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    )
-    signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    expected_sig_fixity1 = {
-      size: "41981",
-      md5: "915c0305bf50c55143f1506295dc122c",
-      sha1: "60448956fbe069979fce6a6e55dba4ce1f915178",
-      sha256: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
-    }
-    expected_sig_fixity2 = {
-      size: "39850",
-      md5: "77f1a4efdcea6a476505df9b9fba82a7",
-      sha1: "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915",
-      sha256: "3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7"
-    }
-    expected_sig_fixity3 = {
-      size: "25153",
-      md5: "3dee12fb4f1c28351c7482b76ff76ae4",
-      sha1: "906c1314f3ab344563acbbbe2c7930f08429e35b",
-      sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
-    }
-    expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
-    other_path_hash = other_group.path_hash_subset(other_only_signatures)
     new_diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
     deleted_subset = new_diff.subset('deleted')
     expect(deleted_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(deleted_subset.change).to eq 'deleted'
     expect(deleted_subset.files.size).to eq 2
     expect(new_diff.deleted).to eq 2
-    file0 = deleted_subset.files[0]
-    expect(file0.change).to eq 'deleted'
-    expect(file0.basis_path).to eq 'intro-1.jpg'
-    expect(file0.other_path).to eq ''
-    expected_sig_fixity = {
+    deleted_file_1 = deleted_subset.files[0]
+    expect(deleted_file_1.change).to eq 'deleted'
+    expect(deleted_file_1.basis_path).to eq 'intro-1.jpg'
+    expect(deleted_file_1.other_path).to eq ''
+    intro_1_jpg_fixity = {
       size: "41981",
       md5: "915c0305bf50c55143f1506295dc122c",
       sha1: "60448956fbe069979fce6a6e55dba4ce1f915178",
       sha256: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
     }
-    expect(file0.signatures[0].fixity).to eq expected_sig_fixity
-    file1 = deleted_subset.files[1]
-    expect(file1.change).to eq 'deleted'
-    expect(file1.basis_path).to eq 'intro-2.jpg'
-    expect(file1.other_path).to eq ''
-    expected_sig_fixity = {
+    expect(deleted_file_1.signatures[0].fixity).to eq intro_1_jpg_fixity
+    deleted_file_2 = deleted_subset.files[1]
+    expect(deleted_file_2.change).to eq 'deleted'
+    expect(deleted_file_2.basis_path).to eq 'intro-2.jpg'
+    expect(deleted_file_2.other_path).to eq ''
+    intro_2_jpg_fixity = {
       size: "39850",
       md5: "77f1a4efdcea6a476505df9b9fba82a7",
       sha1: "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915",
       sha256: "3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7"
     }
-    expect(file1.signatures[0].fixity).to eq expected_sig_fixity
+    expect(deleted_file_2.signatures[0].fixity).to eq intro_2_jpg_fixity
   end
 
   specify '#tabulate_added_files' do
