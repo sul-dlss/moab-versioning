@@ -226,6 +226,8 @@ describe 'Moab::FileGroupDifference' do
     expect(new_diff.added).to eq 1
   end
 
+  # NOTE: tests below are ORDERED
+
   let(:matching_keys_signatures) do
     new_diff.matching_keys(v1_content.signature_hash, v3_content.signature_hash)
     # page-2.jpg, page-3.jpg, title.jpg
