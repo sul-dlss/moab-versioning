@@ -259,56 +259,34 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_renamed_files' do
-    basis_group = v1_content
-    other_group = v3_content
-    signatures = new_diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
-    expected_sig_fixity1 = {
-      size: "39450",
-      md5: "82fc107c88446a3119a51a8663d1e955",
-      sha1: "d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
-      sha256: "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"
-    }
-    expected_sig_fixity2 = {
-      size: "19125",
-      md5: "a5099878de7e2e064432d6df44ca8827",
-      sha1: "c0ccac433cf02a6cee89c14f9ba6072a184447a2",
-      sha256: "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"
-    }
-    expected_sig_fixity3 = {
-      size: "40873",
-      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-      sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
-    }
-    expect(signatures.collect { |s| s.fixity }).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    new_diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+    new_diff.tabulate_renamed_files(matching_keys_signatures, v1_content.signature_hash, v3_content.signature_hash)
     renamed_subset = new_diff.subset('renamed')
     expect(renamed_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(renamed_subset.change).to eq 'renamed'
     expect(renamed_subset.files.size).to eq 2
     expect(new_diff.renamed).to eq 2
-    file0 = renamed_subset.files[0]
-    expect(file0.change).to eq 'renamed'
-    expect(file0.basis_path).to eq 'page-2.jpg'
-    expect(file0.other_path).to eq 'page-3.jpg'
-    expected_sig_fixity = {
+    renamed_file_1 = renamed_subset.files[0]
+    expect(renamed_file_1.change).to eq 'renamed'
+    expect(renamed_file_1.basis_path).to eq 'page-2.jpg'
+    expect(renamed_file_1.other_path).to eq 'page-3.jpg'
+    page_2_jpg_fixity = {
       size: "39450",
       md5: "82fc107c88446a3119a51a8663d1e955",
       sha1: "d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
       sha256: "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"
     }
-    expect(file0.signatures[0].fixity).to eq expected_sig_fixity
-    file1 = renamed_subset.files[1]
-    expect(file1.change).to eq 'renamed'
-    expect(file1.basis_path).to eq 'page-3.jpg'
-    expect(file1.other_path).to eq 'page-4.jpg'
-    expected_sig_fixity = {
+    expect(renamed_file_1.signatures[0].fixity).to eq page_2_jpg_fixity
+    renamed_file_2 = renamed_subset.files[1]
+    expect(renamed_file_2.change).to eq 'renamed'
+    expect(renamed_file_2.basis_path).to eq 'page-3.jpg'
+    expect(renamed_file_2.other_path).to eq 'page-4.jpg'
+    page_3_jpg_fixity = {
       size: "19125",
       md5: "a5099878de7e2e064432d6df44ca8827",
       sha1: "c0ccac433cf02a6cee89c14f9ba6072a184447a2",
       sha256: "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"
     }
-    expect(file1.signatures[0].fixity).to eq expected_sig_fixity
+    expect(renamed_file_2.signatures[0].fixity).to eq page_3_jpg_fixity
   end
 
   specify '#tabulate_modified_files' do
