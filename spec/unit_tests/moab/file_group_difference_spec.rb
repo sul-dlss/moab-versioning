@@ -226,46 +226,30 @@ describe 'Moab::FileGroupDifference' do
     expect(new_diff.added).to eq 1
   end
 
+  let(:matching_keys_signatures) do
+    new_diff.matching_keys(v1_content.signature_hash, v3_content.signature_hash)
+    # page-2.jpg, page-3.jpg, title.jpg
+  end
+
   specify '#tabulate_unchanged_files' do
-    basis_group = v1_content
-    other_group = v3_content
-    signatures = new_diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
-    expected_sig_fixity1 = {
-      size: "39450",
-      md5: "82fc107c88446a3119a51a8663d1e955",
-      sha1: "d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
-      sha256: "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"
-    }
-    expected_sig_fixity2 = {
-      size: "19125",
-      md5: "a5099878de7e2e064432d6df44ca8827",
-      sha1: "c0ccac433cf02a6cee89c14f9ba6072a184447a2",
-      sha256: "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"
-    }
-    expected_sig_fixity3 = {
-      size: "40873",
-      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-      sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
-    }
-    expect(signatures.collect { |s| s.fixity }).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    new_diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+    new_diff.tabulate_unchanged_files(matching_keys_signatures, v1_content.signature_hash, v3_content.signature_hash)
+    expect(new_diff.subset_hash.keys).to eq [:identical]
     unchanged_subset = new_diff.subset('identical')
     expect(unchanged_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(unchanged_subset.change).to eq 'identical'
     expect(unchanged_subset.files.size).to eq 1
     expect(new_diff.identical).to eq 1
-    file0 = unchanged_subset.files[0]
-    expect(file0.change).to eq 'identical'
-    expect(file0.basis_path).to eq 'title.jpg'
-    expect(file0.other_path).to eq 'same'
-    expected_sig_fixity = {
+    unchanged_file = unchanged_subset.files[0]
+    expect(unchanged_file.change).to eq 'identical'
+    expect(unchanged_file.basis_path).to eq 'title.jpg'
+    expect(unchanged_file.other_path).to eq 'same'
+    title_jpg_fixity = {
       size: "40873",
       md5: "1a726cd7963bd6d3ceb10a8c353ec166",
       sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
       sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
     }
-    expect(file0.signatures[0].fixity).to eq expected_sig_fixity
+    expect(unchanged_file.signatures[0].fixity).to eq title_jpg_fixity
   end
 
   specify '#tabulate_renamed_files' do
