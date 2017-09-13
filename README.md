@@ -37,7 +37,7 @@ expect(current_version).to be_an_instance_of Integer
 #### Get Size of Moab Object
 ```ruby
 object_size_in_bytes = StorageServices.object_size('666') # where 666 is the id
-expect(current_version).to be_an_instance_of Integer
+expect(object_size_in_bytes).to be_an_instance_of Integer
 ```
 
 ### Stanford-Specific
