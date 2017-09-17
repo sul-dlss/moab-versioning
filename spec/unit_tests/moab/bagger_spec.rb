@@ -12,33 +12,38 @@ describe 'Moab::Bagger' do
     expect(bagger.bag_pathname).to eq bag_pathname
   end
 
+  let(:submit_source_base) { @data.join('v0002') }
+  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'),'version') }
+  let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001')) }
+  let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
+  let(:submit_bag) do
+    sb = Moab::Bagger.new(submit_inventory, submit_catalog, @submit_bag_pathname)
+    sb.package_mode = :depositor
+    sb.bag_inventory = submit_bag_inventory
+    sb
+  end
+
+  let(:disseminate_base) { @ingests.join(@obj) }
+  let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002','manifests')) }
+  let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002','manifests'),'version') }
+  let(:disseminate_bag) do
+    db = Moab::Bagger.new(disseminate_inventory, disseminate_catalog, @disseminate_bag_pathname)
+    db.package_mode = :reconstructor
+    db.bag_inventory = disseminate_inventory
+    db
+  end
+
   before(:all) do
-    @submit_source_base = @data.join('v0002')
-    @submit_inventory = Moab::FileInventory.read_xml_file(@manifests.join('v0002'),'version')
-    @submit_catalog = Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001'))
-    @submit_bag_inventory = @submit_catalog.version_additions(@submit_inventory)
     @submit_bag_pathname = @temp.join('submit_bag_pathname')
-
-    @disseminate_base = @ingests.join(@obj)
-    @disseminate_inventory = Moab::FileInventory.read_xml_file(@disseminate_base.join('v0002','manifests'),'version')
-    @disseminate_catalog = Moab::SignatureCatalog.read_xml_file(@disseminate_base.join('v0002','manifests'))
-    @disseminate_bag_inventory = @disseminate_inventory
     @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
-
   end
 
   before(:each) do
     @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
     @submit_bag_pathname.mkpath
-    @submit_bag = Moab::Bagger.new(@submit_inventory, @submit_catalog, @submit_bag_pathname)
-    @submit_bag.package_mode = :depositor
-    @submit_bag.bag_inventory = @submit_bag_inventory
 
     @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
     @disseminate_bag_pathname.mkpath
-    @disseminate_bag = Moab::Bagger.new(@disseminate_inventory, @disseminate_catalog, @disseminate_bag_pathname)
-    @disseminate_bag.package_mode = :reconstructor
-    @disseminate_bag.bag_inventory = @disseminate_bag_inventory
   end
 
   after(:all) do
@@ -52,7 +57,7 @@ describe 'Moab::Bagger' do
     data_dir = bag_dir.join('data')
     data_dir.mkpath
     expect(data_dir.exist?).to eq(true)
-    bagger = Moab::Bagger.new(nil,nil,bag_dir)
+    bagger = Moab::Bagger.new(nil, nil, bag_dir)
     bagger.delete_bag
     expect(bag_dir.exist?).to eq(false)
   end
@@ -156,34 +161,34 @@ describe 'Moab::Bagger' do
 
     packages_dir.rmtree if packages_dir.exist?
 
-    bag = @submit_bag
+    bag = submit_bag
     expect(bag).to receive(:fill_payload)
     expect(bag).to receive(:create_payload_manifests)
     expect(bag).to receive(:create_bag_info_txt)
     expect(bag).to receive(:create_bagit_txt)
     expect(bag).to receive(:create_tagfile_manifests)
-    expect(@submit_inventory).to receive(:write_xml_file).with(@submit_bag_pathname,'version')
-    expect(@submit_catalog).to receive(:version_additions).with(@submit_inventory).and_return(@submit_bag_inventory)
-    expect(@submit_bag_inventory).to receive(:write_xml_file).with(@submit_bag_pathname,'additions')
-    bag.fill_bag(:depositor, @submit_source_base)
+    expect(submit_inventory).to receive(:write_xml_file).with(@submit_bag_pathname, 'version')
+    expect(submit_catalog).to receive(:version_additions).with(submit_inventory).and_return(submit_bag_inventory)
+    expect(submit_bag_inventory).to receive(:write_xml_file).with(@submit_bag_pathname, 'additions')
+    bag.fill_bag(:depositor, submit_source_base)
     expect(bag.package_mode).to eq(:depositor)
 
-    bag = @disseminate_bag
+    bag = disseminate_bag
     expect(bag).to receive(:fill_payload)
     expect(bag).to receive(:create_payload_manifests)
     expect(bag).to receive(:create_bag_info_txt)
     expect(bag).to receive(:create_bagit_txt)
     expect(bag).to receive(:create_tagfile_manifests)
-    expect(@disseminate_catalog).not_to receive(:version_additions)
-    expect(@disseminate_bag_inventory).to receive(:write_xml_file).with(@disseminate_bag_pathname,'version')
-    bag.fill_bag(:reconstructor, @disseminate_base)
+    expect(disseminate_catalog).not_to receive(:version_additions)
+    expect(disseminate_inventory).to receive(:write_xml_file).with(@disseminate_bag_pathname, 'version')
+    bag.fill_bag(:reconstructor, disseminate_base)
     expect(bag.package_mode).to eq(:reconstructor)
 
   end
 
   specify '#fill_payload' do
-    bag = @submit_bag
-    bag.fill_payload(@submit_source_base)
+    bag = submit_bag
+    bag.fill_payload(submit_source_base)
     files = Array.new
     bag.bag_pathname.join('data').find {|f| files << f.relative_path_from(@temp).to_s}
     expect(files.sort).to eq([
@@ -196,8 +201,8 @@ describe 'Moab::Bagger' do
         "submit_bag_pathname/data/metadata/versionMetadata.xml"
     ])
 
-    bag = @disseminate_bag
-    bag.fill_payload(@disseminate_base)
+    bag = disseminate_bag
+    bag.fill_payload(disseminate_base)
     files = Array.new
     bag.bag_pathname.join('data').find {|f| files << f.relative_path_from(@temp).to_s}
     expect(files.sort).to eq([
@@ -218,8 +223,8 @@ describe 'Moab::Bagger' do
   end
 
   specify '#create_payload_manifests' do
-    bag = @submit_bag
-    bag.fill_payload(@submit_source_base)
+    bag = submit_bag
+    bag.fill_payload(submit_source_base)
     bag.create_payload_manifests()
     md5 = bag.bag_pathname.join('manifest-md5.txt')
     expect(md5.exist?).to eq(true)
@@ -239,7 +244,7 @@ describe 'Moab::Bagger' do
   end
 
   specify '#create_bag_info_txt' do
-    bag = @submit_bag
+    bag = submit_bag
     bag.create_bag_info_txt()
     bag_info = bag.bag_pathname.join('bag-info.txt')
     expect(bag_info.exist?).to eq(true)
@@ -251,7 +256,7 @@ describe 'Moab::Bagger' do
   end
 
   specify '#create_bagit_txt' do
-    bag = @submit_bag
+    bag = submit_bag
     bag.create_bagit_txt()
     bagit = bag.bag_pathname.join('bagit.txt')
     expect(bagit.exist?).to eq(true)
@@ -262,8 +267,8 @@ describe 'Moab::Bagger' do
   end
 
   specify '#create_tagfile_manifests' do
-    bag = @submit_bag
-    bag.fill_bag(:depositor,@submit_source_base)
+    bag = submit_bag
+    bag.fill_bag(:depositor, submit_source_base)
     md5 = bag.bag_pathname.join('tagmanifest-md5.txt')
     expect(md5.exist?).to eq(true)
     expect(md5.readlines.collect{ |line| line.split(/ /)[1] }).to match_array [
