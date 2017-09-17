@@ -14,5 +14,7 @@ spec/fixtures/derivatives/
 spec/temp/
 pkg/
 
+**/.DS_Store
+
 .pry_history
 **/.DS_Store
