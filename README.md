@@ -34,6 +34,13 @@ current_version = StorageServices.current_version('666') # where 666 is the id
 expect(current_version).to be_an_instance_of Integer
 ```
 
+##### ... if you know where the moab is stored (which storage_root)
+
+```ruby
+moab = Moab::StorageObject.new(druid, object_dir) # cheaper/faster to go directly to the correct directory
+current_version = moab.current_version_id
+```
+
 #### Get Size of Moab Object
 ```ruby
 object_size_in_bytes = StorageServices.object_size('666') # where 666 is the id
@@ -61,6 +68,8 @@ Note the below has "Stanford::StorageServices", which can be necessary if there 
 current_version = Stanford::StorageServices.current_version('oo000oo0000') # where oo000oo0000 is the druid
 expect(current_version).to be_an_instance_of Integer
 ```
+
+Note further that there is a more efficient non Stanford-Specific approach if the object's directory (storage_root) is known.
 
 #### Get Size of Moab Object
 
