@@ -15,3 +15,4 @@ spec/temp/
 pkg/
 
 .pry_history
+**/.DS_Store
