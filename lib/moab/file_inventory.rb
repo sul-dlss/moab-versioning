@@ -184,12 +184,12 @@ module Moab
     #   if nil, then the directory is assumed to contain both content and metadata subdirectories
     # @return [FileInventory] Traverse a directory and return an inventory of the files it contains
     # @example {include:file:spec/features/inventory/harvest_inventory_spec.rb}
-    def inventory_from_directory(data_dir,group_id=nil)
+    def inventory_from_directory(data_dir, group_id=nil)
       if group_id
-        @groups << FileGroup.new(:group_id=>group_id).group_from_directory(data_dir)
+        @groups << FileGroup.new(group_id: group_id).group_from_directory(data_dir)
       else
-        ['content','metadata'].each do |group_id|
-          @groups << FileGroup.new(:group_id=>group_id).group_from_directory(Pathname(data_dir).join(group_id))
+        ['content', 'metadata'].each do |gid|
+          @groups << FileGroup.new(group_id: gid).group_from_directory(Pathname(data_dir).join(gid))
         end
       end
       self
