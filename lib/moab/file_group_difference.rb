@@ -264,14 +264,13 @@ module Moab
           fid.basis_path = basis_only_paths[n]
           fid.other_path = other_only_paths[n]
           fid.signatures << signature
-          case true
-            when fid.basis_path.nil?
-              fid.change = 'copyadded'
-              fid.basis_path = basis_paths[0]
-            when fid.other_path.nil?
-              fid.change = 'copydeleted'
-            else
-              fid.change = 'renamed'
+          if fid.basis_path.nil?
+            fid.change = 'copyadded'
+            fid.basis_path = basis_paths[0]
+          elsif fid.other_path.nil?
+            fid.change = 'copydeleted'
+          else
+            fid.change = 'renamed'
           end
           @subset_hash[fid.change.to_sym].files << fid
         end
