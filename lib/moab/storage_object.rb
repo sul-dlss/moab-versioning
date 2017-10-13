@@ -154,11 +154,7 @@ module Moab
     # @api external
     # @return [Integer] The identifier of the latest version of this object, or 0 if no versions exist
     def current_version_id
-      return @current_version_id unless @current_version_id.nil?
-      #@current_version_id = self.version_id_list.last || 0
-      list = self.version_id_list
-      version_id = list.empty? ? 0 : list.last
-      @current_version_id = version_id
+      @current_version_id ||= self.version_id_list.last || 0
     end
 
     # @return [StorageObjectVersion] The most recent version in the storage object
