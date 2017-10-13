@@ -464,4 +464,11 @@ describe 'Moab::StorageObject' do
     @storage_object.restore_object(@ingest_object_dir)
     expect(@storage_object.version_list.size).to eq 3
   end
+
+  it '#size' do
+    # values may differ from file system to file system (which is to be expected).
+    # if this test fails on your mac, make sure you don't have any extraneous .DS_Store files
+    # lingering in the fixture directories.
+    expect(@storage_object.size).to be_between(345_000, 346_000)
+  end
 end

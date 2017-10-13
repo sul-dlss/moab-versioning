@@ -227,6 +227,14 @@ module Moab
       self
     end
 
+    # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).
+    def size
+      size = 0
+      Find.find(object_pathname) do |path|
+        size += FileTest.size(path) unless FileTest.directory?(path)
+      end
+      size
+    end
   end
 
 end
