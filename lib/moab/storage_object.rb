@@ -215,7 +215,7 @@ module Moab
     # @return [Boolean] Restore all recovered versions to online storage and verify results
     def restore_object(recovery_path)
       timestamp = Time.now
-      recovery_object = StorageObject.new(@digital_object_id, recovery_path, mkpath=false)
+      recovery_object = StorageObject.new(@digital_object_id, recovery_path, false)
       recovery_object.versions.each do |recovery_version|
         version_id = recovery_version.version_id
         storage_version = self.storage_object_version(version_id)
