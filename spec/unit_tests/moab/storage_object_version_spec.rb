@@ -295,7 +295,7 @@ describe 'Moab::StorageObjectVersion' do
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash
         detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
-        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
+        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-JSON
           {
           "manifest_inventory": {
             "verified": false,
@@ -347,7 +347,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-        EOF
+        JSON
         )
       end
     end
@@ -362,7 +362,7 @@ describe 'Moab::StorageObjectVersion' do
     end
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
-      expect(detail_hash).to eq JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-JSON
         {
           "signature_catalog": {
             "verified": true,
@@ -384,7 +384,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-      EOF
+      JSON
       )
     end
   end
@@ -398,7 +398,7 @@ describe 'Moab::StorageObjectVersion' do
     end
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
-      expect(detail_hash).to eq JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-JSON
         {
           "version_inventory": {
             "verified": true,
@@ -427,7 +427,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-      EOF
+      JSON
       )
     end
   end
@@ -447,7 +447,7 @@ describe 'Moab::StorageObjectVersion' do
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash(true)
         detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
-        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
+        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-JSON
           {
             "version_additions": {
             "verified": false,
@@ -505,7 +505,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-        EOF
+        JSON
         )
       end
     end

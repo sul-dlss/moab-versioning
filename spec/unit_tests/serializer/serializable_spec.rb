@@ -214,7 +214,7 @@ describe 'Serializer::Serializable' do
   end
 
   specify '#to_json' do
-    expect((@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning')).to eq <<EOF
+    expect((@v1_content.to_json+"\n").gsub(/"datetime": ".*?"/, '"datetime": ""').gsub(/: ".*moab-versioning/,': "moab-versioning')).to eq <<JSON
 {
   "group_id": "content",
   "data_source": "moab-versioning/spec/fixtures/data/jq937jp0017/v0001/content",
@@ -308,6 +308,6 @@ describe 'Serializer::Serializable' do
     }
   }
 }
-EOF
+JSON
   end
 end

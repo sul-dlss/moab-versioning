@@ -7,7 +7,7 @@ describe 'Stanford::StorageServices' do
   specify '.cm_remediate' do
     remediated_cm = Stanford::StorageServices.cm_remediate(@obj, 1)
     remediated_cm_ng_xml = Nokogiri::XML(remediated_cm)
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
     <contentMetadata type="sample" objectId="druid:jq937jp0017">
         <resource type="version" sequence="1" id="version-1">
             <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
@@ -42,7 +42,7 @@ describe 'Stanford::StorageServices' do
             </file>
         </resource>
     </contentMetadata>
-    EOF
+    XML
     exp_ng_xml = Nokogiri::XML(exp_xml)
     expect(EquivalentXml.equivalent?(remediated_cm_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
   end
@@ -53,7 +53,7 @@ describe 'Stanford::StorageServices' do
       expect(diff).to be_instance_of(Moab::FileInventoryDifference)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="3" basis="v1-contentMetadata-all" other="new-contentMetadata-all" >
           <fileGroupDifference groupId="content" differenceCount="3" identical="3" copyadded="0" copydeleted="0" renamed="0" modified="1" deleted="2" added="0">
             <subset change="identical" count="3">
@@ -87,7 +87,7 @@ describe 'Stanford::StorageServices' do
             <subset change="added" count="0"/>
           </fileGroupDifference>
         </fileInventoryDifference>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
@@ -100,7 +100,7 @@ describe 'Stanford::StorageServices' do
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventoryDifference objectId="druid:dd116zh0343" differenceCount="12" basis="v1-contentMetadata-shelve" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="12" identical="1" copyadded="0" copydeleted="0" renamed="1" modified="1" deleted="5" added="5">
             <subset change="identical" count="1">
@@ -157,7 +157,7 @@ describe 'Stanford::StorageServices' do
             </subset>
           </fileGroupDifference>
         </fileInventoryDifference>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
@@ -168,7 +168,7 @@ describe 'Stanford::StorageServices' do
       diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventoryDifference objectId="druid:no000non0000" differenceCount="8" basis="v0" other="new-contentMetadata-shelve" >
           <fileGroupDifference groupId="content" differenceCount="8" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="8">
             <subset change="identical" count="0"/>
@@ -205,13 +205,13 @@ describe 'Stanford::StorageServices' do
             </subset>
           </fileGroupDifference>
         </fileInventoryDifference>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
 
     it 'empty subset' do
-      inventory_diff = <<-EOF
+      inventory_diff = <<-XML
         <fileInventoryDifference objectId="druid:ms205ty4764" differenceCount="0" basis="v0" other="new-contentMetadata-xyz" >
           <fileGroupDifference groupId="content" differenceCount="0" identical="0" copyadded="0" copydeleted="0" renamed="0" modified="0" deleted="0" added="0">
             <subset change="identical" count="0"/>
@@ -223,7 +223,7 @@ describe 'Stanford::StorageServices' do
             <subset change="added" count="0"/>
           </fileGroupDifference>
         </fileInventoryDifference>
-      EOF
+      XML
       druid = 'druid:ms205ty4764'
       version_id = 1
       subsets = %w(shelve publish preserve)
@@ -246,7 +246,7 @@ describe 'Stanford::StorageServices' do
       expect(adds).to be_instance_of(Moab::FileInventory)
       adds_ng_xml = Nokogiri::XML(adds.to_xml)
       adds_ng_xml.xpath('//@inventoryDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventory type="additions" objectId="druid:jq937jp0017" versionId=""  fileCount="1" byteCount="32915" blockCount="33">
           <fileGroup groupId="content" dataSource="" fileCount="1" byteCount="32915" blockCount="33">
             <file>
@@ -255,7 +255,7 @@ describe 'Stanford::StorageServices' do
             </file>
           </fileGroup>
         </fileInventory>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
@@ -265,7 +265,7 @@ describe 'Stanford::StorageServices' do
       expect(adds).to be_instance_of(Moab::FileInventory)
       adds_ng_xml = Nokogiri::XML(adds.to_xml)
       adds_ng_xml.xpath('//@inventoryDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventory type="additions" objectId="druid:no000non0000" versionId=""  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -286,7 +286,7 @@ describe 'Stanford::StorageServices' do
             </file>
           </fileGroup>
         </fileInventory>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end

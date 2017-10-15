@@ -19,7 +19,7 @@ describe "Feature: File Inventory Serialization" do
     xmlObj1.xpath('//@inventoryDatetime').remove
     output_dir.rmtree
 
-    xmlTest = <<-EOF
+    xmlTest = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <fileGroup groupId="content" dataSource="#{fixtures_directory}/data/jq937jp0017/v0001/content" fileCount="6" byteCount="206432" blockCount="203">
           <file>
@@ -70,7 +70,7 @@ describe "Feature: File Inventory Serialization" do
           </file>
         </fileGroup>
       </fileInventory>
-    EOF
+    XML
     xmlObj2 = Nokogiri::XML(xmlTest)
     same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
     expect(same).to be true

@@ -21,7 +21,7 @@ describe 'Stanford::ContentInventory' do
       inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventory type="version" objectId="druid:jq937jp0017" versionId="2"  fileCount="4" byteCount="132363" blockCount="131">
           <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="4" byteCount="132363" blockCount="131">
             <file>
@@ -42,7 +42,7 @@ describe 'Stanford::ContentInventory' do
             </file>
           </fileGroup>
         </fileInventory>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
@@ -52,7 +52,7 @@ describe 'Stanford::ContentInventory' do
       inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <fileInventory type="version" objectId="druid:dd116zh0343" versionId="1"  fileCount="8" byteCount="70979" blockCount="73">
           <fileGroup groupId="content" dataSource="contentMetadata-preserve" fileCount="8" byteCount="70979" blockCount="73">
             <file>
@@ -89,7 +89,7 @@ describe 'Stanford::ContentInventory' do
             </file>
           </fileGroup>
         </fileInventory>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
@@ -97,11 +97,11 @@ describe 'Stanford::ContentInventory' do
 
   # testing boundary case where all subset attributes are no (e.g. shelve='no')
   specify '#inventory_from_cm with empty subset' do
-    empty_inventory = <<-EOF
+    empty_inventory = <<-XML
       <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
         <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
       </fileInventory>
-    EOF
+    XML
     druid = 'druid:ms205ty4764'
     version_id = 1
     subsets = %w(shelve publish preserve)
@@ -183,7 +183,7 @@ describe 'Stanford::ContentInventory' do
     cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
     generated_ng_xml = Nokogiri::XML(cm)
     generated_ng_xml.xpath('//@datetime').remove
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
       <contentMetadata type="sample" objectId="jq937jp0017">
         <resource type="version" sequence="1" id="version-2">
           <file preserve="yes" publish="yes"  size="32915" id="page-1.jpg" shelve="yes">
@@ -208,7 +208,7 @@ describe 'Stanford::ContentInventory' do
           </file>
         </resource>
       </contentMetadata>
-    EOF
+    XML
     exp_ng_xml = Nokogiri::XML(exp_xml)
     expect(EquivalentXml.equivalent?(generated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
   end
@@ -252,7 +252,7 @@ describe 'Stanford::ContentInventory' do
     it 'produces expected result' do
       ng_xml = @content_inventory.remediate_content_metadata(cm, group)
       remediated_ng_xml = Nokogiri::XML(ng_xml)
-      exp_xml = <<-EOF
+      exp_xml = <<-XML
         <contentMetadata type="sample" objectId="druid:jq937jp0017">
           <resource type="version" sequence="1" id="version-1">
             <file datetime="2012-03-26T08:15:11-06:00" size="40873" id="title.jpg" shelve="yes" publish="yes" preserve="yes">
@@ -281,7 +281,7 @@ describe 'Stanford::ContentInventory' do
             </file>
           </resource>
         </contentMetadata>
-      EOF
+      XML
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(remediated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end

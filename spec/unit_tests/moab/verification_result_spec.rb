@@ -48,7 +48,7 @@ describe 'Moab::VerificationResult' do
 
   specify '#to_hash' do
     detail_hash = result.to_hash(true)
-    expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<-EOF
+    expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<-JSON
 {
   "my_entity": {
     "verified": false,
@@ -74,12 +74,12 @@ describe 'Moab::VerificationResult' do
     }
   }
 }
-EOF
+JSON
   end
 
   it '#to_json' do
     detail_json = result.to_json(false)
-    expect("#{detail_json}\n").to eq <<-EOF
+    expect("#{detail_json}\n").to eq <<-JSON
 {
   "my_entity": {
     "verified": false,
@@ -99,6 +99,6 @@ EOF
     }
   }
 }
-EOF
+JSON
   end
 end

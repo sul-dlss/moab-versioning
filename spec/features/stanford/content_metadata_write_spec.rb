@@ -18,7 +18,7 @@ describe "Write contentMetadata datastream" do
     xmlObj1 = Nokogiri::XML(cm)
     xmlObj1.xpath('//@datetime').remove
 
-    cm_test = <<-EOF
+    cm_test = <<-XML
       <contentMetadata type="sample" objectId="jq937jp0017">
         <resource type="version" sequence="1" id="version-2">
           <file publish="yes"  preserve="yes" size="32915" shelve="yes" id="page-1.jpg">
@@ -43,7 +43,7 @@ describe "Write contentMetadata datastream" do
           </file>
         </resource>
       </contentMetadata>
-    EOF
+    XML
     xmlObj2 = Nokogiri::XML(cm_test)
     same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
     expect(same).to be true

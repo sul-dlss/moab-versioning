@@ -17,7 +17,7 @@ describe "Feature: Manifest Serialization" do
     xmlObj1.xpath('//@catalogDatetime').remove
     output_dir.rmtree
 
-    catalog_test = <<-EOF
+    catalog_test = <<-XML
       <signatureCatalog objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <entry originalVersion="1" groupId="content" storagePath="intro-1.jpg">
           <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
@@ -53,7 +53,7 @@ describe "Feature: Manifest Serialization" do
           <fileSignature size="224" md5="36e3c1dadad827cb49e521f5d6559127" sha1="af96327b72bf37e3e60cf51c6de4dba1f6dea620" sha256="65426a7389e13dfa73d37c0ab1417c3e31de74289bf77cc74b3dcc3ffa6f4c8e"/>
         </entry>
       </signatureCatalog>
-    EOF
+    XML
     xmlObj2 = Nokogiri::XML(catalog_test)
     same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
     expect(same).to be true

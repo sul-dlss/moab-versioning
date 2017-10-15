@@ -55,7 +55,7 @@ describe 'Moab::StorageServices' do
 
   specify '.version_metadata' do
     vm_ng_xml = Nokogiri::XML(Moab::StorageServices.version_metadata(@obj).read)
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
       <versionMetadata objectId="druid:jq937jp0017">
         <version versionId="1" label="1.0" significance="major">
           <description>Initial version</description>
@@ -69,7 +69,7 @@ describe 'Moab::StorageServices' do
           <note>page insertion</note>
         </version>
       </versionMetadata>
-    EOF
+    XML
     expect(EquivalentXml.equivalent?(vm_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
   end
 
@@ -149,7 +149,7 @@ describe 'Moab::StorageServices' do
     differences = Moab::StorageServices.version_differences(@obj, 2, 3)
     diff_ng_xml = Nokogiri::XML(differences.to_xml)
     diff_ng_xml.xpath('//@reportDatetime').remove
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
       <fileInventoryDifference objectId="druid:jq937jp0017" differenceCount="6" basis="v2" other="v3" >
         <fileGroupDifference groupId="content" differenceCount="3" identical="2" copyadded="0" copydeleted="0" renamed="2" modified="0" deleted="0" added="1">
           <subset change="identical" count="2">
@@ -208,7 +208,7 @@ describe 'Moab::StorageServices' do
           <subset change="added" count="0"/>
         </fileGroupDifference>
       </fileInventoryDifference>
-    EOF
+    XML
     expect(EquivalentXml.equivalent?(diff_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
   end
 end
