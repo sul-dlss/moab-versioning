@@ -6,23 +6,42 @@ require: rubocop-rspec
 AllCops:
   DisplayCopNames: true
   Include:
-    - Rakefile
-    - lib/**/*.rake
+    - 'Rakefile'
   Exclude:
     - 'Gemfile.lock'
     - '**/*.md'
     - 'api/**/*'
     - 'bin/**/*'
+    - 'lib/tools/*'
+    - 'lib/**/*.rake'
     - 'vendor/**/*' # avoid running rubocop on travis cached bundler
+
+# --- Layout ---
+
+# --- Lint ---
+
+# --- Metrics ---
 
 # because this isn't 1994
 Metrics/LineLength:
-  Max: 150 # would like to reduce this to 120
+  Max: 130 # would like to reduce this to 120
+  Exclude:
+    - 'lib/moab/file_manifestation.rb'
+    - 'spec/unit_tests/moab/bagger_spec.rb' # remove after PR #52 merged
+    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
 
-Style/FileName:
+# --- Naming ---
+
+Naming/FileName:
   Exclude:
     - 'Gemfile'
     - 'moab-versioning.gemspec'
+
+# -- Performance ---
+
+# --- RSpec ---
+
+# --- Style ---
 
 # because it's expensive to care
 Style/StringLiterals:
