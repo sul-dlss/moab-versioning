@@ -132,7 +132,7 @@ module Moab
       return list unless @object_pathname.exist?
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
-        if vnum.match /^v(\d+)$/
+        if vnum =~ /^v(\d+)$/
           list << vnum[1..-1].to_i
         end
       end

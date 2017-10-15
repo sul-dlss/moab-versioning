@@ -45,7 +45,7 @@ module Moab
       # split a object ID into 2-character segments, followed by a copy of the object ID
       # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
       path_segments = object_id.scan(/..?/) << object_id
-      path_segments.join(File::SEPARATOR).gsub(/:/,'_')
+      path_segments.join(File::SEPARATOR).tr(':', '_')
     end
 
     # @return [String] The trunk segment of the object deposit path
