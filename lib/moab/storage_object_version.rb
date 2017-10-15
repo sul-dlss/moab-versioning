@@ -204,8 +204,9 @@ module Moab
           :type=>'manifests',
           :digital_object_id=>@storage_object.digital_object_id,
           :version_id=>@version_id)
-      manifest_inventory.groups << FileGroup.new(:group_id=>'manifests').group_from_directory(@version_pathname.join('manifests'), recursive=false)
-      manifest_inventory.write_xml_file(@version_pathname.join('manifests'))
+      pathname = @version_pathname.join('manifests')
+      manifest_inventory.groups << FileGroup.new(:group_id=>'manifests').group_from_directory(pathname, false)
+      manifest_inventory.write_xml_file(pathname)
     end
 
     # @return [VerificationResult] return result of testing correctness of version manifests
@@ -330,7 +331,5 @@ module Moab
         @version_pathname.rename(demote_pathame)
       end
     end
-
   end
-
 end

@@ -91,17 +91,20 @@ describe 'Moab::StorageServices' do
   context '.retrieve_file' do
     it 'content' do
       content_pathname = Moab::StorageServices.retrieve_file('content', 'page-1.jpg', @obj, 2)
-      expect(content_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/content\/page-1.jpg/)
+      exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content/page-1.jpg}
+      expect(content_pathname.to_s).to match(exp_regex)
       expect(content_pathname).to exist
     end
     it 'metadata' do
       metadata_pathname = Moab::StorageServices.retrieve_file('metadata', 'contentMetadata.xml', @obj, 2)
-      expect(metadata_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/data\/metadata\/contentMetadata.xml/)
+      exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml}
+      expect(metadata_pathname.to_s).to match(exp_regex)
       expect(metadata_pathname).to exist
     end
     it 'manifest' do
       manifest_pathname = Moab::StorageServices.retrieve_file('manifest', 'versionAdditions.xml', @obj, 2)
-      expect(manifest_pathname.to_s).to match(/spec\/fixtures\/derivatives\/ingests\/jq937jp0017\/v0002\/manifests\/versionAdditions.xml/)
+      exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/manifests/versionAdditions.xml}
+      expect(manifest_pathname.to_s).to match(exp_regex)
       expect(manifest_pathname).to exist
     end
   end

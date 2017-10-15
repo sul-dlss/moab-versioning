@@ -15,8 +15,9 @@ module Moab
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository
 
-    #Note that Moab::Config is not initialized from environment config file until after this object is initialized by StorageServices
-    #   (see sequence of requires in spec_helper.rb and in applications that use)
+    # Note that Moab::Config is not initialized from environment config file until after
+    #  this object is initialized by StorageServices
+    #  (see sequence of requires in spec_helper.rb and in applications that use)
 
     # @return [Array<Pathname>] The list of filesystem root paths in which objects are stored
     def storage_roots

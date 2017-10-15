@@ -115,7 +115,8 @@ module Moab
     # @return [Pathname] The absolute storage path of the file, including the object's home directory
     def storage_filepath(catalog_filepath)
       storage_filepath = @object_pathname.join(catalog_filepath)
-      raise FileNotFoundException, "#{catalog_filepath} missing from storage location #{storage_filepath}" unless storage_filepath.exist?
+      errmsg = "#{catalog_filepath} missing from storage location #{storage_filepath}"
+      raise FileNotFoundException, errmsg unless storage_filepath.exist?
       storage_filepath
     end
 

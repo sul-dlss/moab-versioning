@@ -5,7 +5,8 @@ module Moab
   # A container for recording difference information at the file level
   # * If there was no change, the change type is set to <i>identical</i>
   # * If the signature is unchanged, but the path has moved, the change type is set to <i>renamed</i>
-  # * If path is unchanged, but the signature has changed, the change type is set to <i>modified</i> and both signatures are reported
+  # * If path is unchanged, but the signature has changed, the change type is set to <i>modified</i> and
+  #  both signatures are reported
   # * If the signature and path are only in the basis inventory, the change type is set to <i>deleted</i>
   # * If the signature and path are only in the other inventory, the change type is set to <i>added</i>
   # This is a child element of {FileGroupDifferenceSubset}, which is in turn a descendent of {FileInventoryDifference},
