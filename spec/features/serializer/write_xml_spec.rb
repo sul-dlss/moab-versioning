@@ -4,7 +4,7 @@ describe "Feature: Manifest Serialization" do
   # In order to: preserve the manifest metadata held by an in-memory object
   # The application needs to: generate a xml file rendition of the metadata for disk storage
 
-  scenario "should serialize signature catalog metadata to XML" do
+  it "serializes signature catalog metadata to XML" do
     # action: a call the object's write_xml_file method
     # outcome: produces a XML document containing all the catalog metadata
 
@@ -55,8 +55,8 @@ describe "Feature: Manifest Serialization" do
       </signatureCatalog>
     XML
     xmlObj2 = Nokogiri::XML(catalog_test)
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    opts = { :element_order => false, :normalize_whitespace => true }
+    expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
   end
 
 end

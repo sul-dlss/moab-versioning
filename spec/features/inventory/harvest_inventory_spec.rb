@@ -4,10 +4,10 @@ describe "Harvest file properties from a file directory" do
   # In order to: automate the generation of a file inventory
   # The application needs to: traverse a directory tree and capture file metadata and checksums
 
-  scenario "Generate content and metadata inventory for all files in a version's workspace directory" do
+  it "Generate content and metadata inventory for all files in a version's workspace directory" do
     # given: path to workspace directory
     # action: traverse the directory and capture file metadata
-    # outcome: gnerate inventory containing two file groups
+    # outcome: generate inventory containing two file groups
 
     data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
     group_id = 'metadata'
@@ -25,4 +25,3 @@ describe "Harvest file properties from a file directory" do
   end
 
 end
-

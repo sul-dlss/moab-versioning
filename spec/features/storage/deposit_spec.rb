@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe "Export a digital object version from DOR" do
-  #  In order to: tranfer files and metadata from DOR to SDR
+  #  In order to: transfer files and metadata from DOR to SDR
   #  The application needs to: create a Bagit bag containing files and manifests
 
-  scenario "Export content and metadata files for a new version" do
+  it "Export content and metadata files for a new version" do
     # given: a workspace directory containing content and metadata subdirectories,
-    #      : and a file inventory decribing the version's files,
+    #      : and a file inventory describing the version's files,
     #      : and a signature catalog for the digital object
     # action: create a new Bagit container
     #       : with hard links to only new or modified files

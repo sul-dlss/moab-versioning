@@ -4,11 +4,11 @@ describe "Determine version's file additions" do
   #  In order to: know which files are new or modified in a new version
   #  The application needs to: compare file signatures against the signature catalog
 
-  scenario "Generate versionAdditions report" do
+  it "Generate versionAdditions report" do
     # given: previous version's signature catalog
     #      : and new version's file inventory
     # action: filter the new inventory against the catalog
-    # outcome: version addtions report
+    # outcome: version additions report
 
     v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
     signature_catalog = Moab::SignatureCatalog.parse(v1_catalog_pathname.read)

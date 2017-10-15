@@ -4,7 +4,7 @@ describe "Create reconstructed digital object for a version" do
   #  In order to: disseminate a copy of a digital object version
   #  The application needs to: reconstruct the version's file structure from the storage location
 
-  scenario "Generate a copy of a full version in a temp location" do
+  it "Generate a copy of a full version in a temp location" do
     # given: the repository storage location containing the files from all the object versions
     #      : the file inventory for the desired version
     #      : the file signature catalog for the object

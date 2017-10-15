@@ -9,8 +9,7 @@ describe "Build a version metadata datastream" do
     @fixtures = File.join(File.dirname(__FILE__), '..', '..','fixtures')
   end
 
-
-  scenario "test" do
+  it "test" do
     #skip ("needs a rewrite to eliminate events")
     # given:
     # action:
@@ -56,10 +55,5 @@ describe "Build a version metadata datastream" do
     parent_pathname=fixtures.join('derivatives','metadata')
     parent_pathname.mkpath
     vm.write_xml_file(parent_pathname)
-
   end
-
-
 end
-
-
