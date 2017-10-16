@@ -4,7 +4,7 @@ describe "Process contentMetadata datastream" do
   #  In order to: utilize the DOR contentMetadata
   #  The application needs to: extract file inventory data from a contentMetadata datastream
 
-  scenario "Generate content file group from contentMetadata datastream" do
+  it "Generate content file group from contentMetadata datastream" do
     # given: a contentMetadata datastream instance
     # action: extract the file-level metadata
     # outcome: a fully populated 'content' file group

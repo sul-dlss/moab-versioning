@@ -134,9 +134,11 @@ module Moab
     # @return [FileSignature] The signature of the specified file
     def file_signature(group_id, file_id)
       file_group = group(group_id)
-      raise FileNotFoundException, "group #{group_id} not found for #{@digital_object_id} - #{@version_id}" if file_group.nil?
+      errmsg = "group #{group_id} not found for #{@digital_object_id} - #{@version_id}"
+      raise FileNotFoundException, errmsg if file_group.nil?
       file_signature = file_group.path_hash[file_id]
-      raise FileNotFoundException, "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}" if file_signature.nil?
+      errmsg = "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}"
+      raise FileNotFoundException, errmsg if file_signature.nil?
       file_signature
     end
 
@@ -194,7 +196,8 @@ module Moab
     end
 
     # @param  bag_dir [Pathname,String] The location of the BagIt bag to be inventoried
-    # @return [FileInventory] Traverse a BagIt bag's payload and return an inventory of the files it contains (using fixity from bag manifest files)
+    # @return [FileInventory] Traverse a BagIt bag's payload and return an inventory of the files it contains
+    #  (using fixity from bag manifest files)
     def inventory_from_bagit_bag(bag_dir)
       bag_pathname = Pathname(bag_dir)
       signatures_from_bag = signatures_from_bagit_manifests(bag_pathname)

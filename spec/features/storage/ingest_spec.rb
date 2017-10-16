@@ -4,7 +4,7 @@ describe "Import digital object version to SDR" do
   #  In order to: ingest a new version of a digital object into SDR
   #  The application needs to: process a Bagit bag containing either a full set or subset of object files
 
-  scenario "Create a new version storage folder" do
+  it "Create a new version storage folder" do
     # given: A Bagit bag containing a version of a digital object
     # action: Parse the file inventory for the version,
     #       : create the new version's storage folder,
@@ -81,7 +81,7 @@ describe "Import digital object version to SDR" do
         "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
         "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
     ])
-    ingests_dir.rmtree if ingests_dir.exist?  end
-
+    ingests_dir.rmtree if ingests_dir.exist?
+  end
 
 end

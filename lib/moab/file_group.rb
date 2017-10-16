@@ -155,11 +155,10 @@ module Moab
 
     # @return [Pathname] The full path used as the basis of the relative paths reported
     #   in {FileInstance} objects that are children of the {FileManifestation} objects contained in this file group
-    attr_accessor :base_directory
-
     def base_directory=(basepath)
       @base_directory = Pathname.new(basepath).expand_path
     end
+    attr_reader :base_directory
 
     # @api internal
     # @param pathname [Pathname] The file path to be tested
@@ -241,4 +240,3 @@ module Moab
   end
 
 end
-

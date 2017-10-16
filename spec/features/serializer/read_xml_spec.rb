@@ -8,7 +8,7 @@ describe "Manifest file parsing" do
     @fixtures = File.join(File.dirname(__FILE__), '..', 'fixtures')
   end
 
-  scenario "Parse an existing XML file" do
+  it "Parse an existing XML file" do
     # given: an signatureCatalog.xml file containing a serialized catalog
     # action: parse the file and transfer data to ruby objects
     # outcome: an in-memory representation of the manifest

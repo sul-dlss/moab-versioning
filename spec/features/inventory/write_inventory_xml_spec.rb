@@ -4,7 +4,7 @@ describe "Feature: File Inventory Serialization" do
   # In order to: preserve the file inventory data held by an in-memory object
   # The application needs to: generate a xml file rendition of the metadata for disk storage
 
-  scenario "should serialize file inventory data to XML" do
+  it "serializes file inventory data to XML" do
     # action: a call the object's write_xml_file method
     # outcome: produces a XML document containing all the inventory metadata
 
@@ -19,7 +19,7 @@ describe "Feature: File Inventory Serialization" do
     xmlObj1.xpath('//@inventoryDatetime').remove
     output_dir.rmtree
 
-    xmlTest = <<-EOF
+    xmlTest = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <fileGroup groupId="content" dataSource="#{fixtures_directory}/data/jq937jp0017/v0001/content" fileCount="6" byteCount="206432" blockCount="203">
           <file>
@@ -70,10 +70,10 @@ describe "Feature: File Inventory Serialization" do
           </file>
         </fileGroup>
       </fileInventory>
-    EOF
+    XML
     xmlObj2 = Nokogiri::XML(xmlTest)
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    opts = { :element_order => false, :normalize_whitespace => true }
+    expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
   end
 
 end

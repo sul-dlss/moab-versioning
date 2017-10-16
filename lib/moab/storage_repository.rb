@@ -15,8 +15,9 @@ module Moab
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository
 
-    #Note that Moab::Config is not initialized from environment config file until after this object is initialized by StorageServices
-    #   (see sequence of requires in spec_helper.rb and in applications that use)
+    # Note that Moab::Config is not initialized from environment config file until after
+    #  this object is initialized by StorageServices
+    #  (see sequence of requires in spec_helper.rb and in applications that use)
 
     # @return [Array<Pathname>] The list of filesystem root paths in which objects are stored
     def storage_roots
@@ -45,7 +46,7 @@ module Moab
       # split a object ID into 2-character segments, followed by a copy of the object ID
       # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
       path_segments = object_id.scan(/..?/) << object_id
-      path_segments.join(File::SEPARATOR).gsub(/:/,'_')
+      path_segments.join(File::SEPARATOR).tr(':', '_')
     end
 
     # @return [String] The trunk segment of the object deposit path

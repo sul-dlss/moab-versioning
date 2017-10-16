@@ -20,7 +20,8 @@ module Stanford
     # @return [FileInventory] The versionInventory equivalent of the contentMetadata
     #   if the supplied content_metadata is blank or empty, then a skeletal FileInventory will be returned
     def inventory_from_cm(content_metadata, object_id, subset, version_id=nil)
-      # The contentMetadata datastream is not required for ingest, since some object types, such as collection or APO do not require one.
+      # The contentMetadata datastream is not required for ingest, since some object types, such as collection
+      #   or APO do not require one.
       # Many of these objects have contentMetadata with no child elements, such as this:
       #    <contentMetadata objectId="bd608mj3166" type="file"/>
       # but there are also objects that have no datasteam of this name at all

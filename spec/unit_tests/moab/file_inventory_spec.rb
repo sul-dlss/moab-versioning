@@ -204,7 +204,7 @@ describe 'Moab::FileInventory' do
     end
     specify '#to_json summary' do
       json = parsed_file_inventory.to_json(summary=true)
-      expect("#{json}\n").to eq <<-EOF
+      expect("#{json}\n").to eq <<-JSON
 {
   "type": "version",
   "digital_object_id": "druid:jq937jp0017",
@@ -228,7 +228,7 @@ describe 'Moab::FileInventory' do
     }
   }
 }
-      EOF
+      JSON
     end
   end
 end

@@ -157,7 +157,7 @@ describe 'Moab::StorageObject' do
     new_inventory_ng_xml.xpath('//@datetime').each { |d| d.value = '' }
     new_inventory_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub(/.*moab-versioning/,'moab-versioning') }
     new_inventory_ng_xml.xpath('//@inventoryDatetime').remove
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <fileGroup groupId="content" dataSource="moab-versioning/spec/temp/plain_bag/data/content" fileCount="6" byteCount="206432" blockCount="203">
           <file>
@@ -208,13 +208,13 @@ describe 'Moab::StorageObject' do
           </file>
         </fileGroup>
       </fileInventory>
-    EOF
+    XML
     expect(EquivalentXml.equivalent?(new_inventory_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
 
     inventory_w_additions_ng_xml = Nokogiri::XML(bag_dir.join('versionAdditions.xml').read)
     inventory_w_additions_ng_xml.xpath('//@datetime').each { |d| d.value = '' }
     inventory_w_additions_ng_xml.xpath('//@inventoryDatetime').remove
-    exp_xml = <<-EOF
+    exp_xml = <<-XML
       <fileInventory type="additions" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <fileGroup groupId="content" dataSource="" fileCount="6" byteCount="206432" blockCount="203">
           <file>
@@ -265,7 +265,7 @@ describe 'Moab::StorageObject' do
           </file>
         </fileGroup>
       </fileInventory>
-    EOF
+    XML
     expect(EquivalentXml.equivalent?(inventory_w_additions_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
 
     bag_dir.rmtree if bag_dir.exist?

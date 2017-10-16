@@ -76,7 +76,8 @@ describe 'Moab::StorageObjectVersion' do
       expect(signature.size).to eq exp_result
     end
     it 'non-existent file raises Moab::FileNotFoundException' do
-      expect{@existing_storage_object_version.find_signature('manifest', 'dummy.xml')}.to raise_exception Moab::FileNotFoundException
+      expect{ @existing_storage_object_version.find_signature('manifest', 'dummy.xml') }
+        .to raise_exception Moab::FileNotFoundException
     end
   end
 
@@ -96,7 +97,8 @@ describe 'Moab::StorageObjectVersion' do
       expect(pathname.to_s).to include "#{exp_dir}/v0002/manifests/versionInventory.xml"
     end
     it 'non-existent file raises Moab::FileNotFoundException' do
-      expect{@existing_storage_object_version.find_filepath('manifest', 'dummy.xml')}.to raise_exception Moab::FileNotFoundException
+      expect{ @existing_storage_object_version.find_filepath('manifest', 'dummy.xml') }
+        .to raise_exception Moab::FileNotFoundException
     end
   end
 
@@ -132,10 +134,12 @@ describe 'Moab::StorageObjectVersion' do
     let(:exp_dir) { 'moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002' }
 
     it 'content' do
-      expect(@existing_storage_object_version.file_category_pathname('content').to_s).to match(Regexp.new(exp_dir + '/data/content'))
+      exp_regex = Regexp.new(exp_dir + '/data/content')
+      expect(@existing_storage_object_version.file_category_pathname('content').to_s).to match(exp_regex)
     end
     it 'metadata' do
-      expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to match(Regexp.new(exp_dir + '/data/metadata'))
+      exp_regex = Regexp.new(exp_dir + '/data/metadata')
+      expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to match(exp_regex)
     end
     it 'manifests' do
       expect(@existing_storage_object_version.file_category_pathname('manifests').to_s).to match exp_dir
@@ -295,7 +299,7 @@ describe 'Moab::StorageObjectVersion' do
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash
         detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
-        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
+        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-JSON
           {
           "manifest_inventory": {
             "verified": false,
@@ -347,7 +351,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-        EOF
+        JSON
         )
       end
     end
@@ -362,7 +366,7 @@ describe 'Moab::StorageObjectVersion' do
     end
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
-      expect(detail_hash).to eq JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-JSON
         {
           "signature_catalog": {
             "verified": true,
@@ -384,7 +388,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-      EOF
+      JSON
       )
     end
   end
@@ -398,7 +402,7 @@ describe 'Moab::StorageObjectVersion' do
     end
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
-      expect(detail_hash).to eq JSON.parse(<<-EOF
+      expect(detail_hash).to eq JSON.parse(<<-JSON
         {
           "version_inventory": {
             "verified": true,
@@ -427,7 +431,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-      EOF
+      JSON
       )
     end
   end
@@ -447,7 +451,7 @@ describe 'Moab::StorageObjectVersion' do
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash(true)
         detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')
-        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-EOF
+        expect(JSON.parse(JSON.pretty_generate(detail_hash))).to eq JSON.parse(<<-JSON
           {
             "version_additions": {
             "verified": false,
@@ -505,7 +509,7 @@ describe 'Moab::StorageObjectVersion' do
             }
           }
         }
-        EOF
+        JSON
         )
       end
     end

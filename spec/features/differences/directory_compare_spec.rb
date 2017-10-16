@@ -4,7 +4,7 @@ describe "Compare inventory against directory" do
   #  In order to: determine the difference between a file inventory and a directory
   #  The application needs to: generate a differences report
 
-  scenario "Generate differences report comparing inventory to directory" do
+  it "Generate differences report comparing inventory to directory" do
     # given: a directory path and an existing inventory
     # action: generate an inventory for the directory and compare inventories
     # outcome: differences report
@@ -21,7 +21,6 @@ describe "Compare inventory against directory" do
     expect(diff.other).to include("data/jq937jp0017/v0001/content")
     expect(diff.difference_count).to eq(0)
     expect(diff.digital_object_id).to eq("druid:jq937jp0017|")
-
   end
 
 end

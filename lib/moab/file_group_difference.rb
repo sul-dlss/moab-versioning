@@ -63,7 +63,8 @@ module Moab
     attribute :group_id, String, :tag => 'groupId', :key => true
 
     # @attribute
-    # @return [Integer] the total number of differences found between the two inventories that were compared  (dynamically calculated)
+    # @return [Integer] the total number of differences found between the two inventories that were
+    #   compared  (dynamically calculated)
     attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
 
     def difference_count

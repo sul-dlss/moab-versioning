@@ -4,7 +4,7 @@ describe "Compare versions" do
   #  In order to: determine what changes are present in a new version
   #  The application needs to: compare file inventories
 
-  scenario "Compare fileInventory objects of 2 versions" do
+  it "Compare fileInventory objects of 2 versions" do
     # given: two fileInventory instances
     # action: parse the XML to create in-memory objects
     #       : compare the inventories

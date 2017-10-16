@@ -90,9 +90,11 @@ module Moab
     end
 
     # @api external
-    # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of source files (Bagger#fill_payload)
+    # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of
+    #   source files (Bagger#fill_payload)
     # @param source_base_pathname [Pathname] The home location of the source files
-    # @return [Bagger] Perform all the operations required to fill the bag payload, write the manifests and tagfiles, and checksum the tagfiles
+    # @return [Bagger] Perform all the operations required to fill the bag payload, write the manifests and
+    #   tagfiles, and checksum the tagfiles
     # @example {include:file:spec/features/storage/deposit_spec.rb}
     def fill_bag(package_mode, source_base_pathname)
       create_bag_inventory(package_mode)
@@ -102,7 +104,8 @@ module Moab
     end
 
     # @api external
-    # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of source files (Bagger#fill_payload)
+    # @param package_mode [Symbol] The operational mode controlling what gets bagged and the full path of
+    #   source files (Bagger#fill_payload)
     # @return [FileInventory] Create, write, and return the inventory of the files that will become the payload
     def create_bag_inventory(package_mode)
       @package_mode = package_mode

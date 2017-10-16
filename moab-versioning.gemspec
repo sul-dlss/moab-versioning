@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
@@ -31,8 +30,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'rubocop', '~> 0.49.1' # avoid code churn due to rubocop changes
-  s.add_development_dependency 'rubocop-rspec', '~> 1.16.0' # avoid code churn due to rubocop-rspec changes
+  s.add_development_dependency 'rubocop', '~> 0.50.0' # avoid code churn due to rubocop changes
+  s.add_development_dependency 'rubocop-rspec', '~> 1.18.0' # avoid code churn due to rubocop-rspec changes
 
   s.files        = Dir.glob('lib/**/*')
   s.require_path = 'lib'
