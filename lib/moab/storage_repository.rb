@@ -110,11 +110,7 @@ module Moab
       storage_pathname = find_storage_object(object_id, include_deposit).object_pathname
       size = 0
       Find.find(storage_pathname) do |path|
-        if FileTest.directory?(path)
-          Find.prune if File.basename(path)[0] == '.'
-        else
-          size += FileTest.size(path)
-        end
+        size += FileTest.size(path) unless FileTest.directory?(path)
       end
       size
     end
