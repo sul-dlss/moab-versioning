@@ -154,11 +154,7 @@ module Moab
     # @api external
     # @return [Integer] The identifier of the latest version of this object, or 0 if no versions exist
     def current_version_id
-      return @current_version_id unless @current_version_id.nil?
-      #@current_version_id = self.version_id_list.last || 0
-      list = self.version_id_list
-      version_id = list.empty? ? 0 : list.last
-      @current_version_id = version_id
+      @current_version_id ||= self.version_id_list.last || 0
     end
 
     # @return [StorageObjectVersion] The most recent version in the storage object
@@ -219,7 +215,7 @@ module Moab
     # @return [Boolean] Restore all recovered versions to online storage and verify results
     def restore_object(recovery_path)
       timestamp = Time.now
-      recovery_object = StorageObject.new(@digital_object_id, recovery_path, mkpath=false)
+      recovery_object = StorageObject.new(@digital_object_id, recovery_path, false)
       recovery_object.versions.each do |recovery_version|
         version_id = recovery_version.version_id
         storage_version = self.storage_object_version(version_id)
@@ -231,6 +227,14 @@ module Moab
       self
     end
 
+    # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).
+    def size
+      size = 0
+      Find.find(object_pathname) do |path|
+        size += FileTest.size(path) unless FileTest.directory?(path)
+      end
+      size
+    end
   end
 
 end
