@@ -5,6 +5,11 @@ rvm:
   - 2.2.4
   - 2.3.1
   - 2.4.1
+  - 2.4.2
+
+# script, expressed as an array, is necessary for 'bundle exec coveralls push' to work locally
+script:
+  - bundle exec rake
 
 cache: bundler
 
