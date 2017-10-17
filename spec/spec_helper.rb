@@ -1,11 +1,14 @@
 #$LOAD_PATH.unshift(File.dirname(__FILE__))
 #$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'coveralls'
-Coveralls.wear!
+Coveralls.wear_merged! # because we run travis on multiple rubies
 
-require 'rubygems'
-require 'rspec'
-require 'rspec/core'
+require 'simplecov'
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter 'spec'
+end
+
 require 'equivalent-xml'
 require 'moab/stanford'
 require 'spec_config'
@@ -13,14 +16,6 @@ require 'ap'
 
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}
-  # Use Gherkin DSL syntax in specs for better readability
-  # scenario "<title>" do
-  #   given: <inputs>
-  #   action: <the application does>
-  #   outcome: <to generate this result>
-  #   ...
-  # end
-  config.alias_example_to :scenario
 end
 
 def fixtures_directory
