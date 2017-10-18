@@ -10,9 +10,7 @@ AllCops:
   Exclude:
     - 'Gemfile.lock'
     - '**/*.md'
-    - 'api/**/*'
     - 'bin/**/*'
-    - 'lib/tools/*'
     - 'lib/**/*.rake'
     - 'vendor/**/*' # avoid running rubocop on travis cached bundler
 
