@@ -41,6 +41,6 @@ Naming/FileName:
 
 # --- Style ---
 
-# because it's expensive to care
+# because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:
   Enabled: false
