@@ -82,10 +82,10 @@ module Moab
       @storage_object.storage_filepath(catalog_filepath)
     end
 
-  # @param [String] file_category The category of file ('content', 'metadata', or 'manifest')
+  # @param _file_category (unused; kept here for backwards compatibility)
   # @param [FileSignature] file_signature The signature of the file
   # @return [Pathname] Pathname object containing the full path for the specified file
-    def find_filepath_using_signature(file_category, file_signature)
+    def find_filepath_using_signature(_file_category, file_signature)
       catalog_filepath = signature_catalog.catalog_filepath(file_signature)
       @storage_object.storage_filepath(catalog_filepath)
     end

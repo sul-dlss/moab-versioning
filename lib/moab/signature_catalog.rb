@@ -136,7 +136,7 @@ module Moab
       group.files.each do |file|
         unless file.signature.complete?
           if @signature_hash.has_key?(file.signature)
-            file.signature = @signature_hash.find {|k,v| k == file.signature}[0]
+            file.signature = @signature_hash.find { |k, _v| k == file.signature }[0]
           elsif group_pathname
             file_pathname = group_pathname.join(file.instances[0].path)
             file.signature = file.signature.normalized_signature(file_pathname)
