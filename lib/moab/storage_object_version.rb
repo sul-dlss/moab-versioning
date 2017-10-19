@@ -35,7 +35,7 @@ module Moab
     def initialize(storage_object, version_id)
       if version_id.is_a?(Integer)
         @version_id = version_id
-      elsif version_id.is_a?(String) and version_id.match /^v(\d+)$/
+      elsif version_id.is_a?(String) and version_id =~ /^v(\d+)$/
         @version_id = version_id.sub(/^v/,'').to_i
       else
         raise "version_id (#{version_id}) is not in a recognized format"
