@@ -192,7 +192,7 @@ module Moab
       manifest_file = Hash.new
       manifest_types =  [:md5, :sha1, :sha256]
       manifest_types.each do |type|
-        manifest_pathname[type] = @bag_pathname.join("manifest-#{type.to_s}.txt")
+        manifest_pathname[type] = @bag_pathname.join("manifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
       @bag_inventory.groups.each do |group|
@@ -233,7 +233,7 @@ module Moab
       manifest_file = Hash.new
       manifest_types =  [:md5, :sha1, :sha256]
       manifest_types.each do |type|
-        manifest_pathname[type] = @bag_pathname.join("tagmanifest-#{type.to_s}.txt")
+        manifest_pathname[type] = @bag_pathname.join("tagmanifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
       @bag_pathname.children.each do |file|

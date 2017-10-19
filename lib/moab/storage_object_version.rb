@@ -140,7 +140,7 @@ module Moab
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
     # @return [void] Create the version subdirectory and move files into it
     def ingest_bag_data(bag_dir)
-      raise "Version already exists: #{@version_pathname.to_s}" if @version_pathname.exist?
+      raise "Version already exists: #{@version_pathname}" if @version_pathname.exist?
       @version_pathname.join('manifests').mkpath
       bag_dir=Pathname(bag_dir)
       ingest_dir(bag_dir.join('data'),@version_pathname.join('data'))
