@@ -123,8 +123,8 @@ module Moab
     unless storage_object.object_pathname.exist?
       if create
           storage_object.object_pathname.mkpath
-        else
-          raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
+      else
+        raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
       end
     end
     storage_object
