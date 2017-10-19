@@ -225,9 +225,9 @@ module Moab
       result = VerificationResult.new("manifest_inventory")
       manifest_inventory = self.file_inventory('manifests')
       result.subentities << VerificationResult.verify_value('composite_key',self.composite_key,manifest_inventory.composite_key)
-      result.subentities << VerificationResult.verify_truth('manifests_group', ! manifest_inventory.group_empty?('manifests'))
+      result.subentities << VerificationResult.verify_truth('manifests_group', !manifest_inventory.group_empty?('manifests'))
       # measure the manifest signatures of the files in the directory (excluding manifestInventory.xml)
-      directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'),'manifests')
+      directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'), 'manifests')
       directory_inventory.digital_object_id = storage_object.digital_object_id
       directory_group = directory_inventory.group('manifests')
       directory_group.remove_file_having_path("manifestInventory.xml")
@@ -283,7 +283,7 @@ module Moab
           file.instances.each do |instance|
             relative_path = File.join(group.group_id, instance.path)
             catalog_entry = signature_catalog.signature_hash[file.signature]
-            if ! catalog_entry.nil?
+            if !catalog_entry.nil?
               found += 1
             else
               missing << relative_path.to_s
