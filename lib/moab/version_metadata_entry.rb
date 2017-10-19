@@ -1,4 +1,4 @@
-  require 'moab'
+require 'moab'
 
 module Moab
 
@@ -61,4 +61,3 @@ module Moab
   end
 
 end
-
