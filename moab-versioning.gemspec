@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
 
   # Runtime dependencies
   s.add_dependency 'confstruct'
-  s.add_dependency 'nokogiri'
-  s.add_dependency 'nokogiri-happymapper'
+  s.add_dependency 'nokogiri' # XML parsing
+  s.add_dependency 'nokogiri-happymapper' # Object to XML Mapping Library, using Nokogiri
   s.add_dependency 'json'
   s.add_dependency 'systemu' # universal capture of stdout and stderr and handling of child process pid
   s.add_dependency 'druid-tools', '>= 1.0.0 ' # druid validation, druid-tree, etc.; needs 1.0.0 for strict validation
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
-  s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rubocop', '~> 0.50.0' # avoid code churn due to rubocop changes
   s.add_development_dependency 'rubocop-rspec', '~> 1.18.0' # avoid code churn due to rubocop-rspec changes
 
