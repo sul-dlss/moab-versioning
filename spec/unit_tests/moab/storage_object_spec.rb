@@ -53,7 +53,7 @@ describe 'Moab::StorageObject' do
    end
 
   context '#ingest_bag' do
-    it 'by the version foler' do
+    it 'by the version folder' do
       ingests_dir = @temp.join('ingests')
       (1..3).each do |version|
         object_dir = ingests_dir.join(@obj)

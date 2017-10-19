@@ -200,7 +200,7 @@ module Moab
       end
     end
 
-    # @return [VerificationResult] Return result of storage verfication
+    # @return [VerificationResult] Return result of storage verification
     def verify_object_storage
       result = VerificationResult.new(digital_object_id)
       self.version_list.each do |version|

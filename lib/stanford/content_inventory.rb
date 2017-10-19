@@ -2,11 +2,11 @@ require 'moab/stanford'
 
 module Stanford
 
-  # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing
+  # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing comparisons
   #
   # ====Data Model
   # * {DorMetadata} = utility methods for interfacing with Stanford metadata files (esp contentMetadata)
-  #   * <b>{ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparsions</b>
+  #   * <b>{ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparisons</b>
   #   * {ActiveFedoraObject} [1..*] = utility for extracting content or other information from a Fedora Instance
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
@@ -122,7 +122,7 @@ module Stanford
     end
 
     # @param content_metadata [String,Nokogiri::XML::Document] The contentMetadata as a string or XML doc
-    # @return [Boolean] True if contentMetadata has essetial file attributes, else raise exception
+    # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
       raise Moab::InvalidMetadataException, result[0]+" ..." if result.size > 0
