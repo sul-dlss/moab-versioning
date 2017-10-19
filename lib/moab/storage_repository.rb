@@ -20,16 +20,16 @@ module Moab
     CORRECT_DIR = 3
     EMPTY = 4
 
-  RESPONSE_CODE_TO_MESSAGES = {
-    MISSING_DIR => "Missing directory: %{addl}",
-    # NO_MANIFESTS_DIR => "No manifests directory exists",
-    # NO_DATA_DIR => "No data directory exists",
-    # NO_METADATA_DIR => "No metadata directory exists",
-    # NO_CONTENT_DIR => "No content dir exists",
-    EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
-    CORRECT_DIR=> "Correct items in path",
-    EMPTY => "No items in path"
-  }.freeze
+    RESPONSE_CODE_TO_MESSAGES = {
+      MISSING_DIR => "Missing directory: %{addl}",
+      # NO_MANIFESTS_DIR => "No manifests directory exists",
+      # NO_DATA_DIR => "No data directory exists",
+      # NO_METADATA_DIR => "No metadata directory exists",
+      # NO_CONTENT_DIR => "No content dir exists",
+      EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
+      CORRECT_DIR=> "Correct items in path",
+      EMPTY => "No items in path"
+    }.freeze
 
     # Note that Moab::Config is not initialized from environment config file until after
     #  this object is initialized by StorageServices
@@ -131,6 +131,9 @@ module Moab
       size
     end
 
+    # @param path [String] The identifier of the path to a digital object
+    # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
+    # @return [Array] of hashes which contain error messages for the caller
     def verify_no_nested_moabs(path, include_deposit=false)
       version_directories = list_sub_dirs(path)
       results = []
@@ -182,7 +185,7 @@ module Moab
         missing_data(sub_dirs, dir, results)
       elsif sub_dir_count == 2
         expected_dirs(sub_dirs, dir, results)
-      end 
+      end
       results.flatten
     end
 
@@ -218,7 +221,7 @@ module Moab
     def sub_dir(dir=nil)
       if dir
         ["content", "metadata"]
-      else 
+      else
         ["data", "manifests"]
       end
     end
