@@ -110,7 +110,16 @@ module Moab
       storage_pathname = find_storage_object(object_id, include_deposit).object_pathname
       size = 0
       Find.find(storage_pathname) do |path|
-        size += FileTest.size(path) unless FileTest.directory?(path)
+        # note that Find.find is recursive so we want to have this explicit if.  See ruby Find class documentation
+        if FileTest.directory?(path)
+          if File.basename(path)[0] == '.' || File.basename(path)[0] == '..'
+            Find.prune # don't look any further into this directory
+          else
+            next
+          end
+        else
+          size += FileTest.size(path)
+        end
       end
       size
     end
