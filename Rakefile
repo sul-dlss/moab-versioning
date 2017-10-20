@@ -33,13 +33,13 @@ RuboCop::RakeTask.new
 
 task :clean do
   puts 'Cleaning old coverage'
-  FileUtils.rm('coverage.data') if(File.exists? 'coverage.data')
-  FileUtils.rm_r('coverage') if(File.exists? 'coverage')
+  FileUtils.rm('coverage.data') if File.exist?('coverage.data')
+  FileUtils.rm_r('coverage') if File.exist?('coverage')
   puts 'Cleaning .yardoc and doc folders'
-  FileUtils.rm_r('.yardoc') if(File.exists? '.yardoc')
-  FileUtils.rm_r('doc') if(File.exists? 'doc')
+  FileUtils.rm_r('.yardoc') if File.exist?('.yardoc')
+  FileUtils.rm_r('doc') if File.exist?('doc')
   puts 'Cleaning spec/fixtures/derivates'
-  FileUtils.rm_r('spec/fixtures/derivatives') if(File.exists? 'spec/fixtures/derivatives')
+  FileUtils.rm_r('spec/fixtures/derivatives') if File.exist?('spec/fixtures/derivatives')
 end
 
 task :default => [:spec, :rubocop]

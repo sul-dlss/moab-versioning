@@ -2,11 +2,11 @@ require 'moab/stanford'
 
 module Stanford
 
-  # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing
+  # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing comparisons
   #
   # ====Data Model
   # * {DorMetadata} = utility methods for interfacing with Stanford metadata files (esp contentMetadata)
-  #   * <b>{ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparsions</b>
+  #   * <b>{ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparisons</b>
   #   * {ActiveFedoraObject} [1..*] = utility for extracting content or other information from a Fedora Instance
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
@@ -97,7 +97,7 @@ module Stanford
     def generate_content_metadata(file_group, object_id, version_id)
       cm = Nokogiri::XML::Builder.new do |xml|
         xml.contentMetadata(:type=>"sample", :objectId=>object_id) {
-          xml.resource(:type=>"version", :sequence=>"1", :id=>"version-#{version_id.to_s}") {
+          xml.resource(:type=>"version", :sequence=>"1", :id=>"version-#{version_id}") {
             file_group.files.each do |file_manifestation|
               signature = file_manifestation.signature
               file_manifestation.instances.each do |instance|
@@ -122,7 +122,7 @@ module Stanford
     end
 
     # @param content_metadata [String,Nokogiri::XML::Document] The contentMetadata as a string or XML doc
-    # @return [Boolean] True if contentMetadata has essetial file attributes, else raise exception
+    # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
       raise Moab::InvalidMetadataException, result[0]+" ..." if result.size > 0
@@ -197,7 +197,7 @@ module Stanford
       if file_size.nil? or file_size.empty?
         file_node['size'] = signature.size.to_s
       elsif file_size != signature.size.to_s
-        raise "Inconsistent size for #{file_node['id']}: #{file_size} != #{signature.size.to_s}"
+        raise "Inconsistent size for #{file_node['id']}: #{file_size} != #{signature.size}"
       end
     end
 
@@ -227,7 +227,7 @@ module Stanford
         if cm_checksum.nil? or cm_checksum.empty?
           checksum_node.content = sig_checksum
         elsif cm_checksum != sig_checksum
-          raise "Inconsistent #{type.to_s} for #{file_node['id']}: #{cm_checksum} != #{sig_checksum}"
+          raise "Inconsistent #{type} for #{file_node['id']}: #{cm_checksum} != #{sig_checksum}"
         end
       end
     end

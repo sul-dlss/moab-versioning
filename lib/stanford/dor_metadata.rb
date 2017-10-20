@@ -6,7 +6,7 @@ module Stanford
   #
   # ====Data Model
   # * <b>{DorMetadata} = utility methods for interfacing with Stanford metadata files (esp contentMetadata)</b>
-  #   * {ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparsions
+  #   * {ContentInventory} [1..1] = utilities for transforming contentMetadata to versionInventory and doing comparisons
   #   * {ActiveFedoraObject} [1..*] = utility for extracting content or other information from a Fedora Instance
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.

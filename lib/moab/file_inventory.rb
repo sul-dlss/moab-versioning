@@ -164,13 +164,13 @@ module Moab
       data_source = (groups.collect { |g| g.data_source.to_s }).join('|')
       if data_source.start_with?('contentMetadata')
         if version_id
-          "v#{version_id.to_s}-#{data_source}"
+          "v#{version_id}-#{data_source}"
         else
           "new-#{data_source}"
         end
       else
         if version_id
-          "v#{version_id.to_s}"
+          "v#{version_id}"
         else
           data_source
         end
@@ -214,7 +214,7 @@ module Moab
       manifest_pathname = Hash.new
       checksum_types =  [:md5, :sha1, :sha256]
       checksum_types.each do |type|
-        manifest_pathname[type] = bag_pathname.join("manifest-#{type.to_s}.txt")
+        manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
       end
       signatures = Hash.new { |hash,path| hash[path] = FileSignature.new }
       checksum_types.each do |type|
@@ -264,7 +264,7 @@ module Moab
         when "directory"
           'directoryInventory.xml'
         else
-          raise ArgumentError, "unknown inventory type: #{type.to_s}"
+          raise ArgumentError, "unknown inventory type: #{type}"
       end
     end
 

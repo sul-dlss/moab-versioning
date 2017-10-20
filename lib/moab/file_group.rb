@@ -219,12 +219,11 @@ module Moab
 
     # @api internal
     # @param pathname [Pathname, String] The location of the file to be added
-    # @param validated [Boolean] if true, path is verified to be descendant of (#base_directory)
+    # @param _validated (unused; kept here for backwards compatibility)
     # @return [void] Add a single physical file's data to the array of files in this group.
     #   If fixity data was supplied in bag manifests, then utilize that data.
-    def add_physical_file(pathname, validated=nil)
-      pathname=Pathname.new(pathname).expand_path
-      validated ||= is_descendent_of_base?(pathname)
+    def add_physical_file(pathname, _validated=nil)
+      pathname = Pathname.new(pathname).expand_path
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
       if @signatures_from_bag && @signatures_from_bag[pathname]
         signature = @signatures_from_bag[pathname]
@@ -234,7 +233,7 @@ module Moab
       else
         signature = FileSignature.new.signature_from_file(pathname)
       end
-      add_file_instance(signature,instance)
+      add_file_instance(signature, instance)
     end
 
   end

@@ -56,4 +56,3 @@ require 'moab/storage_repository'
 require 'moab/storage_services'
 require 'moab/exceptions'
 require 'moab/verification_result'
-

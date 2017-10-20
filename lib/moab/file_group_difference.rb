@@ -340,15 +340,15 @@ module Moab
       deltas = Hash.new {|hash, key| hash[key] = []}
       # case where other_path is empty or 'same'.  (create array of strings)
       [:identical, :modified, :deleted, :copydeleted].each do |change|
-        deltas[change].concat @subset_hash[change].files.collect{|file| file.basis_path}
+        deltas[change].concat(@subset_hash[change].files.collect{ |file| file.basis_path })
       end
       # case where basis_path and other_path are both present.  (create array of arrays)
       [:copyadded, :renamed].each do |change|
-        deltas[change].concat @subset_hash[change].files.collect{|file| [file.basis_path,file.other_path]}
+        deltas[change].concat(@subset_hash[change].files.collect { |file| [file.basis_path,file.other_path] })
       end
       # case where basis_path is empty.  (create array of strings)
       [:added].each do |change|
-        deltas[change].concat @subset_hash[change].files.collect{|file| file.other_path}
+        deltas[change].concat(@subset_hash[change].files.collect { |file| file.other_path })
       end
       deltas
     end

@@ -79,7 +79,7 @@ module Moab
         when :sha256
           @sha256 = value
         else
-          raise ArgumentError, "Unknown checksum type '#{type.to_s}'"
+          raise ArgumentError, "Unknown checksum type '#{type}'"
       end
     end
 
@@ -89,7 +89,7 @@ module Moab
       checksum_hash[:md5] = @md5
       checksum_hash[:sha1] = @sha1
       checksum_hash[:sha256] = @sha256
-      checksum_hash.delete_if { |key,value| value.nil? or value.empty?}
+      checksum_hash.delete_if { |_key, value| value.nil? or value.empty? }
       checksum_hash
     end
 

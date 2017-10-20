@@ -26,4 +26,3 @@ require 'digest/sha1'
 
 require 'serializer/serializable'
 require 'serializer/manifest'
-

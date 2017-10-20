@@ -35,7 +35,7 @@ module Moab
     def initialize(storage_object, version_id)
       if version_id.is_a?(Integer)
         @version_id = version_id
-      elsif version_id.is_a?(String) and version_id.match /^v(\d+)$/
+      elsif version_id.is_a?(String) and version_id =~ /^v(\d+)$/
         @version_id = version_id.sub(/^v/,'').to_i
       else
         raise "version_id (#{version_id}) is not in a recognized format"
@@ -82,10 +82,10 @@ module Moab
       @storage_object.storage_filepath(catalog_filepath)
     end
 
-  # @param [String] file_category The category of file ('content', 'metadata', or 'manifest')
+  # @param _file_category (unused; kept here for backwards compatibility)
   # @param [FileSignature] file_signature The signature of the file
   # @return [Pathname] Pathname object containing the full path for the specified file
-    def find_filepath_using_signature(file_category, file_signature)
+    def find_filepath_using_signature(_file_category, file_signature)
       catalog_filepath = signature_catalog.catalog_filepath(file_signature)
       @storage_object.storage_filepath(catalog_filepath)
     end
@@ -140,7 +140,7 @@ module Moab
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
     # @return [void] Create the version subdirectory and move files into it
     def ingest_bag_data(bag_dir)
-      raise "Version already exists: #{@version_pathname.to_s}" if @version_pathname.exist?
+      raise "Version already exists: #{@version_pathname}" if @version_pathname.exist?
       @version_pathname.join('manifests').mkpath
       bag_dir=Pathname(bag_dir)
       ingest_dir(bag_dir.join('data'),@version_pathname.join('data'))
@@ -225,9 +225,9 @@ module Moab
       result = VerificationResult.new("manifest_inventory")
       manifest_inventory = self.file_inventory('manifests')
       result.subentities << VerificationResult.verify_value('composite_key',self.composite_key,manifest_inventory.composite_key)
-      result.subentities << VerificationResult.verify_truth('manifests_group', ! manifest_inventory.group_empty?('manifests'))
+      result.subentities << VerificationResult.verify_truth('manifests_group', !manifest_inventory.group_empty?('manifests'))
       # measure the manifest signatures of the files in the directory (excluding manifestInventory.xml)
-      directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'),'manifests')
+      directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'), 'manifests')
       directory_inventory.digital_object_id = storage_object.digital_object_id
       directory_group = directory_inventory.group('manifests')
       directory_group.remove_file_having_path("manifestInventory.xml")
@@ -283,7 +283,7 @@ module Moab
           file.instances.each do |instance|
             relative_path = File.join(group.group_id, instance.path)
             catalog_entry = signature_catalog.signature_hash[file.signature]
-            if ! catalog_entry.nil?
+            if !catalog_entry.nil?
               found += 1
             else
               missing << relative_path.to_s

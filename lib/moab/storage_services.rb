@@ -139,7 +139,5 @@ module Moab
       compare_inventory=compare_version.file_inventory('version')
       FileInventoryDifference.new.compare(base_inventory,compare_inventory)
     end
-
   end
-
 end
