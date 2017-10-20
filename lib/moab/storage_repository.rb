@@ -22,10 +22,6 @@ module Moab
 
     RESPONSE_CODE_TO_MESSAGES = {
       MISSING_DIR => "Missing directory: %{addl}",
-      # NO_MANIFESTS_DIR => "No manifests directory exists",
-      # NO_DATA_DIR => "No data directory exists",
-      # NO_METADATA_DIR => "No metadata directory exists",
-      # NO_CONTENT_DIR => "No content dir exists",
       EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
       CORRECT_DIR=> "Correct items in path",
       EMPTY => "No items in path"
@@ -132,10 +128,9 @@ module Moab
     end
 
     # @param path [String] The identifier of the path to a digital object
-    # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
-    # @return [Array] of hashes which contain error messages for the caller
-    def verify_no_nested_moabs(path, include_deposit=false)
-      version_directories = list_sub_dirs(path)
+    # @return [Array] of hashes which contain messages for the caller
+    def verify_no_nested_moabs(path)
+      version_directories = list_sub_dirs(path).sort # sort for travis
       results = []
       version_directories.each do |version|
         version_path = path + "/#{version}"
@@ -145,7 +140,7 @@ module Moab
         data_dir_path = version_path + "/#{version_sub_dirs[0]}"
         data_sub_dirs =list_sub_dirs(data_dir_path).sort
         data_sub_dir_count = data_sub_dirs.count
-        check_sub_dirs(data_sub_dir_count, data_sub_dirs, dir=true, results)
+        check_sub_dirs(data_sub_dir_count, data_sub_dirs, results, dir=true)
       end
       results.flatten
     end
@@ -161,9 +156,10 @@ module Moab
         else
           raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
         end
-        storage_object
       end
+      storage_object
     end
+
     # @depricated Please use StorageObject#ingest_bag
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
@@ -175,37 +171,37 @@ module Moab
 
     private
 
-    def check_sub_dirs(sub_dir_count, sub_dirs, dir=nil, results)
+    def check_sub_dirs(sub_dir_count, sub_dirs, results, dir=nil)
     # assuming case statements are more expensive than if-elsif
-      if sub_dir_count == 0
+      if sub_dir_count.zero?
         results << result_hash(EMPTY)
       elsif sub_dir_count > 2
-        found_unexpected(sub_dirs, dir, results)
+        found_unexpected(sub_dirs, results, dir)
       elsif sub_dir_count < 2
-        missing_data(sub_dirs, dir, results)
+        missing_data(sub_dirs, results, dir)
       elsif sub_dir_count == 2
-        expected_dirs(sub_dirs, dir, results)
+        expected_dirs(sub_dirs, results, dir)
       end
       results.flatten
     end
 
     def list_sub_dirs(path)
-      Dir.entries("#{path}").select { |entry| File.join("#{path}", entry) if !(/^\..*/ =~ entry) }
+      Dir.entries(path).select { |entry| File.join(path, entry) unless /^\..*/ =~ entry }
     end
 
-    def found_unexpected(array, dir=nil, results)
+    def found_unexpected(array, results, dir=nil)
       required_sub_dirs = sub_dir(dir)
       unexpected = (array - required_sub_dirs).pop
       results << result_hash(EXTRA_DIR_DETECTED, unexpected)
     end
 
-    def missing_data(array, dir=nil, results)
+    def missing_data(array, results, dir=nil)
       required_sub_dirs = sub_dir(dir)
       missing = (required_sub_dirs - array).pop
       results << result_hash(MISSING_DIR, missing)
     end
 
-    def expected_dirs(array, dir=nil, results)
+    def expected_dirs(array, results, dir=nil)
       required_sub_dirs = sub_dir(dir)
       results << result_hash(CORRECT_DIR) if array == required_sub_dirs
     end
@@ -215,7 +211,7 @@ module Moab
     end
 
     def result_code_msg(response_code, addl=nil)
-      "#{RESPONSE_CODE_TO_MESSAGES[response_code] % {addl: addl }}"
+      format(RESPONSE_CODE_TO_MESSAGES[response_code], addl: addl)
     end
 
     def sub_dir(dir=nil)
@@ -225,7 +221,5 @@ module Moab
         ["data", "manifests"]
       end
     end
-
   end
-
 end

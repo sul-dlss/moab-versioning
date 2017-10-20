@@ -87,7 +87,7 @@ describe 'Moab::StorageRepository' do
     context 'under version directory' do
       it 'has no items' do
         # v0001
-        expect(verification_array[0..1]).to eq([{4=>"No items in path"}, {4=>"No items in path"}])
+        expect(verification_array[0..1]).to eq([{ 4=>"No items in path" }, { 4=>"No items in path" }])
       end
       it 'has unexpected directory' do
         # v0002

@@ -44,3 +44,7 @@ Naming/FileName:
 # because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:
   Enabled: false
+
+# because annotated tokens didn't work
+Style/FormatStringToken:
+  Enabled: false
