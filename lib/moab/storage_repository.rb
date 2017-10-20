@@ -15,6 +15,18 @@ module Moab
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository
 
+    MISSING_DIR = 1
+    EXTRA_DIR_DETECTED = 2
+    CORRECT_DIR = 3
+    EMPTY = 4
+
+    RESPONSE_CODE_TO_MESSAGES = {
+      MISSING_DIR => "Missing directory: %{addl}",
+      EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
+      CORRECT_DIR=> "Correct items in path",
+      EMPTY => "No items in path"
+    }.freeze
+
     # Note that Moab::Config is not initialized from environment config file until after
     #  this object is initialized by StorageServices
     #  (see sequence of requires in spec_helper.rb and in applications that use)
@@ -115,19 +127,37 @@ module Moab
       size
     end
 
+    # @param path [String] The identifier of the path to a digital object
+    # @return [Array] of hashes which contain messages for the caller
+    def verify_no_nested_moabs(path)
+      version_directories = list_sub_dirs(path).sort # sort for travis
+      results = []
+      version_directories.each do |version|
+        version_path = path + "/#{version}"
+        version_sub_dirs = list_sub_dirs(version_path).sort
+        version_sub_dir_count = version_sub_dirs.count
+        check_sub_dirs(version_sub_dir_count, version_sub_dirs, results)
+        data_dir_path = version_path + "/#{version_sub_dirs[0]}"
+        data_sub_dirs =list_sub_dirs(data_dir_path).sort
+        data_sub_dir_count = data_sub_dirs.count
+        check_sub_dirs(data_sub_dir_count, data_sub_dirs, results, dir=true)
+      end
+      results.flatten
+    end
+
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param create [Boolean] If true, the object home directory should be created if it does not exist
     # @return [StorageObject] The representation of a digitial object's storage directory, which must exist.
     def storage_object(object_id, create=false)
-    storage_object = find_storage_object(object_id)
-    unless storage_object.object_pathname.exist?
-      if create
-          storage_object.object_pathname.mkpath
-      else
-        raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
+      storage_object = find_storage_object(object_id)
+      unless storage_object.object_pathname.exist?
+        if create
+            storage_object.object_pathname.mkpath
+        else
+          raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
+        end
       end
-    end
-    storage_object
+      storage_object
     end
 
     # @depricated Please use StorageObject#ingest_bag
@@ -139,6 +169,57 @@ module Moab
       new_version
     end
 
-  end
+    private
 
+    def check_sub_dirs(sub_dir_count, sub_dirs, results, dir=nil)
+    # assuming case statements are more expensive than if-elsif
+      if sub_dir_count.zero?
+        results << result_hash(EMPTY)
+      elsif sub_dir_count > 2
+        found_unexpected(sub_dirs, results, dir)
+      elsif sub_dir_count < 2
+        missing_data(sub_dirs, results, dir)
+      elsif sub_dir_count == 2
+        expected_dirs(sub_dirs, results, dir)
+      end
+      results.flatten
+    end
+
+    def list_sub_dirs(path)
+      Dir.entries(path).select { |entry| File.join(path, entry) unless /^\..*/ =~ entry }
+    end
+
+    def found_unexpected(array, results, dir=nil)
+      required_sub_dirs = sub_dir(dir)
+      unexpected = (array - required_sub_dirs).pop
+      results << result_hash(EXTRA_DIR_DETECTED, unexpected)
+    end
+
+    def missing_data(array, results, dir=nil)
+      required_sub_dirs = sub_dir(dir)
+      missing = (required_sub_dirs - array).pop
+      results << result_hash(MISSING_DIR, missing)
+    end
+
+    def expected_dirs(array, results, dir=nil)
+      required_sub_dirs = sub_dir(dir)
+      results << result_hash(CORRECT_DIR) if array == required_sub_dirs
+    end
+
+    def result_hash(response_code, addl=nil)
+      { response_code => result_code_msg(response_code, addl) }
+    end
+
+    def result_code_msg(response_code, addl=nil)
+      format(RESPONSE_CODE_TO_MESSAGES[response_code], addl: addl)
+    end
+
+    def sub_dir(dir=nil)
+      if dir
+        ["content", "metadata"]
+      else
+        ["data", "manifests"]
+      end
+    end
+  end
 end
