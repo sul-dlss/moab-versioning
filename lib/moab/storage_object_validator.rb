@@ -1,4 +1,4 @@
-#There is repeating code in here - first pass for audit checks
+#There is repeating code in here - first pass for audit check - storageobjectvalidator
 
 require 'moab'
 
@@ -39,12 +39,53 @@ module Moab
 
     def validate_object
       results = []
-      check_manifest_dir_xml(results)
-      no_nested_moabs(results)
-      sequential_version(results)
+      if only_directories?(path)
+        if sequential_version(results).empty?
+          p "yay in order"
+          version_directories = sub_dirs(path).sort 
+          version_directories.each do |version|
+            # return false if Dir["#{path}/#{version}"].empty?
+            if only_directories?("#{path}/#{version}")
+              p "Only directories"
+            end
+          end
+        else 
+          p results
+        end
+      else
+        p 'booooo'
+      end
     end
 
+
+    # def validate_object
+    #   if only_directories?(path)
+    #     #if version_good? <- method that does all three version checks (reg ex, starts wit 1, and sequential)
+    #       #version_directories = sub_dirs(@path).sort # sort for travis
+    #       # version_directories.each do |version|
+    #       #if only_directories?("#{@path}/#{version}")
+    #         #version_sub_dirs = sub_dirs(version_path).sort
+    #         #if only_directories?(#{@path}/@{version}/#{version_sub_dirs[0]}) && only_files?(#{@path}/@{version}/#{version_sub_dirs[1]})
+    #           #true
+    #         #else
+    #           #ERROR CODE
+    #         #end
+
+    #       #else
+    #        #ERROR CODE
+    #       #end
+    #    end
+    #     #else
+    #       #error
+    #     #end
+    #   else
+    #     # STOP ERROR MESSAGE
+    #   end
+    # end
+
+
     private
+
 
     def check_manifest_dir_xml(results)
       version_directories = sub_dirs(@path).sort # sort for travis
@@ -56,7 +97,7 @@ module Moab
     end
     
     def sequential_version(results)
-      ver_dir= sub_dirs(@path).sort # sort for travis
+      ver_dir = sub_dirs(@path).sort # sort for travis
       ver_dir_num = ver_dir.collect { |ver| ver[-2..-1].to_i }
       sequential_order(ver_dir_num, results)
       results.flatten
@@ -107,7 +148,7 @@ module Moab
       Dir.entries(path).select { |entry| File.join(path, entry) unless /^\..*/ =~ entry }
     end
 
-    def found_unexpected(array, results, version, dir=nil)
+    def found_unexpected(array, results, version, dir=nil) #maybe just add required_sub_dirs = EXPECTED_DATA_SUB_DIRS as a parameter
       required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
       unexpected = (array - required_sub_dirs).pop
       unexpected = "#{unexpected} Version #{version}"
@@ -153,11 +194,22 @@ module Moab
       lastNum = sorted[0]
       sorted[1, sorted.count].each do |n|
         if lastNum + 1 != n
-          return results << result_hash(VERSIONS_NOT_IN_ORDER, sorted)
+          return results << result_hash(VERSIONS_NOT_IN_ORDER, sorted) 
         end
         lastNum = n
       end
-      results << result_hash(VERSIONS_IN_ORDER)
+      # results << result_hash(VERSIONS_IN_ORDER)
+      results
+    end
+
+    def only_directories?(dir_path)
+      files = Dir.entries(dir_path).select { |f| File.file?(dir_path+f) unless /^\..*/ =~ f }
+      files.empty? ? true : false
+    end
+
+    def only_files?(dir_path)
+      directories = Dir.entries(dir_path).select { |f| File.directory?(dir_path+f) unless /^\..*/ =~ f }
+      directories.empty? ? true : false
     end
 
 
