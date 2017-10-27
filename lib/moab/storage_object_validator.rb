@@ -48,7 +48,7 @@ module Moab
     #       # return false if Dir["#{storage_obj_path}/#{version}"].empty?
     #       version_path = "#{storage_obj_path}/#{version}"
     #       version_sub_dirs = sub_dirs(version_path).sort
-    #       p check_version_sub_dirs(version_sub_dirs, version)
+    #       p check_sub_dirs(version_sub_dirs, version)
     #     end
     #   else 
     #     p results
@@ -75,7 +75,7 @@ module Moab
         version_directories.each do |version_dir|
           version_path = "#{storage_obj_path}/#{version_dir}"
           version_sub_dirs = sub_dirs(version_path)
-          results.concat check_version_sub_dirs(version_sub_dirs, version_dir)
+          results.concat check_sub_dirs(version_sub_dirs, version_dir)
         end
       end
 
@@ -124,42 +124,30 @@ module Moab
 
     def check_no_nested_moabs
       results = []
+
       version_directories = sub_dirs(storage_obj_path).sort # sort for travis
-      version_directories.each do |version|
-        version_path = "#{storage_obj_path}/#{version}"
-        version_sub_dirs = sub_dirs(version_path).sort
-        results.concat check_version_sub_dirs(version_sub_dirs, version)
+      version_directories.each do |version_dir|
+        version_path = "#{storage_obj_path}/#{version_dir}"
+        version_sub_dirs = sub_dirs(version_path)
+        results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
+
         data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
-        data_sub_dirs = sub_dirs(data_dir_path).sort
-        results.concat check_data_sub_dirs(data_sub_dirs, version, dir=true)
+        data_sub_dirs = sub_dirs(data_dir_path)
+        results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
       end
+
       results
     end
     
-    def check_version_sub_dirs(sub_dirs, version, dir=nil)
+    def check_sub_dirs(sub_dirs, version, required_sub_dirs)
       results = []
       sub_dir_count = sub_dirs.size
       if sub_dir_count == 2
-        results.concat expected_dirs(sub_dirs, version, dir)
+        results.concat expected_dirs(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count > 2
-        results.concat found_unexpected(sub_dirs, version,dir)
+        results.concat found_unexpected(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count < 2
-        results.concat missing_data(sub_dirs, version, dir)
-      elsif sub_dir_count.zero?
-        results << result_hash(EMPTY)
-      end
-      results
-    end
-
-    def check_data_sub_dirs(sub_dirs, version, dir=nil)
-      results = []
-      sub_dir_count = sub_dirs.size
-      if sub_dir_count == 2
-        results.concat expected_dirs(sub_dirs, version, dir)
-      elsif sub_dir_count > 2
-        results.concat found_unexpected(sub_dirs, version, dir)
-      elsif sub_dir_count < 2
-        results.concat missing_data(sub_dirs, version, dir)
+        results.concat missing_data(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count.zero?
         results << result_hash(EMPTY)
       end
@@ -189,27 +177,24 @@ module Moab
       directory_entries(path)[:files]
     end
 
-    def found_unexpected(array, version, dir=nil) #maybe just add required_sub_dirs = EXPECTED_DATA_SUB_DIRS as a parameter
+    def found_unexpected(array, version, required_sub_dirs)
       results = []
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
       unexpected = (array - required_sub_dirs).pop
       unexpected = "#{unexpected} Version #{version}"
       results << result_hash(EXTRA_DIR_DETECTED, unexpected)
       results
     end
 
-    def missing_data(array, version, dir=nil)
+    def missing_data(array, version, required_sub_dirs)
       results = []
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
       missing = (required_sub_dirs - array).pop
       missing ="#{missing} Version #{version}"
       results << result_hash(MISSING_DIR, missing)
       results
     end
 
-    def expected_dirs(array, version, dir=nil)
+    def expected_dirs(array, version, required_sub_dirs)
       results = []
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
       results << result_hash(INCORRECT_DIR) unless array == required_sub_dirs
       results
     end
