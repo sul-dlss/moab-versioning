@@ -7,164 +7,164 @@ module Moab
 
     EXPECTED_VERSION_SUB_DIRS = ["data", "manifests"].freeze
     EXPECTED_DATA_SUB_DIRS = ["content", "metadata"].freeze
-    CORRECT_DIR = 0
+    IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns these
+
+    # error codes
+    INCORRECT_DIR = 0
     MISSING_DIR = 1
-    EXTRA_DIR_DETECTED = 2
+    EXTRA_CHILD_DETECTED = 2
     EMPTY = 3
-    ALL_XML_FILES = 4
     NO_SIGNATURE_CATALOG = 5
     NO_MANIFEST_INVENTORY = 6
     NO_XML_FILES = 7
-    VERSIONS_IN_ORDER = 8
     VERSIONS_NOT_IN_ORDER = 9
+    FILES_IN_VERSION_DIR = 10
 
     RESPONSE_CODE_TO_MESSAGES = {
-      CORRECT_DIR=> "Correct items in path",
+      INCORRECT_DIR=> "Incorrect items in path",
       MISSING_DIR => "Missing directory: %{addl}",
-      EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
+      EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
       EMPTY => "No items in path",
-      ALL_XML_FILES => "Version: %{addl} Has required metadata files",
+      FILES_IN_VERSION_DIR => "Should contain only sequential version directories. Also contains files: %{addl}",
       NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
       NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
       NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
-      VERSIONS_IN_ORDER => "Version directories are in order",
-      VERSIONS_NOT_IN_ORDER => "Version directories are not in order. Here are the current versions: %{addl}"
+      VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
     }.freeze
 
-    attr_reader :path
+    attr_reader :storage_obj_path
 
     def initialize(storage_object)
-      @path = storage_object.object_pathname
+      @storage_obj_path = storage_object.object_pathname
+      @directory_entries_hash = {}
     end
 
     def validate_object
       results = []
-      if only_directories?(path)
-        if sequential_version(results).empty?
-          p "yay in order"
-          version_directories = sub_dirs(path).sort 
-          version_directories.each do |version|
-            # return false if Dir["#{path}/#{version}"].empty?
-            if only_directories?("#{path}/#{version}")
-              p "Only directories"
-            end
-          end
-        else 
-          p results
-        end
-      else
-        p 'booooo'
+
+      results.concat check_for_only_sequential_version_dirs
+
+      # if we only have sequential version directories uder the root object path, proceed
+      # to check for expected version subdirs, and to check contents of the data dir 
+      if results.size == 0
+        results.concat check_no_nested_moabs
       end
+
+      results
     end
-
-
-    # def validate_object
-    #   if only_directories?(path)
-    #     #if version_good? <- method that does all three version checks (reg ex, starts wit 1, and sequential)
-    #       #version_directories = sub_dirs(@path).sort # sort for travis
-    #       # version_directories.each do |version|
-    #       #if only_directories?("#{@path}/#{version}")
-    #         #version_sub_dirs = sub_dirs(version_path).sort
-    #         #if only_directories?(#{@path}/@{version}/#{version_sub_dirs[0]}) && only_files?(#{@path}/@{version}/#{version_sub_dirs[1]})
-    #           #true
-    #         #else
-    #           #ERROR CODE
-    #         #end
-
-    #       #else
-    #        #ERROR CODE
-    #       #end
-    #    end
-    #     #else
-    #       #error
-    #     #end
-    #   else
-    #     # STOP ERROR MESSAGE
-    #   end
-    # end
-
 
     private
 
-
-    def check_manifest_dir_xml(results)
-      version_directories = sub_dirs(@path).sort # sort for travis
+    def check_manifest_dir_xml
+      results = []
+      version_directories = sub_dirs(storage_obj_path).sort # sort for travis
       version_directories.each do |version|
-        version_path = "#{@path}/#{version}"
-        check_manifest_files(version_path, results, version)
+        version_path = "#{storage_obj_path}/#{version}"
+        results.concat check_manifest_files(version_path, version)
       end
-      results.flatten
+      results
     end
     
-    def sequential_version(results)
-      ver_dir = sub_dirs(@path).sort # sort for travis
-      ver_dir_num = ver_dir.collect { |ver| ver[-2..-1].to_i }
-      sequential_order(ver_dir_num, results)
-      results.flatten
+    def check_for_only_sequential_version_dirs
+      results = []
+
+      sub_dirs(storage_obj_path).each_with_index do |dir_name, index|
+        expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
+        begin
+          if dir_name[1..-1].to_i != expected_vers_num
+            results << result_hash(VERSIONS_NOT_IN_ORDER, sub_dirs(storage_obj_path))
+            break
+          end
+        rescue ArgumentError
+          results << result_hash(VERSIONS_NOT_IN_ORDER, sub_dirs(storage_obj_path))
+        end
+      end
+
+      if files_in_dir(storage_obj_path).size > 0
+        results << result_hash(FILES_IN_VERSION_DIR, files_in_dir(storage_obj_path))
+      end
+
+      results
     end
 
-    def no_nested_moabs(results)
-      version_directories = sub_dirs(@path).sort # sort for travis
-      version_directories.each do |version|
-        version_path = "#{@path}/#{version}"
-        version_sub_dirs = sub_dirs(version_path).sort
-        check_version_sub_dirs(version_sub_dirs, results, version)
-        data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
-        data_sub_dirs = sub_dirs(data_dir_path).sort
-        check_data_sub_dirs(data_sub_dirs, results, version, dir=true)
+    def check_no_nested_moabs
+      results = []
+
+      version_directories = sub_dirs(storage_obj_path)
+      version_directories.each do |version_dir|
+        version_path = "#{storage_obj_path}/#{version_dir}"
+        version_sub_dirs = sub_dirs(version_path)
+        results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
+
+        # don't bother checking the data sub dir if we didn't find the expected two subdirs
+        if results.size == 0
+          data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
+          data_sub_dirs = sub_dirs(data_dir_path)
+          results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+        end
       end
-      results.flatten
+
+      results
     end
     
-    def check_version_sub_dirs(sub_dirs,results, version, dir=nil)
-      sub_dir_count = sub_dirs.count
+    def check_sub_dirs(sub_dirs, version, required_sub_dirs)
+      results = []
+      sub_dir_count = sub_dirs.size
       if sub_dir_count == 2
-        expected_dirs(sub_dirs, results, version, dir)
+        results.concat expected_dirs(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count > 2
-        found_unexpected(sub_dirs, results, version,dir)
+        results.concat found_unexpected(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count < 2
-        missing_data(sub_dirs, results, version, dir)
+        results.concat missing_data(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count.zero?
         results << result_hash(EMPTY)
       end
-      results.flatten
+      results
     end
 
-    def check_data_sub_dirs(sub_dirs,results, version, dir=nil)
-      sub_dir_count = sub_dirs.count
-      if sub_dir_count == 2
-        expected_dirs(sub_dirs, results, version, dir)
-      elsif sub_dir_count > 2
-        found_unexpected(sub_dirs, results, version, dir)
-      elsif sub_dir_count < 2
-        missing_data(sub_dirs, results, version, dir)
-      elsif sub_dir_count.zero?
-        results << result_hash(EMPTY)
-      end
-      results.flatten
+    def directory_entries(path)
+      @directory_entries_hash[path] ||=
+        begin
+          ret_val = { files: [], dirs: [] }
+          (Dir.entries(path).sort - IMPLICIT_DIRS).each do |child|
+            if FileTest.file? child
+              ret_val[:files] << child
+            else
+              ret_val[:dirs] << child
+            end
+          end
+          ret_val
+        end
     end
 
     def sub_dirs(path)
-      Dir.entries(path).select { |entry| File.join(path, entry) unless /^\..*/ =~ entry }
+      directory_entries(path)[:dirs]
     end
 
-    def found_unexpected(array, results, version, dir=nil) #maybe just add required_sub_dirs = EXPECTED_DATA_SUB_DIRS as a parameter
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
+    def files_in_dir(path)
+      directory_entries(path)[:files]
+    end
+
+    def found_unexpected(array, version, required_sub_dirs)
+      results = []
       unexpected = (array - required_sub_dirs).pop
       unexpected = "#{unexpected} Version #{version}"
-      results << result_hash(EXTRA_DIR_DETECTED, unexpected)
+      results << result_hash(EXTRA_CHILD_DETECTED, unexpected)
+      results
     end
 
-    def missing_data(array, results, version, dir=nil)
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
+    def missing_data(array, version, required_sub_dirs)
+      results = []
       missing = (required_sub_dirs - array).pop
       missing ="#{missing} Version #{version}"
       results << result_hash(MISSING_DIR, missing)
+      results
     end
 
-    def expected_dirs(array, results, version, dir=nil)
-      required_sub_dirs = dir ? EXPECTED_DATA_SUB_DIRS : EXPECTED_VERSION_SUB_DIRS
-      results << result_hash(CORRECT_DIR) if array == required_sub_dirs
+    def expected_dirs(array, version, required_sub_dirs)
+      results = []
+      results << result_hash(INCORRECT_DIR) unless array == required_sub_dirs
+      results
     end
 
     def result_hash(response_code, addl=nil)
@@ -175,11 +175,12 @@ module Moab
       format(RESPONSE_CODE_TO_MESSAGES[response_code], addl: addl)
     end
 
-    def check_manifest_files(dir, results, version)
+    def check_manifest_files(dir, version)
+      results = []
        manifest_inventory = File.exist?("#{dir}/manifests/manifestInventory.xml")
        signature_catalog = File.exist?("#{dir}/manifests/signatureCatalog.xml")
-       results << if manifest_inventory && signature_catalog
-                    result_hash(ALL_XML_FILES, version)
+       result = if manifest_inventory && signature_catalog
+                    nil
                   elsif manifest_inventory && !signature_catalog
                     result_hash(NO_SIGNATURE_CATALOG, version)
                   elsif !manifest_inventory && signature_catalog
@@ -187,31 +188,8 @@ module Moab
                   else
                     result_hash(NO_XML_FILES, version)
                   end
-    end
-
-    def sequential_order(array, results)
-      sorted = array.sort
-      lastNum = sorted[0]
-      sorted[1, sorted.count].each do |n|
-        if lastNum + 1 != n
-          return results << result_hash(VERSIONS_NOT_IN_ORDER, sorted) 
-        end
-        lastNum = n
-      end
-      # results << result_hash(VERSIONS_IN_ORDER)
+      results << result if result
       results
     end
-
-    def only_directories?(dir_path)
-      files = Dir.entries(dir_path).select { |f| File.file?(dir_path+f) unless /^\..*/ =~ f }
-      files.empty? ? true : false
-    end
-
-    def only_files?(dir_path)
-      directories = Dir.entries(dir_path).select { |f| File.directory?(dir_path+f) unless /^\..*/ =~ f }
-      directories.empty? ? true : false
-    end
-
-
   end
 end
