@@ -12,7 +12,7 @@ module Moab
     # error codes
     INCORRECT_DIR = 0
     MISSING_DIR = 1
-    EXTRA_DIR_DETECTED = 2
+    EXTRA_CHILD_DETECTED = 2
     EMPTY = 3
     NO_SIGNATURE_CATALOG = 5
     NO_MANIFEST_INVENTORY = 6
@@ -23,7 +23,7 @@ module Moab
     RESPONSE_CODE_TO_MESSAGES = {
       INCORRECT_DIR=> "Incorrect items in path",
       MISSING_DIR => "Missing directory: %{addl}",
-      EXTRA_DIR_DETECTED => "Unexpected item in path: %{addl}",
+      EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
       EMPTY => "No items in path",
       FILES_IN_VERSION_DIR => "Should contain only sequential version directories. Also contains files: %{addl}",
       NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
@@ -149,7 +149,7 @@ module Moab
       results = []
       unexpected = (array - required_sub_dirs).pop
       unexpected = "#{unexpected} Version #{version}"
-      results << result_hash(EXTRA_DIR_DETECTED, unexpected)
+      results << result_hash(EXTRA_CHILD_DETECTED, unexpected)
       results
     end
 
