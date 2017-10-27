@@ -39,31 +39,6 @@ module Moab
       @directory_entries_hash = {}
     end
 
-    # def validate_object
-    #   results = []
-    #   if check_for_only_sequential_version_dirs.empty?
-    #     p "yay in order"
-    #     version_directories = sub_dirs(storage_obj_path).sort 
-    #     version_directories.each do |version|
-    #       # return false if Dir["#{storage_obj_path}/#{version}"].empty?
-    #       version_path = "#{storage_obj_path}/#{version}"
-    #       version_sub_dirs = sub_dirs(version_path).sort
-    #       p check_sub_dirs(version_sub_dirs, version)
-    #     end
-    #   else 
-    #     p results
-    #   end
-    # end
-
-
-    # def validate_object
-    #   results = []
-    #   # results.concat check_manifest_dir_xml
-    #   results.concat check_for_only_sequential_version_dirs
-    #   # results.concat check_no_nested_moabs
-    # end
-
-
     def validate_object
       results = []
 
@@ -78,9 +53,7 @@ module Moab
       results
     end
 
-
-    # private
-
+    private
 
     def check_manifest_dir_xml
       results = []
@@ -94,10 +67,6 @@ module Moab
     
     def check_for_only_sequential_version_dirs
       results = []
-
-      # ver_dir = sub_dirs(storage_obj_path).sort # sort for travis
-      # ver_dir_num = ver_dir.collect { |ver| ver[-2..-1].to_i }
-      # results.concat sequential_order(ver_dir_num)
 
       sub_dirs(storage_obj_path).each_with_index do |dir_name, index|
         expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
@@ -222,31 +191,5 @@ module Moab
       results << result if result
       results
     end
-
-    # def sequential_order(array)
-    #   results = []
-    #   sorted = array.sort
-    #   lastNum = sorted[0]
-    #   sorted[1, sorted.count].each do |n|
-    #     if lastNum + 1 != n
-    #       results << result_hash(VERSIONS_NOT_IN_ORDER, sorted) 
-    #       break
-    #     end
-    #     lastNum = n
-    #   end
-    #   results
-    # end
-
-    # def only_expected_directories?(dir_path)
-    #   # files = Dir.entries(dir_path).select { |f| File.file?(dir_path+f) unless /^\..*/ =~ f }
-    #   # files.empty? ? true : false
-    # end
-
-    # def only_expected_files?(dir_path)
-    #   directories = Dir.entries(dir_path).select { |f| File.directory?(dir_path+f) unless /^\..*/ =~ f }
-    #   directories.empty? ? true : false
-    # end
-
-
   end
 end
