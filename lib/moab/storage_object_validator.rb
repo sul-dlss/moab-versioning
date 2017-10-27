@@ -127,9 +127,12 @@ module Moab
         version_sub_dirs = sub_dirs(version_path)
         results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
 
-        data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
-        data_sub_dirs = sub_dirs(data_dir_path)
-        results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+        # don't bother checking the data sub dir if we didn't find the expected two subdirs
+        if results.size == 0
+          data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
+          data_sub_dirs = sub_dirs(data_dir_path)
+          results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+        end
       end
 
       results
@@ -234,15 +237,15 @@ module Moab
     #   results
     # end
 
-    def only_expected_directories?(dir_path)
-      # files = Dir.entries(dir_path).select { |f| File.file?(dir_path+f) unless /^\..*/ =~ f }
-      # files.empty? ? true : false
-    end
+    # def only_expected_directories?(dir_path)
+    #   # files = Dir.entries(dir_path).select { |f| File.file?(dir_path+f) unless /^\..*/ =~ f }
+    #   # files.empty? ? true : false
+    # end
 
-    def only_expected_files?(dir_path)
-      directories = Dir.entries(dir_path).select { |f| File.directory?(dir_path+f) unless /^\..*/ =~ f }
-      directories.empty? ? true : false
-    end
+    # def only_expected_files?(dir_path)
+    #   directories = Dir.entries(dir_path).select { |f| File.directory?(dir_path+f) unless /^\..*/ =~ f }
+    #   directories.empty? ? true : false
+    # end
 
 
   end
