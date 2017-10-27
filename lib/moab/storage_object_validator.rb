@@ -43,11 +43,11 @@ module Moab
       results = []
 
       results.concat check_for_only_sequential_version_dirs
-
+      p "RESULTS: #{results}"
       # if we only have sequential version directories uder the root object path, proceed
       # to check for expected version subdirs, and to check contents of the data dir 
       if results.size == 0
-        results.concat check_no_nested_moabs
+        results.concat correctly_formed_moab
       end
 
       results
@@ -87,20 +87,32 @@ module Moab
       results
     end
 
-    def check_no_nested_moabs
+    def correctly_formed_moab #correct_moab_structure
       results = []
 
       version_directories = sub_dirs(storage_obj_path)
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
-        results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
 
+        # Need to add before_result_size and after_result_size because if everything is expected 
+        # and good, then no error message will be added to the result array, so if it stays the same 
+        # size then it is ready to be checked for the data_sub_dirs and manfist_xml
+        before_result_size = results.size
+        results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
+        after_result_size = results.size
         # don't bother checking the data sub dir if we didn't find the expected two subdirs
-        if results.size == 0
+
+        # Before it was result.size === 0, however for each version that is not correctly constructed, 
+        # error messages will be concat to the array. By the time the loop reaches a version that is 
+        # correctly constructe the size will stay the same as before (because it has the old error messages)
+        # so we must make sure before and after result size are the same - aka no error message was added 
+        # and the version directory was correctly constructed
+        if before_result_size == after_result_size
           data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
           data_sub_dirs = sub_dirs(data_dir_path)
           results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+          results.concat check_manifest_files(version_path, version_dir)
         end
       end
 
@@ -147,7 +159,7 @@ module Moab
 
     def found_unexpected(array, version, required_sub_dirs)
       results = []
-      unexpected = (array - required_sub_dirs).pop
+      unexpected = (array - required_sub_dirs)#removed .pop for now
       unexpected = "#{unexpected} Version #{version}"
       results << result_hash(EXTRA_CHILD_DETECTED, unexpected)
       results
@@ -155,9 +167,10 @@ module Moab
 
     def missing_data(array, version, required_sub_dirs)
       results = []
-      missing = (required_sub_dirs - array).pop
+      missing = (required_sub_dirs - array)#removed .pop for now
       missing ="#{missing} Version #{version}"
       results << result_hash(MISSING_DIR, missing)
+      p "#{version} #{results}"
       results
     end
 
