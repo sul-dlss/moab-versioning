@@ -69,14 +69,10 @@ module Moab
 
       results.concat check_for_only_sequential_version_dirs
 
-      # proceed if we only have sequential version directories uder the root object path
+      # if we only have sequential version directories uder the root object path, proceed
+      # to check for expected version subdirs, and to check contents of the data dir 
       if results.size == 0
-        version_directories = sub_dirs(storage_obj_path)
-        version_directories.each do |version_dir|
-          version_path = "#{storage_obj_path}/#{version_dir}"
-          version_sub_dirs = sub_dirs(version_path)
-          results.concat check_sub_dirs(version_sub_dirs, version_dir)
-        end
+        results.concat check_no_nested_moabs
       end
 
       results
@@ -125,7 +121,7 @@ module Moab
     def check_no_nested_moabs
       results = []
 
-      version_directories = sub_dirs(storage_obj_path).sort # sort for travis
+      version_directories = sub_dirs(storage_obj_path)
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
