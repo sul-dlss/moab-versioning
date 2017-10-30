@@ -50,8 +50,7 @@ module Moab
       # to check for expected version subdirs, and to check contents of the data dir
 
       results.concat correctly_formed_moab if results.empty?
-
-      results
+      results.empty? ? true : results
     end
     # TODO: Figure out which methods should be public
 

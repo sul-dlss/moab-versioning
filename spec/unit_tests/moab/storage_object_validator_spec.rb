@@ -4,10 +4,6 @@ RSpec.describe Moab::StorageObjectValidator do
   let(:druid_path1) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000' }
   let(:storage_obj1) { Moab::StorageObject.new(druid1, druid_path1) }
   let(:storage_obj_validator1) { described_class.new(storage_obj1) }
-  let(:druid2) { 'yy000yy0000'}
-  let(:druid_path2) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000' }
-  let(:storage_obj2) { Moab::StorageObject.new(druid2, druid_path2) }
-  let(:storage_obj_validator2) { described_class.new(storage_obj2) }
 
   describe '#initialize' do
     it "sets storage_obj_path" do
@@ -15,7 +11,7 @@ RSpec.describe Moab::StorageObjectValidator do
       expect(storage_obj_validator.storage_obj_path.to_s).to eq druid_path1
     end
   end
-  describe '#validate_object with storage_obj_validator1' do
+  describe '#validate_object' do
     let(:verification_array) { storage_obj_validator1.validate_object }
 
     it 'returns correct data structure' do
@@ -65,11 +61,37 @@ RSpec.describe Moab::StorageObjectValidator do
       end
     end
   end
-  describe '#validate_object with storage_obj_validator2' do
-    let(:verification_array) { storage_obj_validator2.validate_object }
+  describe '#validate_object' do
+    let(:druid) { 'yy000yy0000'}
+    let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000' }
+    let(:storage_obj) { Moab::StorageObject.new(druid, druid_path) }
+    let(:storage_obj_validator) { described_class.new(storage_obj) }
+    let(:verification_array) { storage_obj_validator.validate_object }
 
     it "has non contiguous version directories" do
-      expect(verification_array).to eq([{ 7=>"Should contain only sequential version directories. Current directories: [\"V0001\", \"V0003\", \"V0004\", \"V0006\"]" }])
+      expect(verification_array).to eq([{ 7=>"Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]" }])
+    end
+  end
+  describe '#validate_object' do
+    let(:druid) { 'zz000zz0000'}
+    let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/zz/000/zz/0000/zz000zz0000' }
+    let(:storage_obj) { Moab::StorageObject.new(druid, druid_path) }
+    let(:storage_obj_validator) { described_class.new(storage_obj) }
+    let(:verification_array) { storage_obj_validator.validate_object }
+
+    it "has incorrect version directory name" do
+      expect(verification_array).to eq [9=>"Version directory name not in 'v00xx' format"]
+    end
+  end
+  describe '#validate_object' do
+    let(:druid) { 'bj102hs9687'}
+    let(:druid_path) { 'spec/fixtures/storage_root01/moab_storage_trunk/bj/102/hs/9687/bj102hs9687' }
+    let(:storage_obj) { Moab::StorageObject.new(druid, druid_path) }
+    let(:storage_obj_validator) { described_class.new(storage_obj) }
+    let(:verification_array) { storage_obj_validator.validate_object }
+
+    it "returns true when moab is in correct format" do
+      expect(verification_array).to eq true
     end
   end
 end

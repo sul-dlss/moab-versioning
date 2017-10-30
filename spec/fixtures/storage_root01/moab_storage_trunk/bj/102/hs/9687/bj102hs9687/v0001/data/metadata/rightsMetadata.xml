@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<rightsMetadata objectId="druid:bj102hs9687">
+  <copyright>
+    <human>(c) Copyright 2011 by Eric Whitman Smith</human>
+  </copyright>
+  <access type="discover">
+    <machine>
+      <world/>
+    </machine>
+  </access>
+  <access type="read">
+    <machine>
+      <group>stanford</group>
+      <embargoReleaseDate>2013-06-02</embargoReleaseDate>
+    </machine>
+  </access>
+  <use>
+    <machine type="creativeCommons">none</machine>
+    <human type="creativeCommons">no Creative Commons (CC) license</human>
+  </use>
+</rightsMetadata>

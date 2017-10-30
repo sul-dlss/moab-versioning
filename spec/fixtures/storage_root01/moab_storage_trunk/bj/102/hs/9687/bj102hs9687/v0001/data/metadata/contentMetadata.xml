@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<contentMetadata type="etd" objectId="druid:bj102hs9687">
+  <resource type="main-original" data="content" id="main">
+    <attr name="label">Body of dissertation (as submitted)</attr>
+    <file deliver="no" preserve="yes" size="1000217" mimetype="application/pdf" id="eric-smith-dissertation.pdf" shelve="yes">
+      <checksum type="MD5">aead2f6f734355c59af2d5b2689e4fb3</checksum>
+      <checksum type="SHA-1">22dc6464e25dc9a7d600b1de6e3848bf63970595</checksum>
+      <checksum type="SHA-256">e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f</checksum>
+    </file>
+  </resource>
+  <resource type="main-augmented" objectId="druid:kw095zh6093" data="content" id="main">
+    <attr name="label">Body of dissertation</attr>
+    <file deliver="yes" preserve="yes" size="905566" mimetype="application/pdf" id="eric-smith-dissertation-augmented.pdf" shelve="yes">
+      <location type="url">https://stacks.stanford.edu/file/druid:bj102hs9687/eric-smith-dissertation-augmented.pdf</location>
+      <checksum type="MD5">93802f1a639bc9215c6336ff5575ee22</checksum>
+      <checksum type="SHA-1">32f7129a81830004f0360424525f066972865221</checksum>
+      <checksum type="SHA-256">a67276820853ddd839ba614133f1acd7330ece13f1082315d40219bed10009de</checksum>
+    </file>
+  </resource>
+</contentMetadata>
