@@ -27,6 +27,11 @@ Metrics/LineLength:
     - 'lib/moab/file_manifestation.rb'
     - 'spec/unit_tests/moab/bagger_spec.rb' # remove after PR #52 merged
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
+    - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
+
+# Max was 8
+Metrics/PerceivedComplexity:
+  Max: 9
 
 # --- Naming ---
 
@@ -40,6 +45,23 @@ Naming/FileName:
 # --- RSpec ---
 
 # --- Style ---
+
+# Pointless change
+Style/FormatStringToken:
+  Enabled: false
+
+Style/Next:
+  Exclude:
+    - lib/moab/storage_object_validator.rb
+    - lib/moab/bagger.rb
+    - lib/moab/file_inventory.rb
+    - lib/moab/signature_catalog.rb
+    - lib/stanford/content_inventory.rb
+    - spec/spec_helper.rb
+    - spec/unit_tests/moab/bagger_spec.rb
+    - spec/unit_tests/moab/signature_catalog_spec.rb
+
+
 
 # because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:
