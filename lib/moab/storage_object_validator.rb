@@ -20,6 +20,7 @@ module Moab
     NO_XML_FILES = 6
     VERSIONS_NOT_IN_ORDER = 7
     FILES_IN_VERSION_DIR = 8
+    VERSION_DIR_BAD_FORMAT = 9
 
     RESPONSE_CODE_TO_MESSAGES = {
       INCORRECT_DIR=> "Incorrect items in path",
@@ -30,7 +31,8 @@ module Moab
       NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
       NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
       NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
-      VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
+      VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
+      VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format"
     }.freeze
 
     attr_reader :storage_obj_path
@@ -42,7 +44,8 @@ module Moab
 
     def validate_object
       results = []
-      results.concat check_for_only_sequential_version_dirs
+      results.concat correctly_named_ver_dir
+      results.concat check_for_only_sequential_version_dirs if results.empty?
       # if we only have sequential version directories uder the root object path, proceed
       # to check for expected version subdirs, and to check contents of the data dir
 
@@ -73,6 +76,18 @@ module Moab
         results << result_hash(FILES_IN_VERSION_DIR, files_in_dir(storage_obj_path))
       end
 
+      results
+    end
+
+    def correctly_named_ver_dir
+      results = []
+      sub_dirs(storage_obj_path).each do |version_dir|
+        if version_dir =~ /^[v]\d{4}/
+          nil
+        else
+          results << result_hash(VERSION_DIR_BAD_FORMAT)
+        end
+      end
       results
     end
 
