@@ -624,6 +624,7 @@ Style/MethodCallWithoutArgsParentheses:
 Style/NegatedIf:
   Exclude:
     - 'lib/serializer/serializable.rb'
+    - 'lib/moab/storage_object_validator.rb'
 
 # Offense count: 11
 # Cop supports --auto-correct.
