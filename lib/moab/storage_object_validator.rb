@@ -3,6 +3,7 @@ require 'moab'
 # Shameless gree: repetitious code included.
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
+  # Shameless green: repetitious code included.
   class StorageObjectValidator
 
     EXPECTED_VERSION_SUB_DIRS = ["data", "manifests"].freeze
@@ -13,7 +14,7 @@ module Moab
     INCORRECT_DIR = 0
     MISSING_DIR = 1
     EXTRA_CHILD_DETECTED = 2
-    EMPTY = 3
+    VERSION_DIR_BAD_FORMAT = 3
     NO_SIGNATURE_CATALOG = 4
     NO_MANIFEST_INVENTORY = 5
     NO_XML_FILES = 6
@@ -24,7 +25,7 @@ module Moab
       INCORRECT_DIR=> "Incorrect items in path",
       MISSING_DIR => "Missing directory: %{addl}",
       EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
-      EMPTY => "No items in path",
+      VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format",
       FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
       NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
       NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
@@ -39,36 +40,43 @@ module Moab
       @directory_entries_hash = {}
     end
 
-    def validate_object
+    def validation_errors
       errors = []
-      errors.concat check_sequential_version_dirs
-      # if we only have sequential version directories uder the root object path, proceed
-      # to check for expected version subdirs, and to check contents of the data dir
-
-      errors.concat check_correctly_formed_moab if errors.empty?
-
+      errors.concat check_correctly_named_version_dirs
+      errors.concat check_sequential_version_dirs if errors.empty?
+      errors.concat check_correctly_formed_moabs if errors.empty?
       errors
     end
+
     # TODO: Figure out which methods should be public
 
     private
+
+    def check_correctly_named_version_dirs
+      errors = []
+      version_directories.each do |version_dir|
+        if version_dir =~ /^[v]\d{4}/
+          nil
+        else
+          errors << result_hash(VERSION_DIR_BAD_FORMAT)
+        end
+      end
+      errors
+    end
 
     def version_directories
       @vdirs ||= sub_dirs(storage_obj_path)
     end
 
+    # This method will be called only if the version directories are correctly
+    # named. 
     def check_sequential_version_dirs
       errors = []
-
       version_directories.each_with_index do |dir_name, index|
         expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
-        begin
-          if dir_name[1..-1].to_i != expected_vers_num
-            errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
-            break
-          end
-        rescue ArgumentError
+        if Integer(dir_name[1..-1]) != expected_vers_num
           errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
+          break
         end
       end
 
@@ -76,10 +84,8 @@ module Moab
       errors
     end
 
-    def check_correctly_formed_moab
+    def check_correctly_formed_moabs
       errors = []
-
-      # version_directories = version_directories
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
@@ -107,13 +113,11 @@ module Moab
         errors.concat found_unexpected(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count < required_sub_dirs.size
         errors.concat missing_dir(sub_dirs, version, required_sub_dirs)
-      elsif sub_dir_count.zero?
-        errors << result_hash(EMPTY)
       end
       errors
     end
 
-    # This method removes the implicit '.' and '..' directories. 
+    # This method removes the implicit '.' and '..' directories.
     # Returns an array of strings.
     def directory_entries(path)
       @directory_entries_hash[path] ||=

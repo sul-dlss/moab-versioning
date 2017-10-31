@@ -29,7 +29,7 @@ Metrics/LineLength:
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
 
-# Max was 8
+# Code was readable with allowing higher perceived complexity
 Metrics/PerceivedComplexity:
   Max: 9
 
@@ -50,7 +50,7 @@ Naming/FileName:
 Style/FormatStringToken:
   Enabled: false
   
-# Had to turn this off for many files
+# Loops were easier to understand without using 'next' statement
 Style/Next:
   Enabled: false
 
