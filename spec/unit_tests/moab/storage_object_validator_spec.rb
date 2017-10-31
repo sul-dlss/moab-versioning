@@ -69,7 +69,7 @@ RSpec.describe Moab::StorageObjectValidator do
     let(:verification_array) { storage_obj_validator2.validate_object }
 
     it "has non contiguous version directories" do
-      expect(verification_array).to eq([{ 7=>"Should contain only sequential version directories. Current directories: [\"V0001\", \"V0003\", \"V0004\", \"V0006\"]" }])
+      expect(verification_array).to eq([{ 7=>"Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]" }])
     end
   end
 end

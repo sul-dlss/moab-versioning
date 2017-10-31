@@ -1,7 +1,6 @@
-# There is repeating code in here - first pass for audit check - storageobjectvalidator
-
 require 'moab'
 
+# Shameless gree: repetitious code included.
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   class StorageObjectValidator
@@ -21,12 +20,12 @@ module Moab
     VERSIONS_NOT_IN_ORDER = 7
     FILES_IN_VERSION_DIR = 8
 
-    RESPONSE_CODE_TO_MESSAGES = {
+    ERROR_CODE_TO_MESSAGES = {
       INCORRECT_DIR=> "Incorrect items in path",
       MISSING_DIR => "Missing directory: %{addl}",
       EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
       EMPTY => "No items in path",
-      FILES_IN_VERSION_DIR => "Should contain only sequential version directories. Also contains files: %{addl}",
+      FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
       NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
       NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
       NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
@@ -41,88 +40,81 @@ module Moab
     end
 
     def validate_object
-      results = []
-      results.concat check_for_only_sequential_version_dirs
+      errors = []
+      errors.concat check_sequential_version_dirs
       # if we only have sequential version directories uder the root object path, proceed
       # to check for expected version subdirs, and to check contents of the data dir
 
-      results.concat correctly_formed_moab if results.empty?
+      errors.concat check_correctly_formed_moab if errors.empty?
 
-      results
+      errors
     end
     # TODO: Figure out which methods should be public
 
     private
 
-    def check_for_only_sequential_version_dirs
-      results = []
+    def version_directories
+      @vdirs ||= sub_dirs(storage_obj_path)
+    end
 
-      sub_dirs(storage_obj_path).each_with_index do |dir_name, index|
+    def check_sequential_version_dirs
+      errors = []
+
+      version_directories.each_with_index do |dir_name, index|
         expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
         begin
           if dir_name[1..-1].to_i != expected_vers_num
-            results << result_hash(VERSIONS_NOT_IN_ORDER, sub_dirs(storage_obj_path))
+            errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
             break
           end
         rescue ArgumentError
-          results << result_hash(VERSIONS_NOT_IN_ORDER, sub_dirs(storage_obj_path))
+          errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
         end
       end
 
-      unless files_in_dir(storage_obj_path).empty?
-        results << result_hash(FILES_IN_VERSION_DIR, files_in_dir(storage_obj_path))
-      end
-
-      results
+      errors << result_hash(FILES_IN_VERSION_DIR) if files_in_dir(storage_obj_path).any?
+      errors
     end
 
-    def correctly_formed_moab
-      results = []
+    def check_correctly_formed_moab
+      errors = []
 
-      version_directories = sub_dirs(storage_obj_path)
+      # version_directories = version_directories
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
-        # Need to add before_result_size and after_result_size because if everything is expected
-        # and good, then no error message will be added to the result array, so if it stays the same
-        # size then it is ready to be checked for the data_sub_dirs and manfist_xml
-        before_result_size = results.size
-        results.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
-        after_result_size = results.size
-        # don't bother checking the data sub dir if we didn't find the expected two subdirs
-
-        # Before it was result.size === 0, however for each version that is not correctly constructed,
-        # error messages will be concat to the array. By the time the loop reaches a version that is
-        # correctly constructe the size will stay the same as before (because it has the old error messages)
-        # so we must make sure before and after result size are the same - aka no error message was added
-        # and the version directory was correctly constructed
+        before_result_size = errors.size
+        errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
+        after_result_size = errors.size
 
         if before_result_size == after_result_size
-          data_dir_path = "#{version_path}/#{version_sub_dirs[0]}"
+          data_dir_path = "#{version_path}/#{EXPECTED_VERSION_SUB_DIRS[0]}"
           data_sub_dirs = sub_dirs(data_dir_path)
-          results.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
-          results.concat check_manifest_files(version_path, version_dir)
+          errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+          errors.concat check_required_manifest_files(version_path, version_dir)
         end
       end
 
-      results
+      errors
     end
 
     def check_sub_dirs(sub_dirs, version, required_sub_dirs)
-      results = []
+      errors = []
       sub_dir_count = sub_dirs.size
-      if sub_dir_count == 2
-        results.concat expected_dirs(sub_dirs, version, required_sub_dirs)
-      elsif sub_dir_count > 2
-        results.concat found_unexpected(sub_dirs, version, required_sub_dirs)
-      elsif sub_dir_count < 2
-        results.concat missing_data(sub_dirs, version, required_sub_dirs)
+      if sub_dir_count == required_sub_dirs.size
+        errors.concat expected_dirs(sub_dirs, version, required_sub_dirs)
+      elsif sub_dir_count > required_sub_dirs.size
+        errors.concat found_unexpected(sub_dirs, version, required_sub_dirs)
+      elsif sub_dir_count < required_sub_dirs.size
+        errors.concat missing_dir(sub_dirs, version, required_sub_dirs)
       elsif sub_dir_count.zero?
-        results << result_hash(EMPTY)
+        errors << result_hash(EMPTY)
       end
-      results
+      errors
     end
 
+    # This method removes the implicit '.' and '..' directories. 
+    # Returns an array of strings.
     def directory_entries(path)
       @directory_entries_hash[path] ||=
         begin
@@ -147,37 +139,37 @@ module Moab
     end
 
     def found_unexpected(array, version, required_sub_dirs)
-      results = []
-      unexpected = (array - required_sub_dirs) # removed .pop for now
+      errors = []
+      unexpected = (array - required_sub_dirs)
       unexpected = "#{unexpected} Version: #{version}"
-      results << result_hash(EXTRA_CHILD_DETECTED, unexpected)
-      results
+      errors << result_hash(EXTRA_CHILD_DETECTED, unexpected)
+      errors
     end
 
-    def missing_data(array, version, required_sub_dirs)
-      results = []
-      missing = (required_sub_dirs - array) # removed .pop for now
+    def missing_dir(array, version, required_sub_dirs)
+      errors = []
+      missing = (required_sub_dirs - array)
       missing ="#{missing} Version: #{version}"
-      results << result_hash(MISSING_DIR, missing)
-      results
+      errors << result_hash(MISSING_DIR, missing)
+      errors
     end
 
     def expected_dirs(array, _version, required_sub_dirs)
-      results = []
-      results << result_hash(INCORRECT_DIR) unless array == required_sub_dirs
-      results
+      errors = []
+      errors << result_hash(INCORRECT_DIR) unless array == required_sub_dirs
+      errors
     end
 
     def result_hash(response_code, addl=nil)
-      { response_code => result_code_msg(response_code, addl) }
+      { response_code => error_code_msg(response_code, addl) }
     end
 
-    def result_code_msg(response_code, addl=nil)
-      format(RESPONSE_CODE_TO_MESSAGES[response_code], addl: addl)
+    def error_code_msg(response_code, addl=nil)
+      format(ERROR_CODE_TO_MESSAGES[response_code], addl: addl)
     end
 
-    def check_manifest_files(dir, version)
-      results = []
+    def check_required_manifest_files(dir, version)
+      errors = []
       manifest_inventory = File.exist?("#{dir}/manifests/manifestInventory.xml")
       signature_catalog = File.exist?("#{dir}/manifests/signatureCatalog.xml")
       result = if manifest_inventory && signature_catalog
@@ -189,8 +181,8 @@ module Moab
                else
                  result_hash(NO_XML_FILES, version)
                end
-      results << result if result
-      results
+      errors << result if result
+      errors
     end
   end
 end

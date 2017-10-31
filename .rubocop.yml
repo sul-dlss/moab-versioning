@@ -49,19 +49,10 @@ Naming/FileName:
 # Pointless change
 Style/FormatStringToken:
   Enabled: false
-
+  
+# Had to turn this off for many files
 Style/Next:
-  Exclude:
-    - lib/moab/storage_object_validator.rb
-    - lib/moab/bagger.rb
-    - lib/moab/file_inventory.rb
-    - lib/moab/signature_catalog.rb
-    - lib/stanford/content_inventory.rb
-    - spec/spec_helper.rb
-    - spec/unit_tests/moab/bagger_spec.rb
-    - spec/unit_tests/moab/signature_catalog_spec.rb
-
-
+  Enabled: false
 
 # because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:
