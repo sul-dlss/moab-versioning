@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflows objectId="druid:jj925bx9565">
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="accessionWF">
+        <process version="1" priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2017-05-15T13:12:12-0700" status="completed" name="start-accession"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" lifecycle="described" laneId="default" elapsed="0.395" archived="true" attempts="2" datetime="2017-05-15T13:12:20-0700" status="completed" name="descriptive-metadata"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.403" archived="true" attempts="2" datetime="2017-05-15T13:12:46-0700" status="completed" name="rights-metadata"/>
+        <process version="1" priority="0" note="sul-robots5-prod.stanford.edu" laneId="default" elapsed="2.127" archived="true" attempts="2" datetime="2017-05-15T13:13:05-0700" status="completed" name="content-metadata"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="12.311" archived="true" attempts="2" datetime="2017-05-15T13:35:28-0700" status="completed" name="technical-metadata"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.319" archived="true" attempts="2" datetime="2017-05-15T13:35:44-0700" status="completed" name="remediate-object"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="1.312" archived="true" attempts="2" datetime="2017-05-15T13:36:12-0700" status="completed" name="shelve"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" lifecycle="published" laneId="default" elapsed="3.591" archived="true" attempts="2" datetime="2017-05-15T13:36:37-0700" status="completed" name="publish"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.473" archived="true" attempts="2" datetime="2017-05-15T13:36:54-0700" status="completed" name="provenance-metadata"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="4.98" archived="true" attempts="2" datetime="2017-05-15T13:37:54-0700" status="completed" name="sdr-ingest-transfer"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" lifecycle="deposited" laneId="default" elapsed="1.0" archived="true" attempts="1" datetime="2017-05-15T13:40:30-0700" status="completed" name="sdr-ingest-received"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.547" archived="true" attempts="2" datetime="2017-05-15T13:40:41-0700" status="completed" name="reset-workspace"/>
+        <process version="1" priority="0" note="sul-robots5-prod.stanford.edu" lifecycle="accessioned" laneId="default" elapsed="5.172" archived="true" attempts="2" datetime="2017-05-15T13:41:18-0700" status="completed" name="end-accession"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="accessionWF">
+        <process priority="0" lifecycle="accessioned" laneId="default" elapsed="0.0" attempts="0" datetime="2017-06-13T09:50:39-0700" status="waiting" name="end-accession"/>
+        <process priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" attempts="1" datetime="2017-06-13T09:50:39-0700" status="completed" name="start-accession"/>
+        <process priority="0" lifecycle="deposited" laneId="default" elapsed="0.0" attempts="0" datetime="2017-06-13T09:50:39-0700" status="waiting" name="sdr-ingest-received"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="0" datetime="2017-06-13T09:50:39-0700" status="waiting" name="reset-workspace"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" lifecycle="described" laneId="default" elapsed="0.516" attempts="2" datetime="2017-06-13T09:52:33-0700" status="completed" name="descriptive-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.457" attempts="2" datetime="2017-06-13T09:53:19-0700" status="completed" name="rights-metadata"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.649" attempts="2" datetime="2017-06-13T09:54:08-0700" status="completed" name="content-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="1.585" attempts="2" datetime="2017-06-13T09:58:50-0700" status="completed" name="technical-metadata"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.346" attempts="2" datetime="2017-06-13T09:59:11-0700" status="completed" name="remediate-object"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="1.41" attempts="2" datetime="2017-06-13T10:00:00-0700" status="completed" name="shelve"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" lifecycle="published" laneId="default" elapsed="3.146" attempts="2" datetime="2017-06-13T10:08:18-0700" status="completed" name="publish"/>
+        <process priority="0" note="sul-robots5-prod.stanford.edu" laneId="default" elapsed="0.583" attempts="2" datetime="2017-06-13T10:08:46-0700" status="completed" name="provenance-metadata"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2017-06-13T10:18:35-0700" status="queued" name="sdr-ingest-transfer"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="assemblyWF">
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2017-05-15T13:09:09-0700" status="completed" name="start-assembly"/>
+        <process version="1" priority="0" note="contentMetadata.xml exists" laneId="default" elapsed="0.292" archived="true" attempts="2" datetime="2017-05-15T13:09:28-0700" status="skipped" name="content-metadata-create"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="6.021" archived="true" attempts="2" datetime="2017-05-15T13:09:58-0700" status="completed" name="jp2-create"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.505" archived="true" attempts="2" datetime="2017-05-15T13:10:20-0700" status="completed" name="checksum-compute"/>
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="1.173" archived="true" attempts="2" datetime="2017-05-15T13:10:44-0700" status="completed" name="exif-collect"/>
+        <process version="1" priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="2.409" archived="true" attempts="2" datetime="2017-05-15T13:12:12-0700" status="completed" name="accessioning-initiate"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="disseminationWF">
+        <process version="1" priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.834" archived="true" attempts="2" datetime="2017-05-15T13:41:39-0700" status="completed" name="cleanup"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="registrationWF">
+        <process version="1" priority="0" lifecycle="registered" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2016-11-28T15:38:51-0800" status="completed" name="register"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:jj925bx9565" id="versioningWF">
+        <process priority="0" lifecycle="opened" laneId="default" elapsed="0.0" attempts="1" datetime="2017-06-10T20:10:15-0700" status="completed" name="start-version"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2017-06-13T09:50:39-0700" status="completed" name="submit-version"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2017-06-13T09:50:39-0700" status="completed" name="start-accession"/>
+    </workflow>
+    <workflow repository="sdr" objectId="druid:jj925bx9565" id="sdrIngestWF">
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2017-05-15T13:37:54-0700" status="skipped" name="create-replica"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2017-05-15T13:37:54-0700" status="skipped" name="update-catalog"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2017-05-15T13:37:54-0700" status="completed" name="start-ingest"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="0.054" archived="true" attempts="2" datetime="2017-05-15T13:38:13-0700" status="completed" name="register-sdr"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="9.935" archived="true" attempts="2" datetime="2017-05-15T13:38:52-0700" status="completed" name="transfer-object"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="0.261" archived="true" attempts="2" datetime="2017-05-15T13:39:18-0700" status="completed" name="validate-bag"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="0.015" archived="true" attempts="2" datetime="2017-05-15T13:39:42-0700" status="completed" name="verify-agreement"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="0.394" archived="true" attempts="2" datetime="2017-05-15T13:40:03-0700" status="completed" name="complete-deposit"/>
+        <process version="1" priority="0" note="sul-sdr-services.stanford.edu" laneId="default" elapsed="0.155" archived="true" attempts="2" datetime="2017-05-15T13:40:30-0700" status="completed" name="ingest-cleanup"/>
+    </workflow>
+</workflows>

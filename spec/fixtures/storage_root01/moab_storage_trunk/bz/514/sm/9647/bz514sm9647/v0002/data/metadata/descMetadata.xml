@@ -1,0 +1,93 @@
+<mods xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.loc.gov/mods/v3" version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+      <titleInfo>
+        <title>Forma Urbis Romae (mosaic)</title>
+        <subTitle>Tiber River  near Tiber Island</subTitle>
+        <partNumber>32a</partNumber>
+        <partName>Stanford#</partName>
+      </titleInfo>
+      <titleInfo>
+        <partNumber>32a</partNumber>
+        <partName>AG1980#</partName>
+      </titleInfo>
+      <name type="personal" usage="primary" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n82000920">
+        <namePart>Severus, Lucius Septimius, Emperor of Rome, 146-211</namePart>
+        <role>
+          <roleTerm type="code" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/spn">spn</roleTerm>
+          <roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/spn">Sponsor</roleTerm>
+        </role>
+      </name>
+      <name type="personal" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n93003619">
+        <namePart>Levoy, Marc</namePart>
+        <role>
+          <roleTerm type="code" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/pht">pht</roleTerm>
+          <roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/pht">Photographer</roleTerm>
+        </role>
+      </name>
+      <typeOfResource>cartographic</typeOfResource>
+      <genre authority="aat" authorityURI="http://vocab.getty.edu/aat" valueURI="http://vocab.getty.edu/aat/300028233">historical maps</genre>
+      <originInfo displayLabel="Place of creation" eventType="production">
+        <place>
+          <placeTerm type="code" authority="marccountry" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79039816">it</placeTerm>
+          <placeTerm type="text" authority="marccountry" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79039816">Rome</placeTerm>
+        </place>
+        <dateCreated keyDate="yes" encoding="w3cdtf" qualifier="approximate" point="start">203</dateCreated>
+        <dateCreated encoding="w3cdtf" qualifier="approximate" point="end">211</dateCreated>
+      </originInfo>
+      <originInfo>
+        <dateCaptured>2001</dateCaptured>
+      </originInfo>
+      <language>
+        <languageTerm authority="iso639-2b" authorityURI="http://id.loc.gov/vocabulary/iso639-2" valueURI="http://id.loc.gov/vocabulary/iso639-2/grc" type="code">grc</languageTerm>
+        <languageTerm authority="iso639-2b" authorityURI="http://id.loc.gov/vocabulary/iso639-2" valueURI="http://id.loc.gov/vocabulary/iso639-2/grc" type="text">Greek, Ancient (to 1453)</languageTerm>
+      </language>
+      <physicalDescription>
+        <form authority="aat" authorityURI="http://vocab.getty.edu/aat" valueURI="http://vocab.getty.edu/aat/300028233">historical maps</form>
+        <extent>1 photograph</extent>
+        <reformattingQuality>access</reformattingQuality>
+        <digitalOrigin>born digital</digitalOrigin>
+        <internetMediaType>image/jpeg</internetMediaType>
+      </physicalDescription>
+      <abstract displayLabel="Abstract">The Forma Urbis Romae or Severan Marble Plan is a massive marble map of ancient Rome, created under the emperor Septimius Severus between 203 and 211. It originally measured 18 m (60 feet) wide by 13 m (45 feet) high and was carved into 150 marble slabs mounted on an interior wall of the Temple of Peace.
+Created at a scale of approximately 1 to 240, the map was detailed enough to show the floor plans of nearly every temple, bath, and insula in the central Roman city. The boundaries of the plan were decided based on the available space on the marble, instead of by geographical or political borders as modern maps usually are.
+The map was oriented with south at the top. On the map are names and plans of public buildings, streets, and private homes. The creators used signs and details like columns and staircases.
+The Plan was gradually destroyed during the Middle Ages, with the marble stones being used as building materials or for making lime. In 1562, the young antiquarian sculptor Giovanni Antonio Dosio excavated fragments of the Forma Urbis from a site near the Church of SS. Cosma e Damiano, under the direction of the humanist condottiere Torquato Conti, who had purchased excavation rights from the canons of the church. Conti made a gift of the recovered fragments to Cardinal Alessandro Farnese, who entrusted them to his librarian Onofrio Panvinio and his antiquarian Fulvio Orsini
+In all about 10% of the original surface area of the plan has since been recovered, in the form of over one thousand marble fragments, which are kept in the Palazzo dei Conservatori of the Capitoline Museums.</abstract>
+      <subject authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79018704">
+        <geographic>Rome (Italy)</geographic>
+        <topic>Topography</topic>
+      </subject>
+      <subject authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79018704">
+        <geographic>Rome (Italy)</geographic>
+        <topic>Antiquities</topic>
+      </subject>
+      <subject authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/n79018704">
+        <geographic>Rome (Italy)</geographic>
+        <topic>Maps</topic>
+      </subject>
+      <subject>
+        <cartographics>
+          <scale>1:240</scale>
+        </cartographics>
+      </subject>
+      <identifier type="local" displayLabel="Slab">V-13</identifier>
+      <location>
+        <physicalLocation type="repository" authority="naf" valueURI="http://id.loc.gov/authorities/names/no2014019980">Stanford University. Libraries. Department of Special Collections and University Archives</physicalLocation>
+        <shelfLocator>SC1258</shelfLocator>
+        <url usage="primary display">https://purl.stanford.edu/bz514sm9647</url>
+      </location>
+      <relatedItem type="host" displayLabel="Finding Aid">
+        <titleInfo>
+          <title>Marc Levoy Papers (SC1258)</title>
+        </titleInfo>
+        <location>
+          <url>http://www.oac.cdlib.org/findaid/ark:/13030/c8x06ctg</url>
+        </location>
+      </relatedItem>
+      <recordInfo>
+        <languageOfCataloging>
+          <languageTerm type="code" authority="iso639-2b" authorityURI="http://id.loc.gov/vocabulary/iso639-2" valueURI="http://id.loc.gov/vocabulary/iso639-2/eng">eng</languageTerm>
+        </languageOfCataloging>
+        <recordContentSource authority="marcorg" authorityURI="http://id.loc.gov/vocabulary/organizations" valueURI="http://id.loc.gov/vocabulary/organizations/cst">CSt</recordContentSource>
+        <recordOrigin>human prepared</recordOrigin>
+      </recordInfo>
+    </mods>

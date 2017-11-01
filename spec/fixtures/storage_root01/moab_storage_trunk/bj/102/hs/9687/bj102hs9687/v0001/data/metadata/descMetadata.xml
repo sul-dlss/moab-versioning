@@ -1,0 +1,74 @@
+
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+  <titleInfo>
+    <title>Axe, an automated formal equivalence checking tool for programs</title>
+  </titleInfo>
+  <name type="personal">
+    <namePart>Smith, Eric Whitman.</namePart>
+    <role>
+      <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart>Dill, David</namePart>
+    <role>
+      <roleTerm type="text">primary advisor.</roleTerm>
+    </role>
+    <role>
+      <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart>Engler, Dawson R.</namePart>
+    <role>
+      <roleTerm type="text">advisor.</roleTerm>
+    </role>
+    <role>
+      <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart>Mitchell, John</namePart>
+    <role>
+      <roleTerm type="text">advisor.</roleTerm>
+    </role>
+    <role>
+      <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+    </role>
+  </name>
+  <name type="corporate">
+    <namePart>Stanford University</namePart>
+    <namePart>Computer Science Dept.</namePart>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <genre authority="marcgt">theses</genre>
+  <originInfo>
+    <place>
+      <placeTerm authority="marccountry" type="code">xx</placeTerm>
+    </place>
+    <dateIssued>2011</dateIssued>
+    <dateIssued encoding="marc" keyDate="yes">2011</dateIssued>
+    <issuance>monographic</issuance>
+  </originInfo>
+  <language>
+    <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+  </language>
+  <physicalDescription>
+    <form authority="marcform">electronic</form>
+    <form authority="gmd">electronic resource</form>
+    <extent>1 online resource.</extent>
+  </physicalDescription>
+  <abstract>This dissertation describes Axe, an automated formal verification tool for proving equivalence of programs. Axe has been used to verify real-world Java implementations of cryptographic operations, including block ciphers, stream ciphers, and cryptographic hash functions. Axe proves the bit-for-bit equivalence of the outputs of two programs, one of which may be a formal, mathematical specification. To do so, Axe relies on a novel combination of techniques from combinational equivalence checking and inductive theorem proving. First, the loops in some programs can be completely unrolled, creating large loop-free terms. Axe proves the equivalence of such terms using a phased approach, including aggressive word-level simplifications, bit-blasting, test-case-based identification of internal equivalences, and ``sweeping and merging.&apos;&apos; For loops that cannot be unrolled, Axe uses execution traces to detect loop properties, including loop invariants for single loops and connection relationships between corresponding loops. Axe proves such properties inductively. In many cases, synchronizing transformations must be performed to align the loop structures of the programs being compared; Axe can perform and verify a variety of these transformations.</abstract>
+  <note displayLabel="statement of responsibility">Eric Whitman Smith.</note>
+  <note>Submitted to the Department of Computer Science.</note>
+  <note>Thesis (Ph.D.)--Stanford University, 2011.</note>
+  <identifier type="uri">http://purl.stanford.edu/bj102hs9687</identifier>
+  <location>
+    <url usage="primary display">http://purl.stanford.edu/bj102hs9687</url>
+  </location>
+  <recordInfo>
+    <recordContentSource authority="marcorg">CSt</recordContentSource>
+    <recordCreationDate encoding="marc">110721</recordCreationDate>
+    <recordIdentifier source="SIRSI">a9238371</recordIdentifier>
+  </recordInfo>
+</mods>

@@ -1,0 +1,11 @@
+
+<events>
+  <event type="remediation" when="2012-05-07T15:38:37-07:00" who="Dor::Processable 3.5.0">Replace individual *WF datastreams with unified workflows datastream</event>
+  <event type="remediation" when="2012-05-07T15:38:37-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="remediation" when="2012-05-07T15:38:38-07:00" who="Dor::ContentMetadataDS 3.6.0">Change contentMetadata type attribute</event>
+  <event type="remediation" when="2012-12-13T16:06:28-08:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="remediation" when="2012-12-13T16:06:28-08:00" who="Dor::Versionable 3.12.2">Add missing versionMetadata</event>
+  <event type="embargo" when="2013-06-02T14:30:49-07:00" who="application:accessionWF:embargo-release">Embargo released</event>
+  <event type="remediation" when="2013-06-02T14:52:32-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+  <event type="remediation" when="2013-06-17T16:02:51-07:00" who="Dor::Identifiable 3.6.1">Record Remediation Version</event>
+</events>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventoryDifference objectId="druid:jj925bx9565" differenceCount="5" basis="v1-contentMetadata-preserve|/dor/workspace/jj/925/bx/9565/jj925bx9565/metadata" other="v2-contentMetadata-preserve|/dor/workspace/jj/925/bx/9565/jj925bx9565/metadata" reportDatetime="2017-06-13T20:47:45Z">
+  <fileGroupDifference groupId="content" differenceCount="0" identical="1" copyadded="0" copydeleted="0" renamed="0" modified="0" added="0" deleted="0">
+    <subset change="identical" count="1">
+      <file change="identical" basisPath="PC0170_s3_4th_of_July_2010-07-04_095432_0003.jpg" otherPath="same">
+        <fileSignature size="6508496" md5="962195b1ce2db9eda92799735e66311f" sha1="6a09084eb630825a67d955bf1ee1cdaaa2f4d842" sha256="ad05146917228f6f8ce3345e1fbf7861ac56f23f883ac467aa00e09fa4999901"/>
+      </file>
+    </subset>
+    <subset change="copyadded" count="0"/>
+    <subset change="copydeleted" count="0"/>
+    <subset change="renamed" count="0"/>
+    <subset change="modified" count="0"/>
+    <subset change="added" count="0"/>
+    <subset change="deleted" count="0"/>
+  </fileGroupDifference>
+  <fileGroupDifference groupId="metadata" differenceCount="5" identical="5" copyadded="0" copydeleted="0" renamed="0" modified="4" added="1" deleted="0">
+    <subset change="identical" count="5">
+      <file change="identical" basisPath="contentMetadata.xml" otherPath="same">
+        <fileSignature size="873" md5="ad104aede29620bc2960ed808d450529" sha1="04f7aa2899912a72b12c94523234ec72c87671e1" sha256="3d933913491f6873b7b4c4d07cd7d06b8b887813e2ae7260f286d104db1cdcdd"/>
+      </file>
+      <file change="identical" basisPath="identityMetadata.xml" otherPath="same">
+        <fileSignature size="645" md5="9f896c270d10afefaee9ecb39bc3c36f" sha1="c8c571c4fce8e2ad986b131da0335493f031f818" sha256="d97dba5e2776c18e4eacb04da152e46067cc2f5f8030948dfba3066126052af6"/>
+      </file>
+      <file change="identical" basisPath="relationshipMetadata.xml" otherPath="same">
+        <fileSignature size="721" md5="70a5f01a4aa81b7fa4b9720e889f5992" sha1="e2c278b2cec76ae0a3c8cdcd4520a9ca2e34a43d" sha256="443f2e8813bd713abda292e69daec324c80c85b00ef1b421e038325bad8a2283"/>
+      </file>
+      <file change="identical" basisPath="rightsMetadata.xml" otherPath="same">
+        <fileSignature size="684" md5="f7601c82f8881533dcd7839c001c740f" sha1="79e7cf9a83bc5edd026b2504165f633f50109f2c" sha256="255772ed4469d8d1cb8b43f95962b50f79fe72fcef74f476d9bf49b7bd62e341"/>
+      </file>
+      <file change="identical" basisPath="technicalMetadata.xml" otherPath="same">
+        <fileSignature size="4490" md5="a398edb82fb81c01d38bb8d894a33134" sha1="fc4ef7c6854884291235a6b342b89172c406ac60" sha256="b013015f9ac305239f427a2ace9c9903800c8a56d887ede2a6572a9ea835a9d3"/>
+      </file>
+    </subset>
+    <subset change="modified" count="4">
+      <file change="modified" basisPath="descMetadata.xml" otherPath="same">
+        <fileSignature size="345" md5="edef71edbf2a95282859b674f90a5995" sha1="04a7565dc0f60bd558b018f0e511f89a09a63845" sha256="cdf7a81f49192465519a74dbf522979ce7909d861df520f52f79b6de83d8d9a6"/>
+        <fileSignature size="5937" md5="19b4f911b3026b00f30397d02a7d3ab9" sha1="d60a39cb7dc2296aaeef6ed021cf8ce8e6220dfc" sha256="8e0d1f5f74b7d45b0afdabe45113c22b2d67dfb7334dcfda4c818b06aa1eab40"/>
+      </file>
+      <file change="modified" basisPath="provenanceMetadata.xml" otherPath="same">
+        <fileSignature size="263" md5="15bd4d5c60ba6718f9bc660c345551cd" sha1="f7144945d8ff0ed120808b273b120f78ded94792" sha256="1d5f5a4848ebdc393e50f2bcd051c126376f0887ef92862b957f255c596168ac"/>
+        <fileSignature size="263" md5="6f99cddf196eccaf9ed5f7a890fb7a61" sha1="cb7c843656ff273a7cbc6b15a716c741015c6c03" sha256="1a14b7d29a2f2a910f0da1e20de12d24569fd00a3fe828ff0e7fe0f817364ff6"/>
+      </file>
+      <file change="modified" basisPath="versionMetadata.xml" otherPath="same">
+        <fileSignature size="134" md5="4748af432b1a1131216bbc64fb6eeea7" sha1="1a0c31ae15e477ee4ff135a3691c25c753c31753" sha256="fb206337b553dbc2cf5da35ef08388661aadda52b1cbf6667fad260a0e90c915"/>
+        <fileSignature size="310" md5="a92ea2256de1fb7d2b5c95034a73bd0d" sha1="9cac4a33c4455aca0466d3dcfd9c2832b2724fbd" sha256="411c32f337ae8906d7aa55f7a9dbaa66fa9580f800e4139ca0b59ac29c50970f"/>
+      </file>
+      <file change="modified" basisPath="workflows.xml" otherPath="same">
+        <fileSignature size="4133" md5="52e5838c8318e79880e8a0ae56884c53" sha1="e96efeec8f396ef5b0fe9024b7f783cf5a11616b" sha256="3e068ebbdc7a7003feeaed77e700a78866c28fd16f58f532b9fd2c9876a67529"/>
+        <fileSignature size="10176" md5="da6ada703bed363be3b66b605a717577" sha1="48233795bf2fc29ada965537acf225140ac7776a" sha256="b19feabf3e56515e6ee6d0f627044144d02acbc29035ef74ca44105120dee377"/>
+      </file>
+    </subset>
+    <subset change="added" count="1">
+      <file change="added" basisPath="" otherPath="events.xml">
+        <fileSignature size="202" md5="553de7c8140925664db7fe16acb65695" sha1="ccadc52ed5f1434a5c68779253dd406372149631" sha256="c7773fcc121d5361aa4498b53b25a8de2d54c4a6236d27d37d25066cec0e99b3"/>
+      </file>
+    </subset>
+    <subset change="copyadded" count="0"/>
+    <subset change="copydeleted" count="0"/>
+    <subset change="renamed" count="0"/>
+    <subset change="deleted" count="0"/>
+  </fileGroupDifference>
+</fileInventoryDifference>

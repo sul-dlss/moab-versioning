@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflows objectId="druid:bj102hs9687">
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="accessionWF">
+        <process version="1" priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" archived="true" attempts="0" datetime="2011-09-20T15:48:15-0700" status="completed" name="start-accession"/>
+        <process version="1" priority="0" lifecycle="published" laneId="default" elapsed="10.031" archived="true" attempts="1" datetime="2011-09-20T18:50:22-0700" status="completed" name="publish"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.952" archived="true" attempts="6" datetime="2011-09-21T15:10:08-0700" status="completed" name="content-metadata"/>
+        <process version="1" priority="0" lifecycle="described" laneId="default" elapsed="0.892" archived="true" attempts="6" datetime="2011-09-21T15:21:32-0700" status="completed" name="descriptive-metadata"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.714" archived="true" attempts="5" datetime="2011-09-21T17:10:31-0700" status="completed" name="rights-metadata"/>
+        <process version="1" priority="0" laneId="default" elapsed="4.073" archived="true" attempts="4" datetime="2011-09-21T17:44:56-0700" status="completed" name="shelve"/>
+        <process version="1" priority="0" laneId="default" elapsed="11.835" archived="true" attempts="1" datetime="2011-10-28T01:15:18-0700" status="completed" name="technical-metadata"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.945" archived="true" attempts="1" datetime="2011-10-28T01:24:34-0700" status="completed" name="provenance-metadata"/>
+        <process version="1" priority="0" laneId="default" elapsed="2.376" archived="true" attempts="1" datetime="2011-12-05T16:29:16-0800" status="completed" name="sdr-ingest-transfer"/>
+        <process version="1" priority="0" laneId="default" elapsed="6.485" archived="true" attempts="1" datetime="2012-12-13T16:06:34-0800" status="completed" name="remediate-object"/>
+        <process version="1" priority="0" lifecycle="accessioned" laneId="default" elapsed="0.305" archived="true" attempts="1" datetime="2012-12-17T09:32:00-0800" status="completed" name="end-accession"/>
+        <process version="1" priority="0" lifecycle="deposited" laneId="default" elapsed="0.0" archived="true" attempts="2" datetime="2013-01-24T17:33:08-0800" status="completed" name="sdr-ingest-received"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="accessionWF">
+        <process version="2" priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-17T15:42:44-0700" status="completed" name="start-accession"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.772" archived="true" attempts="1" datetime="2013-06-17T15:43:21-0700" status="completed" name="rights-metadata"/>
+        <process version="2" priority="0" lifecycle="described" laneId="default" elapsed="1.134" archived="true" attempts="1" datetime="2013-06-17T15:44:10-0700" status="completed" name="descriptive-metadata"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.537" archived="true" attempts="1" datetime="2013-06-17T15:44:35-0700" status="completed" name="content-metadata"/>
+        <process version="2" priority="0" laneId="default" elapsed="6.551" archived="true" attempts="1" datetime="2013-06-17T16:02:56-0700" status="completed" name="remediate-object"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.654" archived="true" attempts="1" datetime="2013-06-17T19:58:18-0700" status="completed" name="shelve"/>
+        <process version="2" priority="0" lifecycle="published" laneId="default" elapsed="2.061" archived="true" attempts="1" datetime="2013-06-17T19:58:49-0700" status="completed" name="publish"/>
+        <process version="2" priority="0" laneId="default" elapsed="1.255" archived="true" attempts="1" datetime="2013-06-17T20:23:13-0700" status="completed" name="technical-metadata"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.336" archived="true" attempts="1" datetime="2013-06-17T20:24:07-0700" status="completed" name="provenance-metadata"/>
+        <process version="2" priority="0" laneId="default" elapsed="31.286" archived="true" attempts="1" datetime="2013-06-18T06:28:50-0700" status="completed" name="sdr-ingest-transfer"/>
+        <process version="2" priority="0" lifecycle="deposited" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-18T12:19:47-0700" status="completed" name="sdr-ingest-received"/>
+        <process version="2" priority="0" lifecycle="accessioned" laneId="default" elapsed="1.179" archived="true" attempts="1" datetime="2013-06-18T12:20:42-0700" status="completed" name="end-accession"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="accessionWF">
+        <process priority="0" lifecycle="accessioned" laneId="default" elapsed="0.0" attempts="0" datetime="2016-06-14T14:54:12-0700" status="waiting" name="end-accession"/>
+        <process priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" attempts="1" datetime="2016-06-14T14:54:12-0700" status="completed" name="start-accession"/>
+        <process priority="0" lifecycle="deposited" laneId="default" elapsed="0.0" attempts="0" datetime="2016-06-14T14:54:12-0700" status="waiting" name="sdr-ingest-received"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="0" datetime="2016-06-14T14:54:12-0700" status="waiting" name="reset-workspace"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" lifecycle="described" laneId="default" elapsed="1.003" attempts="2" datetime="2016-06-14T14:54:43-0700" status="completed" name="descriptive-metadata"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.96" attempts="2" datetime="2016-06-14T14:55:09-0700" status="completed" name="rights-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="1.16" attempts="2" datetime="2016-06-14T14:55:37-0700" status="completed" name="content-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="2.519" attempts="2" datetime="2016-06-14T14:56:03-0700" status="completed" name="technical-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="15.415" attempts="2" datetime="2016-06-14T14:56:39-0700" status="completed" name="remediate-object"/>
+        <process priority="0" note="sul-robots5-prod.stanford.edu" laneId="default" elapsed="1.377" attempts="2" datetime="2016-06-14T14:57:10-0700" status="completed" name="shelve"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" lifecycle="published" laneId="default" elapsed="2.219" attempts="2" datetime="2016-06-14T14:57:28-0700" status="completed" name="publish"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="1.389" attempts="2" datetime="2016-06-14T14:57:53-0700" status="completed" name="provenance-metadata"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2016-06-14T14:58:15-0700" status="queued" name="sdr-ingest-transfer"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="disseminationWF">
+        <process version="1" priority="0" lifecycle="published" laneId="default" elapsed="11.568" archived="true" attempts="1" datetime="2012-08-29T03:40:58-0700" status="completed" name="publish"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="disseminationWF">
+        <process version="2" priority="0" lifecycle="accessioned" laneId="default" elapsed="0.091" archived="true" attempts="4" datetime="2013-06-18T12:21:22-0700" status="completed" name="cleanup"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="etdSubmitWF">
+        <process version="1" priority="0" lifecycle="registered" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2011-05-31T16:32:34-0700" status="completed" name="register-object"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2011-06-01T08:59:20-0700" status="completed" name="submit"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2011-06-01T09:55:57-0700" status="completed" name="reader-approval"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2011-06-02T11:11:26-0700" status="completed" name="registrar-approval"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2011-06-02T11:40:04-0700" status="completed" name="start-accession"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="etdSubmitWF">
+        <process priority="0" laneId="default" elapsed="1.0" attempts="1" datetime="2011-07-21T09:45:27-0700" status="completed" name="submit-marc"/>
+        <process priority="0" laneId="default" elapsed="1.128" attempts="21" datetime="2011-07-22T05:41:31-0700" status="completed" name="check-marc"/>
+        <process priority="0" laneId="default" elapsed="0.65" attempts="292" datetime="2011-08-03T08:41:21-0700" status="completed" name="catalog-status"/>
+        <process priority="0" laneId="default" elapsed="1.608" attempts="1" datetime="2011-08-03T08:41:52-0700" status="completed" name="other-metadata"/>
+        <process priority="0" laneId="default" elapsed="0.929" attempts="1" datetime="2011-09-20T15:48:16-0700" status="completed" name="start-accession"/>
+        <process priority="0" laneId="default" elapsed="2.85" attempts="1" datetime="2012-06-22T00:48:12-0700" status="completed" name="binder-transfer"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="3" datetime="2013-09-05T11:57:35-0700" status="waiting" name="google-transfer"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="versioningWF">
+        <process version="2" priority="0" lifecycle="opened" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-02T14:30:49-0700" status="completed" name="start-version"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-02T14:30:50-0700" status="completed" name="submit-version"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-02T14:30:51-0700" status="completed" name="start-accession"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bj102hs9687" id="versioningWF">
+        <process priority="0" lifecycle="opened" laneId="default" elapsed="0.0" attempts="1" datetime="2016-06-14T14:54:09-0700" status="completed" name="start-version"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2016-06-14T14:54:12-0700" status="completed" name="submit-version"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2016-06-14T14:54:12-0700" status="completed" name="start-accession"/>
+    </workflow>
+    <workflow repository="sdr" objectId="druid:bj102hs9687" id="sdrIngestWF">
+        <process version="1" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="0" datetime="2011-12-05T16:29:16-0800" status="completed" name="start-ingest"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.232" archived="true" attempts="1" datetime="2011-12-05T17:01:18-0800" status="completed" name="register-sdr"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.745" archived="true" attempts="1" datetime="2011-12-05T17:57:49-0800" status="completed" name="transfer-object"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.076" archived="true" attempts="1" datetime="2011-12-05T18:19:28-0800" status="completed" name="validate-bag"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.188" archived="true" attempts="1" datetime="2011-12-05T18:47:42-0800" status="completed" name="populate-metadata"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.036" archived="true" attempts="1" datetime="2012-02-01T12:16:14-0800" status="completed" name="verify-agreement"/>
+        <process version="1" priority="0" lifecycle="registered" laneId="default" elapsed="0.308" archived="true" attempts="1" datetime="2012-02-01T12:45:44-0800" status="completed" name="complete-deposit"/>
+    </workflow>
+    <workflow repository="sdr" objectId="druid:bj102hs9687" id="sdrIngestWF">
+        <process version="2" priority="0" laneId="default" elapsed="0.0" archived="true" attempts="1" datetime="2013-06-18T06:28:49-0700" status="completed" name="start-ingest"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.044" archived="true" attempts="1" datetime="2013-06-18T12:19:45-0700" status="completed" name="register-sdr"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.966" archived="true" attempts="1" datetime="2013-06-18T12:19:46-0700" status="completed" name="transfer-object"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.013" archived="true" attempts="1" datetime="2013-06-18T12:19:46-0700" status="completed" name="validate-bag"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.376" archived="true" attempts="1" datetime="2013-06-18T12:19:47-0700" status="completed" name="populate-metadata"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.022" archived="true" attempts="1" datetime="2013-06-18T12:19:47-0700" status="completed" name="verify-agreement"/>
+        <process version="2" priority="0" laneId="default" elapsed="0.394" archived="true" attempts="1" datetime="2013-06-18T12:19:47-0700" status="completed" name="complete-deposit"/>
+    </workflow>
+    <workflow repository="sdr" objectId="druid:bj102hs9687" id="sdrMigrationWF">
+        <process version="1" priority="0" laneId="default" elapsed="0.069" archived="true" attempts="1" datetime="2013-01-24T17:32:46-0800" status="completed" name="migration-start"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.048" archived="true" attempts="1" datetime="2013-01-24T17:32:51-0800" status="completed" name="migration-register"/>
+        <process version="1" priority="0" laneId="default" elapsed="1.362" archived="true" attempts="1" datetime="2013-01-24T17:32:57-0800" status="completed" name="migration-transfer"/>
+        <process version="1" priority="0" laneId="default" elapsed="0.249" archived="true" attempts="1" datetime="2013-01-24T17:33:03-0800" status="completed" name="migration-metadata"/>
+        <process version="1" priority="0" lifecycle="migrated" laneId="default" elapsed="0.288" archived="true" attempts="1" datetime="2013-01-24T17:33:08-0800" status="completed" name="migration-complete"/>
+    </workflow>
+</workflows>

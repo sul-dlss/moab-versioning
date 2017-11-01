@@ -4,6 +4,7 @@ require 'stanford/dor_metadata'
 require 'stanford/storage_repository'
 require 'stanford/storage_services'
 require 'stanford/active_fedora_object'
+require 'stanford/moab_storage_directory'
 
 # Stanford is a module that isolates classes specific to the Stanford Digital Repository
 #

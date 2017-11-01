@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflows objectId="druid:bz514sm9647">
+    <workflow repository="dor" objectId="druid:bz514sm9647" id="accessionWF">
+        <process priority="0" lifecycle="submitted" laneId="default" elapsed="0.0" attempts="1" datetime="2017-05-30T11:49:39-0700" status="completed" name="start-accession"/>
+        <process priority="0" lifecycle="accessioned" laneId="default" elapsed="0.0" attempts="0" datetime="2017-05-30T11:49:39-0700" status="waiting" name="end-accession"/>
+        <process priority="0" lifecycle="deposited" laneId="default" elapsed="0.0" attempts="0" datetime="2017-05-30T11:49:39-0700" status="waiting" name="sdr-ingest-received"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="0" datetime="2017-05-30T11:49:39-0700" status="waiting" name="reset-workspace"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" lifecycle="described" laneId="default" elapsed="0.585" attempts="2" datetime="2017-05-30T11:49:51-0700" status="completed" name="descriptive-metadata"/>
+        <process priority="0" note="sul-robots5-prod.stanford.edu" laneId="default" elapsed="0.695" attempts="2" datetime="2017-05-30T11:50:20-0700" status="completed" name="rights-metadata"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.539" attempts="2" datetime="2017-05-30T11:50:37-0700" status="completed" name="content-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="3.107" attempts="2" datetime="2017-05-30T11:51:09-0700" status="completed" name="technical-metadata"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.328" attempts="2" datetime="2017-05-30T11:51:20-0700" status="completed" name="remediate-object"/>
+        <process priority="0" note="sul-robots5-prod.stanford.edu" laneId="default" elapsed="1.045" attempts="2" datetime="2017-05-30T11:51:48-0700" status="completed" name="shelve"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" lifecycle="published" laneId="default" elapsed="2.881" attempts="2" datetime="2017-05-30T11:52:15-0700" status="completed" name="publish"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="0.663" attempts="2" datetime="2017-05-30T11:52:28-0700" status="completed" name="provenance-metadata"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2017-05-30T11:52:42-0700" status="queued" name="sdr-ingest-transfer"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bz514sm9647" id="assemblyWF">
+        <process priority="0" laneId="default" elapsed="0.0" attempts="1" datetime="2017-05-30T11:48:05-0700" status="completed" name="start-assembly"/>
+        <process priority="0" note="contentMetadata.xml exists" laneId="default" elapsed="0.393" attempts="2" datetime="2017-05-30T11:48:17-0700" status="skipped" name="content-metadata-create"/>
+        <process priority="0" note="sul-robots2-prod.stanford.edu" laneId="default" elapsed="1.086" attempts="2" datetime="2017-05-30T11:48:40-0700" status="completed" name="jp2-create"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.404" attempts="2" datetime="2017-05-30T11:48:57-0700" status="completed" name="checksum-compute"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="0.894" attempts="2" datetime="2017-05-30T11:49:17-0700" status="completed" name="exif-collect"/>
+        <process priority="0" note="sul-robots1-prod.stanford.edu" laneId="default" elapsed="1.928" attempts="2" datetime="2017-05-30T11:49:39-0700" status="completed" name="accessioning-initiate"/>
+    </workflow>
+    <workflow repository="dor" objectId="druid:bz514sm9647" id="digitizationWF">
+        <process priority="0" lifecycle="digitized" laneId="default" elapsed="0.0" attempts="0" datetime="2017-04-20T19:05:49-0700" status="waiting" name="digitize"/>
+        <process priority="0" lifecycle="registered" laneId="default" elapsed="0.0" attempts="1" datetime="2017-04-20T19:05:49-0700" status="completed" name="initiate"/>
+        <process priority="0" laneId="default" elapsed="0.0" attempts="0" datetime="2017-04-20T19:05:49-0700" status="waiting" name="start-accession"/>
+    </workflow>
+</workflows>
