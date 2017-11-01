@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signatureCatalog objectId="druid:bj102hs9687" versionId="2" catalogDatetime="2013-06-18T19:19:47Z" fileCount="18" byteCount="1928172" blockCount="1894">
+  <entry originalVersion="1" groupId="content" storagePath="eric-smith-dissertation-augmented.pdf">
+    <fileSignature size="905566" md5="93802f1a639bc9215c6336ff5575ee22" sha1="32f7129a81830004f0360424525f066972865221" sha256="a67276820853ddd839ba614133f1acd7330ece13f1082315d40219bed10009de"/>
+  </entry>
+  <entry originalVersion="1" groupId="content" storagePath="eric-smith-dissertation.pdf">
+    <fileSignature size="1000217" md5="aead2f6f734355c59af2d5b2689e4fb3" sha1="22dc6464e25dc9a7d600b1de6e3848bf63970595" sha256="e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="contentMetadata.xml">
+    <fileSignature size="1325" md5="9db4638735fe11727c5f069abe183681" sha1="3265a920f3b5f33958b437be72f55de29ee62fe7" sha256="3943012e4ffedd6534286b2d3b2db1434fa644046fa1601339b4ea8aa29b94ed"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="descMetadata.xml">
+    <fileSignature size="3882" md5="6cc0428f13bba3b6858c42ec79f8290f" sha1="96d1550f33316925dd0c48b44c4fd477f5f1d87c" sha256="5323ad22afe2931a15a035214db13c51dd646955c1925d9b438d7bf5d1020b85"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="identityMetadata.xml">
+    <fileSignature size="588" md5="d1453cc9f8484cf10ed2664d468ce98d" sha1="83269fedcb94f84eb311273be8c35a7546e98e0f" sha256="a9a981434a8f458c012d6fc1cd2918c8f1ac550791c21397cf019cbbb7ba6e5f"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="provenanceMetadata.xml">
+    <fileSignature size="265" md5="ee796ea9e973260bfdca8722f0d5fafe" sha1="4e1414252b81c5e2365ada2bc5575fa67b826769" sha256="193fb3b9b7b899a7924dcada7510c705c20878d39d4e69841d9a73bcd834ab7c"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="relationshipMetadata.xml">
+    <fileSignature size="271" md5="c51d32995620b92e415f47052549bcd3" sha1="446b64a67e790a7c8dc3da7c26d0f7b362b0c887" sha256="d37ea0759b029ea569c1691dab6d0582404ce7652ed09416605913ffb8509791"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="rightsMetadata.xml">
+    <fileSignature size="553" md5="744ff981da6ef762d890c0e364dc652d" sha1="f1d838952ca69e68e50ede33b3228c6f9533213a" sha256="935f91c58d5948dfcada995e99ef12480aa004a80fe5a81960b8c026665ad486"/>
+  </entry>
+  <entry originalVersion="1" groupId="metadata" storagePath="technicalMetadata.xml">
+    <fileSignature size="1113" md5="5cd1a5ed133365639e7a5d2e5ca349b0" sha1="eece969f398722a2380f2ed140f8df81c2ef7ad8" sha256="684cc6ee90813644a97274b4a275ec4dbc0ac619f99b4f0f856a4371436af445"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="contentMetadata.xml">
+    <fileSignature size="1077" md5="ac7db59e55e20df328fdd0891c81602f" sha1="2851b9efd0d3fce7d1a9f2b64e92e37d480b40a5" sha256="4ddd09ad2facff3c034d693e96004295bedcded0bab4ce45adb06959c36c7d57"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="embargoMetadata.xml">
+    <fileSignature size="444" md5="18be76ed6448e5358794f349e4f686ca" sha1="066000b8077f3dc0c16d3f7dd9c639a3718d33c0" sha256="5012398a6f10cf091498704e88ea8a7715e5f3fb73f027733fc94db5eea32060"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="events.xml">
+    <fileSignature size="1088" md5="7d07e18c70dcabc5b3b6b97d812bbd7a" sha1="8df8b7b3251f8d4b35baf01f60213ca9e88c19e2" sha256="adf82bccf2913901f629580b4c1d9d17fac06ab1be517e47d104be55cfae1b4e"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="identityMetadata.xml">
+    <fileSignature size="689" md5="7e38e8548e05e56eb6854f30bd657021" sha1="1af80b0325000078fdd3d23fdf1db917f597ddb4" sha256="b98d3ec2adff32049b4ff1c35b1121e366f877c01f77210c1051144b0066039a"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="provenanceMetadata.xml">
+    <fileSignature size="265" md5="46d79bd2408c45a575a48060c24dd73b" sha1="2a4c01ce2f153fe61545dd8f5ec2e9319e176735" sha256="0807f7d56924bebc6525d3a0479545c367608e76d18922d746c3b89f30ffdfab"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="relationshipMetadata.xml">
+    <fileSignature size="414" md5="84bd801452417e26d0c84eb0874e1f97" sha1="334f50ca49357a75105381c9ad92736104f290d4" sha256="2298d931665b5494dfc5c9d45703c8834d2b3eeadb64a974adee33c200b31c89"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="rightsMetadata.xml">
+    <fileSignature size="513" md5="dde95ed870c7396704f60cf275226116" sha1="78e6ef8a44d5bbfe8423a32835e740b463d4c3c7" sha256="76874aea0bcd0e4e5a4e371089c2e6b4643ef6865f55c2de8a1deb33a1c960da"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="versionMetadata.xml">
+    <fileSignature size="264" md5="395ec835426d80ba84eebdd96063780e" sha1="69fcd7fc0eeb1447a39a7c086cb26246bb5024b9" sha256="48406d5383cb99b971fca471b90e720faa31ec63a46250a102a06f66b63f6b43"/>
+  </entry>
+  <entry originalVersion="2" groupId="metadata" storagePath="workflows.xml">
+    <fileSignature size="9638" md5="34f80e84119e1cddc1327cc13c127138" sha1="b86f87fc3b4b629ae475e36ab9a0af0215aa3169" sha256="497efebce5e72e42de6891c8182bc4469e3a84f9f21113f6d1fd9768224136af"/>
+  </entry>
+</signatureCatalog>

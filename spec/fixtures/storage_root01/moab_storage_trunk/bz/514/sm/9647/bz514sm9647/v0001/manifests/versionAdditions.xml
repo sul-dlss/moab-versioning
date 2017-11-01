@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="additions" objectId="druid:bz514sm9647" versionId="1" inventoryDatetime="2017-05-30T18:53:16Z" fileCount="10" byteCount="187225" blockCount="188">
+  <fileGroup groupId="content" dataSource="" fileCount="1" byteCount="167784" blockCount="164">
+    <file>
+      <fileSignature size="167784" md5="42e9d4c0a766f837e5a2f5610d9f258e" sha1="5bfc6052b0e458e0aa703a0a6853bb9c112e0695" sha256="1530df24086afefd71bf7e5b7e85bb350b6972c838bf6c87ddd5c556b800c802"/>
+      <fileInstance path="SC1258_FUR_032a.jpg" datetime=""/>
+    </file>
+  </fileGroup>
+  <fileGroup groupId="metadata" dataSource="" fileCount="9" byteCount="19441" blockCount="24">
+    <file>
+      <fileSignature size="808" md5="b3561a445562ec90d3f17ba9b4e03913" sha1="5afa086e56a53d9470b588225eb7e46dd7724eb5" sha256="2af77290d9000bffec3b91844e8b2d45927d387ac3fe4735befa3234408afdea"/>
+      <fileInstance path="contentMetadata.xml" datetime="2017-05-30T18:53:15Z"/>
+    </file>
+    <file>
+      <fileSignature size="7444" md5="7f218b01890be485a2b3c9f2cef17ee3" sha1="34e1fb52f3408acc243eddfc320df9921874b1ae" sha256="5cd0a1a2c9dedb82398a1567e185f79d11ba34bd4fa6cad0f40208a388c58e5d"/>
+      <fileInstance path="descMetadata.xml" datetime="2017-05-30T18:53:14Z"/>
+    </file>
+    <file>
+      <fileSignature size="491" md5="7b3ced2f9f54cf9ef9c5fd3340134ed3" sha1="ba1bfcd259366e4ec51d1c2d24a289cd900cce32" sha256="d2d62e645108cb7040f3efbcaf38594efd793b73f8b9ede225bb4a8bdafb5bdf"/>
+      <fileInstance path="identityMetadata.xml" datetime="2017-05-30T18:53:14Z"/>
+    </file>
+    <file>
+      <fileSignature size="263" md5="78432d57aadafd31dbc3247ca4dcc3e2" sha1="bb81a3f53819f3c067afdc223ce0fd309f46605f" sha256="6447e1fb58a4c8b365ca653389042dfdebe29d110785cfcfe030a19fd3f9c3ab"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2017-05-30T18:53:15Z"/>
+    </file>
+    <file>
+      <fileSignature size="821" md5="edc58a01f9059d5a5aa6158157ef2038" sha1="26163377231d80c08cf8a4d795093107c8ce9b2d" sha256="ef8c6351860c92189c67c7e5f0700504e25dc8daddb0964b2874b261d158c43c"/>
+      <fileInstance path="relationshipMetadata.xml" datetime="2017-05-30T18:53:15Z"/>
+    </file>
+    <file>
+      <fileSignature size="636" md5="0ce1a45d7a427397b8e15fc7421b6e90" sha1="47b8c6cc6e01195b39748d21ee46ceab8f11e8d1" sha256="0dee2e0fe64012392896e87984ed2debd6c5af210f2dd8d0443dde302fc4b0d6"/>
+      <fileInstance path="rightsMetadata.xml" datetime="2017-05-30T18:53:14Z"/>
+    </file>
+    <file>
+      <fileSignature size="4421" md5="adeba4c7c9e3e1e2747124906006fc49" sha1="f13dd08f7bca425e0f6418250fd60aec631d31cc" sha256="4ba0d3de1ab28cef914668c3845ec0418dceccd9a3815edcfdece05f21d29239"/>
+      <fileInstance path="technicalMetadata.xml" datetime="2017-05-30T18:53:15Z"/>
+    </file>
+    <file>
+      <fileSignature size="134" md5="4748af432b1a1131216bbc64fb6eeea7" sha1="1a0c31ae15e477ee4ff135a3691c25c753c31753" sha256="fb206337b553dbc2cf5da35ef08388661aadda52b1cbf6667fad260a0e90c915"/>
+      <fileInstance path="versionMetadata.xml" datetime="2017-05-30T18:53:15Z"/>
+    </file>
+    <file>
+      <fileSignature size="4423" md5="1a1c1316eafbe9d4423750c404b62866" sha1="807403ba637fe38fb4b3261db0b9ac3f324d852c" sha256="f7ac2cb156def0a1bb7ddcd1c20dd8807726f5baa5a0ce1ebeca4a6b3a08fc3c"/>
+      <fileInstance path="workflows.xml" datetime="2017-05-30T18:53:16Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>

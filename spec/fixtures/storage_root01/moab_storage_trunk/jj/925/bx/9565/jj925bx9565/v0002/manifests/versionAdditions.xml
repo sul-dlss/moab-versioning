@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="additions" objectId="druid:jj925bx9565" versionId="2" inventoryDatetime="2017-06-13T17:21:52Z" fileCount="5" byteCount="16888" blockCount="19">
+  <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="16888" blockCount="19">
+    <file>
+      <fileSignature size="5937" md5="19b4f911b3026b00f30397d02a7d3ab9" sha1="d60a39cb7dc2296aaeef6ed021cf8ce8e6220dfc" sha256="8e0d1f5f74b7d45b0afdabe45113c22b2d67dfb7334dcfda4c818b06aa1eab40"/>
+      <fileInstance path="descMetadata.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+    <file>
+      <fileSignature size="202" md5="553de7c8140925664db7fe16acb65695" sha1="ccadc52ed5f1434a5c68779253dd406372149631" sha256="c7773fcc121d5361aa4498b53b25a8de2d54c4a6236d27d37d25066cec0e99b3"/>
+      <fileInstance path="events.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+    <file>
+      <fileSignature size="263" md5="6f99cddf196eccaf9ed5f7a890fb7a61" sha1="cb7c843656ff273a7cbc6b15a716c741015c6c03" sha256="1a14b7d29a2f2a910f0da1e20de12d24569fd00a3fe828ff0e7fe0f817364ff6"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+    <file>
+      <fileSignature size="310" md5="a92ea2256de1fb7d2b5c95034a73bd0d" sha1="9cac4a33c4455aca0466d3dcfd9c2832b2724fbd" sha256="411c32f337ae8906d7aa55f7a9dbaa66fa9580f800e4139ca0b59ac29c50970f"/>
+      <fileInstance path="versionMetadata.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+    <file>
+      <fileSignature size="10176" md5="da6ada703bed363be3b66b605a717577" sha1="48233795bf2fc29ada965537acf225140ac7776a" sha256="b19feabf3e56515e6ee6d0f627044144d02acbc29035ef74ca44105120dee377"/>
+      <fileInstance path="workflows.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>

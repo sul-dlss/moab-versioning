@@ -1,0 +1,15 @@
+
+<embargoMetadata>
+  <status>released</status>
+  <releaseDate>2013-06-02T07:00:00Z</releaseDate>
+  <releaseAccess>
+    <access type="read">
+      <machine>
+        <group>stanford</group>
+        <group>stanford</group>
+      </machine>
+    </access>
+  </releaseAccess>
+  <twentyPctVisibilityStatus>embargoed</twentyPctVisibilityStatus>
+  <twentyPctVisibilityReleaseDate>2016-05-18T07:00:00Z</twentyPctVisibilityReleaseDate>
+</embargoMetadata>

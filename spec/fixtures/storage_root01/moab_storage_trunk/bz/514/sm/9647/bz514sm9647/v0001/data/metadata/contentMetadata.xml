@@ -1,0 +1,15 @@
+<contentMetadata objectId="bz514sm9647" type="image">
+  <resource id="bz514sm9647_1" sequence="1" type="image">
+    <label>Image 1</label>
+    <file id="SC1258_FUR_032a.jpg" preserve="yes" publish="no" shelve="no" mimetype="image/jpeg" size="167784">
+      <checksum type="md5">42e9d4c0a766f837e5a2f5610d9f258e</checksum>
+      <checksum type="sha1">5bfc6052b0e458e0aa703a0a6853bb9c112e0695</checksum>
+      <imageData width="624" height="461"/>
+    </file>
+    <file id="SC1258_FUR_032a.jp2" mimetype="image/jp2" size="54230" preserve="no" publish="yes" shelve="yes">
+      <checksum type="md5">57353f40aaf2375fe6f34156fe8cfba6</checksum>
+      <checksum type="sha1">38f770eeee49fc2b2caebc9b3467513b618dc3e3</checksum>
+      <imageData width="624" height="461"/>
+    </file>
+  </resource>
+</contentMetadata>

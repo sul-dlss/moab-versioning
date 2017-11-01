@@ -1,0 +1,15 @@
+<contentMetadata objectId="jj925bx9565" type="image">
+  <resource id="jj925bx9565_1" sequence="1" type="image">
+    <label>Image 1</label>
+    <file id="PC0170_s3_4th_of_July_2010-07-04_095432_0003.jpg" preserve="yes" publish="no" shelve="no" mimetype="image/jpeg" size="6508496">
+      <checksum type="md5">962195b1ce2db9eda92799735e66311f</checksum>
+      <checksum type="sha1">6a09084eb630825a67d955bf1ee1cdaaa2f4d842</checksum>
+      <imageData width="2848" height="4288"/>
+    </file>
+    <file id="PC0170_s3_4th_of_July_2010-07-04_095432_0003.jp2" mimetype="image/jp2" size="2313410" preserve="no" publish="yes" shelve="yes">
+      <checksum type="md5">daad7726021064a56600a850ee447dac</checksum>
+      <checksum type="sha1">aa03b22926979d33778e66218965e1e34cad21d0</checksum>
+      <imageData width="2848" height="4288"/>
+    </file>
+  </resource>
+</contentMetadata>

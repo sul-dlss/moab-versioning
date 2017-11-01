@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventoryDifference objectId="druid:bj102hs9687" differenceCount="9" basis="v0" other="v1" reportDatetime="2013-01-25T01:33:08Z">
+  <fileGroupDifference groupId="content" differenceCount="2" identical="0" renamed="0" modified="0" deleted="0" added="2">
+    <subset change="identical" count="0"/>
+    <subset change="renamed" count="0"/>
+    <subset change="modified" count="0"/>
+    <subset change="deleted" count="0"/>
+    <subset change="added" count="2">
+      <file change="added" basisPath="" otherPath="eric-smith-dissertation-augmented.pdf">
+        <fileSignature size="905566" md5="93802f1a639bc9215c6336ff5575ee22" sha1="32f7129a81830004f0360424525f066972865221" sha256="a67276820853ddd839ba614133f1acd7330ece13f1082315d40219bed10009de"/>
+      </file>
+      <file change="added" basisPath="" otherPath="eric-smith-dissertation.pdf">
+        <fileSignature size="1000217" md5="aead2f6f734355c59af2d5b2689e4fb3" sha1="22dc6464e25dc9a7d600b1de6e3848bf63970595" sha256="e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f"/>
+      </file>
+    </subset>
+  </fileGroupDifference>
+  <fileGroupDifference groupId="metadata" differenceCount="7" identical="0" renamed="0" modified="0" deleted="0" added="7">
+    <subset change="identical" count="0"/>
+    <subset change="renamed" count="0"/>
+    <subset change="modified" count="0"/>
+    <subset change="deleted" count="0"/>
+    <subset change="added" count="7">
+      <file change="added" basisPath="" otherPath="contentMetadata.xml">
+        <fileSignature size="1325" md5="9db4638735fe11727c5f069abe183681" sha1="3265a920f3b5f33958b437be72f55de29ee62fe7" sha256="3943012e4ffedd6534286b2d3b2db1434fa644046fa1601339b4ea8aa29b94ed"/>
+      </file>
+      <file change="added" basisPath="" otherPath="descMetadata.xml">
+        <fileSignature size="3882" md5="6cc0428f13bba3b6858c42ec79f8290f" sha1="96d1550f33316925dd0c48b44c4fd477f5f1d87c" sha256="5323ad22afe2931a15a035214db13c51dd646955c1925d9b438d7bf5d1020b85"/>
+      </file>
+      <file change="added" basisPath="" otherPath="identityMetadata.xml">
+        <fileSignature size="588" md5="d1453cc9f8484cf10ed2664d468ce98d" sha1="83269fedcb94f84eb311273be8c35a7546e98e0f" sha256="a9a981434a8f458c012d6fc1cd2918c8f1ac550791c21397cf019cbbb7ba6e5f"/>
+      </file>
+      <file change="added" basisPath="" otherPath="provenanceMetadata.xml">
+        <fileSignature size="265" md5="ee796ea9e973260bfdca8722f0d5fafe" sha1="4e1414252b81c5e2365ada2bc5575fa67b826769" sha256="193fb3b9b7b899a7924dcada7510c705c20878d39d4e69841d9a73bcd834ab7c"/>
+      </file>
+      <file change="added" basisPath="" otherPath="relationshipMetadata.xml">
+        <fileSignature size="271" md5="c51d32995620b92e415f47052549bcd3" sha1="446b64a67e790a7c8dc3da7c26d0f7b362b0c887" sha256="d37ea0759b029ea569c1691dab6d0582404ce7652ed09416605913ffb8509791"/>
+      </file>
+      <file change="added" basisPath="" otherPath="rightsMetadata.xml">
+        <fileSignature size="553" md5="744ff981da6ef762d890c0e364dc652d" sha1="f1d838952ca69e68e50ede33b3228c6f9533213a" sha256="935f91c58d5948dfcada995e99ef12480aa004a80fe5a81960b8c026665ad486"/>
+      </file>
+      <file change="added" basisPath="" otherPath="technicalMetadata.xml">
+        <fileSignature size="1113" md5="5cd1a5ed133365639e7a5d2e5ca349b0" sha1="eece969f398722a2380f2ed140f8df81c2ef7ad8" sha256="684cc6ee90813644a97274b4a275ec4dbc0ac619f99b4f0f856a4371436af445"/>
+      </file>
+    </subset>
+  </fileGroupDifference>
+</fileInventoryDifference>

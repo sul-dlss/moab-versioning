@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="manifests" objectId="druid:jj925bx9565" versionId="2" inventoryDatetime="2017-06-13T20:47:45Z" fileCount="4" byteCount="15543" blockCount="17">
+  <fileGroup groupId="manifests" dataSource="/services-disk12/sdr2objects/jj/925/bx/9565/jj925bx9565/v0002/manifests" fileCount="4" byteCount="15543" blockCount="17">
+    <file>
+      <fileSignature size="5368" md5="4bae0effe195ef9351e9d981607d27db" sha1="6f470e91254009db47ccba511a867576a6d89185" sha256="99a242730874e42b41fbc4c87f60f8f62447d1220c3d92e6cad1ce3ab3e5df95"/>
+      <fileInstance path="fileInventoryDifference.xml" datetime="2017-06-13T20:47:45Z"/>
+    </file>
+    <file>
+      <fileSignature size="4541" md5="085d603efef0f1849aa95de34994a651" sha1="19c1342c063cd7e99e187c2518ee8112947b4141" sha256="7a0c19cdaa98edb3d577268691d9de73b68f84ab9cd9a562432e136d54ff961b"/>
+      <fileInstance path="signatureCatalog.xml" datetime="2017-06-13T20:47:45Z"/>
+    </file>
+    <file>
+      <fileSignature size="1814" md5="4cef0bc994435a73eb68a431b961053c" sha1="cccd562b80fe26e111734d9dfda3fe14d2a775b0" sha256="96b99208b756a7e030bd43d0c03d4f5538768eedfeaf866c6bee7aa143374dd4"/>
+      <fileInstance path="versionAdditions.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+    <file>
+      <fileSignature size="3820" md5="cccf4e33c59e1fa0c96acc49e21c8db2" sha1="beb528c303afc6843cb754517f07ebf8ae179e1a" sha256="dff1da6838dc894762081112bbd2710e97c13fe9b009606ff2aeaac9b9f4e0b0"/>
+      <fileInstance path="versionInventory.xml" datetime="2017-06-13T17:21:52Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>
