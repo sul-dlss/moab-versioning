@@ -11,8 +11,9 @@ RSpec.describe Moab::StorageObjectValidator do
       expect(storage_obj_validator.storage_obj_path.to_s).to eq druid_path1
     end
   end
-  context '#validation_errors' do 
+  context '#validation_errors' do
     let(:verification_array) { storage_obj_validator1.validation_errors }
+
     it 'returns correct data structure' do
       expect(storage_obj_validator1.validation_errors).to be_kind_of Array
     end
@@ -58,7 +59,6 @@ RSpec.describe Moab::StorageObjectValidator do
         expect(verification_array[7]).to eq(6=>"Version: v0006 Missing all required metadata files")
       end
     end
-  
     it "has non contiguous version directories" do
       druid = 'yy000yy0000'
       druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000'
@@ -67,7 +67,6 @@ RSpec.describe Moab::StorageObjectValidator do
       verification_array = storage_obj_validator.validation_errors
       expect(verification_array).to eq([{ 7=>"Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]" }])
     end
-    
     it "has incorrect version directory name" do
       druid = 'zz000zz0000'
       druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/zz/000/zz/0000/zz000zz0000'
@@ -76,7 +75,6 @@ RSpec.describe Moab::StorageObjectValidator do
       verification_array = storage_obj_validator.validation_errors
       expect(verification_array).to eq [3=>"Version directory name not in 'v00xx' format"]
     end
-    
     it "returns true when moab is in correct format" do
       druid = 'bj102hs9687'
       druid_path = 'spec/fixtures/storage_root01/moab_storage_trunk/bj/102/hs/9687/bj102hs9687'

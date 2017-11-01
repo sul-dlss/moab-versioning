@@ -1,6 +1,5 @@
 require 'moab'
 
-# Shameless gree: repetitious code included.
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
@@ -52,6 +51,10 @@ module Moab
 
     private
 
+    def version_directories
+      @vdirs ||= sub_dirs(storage_obj_path)
+    end
+
     def check_correctly_named_version_dirs
       errors = []
       version_directories.each do |version_dir|
@@ -64,23 +67,18 @@ module Moab
       errors
     end
 
-    def version_directories
-      @vdirs ||= sub_dirs(storage_obj_path)
-    end
-
     # This method will be called only if the version directories are correctly
-    # named. 
+    # named
     def check_sequential_version_dirs
       errors = []
       version_directories.each_with_index do |dir_name, index|
         expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
-        if Integer(dir_name[1..-1]) != expected_vers_num
+        if dir_name[1..-1].to_i != expected_vers_num
           errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
           break
         end
       end
 
-      errors << result_hash(FILES_IN_VERSION_DIR) if files_in_dir(storage_obj_path).any?
       errors
     end
 
@@ -122,24 +120,16 @@ module Moab
     def directory_entries(path)
       @directory_entries_hash[path] ||=
         begin
-          ret_val = { files: [], dirs: [] }
+          dirs = []
           (Dir.entries(path).sort - IMPLICIT_DIRS).each do |child|
-            if FileTest.file? child
-              ret_val[:files] << child
-            else
-              ret_val[:dirs] << child
-            end
+            dirs << child
           end
-          ret_val
+          dirs
         end
     end
 
     def sub_dirs(path)
-      directory_entries(path)[:dirs]
-    end
-
-    def files_in_dir(path)
-      directory_entries(path)[:files]
+      directory_entries(path)
     end
 
     def found_unexpected(array, version, required_sub_dirs)
