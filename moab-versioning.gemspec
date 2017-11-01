@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.description = 'Contains classes to process digital object version content and metadata'
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
-  s.required_rubygems_version = '>= 1.3.6'
   s.required_ruby_version = '~> 2.1'
 
   # Runtime dependencies
