@@ -5,9 +5,12 @@ module Moab
   # Shameless green: repetitious code included.
   class StorageObjectValidator
 
-    EXPECTED_VERSION_SUB_DIRS = ["data", "manifests"].freeze
     EXPECTED_DATA_SUB_DIRS = ["content", "metadata"].freeze
     IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns these
+    DATA_DIR_NAME = "data".freeze
+    EXPECTED_VERSION_SUB_DIRS = [DATA_DIR_NAME, "manifests"].freeze
+    MANIFEST_INVENTORY_PATH = 'manifests/manifestInventory.xml'.freeze
+    SIGNATURE_CATALOG_PATH = 'manifests/signatureCatalog.xml'.freeze
 
     # error codes
     INCORRECT_DIR = 0
@@ -58,17 +61,12 @@ module Moab
     def check_correctly_named_version_dirs
       errors = []
       version_directories.each do |version_dir|
-        if version_dir =~ /^[v]\d{4}/
-          nil
-        else
-          errors << result_hash(VERSION_DIR_BAD_FORMAT)
-        end
+        errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
       end
       errors
     end
 
-    # This method will be called only if the version directories are correctly
-    # named
+    # This method will be called only if the version directories are correctly named
     def check_sequential_version_dirs
       errors = []
       version_directories.each_with_index do |dir_name, index|
@@ -90,9 +88,9 @@ module Moab
         before_result_size = errors.size
         errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
         after_result_size = errors.size
-
+        # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
         if before_result_size == after_result_size
-          data_dir_path = "#{version_path}/#{EXPECTED_VERSION_SUB_DIRS[0]}"
+          data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
           data_sub_dirs = sub_dirs(data_dir_path)
           errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
           errors.concat check_required_manifest_files(version_path, version_dir)
@@ -164,13 +162,13 @@ module Moab
 
     def check_required_manifest_files(dir, version)
       errors = []
-      manifest_inventory = File.exist?("#{dir}/manifests/manifestInventory.xml")
-      signature_catalog = File.exist?("#{dir}/manifests/signatureCatalog.xml")
-      result = if manifest_inventory && signature_catalog
+      has_manifest_inventory = File.exist?("#{dir}/#{MANIFEST_INVENTORY_PATH}")
+      has_signature_catalog = File.exist?("#{dir}/#{SIGNATURE_CATALOG_PATH}")
+      result = if has_manifest_inventory && has_signature_catalog
                  nil
-               elsif manifest_inventory && !signature_catalog
+               elsif has_manifest_inventory && !has_signature_catalog
                  result_hash(NO_SIGNATURE_CATALOG, version)
-               elsif !manifest_inventory && signature_catalog
+               elsif !has_manifest_inventory && has_signature_catalog
                  result_hash(NO_MANIFEST_INVENTORY, version)
                else
                  result_hash(NO_XML_FILES, version)
