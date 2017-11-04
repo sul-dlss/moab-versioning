@@ -54,6 +54,19 @@ moab = Moab::StorageObject.new(druid, object_dir) # cheaper/faster to go directl
 size = moab.size
 ```
 
+#### Validate if Moab Object is Well-Formed
+
+```ruby
+moab = Moab::StorageObject.new(druid, object_dir)
+object_validator = Moab::StorageObjectValidator.new(moab)
+validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
+if validation_errors.empty?
+  p "Yay! #{druid} passed validation"
+else
+  p validation_errors
+end
+```
+
 ### Stanford-Specific
 
 #### Configuration
