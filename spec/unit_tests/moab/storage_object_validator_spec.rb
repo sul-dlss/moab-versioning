@@ -59,13 +59,44 @@ RSpec.describe Moab::StorageObjectValidator do
         expect(verification_array[7]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0006 Missing all required metadata files")
       end
     end
+    context 'under manifest directory' do
+      druid = 'cc000cc0000'
+      druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/cc/000/cc/0000/cc000cc0000'
+      storage_obj = Moab::StorageObject.new(druid, druid_path)
+      storage_obj_validator = described_class.new(storage_obj)
+      verification_array = storage_obj_validator.validation_errors
+      it 'does not have signatureCatalog.xml' do
+        expect(verification_array).to include(Moab::StorageObjectValidator::NO_SIGNATURE_CATALOG => "Version: v0001 Missing signatureCatalog.xml")
+      end
+
+      it 'does not have manifestInventory.xml' do
+        expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version: v0002 Missing manifestInventory.xml")
+      end
+
+    end
     it "has non contiguous version directories" do
       druid = 'yy000yy0000'
       druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000'
       storage_obj = Moab::StorageObject.new(druid, druid_path)
       storage_obj_validator = described_class.new(storage_obj)
       verification_array = storage_obj_validator.validation_errors
-      expect(verification_array).to eq([{ Moab::StorageObjectValidator::VERSIONS_NOT_IN_ORDER =>"Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]" }])
+      expect(verification_array).to include(Moab::StorageObjectValidator::VERSIONS_NOT_IN_ORDER =>"Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]")
+    end
+    it "has extra characters in version directory name" do
+      druid = 'aa000aa0000'
+      druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/aa/000/aa/0000/aa000aa0000'
+      storage_obj = Moab::StorageObject.new(druid, druid_path)
+      storage_obj_validator = described_class.new(storage_obj)
+      verification_array = storage_obj_validator.validation_errors
+      expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format")
+    end
+    it "incorrect items in path" do
+      druid = 'bb000bb0000'
+      druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/bb/000/bb/0000/bb000bb0000'
+      storage_obj = Moab::StorageObject.new(druid, druid_path)
+      storage_obj_validator = described_class.new(storage_obj)
+      verification_array = storage_obj_validator.validation_errors
+      expect(verification_array).to include(Moab::StorageObjectValidator::INCORRECT_DIR => "Incorrect items in path")
     end
     it "has incorrect version directory name" do
       druid = 'zz000zz0000'
@@ -73,7 +104,7 @@ RSpec.describe Moab::StorageObjectValidator do
       storage_obj = Moab::StorageObject.new(druid, druid_path)
       storage_obj_validator = described_class.new(storage_obj)
       verification_array = storage_obj_validator.validation_errors
-      expect(verification_array).to eq [Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT =>"Version directory name not in 'v00xx' format"]
+      expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT =>"Version directory name not in 'v00xx' format")
     end
     it "returns true when moab is in correct format" do
       druid = 'bj103hs9687'
