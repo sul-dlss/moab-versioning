@@ -23,18 +23,6 @@ module Moab
     VERSIONS_NOT_IN_ORDER = 7
     FILES_IN_VERSION_DIR = 8
 
-    ERROR_CODE_TO_MESSAGES = {
-      INCORRECT_DIR=> "Incorrect items in path",
-      MISSING_DIR => "Missing directory: %{addl}",
-      EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
-      VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format",
-      FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
-      NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
-      NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
-      NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
-      VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
-    }.freeze
-
     attr_reader :storage_obj_path
 
     def initialize(storage_object)
@@ -48,6 +36,21 @@ module Moab
       errors.concat check_sequential_version_dirs if errors.empty?
       errors.concat check_correctly_formed_moabs if errors.empty?
       errors
+    end
+
+    def self.error_code_to_messages
+      @error_code_to_messages ||=
+        {
+          INCORRECT_DIR => "Incorrect items in path",
+          MISSING_DIR => "Missing directory: %{addl}",
+          EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
+          VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format",
+          FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
+          NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
+          NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
+          NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
+          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
+        }.freeze
     end
 
     # TODO: Figure out which methods should be public
@@ -157,7 +160,7 @@ module Moab
     end
 
     def error_code_msg(response_code, addl=nil)
-      format(ERROR_CODE_TO_MESSAGES[response_code], addl: addl)
+      format(self.class.error_code_to_messages[response_code], addl: addl)
     end
 
     def check_required_manifest_files(dir, version)
@@ -175,6 +178,14 @@ module Moab
                end
       errors << result if result
       errors
+    end
+
+    def latest_manifest_inventory
+      "#{storage_obj_path}/#{version_directories.last}/#{MANIFEST_INVENTORY_PATH}"
+    end
+
+    def object_id_from_manifest_inventory
+      Nokogiri::XML(File.open(latest_manifest_inventory)).at_xpath('//fileInventory/@objectId').value
     end
   end
 end
