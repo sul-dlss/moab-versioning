@@ -57,11 +57,11 @@ size = moab.size
 #### Validate if Moab Object is Well-Formed
 
 ```ruby
-moab = Moab::StorageObject.new(druid, object_dir)
+moab = Moab::StorageObject.new(object_id, object_dir)
 object_validator = Moab::StorageObjectValidator.new(moab)
 validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
 if validation_errors.empty?
-  p "Yay! #{druid} passed validation"
+  p "Yay! #{object_id} passed validation"
 else
   p validation_errors
 end
@@ -133,6 +133,21 @@ sci.inventory_from_cm(doc, 'druid:th154ru1456', 'all', '10') # all of v0010
  @inventory_datetime=2017-09-07 10:00:58 -0700,
  @type="version",
  @version_id="10">
+```
+
+#### Validate if Moab Object is Well-Formed
+
+`Stanford::StorageObjectValidator` includes functionality to validate druids.
+
+```ruby
+moab = Stanford::StorageObject.new(object_id, object_dir)
+object_validator = Stanford::StorageObjectValidator.new(moab)
+validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
+if validation_errors.empty?
+  p "Yay! #{object_id} passed validation"
+else
+  p validation_errors
+end
 ```
 
 ## API Documentation
