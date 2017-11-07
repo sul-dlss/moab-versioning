@@ -11,8 +11,7 @@ module Stanford
     def validation_errors
       errors = []
       errors.concat super
-      errors << identify_druid
-      errors.flatten
+      errors.concat identify_druid
     end
 
     def identify_druid
