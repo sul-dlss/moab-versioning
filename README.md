@@ -37,7 +37,7 @@ expect(current_version).to be_an_instance_of Integer
 ##### ... if you know where the moab is stored (which storage_root)
 
 ```ruby
-moab = Moab::StorageObject.new(druid, object_dir) # cheaper/faster to go directly to the correct directory
+moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
 current_version = moab.current_version_id
 ```
 
@@ -50,7 +50,7 @@ expect(object_size_in_bytes).to be_an_instance_of Integer
 ##### ... if you know where the moab is stored (which storage_root)
 
 ```ruby
-moab = Moab::StorageObject.new(druid, object_dir) # cheaper/faster to go directly to the correct directory
+moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
 size = moab.size
 ```
 
