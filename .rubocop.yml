@@ -28,6 +28,7 @@ Metrics/LineLength:
     - 'spec/unit_tests/moab/bagger_spec.rb' # remove after PR #52 merged
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
+    - 'spec/unit_tests/stanford/storage_object_validator_spec.rb'
 
 # Code was readable with allowing higher perceived complexity
 Metrics/PerceivedComplexity:

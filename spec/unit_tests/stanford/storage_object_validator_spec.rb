@@ -10,7 +10,13 @@ RSpec.describe Stanford::StorageObjectValidator do
     it 'returns errors from calling the superclass validation_errors' do
       expect(verification_array.count).to eq(2)
     end
-
+    it 'returns validation error codes when there is file path for druid to directory validation' do
+      invalid_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000'
+      storage_obj = Moab::StorageObject.new('dd000dd0000', invalid_druid_path)
+      storage_obj_validator = described_class.new(storage_obj)
+      verification_array = storage_obj_validator.validation_errors
+      expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format")
+    end
   end
 
   describe '#identify_druid' do
