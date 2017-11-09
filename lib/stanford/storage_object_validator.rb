@@ -11,7 +11,8 @@ module Stanford
     def validation_errors
       errors = []
       errors.concat super
-      errors.concat identify_druid
+      errors.concat(identify_druid) if errors.empty?
+      errors
     end
 
     def identify_druid
