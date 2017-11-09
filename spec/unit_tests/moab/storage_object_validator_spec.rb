@@ -58,6 +58,10 @@ RSpec.describe Moab::StorageObjectValidator do
         # v0006
         expect(verification_array[7]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0006 Missing all required metadata files")
       end
+      it 'does not only contain files under metadata directory' do
+        # v0008
+        expect(verification_array[9]).to eq(Moab::StorageObjectValidator::DIRS_DETECTED =>"Should only contain files, but directories were present")
+      end
     end
     context 'under manifest directory' do
       druid = 'cc000cc0000'
@@ -97,6 +101,7 @@ RSpec.describe Moab::StorageObjectValidator do
       storage_obj_validator = described_class.new(storage_obj)
       verification_array = storage_obj_validator.validation_errors
       expect(verification_array).to include(Moab::StorageObjectValidator::INCORRECT_DIR => "Incorrect items in path")
+
     end
     it "has incorrect version directory name" do
       druid = 'zz000zz0000'
