@@ -441,6 +441,10 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Max: 14
 
+RSpec/NestedGroups:
+  Exclude:
+    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # Tests are more readable, all the tests should be under 1 context block
+
 # Offense count: 2
 RSpec/RepeatedDescription:
   Exclude:

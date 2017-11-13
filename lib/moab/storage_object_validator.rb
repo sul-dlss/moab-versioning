@@ -22,8 +22,8 @@ module Moab
     NO_MANIFEST_INVENTORY = 5
     NO_XML_FILES = 6
     VERSIONS_NOT_IN_ORDER = 7
-    FILES_IN_VERSION_DIR = 8
-    DIRS_DETECTED = 9
+    DIRS_DETECTED = 8
+    FILES_IN_VERSION_DIR = 9
 
     attr_reader :storage_obj_path
 
@@ -51,9 +51,8 @@ module Moab
           NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
           NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
           NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
-          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
-          DIRS_DETECTED => "Should only contain files, but directories were present"
-
+          DIRS_DETECTED => "Should only contain files, but directories were present",
+          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
         }.freeze
     end
 
@@ -97,20 +96,31 @@ module Moab
         after_result_size = errors.size
         # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
         if before_result_size == after_result_size
-          data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
-          data_sub_dirs = sub_dirs(data_dir_path)
-          errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
-          errors.concat check_required_manifest_files(version_path, version_dir)
-        end
-        if before_result_size == errors.size
-          x = []
-          metadata_dir_path = "#{version_path}/#{DATA_DIR_NAME}/#{METADATA_DIR_NAME}"
-          metadata_sub_dir = sub_dirs(metadata_dir_path)
-          metadata_sub_dir.each { |item| x << File.directory?("#{metadata_dir_path}/#{item}") }
-          errors << result_hash(DIRS_DETECTED) if x.include?(true)
+          errors.concat check_expected_data_sub_dirs(version_path, version_dir)
+          if after_result_size == errors.size
+            errors.concat check_metadata_dir_file_only(version_path)
+          end
         end
       end
+      errors
+    end
 
+    def check_expected_data_sub_dirs(version_path, version_dir)
+      errors = []
+      data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
+      data_sub_dirs = sub_dirs(data_dir_path)
+      errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+      errors.concat check_required_manifest_files(version_path, version_dir)
+      errors
+    end
+
+    def check_metadata_dir_file_only(version_path)
+      errors = []
+      dir_list = []
+      metadata_dir_path = "#{version_path}/#{DATA_DIR_NAME}/#{METADATA_DIR_NAME}"
+      metadata_sub_dir = sub_dirs(metadata_dir_path)
+      metadata_sub_dir.each { |item| dir_list << File.directory?("#{metadata_dir_path}/#{item}") }
+      errors << result_hash(DIRS_DETECTED) if dir_list.include?(true)
       errors
     end
 
