@@ -64,7 +64,7 @@ module Moab
     def check_correctly_named_version_dirs
       errors = []
       version_directories.each do |version_dir|
-        errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
+        errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir.match?(/^[v]\d{4}$/)
       end
       errors
     end
