@@ -60,7 +60,7 @@ module Moab
   # @param [String] file_id The name of the file (path relative to base directory)
   # @return [FileSignature] signature of the specified file
     def find_signature(file_category, file_id)
-      if file_category =~ /manifest/
+      if file_category.match?(/manifest/)
         file_inventory('manifests').file_signature('manifests',file_id)
       else
         file_inventory('version').file_signature(file_category, file_id)
@@ -100,7 +100,7 @@ module Moab
   # @param [String] file_category The category of file ('content', 'metadata', or 's')
   # @return [Pathname] Pathname object containing this version's storage home for the specified file category
     def file_category_pathname(file_category)
-      if file_category =~ /manifest/
+      if file_category.match?(/manifest/)
         @version_pathname.join('manifests')
       else
         @version_pathname.join('data',file_category)

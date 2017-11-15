@@ -89,7 +89,7 @@ module Moab
     # @return [FileInventory] the file inventory for the specified object version
     def self.retrieve_file_group(file_category, object_id, version_id=nil)
       storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      if file_category =~ /manifest/
+      if file_category.match?(/manifest/)
         inventory_type = file_category = 'manifests'
       else
         inventory_type = 'version'
