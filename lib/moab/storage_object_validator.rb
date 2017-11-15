@@ -6,7 +6,7 @@ module Moab
   class StorageObjectValidator
 
     EXPECTED_DATA_SUB_DIRS = ["content", "metadata"].freeze
-    IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns these
+    IMPLICIT_DIRS = ['.', '..','.keep'].freeze # unlike Find.find, Dir.entries returns these
     DATA_DIR_NAME = "data".freeze
     EXPECTED_VERSION_SUB_DIRS = [DATA_DIR_NAME, "manifests"].freeze
     MANIFEST_INVENTORY_PATH = 'manifests/manifestInventory.xml'.freeze
@@ -20,10 +20,11 @@ module Moab
     VERSION_DIR_BAD_FORMAT = 3
     NO_SIGNATURE_CATALOG = 4
     NO_MANIFEST_INVENTORY = 5
-    NO_XML_FILES_IN_MANIFEST_DIR = 6
+    NO_FILES_IN_MANIFEST_DIR= 6
     VERSIONS_NOT_IN_ORDER = 7
     METADATA_SUB_DIRS_DETECTED = 8
     FILES_IN_VERSION_DIR = 9
+    NO_FILES_IN_METADATA_DIR = 10
 
     attr_reader :storage_obj_path
 
@@ -50,9 +51,10 @@ module Moab
           FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
           NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
           NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
-          NO_XML_FILES_IN_MANIFEST_DIR => "Version: %{addl} Missing all required manifest sub dir files",
+          NO_FILES_IN_MANIFEST_DIR => "Version: %{addl} No files present in manifest dir",
           METADATA_SUB_DIRS_DETECTED => "Should only contain files, but directories were present in the metadata directory",
-          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
+          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
+          NO_FILES_IN_METADATA_DIR => "Version: %{addl} No files present in metadata dir"
         }.freeze
     end
 
@@ -66,8 +68,13 @@ module Moab
 
     def check_correctly_named_version_dirs
       errors = []
-      version_directories.each do |version_dir|
-        errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
+      if version_directories.empty?
+        errors << result_hash(VERSION_DIR_BAD_FORMAT)
+      else
+        version_directories.each do |version_dir|
+          errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
+        end
+        errors
       end
       errors
     end
@@ -91,17 +98,12 @@ module Moab
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
-        before_result_size = errors.size
+        version_error_count = errors.size
         errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
-        after_result_size = errors.size
         # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
-        errors.concat check_required_manifest_files(version_path, version_dir) if before_result_size == errors.size
-        if before_result_size == after_result_size
-          errors.concat check_expected_data_sub_dirs(version_path, version_dir)
-          if after_result_size == errors.size
-            errors.concat check_metadata_dir_files_only(version_path)
-          end
-        end
+        errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
+        errors.concat check_expected_data_sub_dirs(version_path, version_dir) if version_error_count == errors.size
+        errors.concat check_metadata_dir_files_only(version_path) if version_error_count == errors.size
       end
       errors
     end
@@ -120,6 +122,7 @@ module Moab
       metadata_dir_path = "#{version_path}/#{DATA_DIR_NAME}/#{METADATA_DIR_NAME}"
       metadata_sub_dir = sub_dirs(metadata_dir_path)
       metadata_sub_dir.each { |item| dir_list << File.directory?("#{metadata_dir_path}/#{item}") }
+      errors << result_hash(NO_FILES_IN_METADATA_DIR) if directory_entries(metadata_dir_path).empty?
       errors << result_hash(METADATA_SUB_DIRS_DETECTED) if dir_list.include?(true)
       errors
     end
@@ -195,7 +198,7 @@ module Moab
                elsif !has_manifest_inventory && has_signature_catalog
                  result_hash(NO_MANIFEST_INVENTORY, version)
                else
-                 result_hash(NO_XML_FILES_IN_MANIFEST_DIR, version)
+                 result_hash(NO_FILES_IN_MANIFEST_DIR, version)
                end
       errors << result if result
       errors

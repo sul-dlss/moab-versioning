@@ -54,6 +54,9 @@ RSpec.describe Moab::StorageObjectValidator do
           # v0007
           expect(verification_array[6]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the metadata directory")
         end
+        it 'Metadata does not have any files present' do
+          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version:  No files present in metadata dir")
+        end
       end
       context 'under manifest directory' do
         druid = 'cc000cc0000'
@@ -70,7 +73,7 @@ RSpec.describe Moab::StorageObjectValidator do
         end
 
         it 'does not have either signatureCatalog.xml or manifestInventory.xml' do
-          expect(verification_array).to include(Moab::StorageObjectValidator::NO_XML_FILES_IN_MANIFEST_DIR => "Version: v0003 Missing all required manifest sub dir files")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version: v0003 No files present in manifest dir")
         end
       end
       it "has non contiguous version directories" do
