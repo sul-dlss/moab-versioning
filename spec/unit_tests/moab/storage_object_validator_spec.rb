@@ -44,25 +44,15 @@ RSpec.describe Moab::StorageObjectValidator do
       context 'under data directory' do
         it 'has unexpected file' do
           # v0005
-          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
+          expect(verification_array[4]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
         end
-        it 'has missing metadata files' do
-          # v0005
-          expect(verification_array[4]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0005 Missing all required metadata files")
+        it 'has missing metadata and content directory' do
+          # v0006
+          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
+        end
+        it 'Metadata sub dir has directory present, should only contain files' do
           # v0007
-          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0007 Missing all required metadata files")
-        end
-        it 'has missing content directory' do
-          # v0006
-          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
-        end
-        it 'has no required items' do
-          # v0006
-          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0006 Missing all required metadata files")
-        end
-        it 'does not only contain files under metadata directory' do
-          # v0008
-          expect(verification_array[9]).to eq(Moab::StorageObjectValidator::DIRS_DETECTED =>"Should only contain files, but directories were present")
+          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the metadata directory")
         end
       end
       context 'under manifest directory' do
@@ -77,6 +67,10 @@ RSpec.describe Moab::StorageObjectValidator do
 
         it 'does not have manifestInventory.xml' do
           expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version: v0002 Missing manifestInventory.xml")
+        end
+
+        it 'does not have either signatureCatalog.xml or manifestInventory.xml' do
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_XML_FILES_IN_MANIFEST_DIR => "Version: v0003 Missing all required manifest sub dir files")
         end
       end
       it "has non contiguous version directories" do
@@ -119,12 +113,12 @@ RSpec.describe Moab::StorageObjectValidator do
         expect(storage_obj_validator).not_to receive(:check_expected_data_sub_dirs)
         storage_obj_validator.validation_errors
       end
-      it 'does not call #check_metadata_dir_file_only because moab does not have the expected data sub dirs' do
+      it 'does not call #check_metadata_dir_files_only because moab does not have the expected data sub dirs' do
         druid = 'ff000ff0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/ff/000/ff/0000/ff000ff0000'
         storage_obj = Moab::StorageObject.new(druid, druid_path)
         storage_obj_validator = described_class.new(storage_obj)
-        expect(storage_obj_validator).not_to receive(:check_metadata_dir_file_only)
+        expect(storage_obj_validator).not_to receive(:check_metadata_dir_files_only)
         storage_obj_validator.validation_errors
       end
     end
@@ -138,12 +132,24 @@ RSpec.describe Moab::StorageObjectValidator do
       it "returns true when moab is in correct format" do
         expect(verification_array.empty?).to eq true
       end
+      it "calls #check_correctly_named_version_dirs to verify correctly named version dirs" do
+        expect(storage_obj_validator).to receive(:check_correctly_named_version_dirs).and_return([])
+        storage_obj_validator.validation_errors
+      end
+      it "calls #check_sequential_version_dirs to verify contiguous version dirs" do
+        expect(storage_obj_validator).to receive(:check_sequential_version_dirs).and_return([])
+        storage_obj_validator.validation_errors
+      end
+      it 'calls #check_required_manifest_files if moab has the expected version sub dirs' do
+        expect(storage_obj_validator).to receive(:check_required_manifest_files).and_return([])
+        storage_obj_validator.validation_errors
+      end
       it 'calls #check_expected_data_sub_dirs if moab has the expected version sub dirs' do
         expect(storage_obj_validator).to receive(:check_expected_data_sub_dirs).and_return([])
         storage_obj_validator.validation_errors
       end
-      it 'calls #check_metadata_dir_file_only if moab has the expected data sub dirs' do
-        expect(storage_obj_validator).to receive(:check_metadata_dir_file_only).and_return([])
+      it 'calls #check_metadata_dir_files_only if moab has the expected data sub dirs' do
+        expect(storage_obj_validator).to receive(:check_metadata_dir_files_only).and_return([])
         storage_obj_validator.validation_errors
       end
     end
