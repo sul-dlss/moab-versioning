@@ -1,12 +1,14 @@
 require 'moab'
+require 'set'
 
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
   class StorageObjectValidator
 
-    EXPECTED_DATA_SUB_DIRS = ["content", "metadata"].freeze
-    IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns these
+    METADATA_DIR = 'metadata'.freeze
+    EXPECTED_DATA_SUB_DIRS = ["content", METADATA_DIR].freeze
+    IMPLICIT_DIRS = ['.', '..', '.keep'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
     DATA_DIR_NAME = "data".freeze
     EXPECTED_VERSION_SUB_DIRS = [DATA_DIR_NAME, "manifests"].freeze
     MANIFEST_INVENTORY_PATH = 'manifests/manifestInventory.xml'.freeze
@@ -63,6 +65,7 @@ module Moab
 
     def check_correctly_named_version_dirs
       errors = []
+      errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.count > 0
       version_directories.each do |version_dir|
         errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
       end
@@ -89,18 +92,47 @@ module Moab
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
         before_result_size = errors.size
-        errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
+        errors.concat check_version_sub_dirs(version_sub_dirs, version_dir)
         after_result_size = errors.size
         # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
         if before_result_size == after_result_size
           data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
           data_sub_dirs = sub_dirs(data_dir_path)
-          errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
+          errors.concat check_data_sub_dirs(data_sub_dirs, version_dir)
           errors.concat check_required_manifest_files(version_path, version_dir)
         end
       end
 
       errors
+    end
+
+    def check_version_sub_dirs(version_sub_dirs, version)
+      errors = []
+      version_sub_dir_count = version_sub_dirs.size
+      if version_sub_dir_count == EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat expected_dirs(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+      elsif version_sub_dir_count > EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+      elsif version_sub_dir_count < EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat missing_dir(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+      end
+      errors
+    end
+
+    def check_data_sub_dirs(data_sub_dirs, version)
+      errors = []
+      if data_sub_dirs.size > EXPECTED_DATA_SUB_DIRS.size
+        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS)
+      else
+        errors.concat missing_dir(data_sub_dirs, version, [METADATA_DIR]) unless data_sub_dirs.include?(METADATA_DIR)
+        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) unless subset?(data_sub_dirs,
+                                                                                                      EXPECTED_DATA_SUB_DIRS)
+      end
+      errors
+    end
+
+    def subset?(first_array, second_array)
+      first_array.to_set.subset?(second_array.to_set)
     end
 
     def check_sub_dirs(sub_dirs, version, required_sub_dirs)

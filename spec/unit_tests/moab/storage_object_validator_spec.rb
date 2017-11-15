@@ -50,9 +50,9 @@ RSpec.describe Moab::StorageObjectValidator do
         # v0005
         expect(verification_array[5]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0005 Missing all required metadata files")
       end
-      it 'has missing content directory' do
+      it 'has missing metadata directory' do
         # v0006
-        expect(verification_array[6]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
+        expect(verification_array[6]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
       end
       it 'has no required items' do
         # v0006
