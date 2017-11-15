@@ -95,6 +95,7 @@ module Moab
         errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
         after_result_size = errors.size
         # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
+        errors.concat check_required_manifest_files(version_path, version_dir) if before_result_size == after_result_size
         if before_result_size == after_result_size
           errors.concat check_expected_data_sub_dirs(version_path, version_dir)
           if after_result_size == errors.size
@@ -110,7 +111,6 @@ module Moab
       data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
       data_sub_dirs = sub_dirs(data_dir_path)
       errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
-      errors.concat check_required_manifest_files(version_path, version_dir)
       errors
     end
 

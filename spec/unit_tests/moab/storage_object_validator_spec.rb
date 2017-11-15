@@ -44,20 +44,21 @@ RSpec.describe Moab::StorageObjectValidator do
       context 'under data directory' do
         it 'has unexpected file' do
           # v0005
-          expect(verification_array[4]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
-          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0007 Missing all required metadata files")
+          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
         end
-        it 'has missing manifest files' do
+        it 'has missing metadata files' do
           # v0005
-          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0005 Missing all required metadata files")
+          expect(verification_array[4]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0005 Missing all required metadata files")
+          # v0007
+          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0007 Missing all required metadata files")
         end
         it 'has missing content directory' do
           # v0006
-          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
+          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
         end
         it 'has no required items' do
           # v0006
-          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0006 Missing all required metadata files")
+          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::NO_XML_FILES =>"Version: v0006 Missing all required metadata files")
         end
         it 'does not only contain files under metadata directory' do
           # v0008
