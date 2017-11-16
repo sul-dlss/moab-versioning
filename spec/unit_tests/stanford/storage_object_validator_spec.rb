@@ -5,17 +5,21 @@ RSpec.describe Stanford::StorageObjectValidator do
     let(:druid_path1) { 'spec/fixtures/storage_root01/moab_storage_trunk/bj/102/hs/9687/bj102hs9687' }
     let(:storage_obj1) { Moab::StorageObject.new(druid1, druid_path1) }
     let(:storage_obj_validator1) { described_class.new(storage_obj1) }
-    let(:verification_array) { storage_obj_validator1.validation_errors }
 
     it 'returns errors from calling the superclass validation_errors' do
-      expect(verification_array.count).to eq(2)
+      erroneous_druid = 'xx000xx0000'
+      erroneous_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
+      erroneous_object = Moab::StorageObject.new(erroneous_druid, erroneous_druid_path)
+      erroneous_object_validator = described_class.new(erroneous_object)
+      error_list = erroneous_object_validator.validation_errors
+      expect(error_list.count).to eq(10)
     end
     it 'returns validation error codes when there is file path for druid to directory validation' do
       invalid_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000'
       storage_obj = Moab::StorageObject.new('dd000dd0000', invalid_druid_path)
       storage_obj_validator = described_class.new(storage_obj)
       verification_array = storage_obj_validator.validation_errors
-      expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format")
+      expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
     end
   end
 

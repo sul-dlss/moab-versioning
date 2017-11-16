@@ -46,16 +46,25 @@ RSpec.describe Moab::StorageObjectValidator do
           # v0005
           expect(verification_array[4]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
         end
-        it 'has missing metadata and content directory' do
+        it 'has missing metadata directory' do
           # v0006
-          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"content\", \"metadata\"] Version: v0006")
+          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
+        end
+        it 'Content sub dir has directory present, should only contain files.' do
+          # v0007
+          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the content directory")
         end
         it 'Metadata sub dir has directory present, should only contain files' do
-          # v0007
-          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the metadata directory")
+          # v0008
+          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the metadata directory")
+        end
+        it 'Content does not have any files present' do
+          # v0009
+          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version:  No files present in content dir")
         end
         it 'Metadata does not have any files present' do
-          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version:  No files present in metadata dir")
+          # v0010
+          expect(verification_array[9]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version:  No files present in metadata dir")
         end
       end
       context 'under manifest directory' do
@@ -147,8 +156,8 @@ RSpec.describe Moab::StorageObjectValidator do
         expect(storage_obj_validator).to receive(:check_required_manifest_files).and_return([])
         storage_obj_validator.validation_errors
       end
-      it 'calls #check_expected_data_sub_dirs if moab has the expected version sub dirs' do
-        expect(storage_obj_validator).to receive(:check_expected_data_sub_dirs).and_return([])
+      it 'calls #check_data_sub_dirs if moab has the expected version sub dirs' do
+        expect(storage_obj_validator).to receive(:check_data_sub_dirs).and_return([])
         storage_obj_validator.validation_errors
       end
       it 'calls #check_metadata_dir_files_only if moab has the expected data sub dirs' do
