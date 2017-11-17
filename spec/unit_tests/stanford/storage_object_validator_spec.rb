@@ -1,11 +1,6 @@
 require 'spec_helper'
 RSpec.describe Stanford::StorageObjectValidator do
   describe '#validation_errors' do
-    let(:druid1) { 'bj102hs9687'}
-    let(:druid_path1) { 'spec/fixtures/storage_root01/moab_storage_trunk/bj/102/hs/9687/bj102hs9687' }
-    let(:storage_obj1) { Moab::StorageObject.new(druid1, druid_path1) }
-    let(:storage_obj_validator1) { described_class.new(storage_obj1) }
-
     it 'returns errors from calling the superclass validation_errors' do
       erroneous_druid = 'xx000xx0000'
       erroneous_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
