@@ -1,14 +1,17 @@
 require 'moab'
+require 'set'
 
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
   class StorageObjectValidator
 
-    EXPECTED_DATA_SUB_DIRS = ["content", "metadata"].freeze
-    IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns these
-    DATA_DIR_NAME = "data".freeze
-    EXPECTED_VERSION_SUB_DIRS = [DATA_DIR_NAME, "manifests"].freeze
+    METADATA_DIR = "metadata".freeze
+    CONTENT_DIR = "content".freeze
+    EXPECTED_DATA_SUB_DIRS = [CONTENT_DIR, METADATA_DIR].freeze
+    IMPLICIT_DIRS = ['.', '..', '.keep'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
+    DATA_DIR = "data".freeze
+    EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, "manifests"].freeze
     MANIFEST_INVENTORY_PATH = 'manifests/manifestInventory.xml'.freeze
     SIGNATURE_CATALOG_PATH = 'manifests/signatureCatalog.xml'.freeze
 
@@ -19,9 +22,13 @@ module Moab
     VERSION_DIR_BAD_FORMAT = 3
     NO_SIGNATURE_CATALOG = 4
     NO_MANIFEST_INVENTORY = 5
-    NO_XML_FILES = 6
+    NO_FILES_IN_MANIFEST_DIR= 6
     VERSIONS_NOT_IN_ORDER = 7
-    FILES_IN_VERSION_DIR = 8
+    METADATA_SUB_DIRS_DETECTED = 8
+    FILES_IN_VERSION_DIR = 9
+    NO_FILES_IN_METADATA_DIR = 10
+    NO_FILES_IN_CONTENT_DIR = 11
+    CONTENT_SUB_DIRS_DETECTED = 12
 
     attr_reader :storage_obj_path
 
@@ -48,8 +55,12 @@ module Moab
           FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
           NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
           NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
-          NO_XML_FILES => "Version: %{addl} Missing all required metadata files",
-          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}"
+          NO_FILES_IN_MANIFEST_DIR => "Version: %{addl} No files present in manifest dir",
+          METADATA_SUB_DIRS_DETECTED => "Should only contain files, but directories were present in the metadata directory",
+          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
+          NO_FILES_IN_METADATA_DIR => "Version: %{addl} No files present in metadata dir",
+          NO_FILES_IN_CONTENT_DIR => "Version: %{addl} No files present in content dir",
+          CONTENT_SUB_DIRS_DETECTED => "Should only contain files, but directories were present in the content directory"
         }.freeze
     end
 
@@ -63,6 +74,7 @@ module Moab
 
     def check_correctly_named_version_dirs
       errors = []
+      errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.count > 0
       version_directories.each do |version_dir|
         errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
       end
@@ -88,31 +100,72 @@ module Moab
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
         version_sub_dirs = sub_dirs(version_path)
-        before_result_size = errors.size
-        errors.concat check_sub_dirs(version_sub_dirs, version_dir, EXPECTED_VERSION_SUB_DIRS)
-        after_result_size = errors.size
-        # run the following checks if this version dir passes check_sub_dirs, even if some prior version dirs didn't
-        if before_result_size == after_result_size
-          data_dir_path = "#{version_path}/#{DATA_DIR_NAME}"
-          data_sub_dirs = sub_dirs(data_dir_path)
-          errors.concat check_sub_dirs(data_sub_dirs, version_dir, EXPECTED_DATA_SUB_DIRS)
-          errors.concat check_required_manifest_files(version_path, version_dir)
-        end
+        version_error_count = errors.size
+        errors.concat check_version_sub_dirs(version_sub_dirs, version_dir)
+        errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
+        errors.concat check_data_directory(version_path, version_dir) if version_error_count == errors.size
       end
-
       errors
     end
 
-    def check_sub_dirs(sub_dirs, version, required_sub_dirs)
+    def check_version_sub_dirs(version_sub_dirs, version)
       errors = []
-      sub_dir_count = sub_dirs.size
-      if sub_dir_count == required_sub_dirs.size
-        errors.concat expected_dirs(sub_dirs, version, required_sub_dirs)
-      elsif sub_dir_count > required_sub_dirs.size
-        errors.concat found_unexpected(sub_dirs, version, required_sub_dirs)
-      elsif sub_dir_count < required_sub_dirs.size
-        errors.concat missing_dir(sub_dirs, version, required_sub_dirs)
+      version_sub_dir_count = version_sub_dirs.size
+      if version_sub_dir_count == EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat expected_dirs(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+      elsif version_sub_dir_count > EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+      elsif version_sub_dir_count < EXPECTED_VERSION_SUB_DIRS.size
+        errors.concat missing_dir(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
       end
+      errors
+    end
+
+    def check_data_directory(version_path, version)
+      errors = []
+      data_dir_path = "#{version_path}/#{DATA_DIR}"
+      data_sub_dirs = sub_dirs(data_dir_path)
+      errors.concat check_data_sub_dirs(version, data_sub_dirs)
+      errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
+      errors.concat check_optional_content_dir_files_only(version_path) if data_sub_dirs.include?('content') && errors.empty?
+      errors
+    end
+
+    def check_data_sub_dirs(version, data_sub_dirs)
+      errors = []
+      if data_sub_dirs.size > EXPECTED_DATA_SUB_DIRS.size
+        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS)
+      else
+        errors.concat missing_dir(data_sub_dirs, version, [METADATA_DIR]) unless data_sub_dirs.include?(METADATA_DIR)
+        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) unless subset?(data_sub_dirs,
+                                                                                                      EXPECTED_DATA_SUB_DIRS)
+      end
+      errors
+    end
+
+    def check_optional_content_dir_files_only(version_path)
+      errors = []
+      dir_list = []
+      content_dir_path = "#{version_path}/#{DATA_DIR}/#{CONTENT_DIR}"
+      content_sub_dirs = sub_dirs(content_dir_path)
+      content_sub_dirs.each { |item| dir_list << File.directory?("#{content_dir_path}/#{item}") }
+      errors << result_hash(NO_FILES_IN_CONTENT_DIR) if directory_entries(content_dir_path).empty?
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if dir_list.include?(true)
+      errors
+    end
+
+    def subset?(first_array, second_array)
+      first_array.to_set.subset?(second_array.to_set)
+    end
+
+    def check_metadata_dir_files_only(version_path)
+      errors = []
+      dir_list = []
+      metadata_dir_path = "#{version_path}/#{DATA_DIR}/#{METADATA_DIR}"
+      metadata_sub_dirs = sub_dirs(metadata_dir_path)
+      metadata_sub_dirs.each { |item| dir_list << File.directory?("#{metadata_dir_path}/#{item}") }
+      errors << result_hash(NO_FILES_IN_METADATA_DIR) if directory_entries(metadata_dir_path).empty?
+      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if dir_list.include?(true)
       errors
     end
 
@@ -174,7 +227,7 @@ module Moab
                elsif !has_manifest_inventory && has_signature_catalog
                  result_hash(NO_MANIFEST_INVENTORY, version)
                else
-                 result_hash(NO_XML_FILES, version)
+                 result_hash(NO_FILES_IN_MANIFEST_DIR, version)
                end
       errors << result if result
       errors
