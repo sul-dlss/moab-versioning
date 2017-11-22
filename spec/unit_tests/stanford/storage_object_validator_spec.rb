@@ -7,7 +7,7 @@ RSpec.describe Stanford::StorageObjectValidator do
       erroneous_object = Moab::StorageObject.new(erroneous_druid, erroneous_druid_path)
       erroneous_object_validator = described_class.new(erroneous_object)
       error_list = erroneous_object_validator.validation_errors
-      expect(error_list.count).to eq(10)
+      expect(error_list.count).to eq(14)
     end
     it 'returns validation error codes when there is file path for druid to directory validation' do
       invalid_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000'

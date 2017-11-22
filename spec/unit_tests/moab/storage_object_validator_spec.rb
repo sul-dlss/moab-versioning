@@ -42,11 +42,32 @@ RSpec.describe Moab::StorageObjectValidator do
           expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
         end
         context 'content directory' do
-          it 'must only contain files' do
-            expect(verification_array).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
-          end
+          # TODO: if we permanently allow data/content to have sub-dirs, remove this test
+          # it 'must only contain files' do
+          #   expect(verification_array).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
+          # end
           it 'must contain files' do
             expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version v0009: No files present in content dir")
+          end
+          it 'contains directories with disallowed names' do
+            # vnnnn
+            expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            # manifests
+            expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0012: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            # data
+            expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0013: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            # content
+            expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0014: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            # metadata
+            expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0015: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+          end
+          it 'allows multiple level sub directories' do
+            druid = 'gg000gg0000'
+            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000'
+            storage_obj = Moab::StorageObject.new(druid, druid_path)
+            storage_obj_validator = described_class.new(storage_obj)
+            verification_array = storage_obj_validator.validation_errors
+            expect(verification_array).to be_empty
           end
         end
         context 'metadata directory' do
@@ -171,6 +192,38 @@ RSpec.describe Moab::StorageObjectValidator do
       it 'calls #check_metadata_dir_files_only if moab has the expected data sub dirs' do
         expect(storage_obj_validator).to receive(:check_metadata_dir_files_only).and_return([])
         storage_obj_validator.validation_errors
+      end
+
+      context 'manifests directory' do
+        it 'may have files in addition to required files' do
+          expect(verification_array).not_to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED)
+        end
+        it 'may only have required files' do
+          druid = 'mm000mm0000'
+          druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/mm/000/mm/0000/mm000mm0000'
+          expect(verification_array).to be_empty
+        end
+      end
+
+      context 'data directory' do
+        context 'content directory' do
+          it 'may be missing' do
+            druid = 'xx000xx0000'
+            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
+            expect(verification_array).to be_empty
+          end
+          it 'may be present' do
+            expect(verification_array).not_to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED)
+          end
+          it 'may have sub-directories if not verboten sub-dir name' do
+            druid = 'nn000nn0000'
+            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/nn/000/nn/0000/nn000nn0000'
+            expect(verification_array).to be_empty
+            druid = 'xx000xx000'
+            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
+            expect(verification_array).not_to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
+          end
+        end
       end
     end
   end
