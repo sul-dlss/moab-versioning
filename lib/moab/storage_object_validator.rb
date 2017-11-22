@@ -64,12 +64,10 @@ module Moab
         }.freeze
     end
 
-    # TODO: Figure out which methods should be public
-
     private
 
     def version_directories
-      @vdirs ||= sub_dirs(storage_obj_path)
+      @vdirs ||= directory_entries(storage_obj_path)
     end
 
     def check_correctly_named_version_dirs
@@ -81,7 +79,7 @@ module Moab
       errors
     end
 
-    # This method will be called only if the version directories are correctly named
+    # call only if the version directories are "correctly named" vdddd
     def check_sequential_version_dirs
       errors = []
       version_directories.each_with_index do |dir_name, index|
@@ -91,7 +89,6 @@ module Moab
           break
         end
       end
-
       errors
     end
 
@@ -99,9 +96,8 @@ module Moab
       errors = []
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
-        version_sub_dirs = sub_dirs(version_path)
         version_error_count = errors.size
-        errors.concat check_version_sub_dirs(version_sub_dirs, version_dir)
+        errors.concat check_version_sub_dirs(directory_entries(version_path), version_dir)
         errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
         errors.concat check_data_directory(version_path, version_dir) if version_error_count == errors.size
       end
@@ -124,7 +120,7 @@ module Moab
     def check_data_directory(version_path, version)
       errors = []
       data_dir_path = "#{version_path}/#{DATA_DIR}"
-      data_sub_dirs = sub_dirs(data_dir_path)
+      data_sub_dirs = directory_entries(data_dir_path)
       errors.concat check_data_sub_dirs(version, data_sub_dirs)
       errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
       errors.concat check_optional_content_dir_files_only(version_path) if data_sub_dirs.include?('content') && errors.empty?
@@ -145,12 +141,9 @@ module Moab
 
     def check_optional_content_dir_files_only(version_path)
       errors = []
-      dir_list = []
       content_dir_path = "#{version_path}/#{DATA_DIR}/#{CONTENT_DIR}"
-      content_sub_dirs = sub_dirs(content_dir_path)
-      content_sub_dirs.each { |item| dir_list << File.directory?("#{content_dir_path}/#{item}") }
       errors << result_hash(NO_FILES_IN_CONTENT_DIR) if directory_entries(content_dir_path).empty?
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if dir_list.include?(true)
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if contains_sub_dir?(content_dir_path)
       errors
     end
 
@@ -160,12 +153,9 @@ module Moab
 
     def check_metadata_dir_files_only(version_path)
       errors = []
-      dir_list = []
       metadata_dir_path = "#{version_path}/#{DATA_DIR}/#{METADATA_DIR}"
-      metadata_sub_dirs = sub_dirs(metadata_dir_path)
-      metadata_sub_dirs.each { |item| dir_list << File.directory?("#{metadata_dir_path}/#{item}") }
       errors << result_hash(NO_FILES_IN_METADATA_DIR) if directory_entries(metadata_dir_path).empty?
-      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if dir_list.include?(true)
+      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if contains_sub_dir?(metadata_dir_path)
       errors
     end
 
@@ -182,8 +172,8 @@ module Moab
         end
     end
 
-    def sub_dirs(path)
-      directory_entries(path)
+    def contains_sub_dir?(path)
+      directory_entries(path).detect { |entry| File.directory?("#{path}/#{entry}") }
     end
 
     def found_unexpected(array, version, required_sub_dirs)
