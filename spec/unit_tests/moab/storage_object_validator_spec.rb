@@ -82,7 +82,12 @@ RSpec.describe Moab::StorageObjectValidator do
         end
 
         it 'does not have either signatureCatalog.xml or manifestInventory.xml' do
-          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version: v0003 No files present in manifest dir")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version: v0003 Missing manifestInventory.xml")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_SIGNATURE_CATALOG => "Version: v0003 Missing signatureCatalog.xml")
+        end
+
+        it 'has no files' do
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version: v0004 No files present in manifest dir")
         end
       end
       it "has non contiguous version directories" do

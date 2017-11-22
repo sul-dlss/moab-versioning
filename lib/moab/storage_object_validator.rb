@@ -11,9 +11,10 @@ module Moab
     EXPECTED_DATA_SUB_DIRS = [CONTENT_DIR, METADATA_DIR].freeze
     IMPLICIT_DIRS = ['.', '..', '.keep'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
     DATA_DIR = "data".freeze
-    EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, "manifests"].freeze
-    MANIFEST_INVENTORY_PATH = 'manifests/manifestInventory.xml'.freeze
-    SIGNATURE_CATALOG_PATH = 'manifests/signatureCatalog.xml'.freeze
+    MANIFESTS_DIR = 'manifests'.freeze
+    EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, MANIFESTS_DIR].freeze
+    MANIFEST_INVENTORY_PATH = "#{MANIFESTS_DIR}/manifestInventory.xml".freeze
+    SIGNATURE_CATALOG_PATH = "#{MANIFESTS_DIR}/signatureCatalog.xml".freeze
 
     # error codes
     INCORRECT_DIR = 0
@@ -208,18 +209,17 @@ module Moab
 
     def check_required_manifest_files(dir, version)
       errors = []
-      has_manifest_inventory = File.exist?("#{dir}/#{MANIFEST_INVENTORY_PATH}")
-      has_signature_catalog = File.exist?("#{dir}/#{SIGNATURE_CATALOG_PATH}")
-      result = if has_manifest_inventory && has_signature_catalog
-                 nil
-               elsif has_manifest_inventory && !has_signature_catalog
-                 result_hash(NO_SIGNATURE_CATALOG, version)
-               elsif !has_manifest_inventory && has_signature_catalog
-                 result_hash(NO_MANIFEST_INVENTORY, version)
-               else
-                 result_hash(NO_FILES_IN_MANIFEST_DIR, version)
-               end
-      errors << result if result
+      unless directory_entries("#{dir}/#{MANIFESTS_DIR}").detect { |entry| File.file?("#{dir}/#{MANIFESTS_DIR}/#{entry}") }
+        errors << result_hash(NO_FILES_IN_MANIFEST_DIR, version)
+        return errors
+      end
+
+      unless File.exist?("#{dir}/#{MANIFEST_INVENTORY_PATH}")
+        errors << result_hash(NO_MANIFEST_INVENTORY, version)
+      end
+      unless File.exist?("#{dir}/#{SIGNATURE_CATALOG_PATH}")
+        errors << result_hash(NO_SIGNATURE_CATALOG, version)
+      end
       errors
     end
 
