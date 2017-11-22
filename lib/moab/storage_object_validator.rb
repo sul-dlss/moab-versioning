@@ -17,7 +17,7 @@ module Moab
     SIGNATURE_CATALOG_PATH = File.join(MANIFESTS_DIR, "signatureCatalog.xml").freeze
 
     # error codes
-    INCORRECT_DIR = 0
+    INCORRECT_DIR_CONTENTS = 0
     MISSING_DIR = 1
     EXTRA_CHILD_DETECTED = 2
     VERSION_DIR_BAD_FORMAT = 3
@@ -49,19 +49,19 @@ module Moab
     def self.error_code_to_messages
       @error_code_to_messages ||=
         {
-          INCORRECT_DIR => "Incorrect items in path",
+          INCORRECT_DIR_CONTENTS => "Incorrect items under %{addl} directory",
           MISSING_DIR => "Missing directory: %{addl}",
           EXTRA_CHILD_DETECTED => "Unexpected item in path: %{addl}",
-          VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format",
-          FILES_IN_VERSION_DIR => "Top level should contain only sequential version directories. Also contains files: %{addl}",
-          NO_SIGNATURE_CATALOG => "Version: %{addl} Missing signatureCatalog.xml",
-          NO_MANIFEST_INVENTORY => "Version: %{addl} Missing manifestInventory.xml",
-          NO_FILES_IN_MANIFEST_DIR => "Version: %{addl} No files present in manifest dir",
-          METADATA_SUB_DIRS_DETECTED => "Should only contain files, but directories were present in the metadata directory",
+          VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: %{addl}",
+          FILES_IN_VERSION_DIR => "Version directory %{addl} should not contain files; only the manifests and data directories",
+          NO_SIGNATURE_CATALOG => "Version %{addl}: Missing signatureCatalog.xml",
+          NO_MANIFEST_INVENTORY => "Version %{addl}: Missing manifestInventory.xml",
+          NO_FILES_IN_MANIFEST_DIR => "Version %{addl}: No files present in manifest dir",
+          METADATA_SUB_DIRS_DETECTED => "Version %{addl}: metadata directory should only contain files, not directories",
           VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
-          NO_FILES_IN_METADATA_DIR => "Version: %{addl} No files present in metadata dir",
-          NO_FILES_IN_CONTENT_DIR => "Version: %{addl} No files present in content dir",
-          CONTENT_SUB_DIRS_DETECTED => "Should only contain files, but directories were present in the content directory"
+          NO_FILES_IN_METADATA_DIR => "Version %{addl}: No files present in metadata dir",
+          NO_FILES_IN_CONTENT_DIR => "Version %{addl}: No files present in content dir",
+          CONTENT_SUB_DIRS_DETECTED => "Version %{addl}: content directory should only contain files, not directories"
         }.freeze
     end
 
@@ -75,7 +75,7 @@ module Moab
       errors = []
       errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.count > 0
       version_directories.each do |version_dir|
-        errors << result_hash(VERSION_DIR_BAD_FORMAT) unless version_dir =~ /^[v]\d{4}$/
+        errors << result_hash(VERSION_DIR_BAD_FORMAT, version_dir) unless version_dir =~ /^[v]\d{4}$/
       end
       errors
     end
@@ -143,9 +143,9 @@ module Moab
 
     def check_optional_content_dir_files_only(version_path)
       errors = []
-      content_dir_path = "#{version_path}/#{DATA_DIR}/#{CONTENT_DIR}"
-      errors << result_hash(NO_FILES_IN_CONTENT_DIR) if directory_entries(content_dir_path).empty?
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if contains_sub_dir?(content_dir_path)
+      content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
+      errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(content_dir_path)
       errors
     end
 
@@ -155,9 +155,9 @@ module Moab
 
     def check_metadata_dir_files_only(version_path)
       errors = []
-      metadata_dir_path = "#{version_path}/#{DATA_DIR}/#{METADATA_DIR}"
-      errors << result_hash(NO_FILES_IN_METADATA_DIR) if directory_entries(metadata_dir_path).empty?
-      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if contains_sub_dir?(metadata_dir_path)
+      metadata_dir_path = File.join(version_path, DATA_DIR, METADATA_DIR)
+      errors << result_hash(NO_FILES_IN_METADATA_DIR, basename(version_path)) if directory_entries(metadata_dir_path).empty?
+      errors << result_hash(METADATA_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(metadata_dir_path)
       errors
     end
 
