@@ -64,8 +64,6 @@ module Moab
         }.freeze
     end
 
-    # TODO: Figure out which methods should be public
-
     private
 
     def version_directories
@@ -81,7 +79,7 @@ module Moab
       errors
     end
 
-    # This method will be called only if the version directories are correctly named
+    # call only if the version directories are "correctly named" vdddd
     def check_sequential_version_dirs
       errors = []
       version_directories.each_with_index do |dir_name, index|
@@ -91,7 +89,6 @@ module Moab
           break
         end
       end
-
       errors
     end
 
