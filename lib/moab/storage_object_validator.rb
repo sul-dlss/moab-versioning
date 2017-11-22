@@ -144,12 +144,9 @@ module Moab
 
     def check_optional_content_dir_files_only(version_path)
       errors = []
-      dir_list = []
       content_dir_path = "#{version_path}/#{DATA_DIR}/#{CONTENT_DIR}"
-      content_sub_dirs = directory_entries(content_dir_path)
-      content_sub_dirs.each { |item| dir_list << File.directory?("#{content_dir_path}/#{item}") }
       errors << result_hash(NO_FILES_IN_CONTENT_DIR) if directory_entries(content_dir_path).empty?
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if dir_list.include?(true)
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED) if contains_sub_dir?(content_dir_path)
       errors
     end
 
@@ -159,12 +156,9 @@ module Moab
 
     def check_metadata_dir_files_only(version_path)
       errors = []
-      dir_list = []
       metadata_dir_path = "#{version_path}/#{DATA_DIR}/#{METADATA_DIR}"
-      metadata_sub_dirs = directory_entries(metadata_dir_path)
-      metadata_sub_dirs.each { |item| dir_list << File.directory?("#{metadata_dir_path}/#{item}") }
       errors << result_hash(NO_FILES_IN_METADATA_DIR) if directory_entries(metadata_dir_path).empty?
-      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if dir_list.include?(true)
+      errors << result_hash(METADATA_SUB_DIRS_DETECTED) if contains_sub_dir?(metadata_dir_path)
       errors
     end
 
@@ -179,6 +173,10 @@ module Moab
           end
           dirs
         end
+    end
+
+    def contains_sub_dir?(path)
+      directory_entries(path).detect { |entry| File.directory?("#{path}/#{entry}") }
     end
 
     def found_unexpected(array, version, required_sub_dirs)
