@@ -89,6 +89,9 @@ RSpec.describe Moab::StorageObjectValidator do
         it 'has no files' do
           expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version v0004: No files present in manifest dir")
         end
+        it 'has a folder' do
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version v0005: No files present in manifest dir")
+        end
       end
       it "has non contiguous version directories" do
         druid = 'yy000yy0000'
