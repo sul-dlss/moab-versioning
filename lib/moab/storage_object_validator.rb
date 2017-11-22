@@ -41,7 +41,7 @@ module Moab
       errors = []
       errors.concat check_correctly_named_version_dirs
       errors.concat check_sequential_version_dirs if errors.empty?
-      errors.concat check_correctly_formed_moabs if errors.empty?
+      errors.concat check_correctly_formed_moab if errors.empty?
       errors
     end
 
@@ -92,7 +92,7 @@ module Moab
       errors
     end
 
-    def check_correctly_formed_moabs
+    def check_correctly_formed_moab
       errors = []
       version_directories.each do |version_dir|
         version_path = "#{storage_obj_path}/#{version_dir}"
