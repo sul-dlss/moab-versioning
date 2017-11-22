@@ -14,57 +14,48 @@ RSpec.describe Moab::StorageObjectValidator do
   context '#validation_errors' do
     let(:verification_array) { storage_obj_validator1.validation_errors }
 
-    it 'returns correct data structure' do
+    it 'returns an Array of Hashes' do
       expect(verification_array).to be_kind_of Array
-    end
-
-    it 'has item in the array that is the expected structure' do
-      expect(verification_array[0]).to be_kind_of Hash
+      expect(verification_array.first).to be_kind_of Hash
     end
 
     context "invalid moab" do
       context 'under version directory' do
         it 'has missing items' do
-          # v0001
-          expect(verification_array[0]).to eq(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: [\"data\", \"manifests\"] Version: v0001")
+          expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: [\"data\", \"manifests\"] Version: v0001")
         end
         it 'has unexpected directory' do
-          # v0002
-          expect(verification_array[1]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_dir\"] Version: v0002")
+          expect(verification_array).to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_dir\"] Version: v0002")
         end
         it 'has unexpected file' do
-          # v0003
-          expect(verification_array[2]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0003")
+          expect(verification_array).to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0003")
         end
         it 'has missing data directory' do
-          # v0004
-          expect(verification_array[3]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"data\"] Version: v0004")
+          expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"data\"] Version: v0004")
         end
       end
       context 'under data directory' do
         it 'has unexpected file' do
-          # v0005
-          expect(verification_array[4]).to eq(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
+          expect(verification_array).to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED =>"Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
         end
         it 'has missing metadata directory' do
-          # v0006
-          expect(verification_array[5]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
+          expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
         end
-        it 'content directory should only contain files, but directories were present' do
-          # v0007
-          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
+        context 'content directory' do
+          it 'must only contain files' do
+            expect(verification_array).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
+          end
+          it 'must contain files' do
+            expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version v0009: No files present in content dir")
+          end
         end
-        it 'metadata directory should only contain files, but directories were present' do
-          # v0008
-          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Version v0008: metadata directory should only contain files, not directories")
-        end
-        it 'Content does not have any files present' do
-          # v0009
-          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version v0009: No files present in content dir")
-        end
-        it 'Metadata does not have any files present' do
-          # v0010
-          expect(verification_array[9]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version v0010: No files present in metadata dir")
+        context 'metadata directory' do
+          it 'must only contain files' do
+            expect(verification_array).to include(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Version v0008: metadata directory should only contain files, not directories")
+          end
+          it 'must contain files' do
+            expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version v0010: No files present in metadata dir")
+          end
         end
       end
       context 'under manifest directory' do
