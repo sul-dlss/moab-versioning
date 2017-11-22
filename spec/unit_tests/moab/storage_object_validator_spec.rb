@@ -50,21 +50,21 @@ RSpec.describe Moab::StorageObjectValidator do
           # v0006
           expect(verification_array[5]).to eq(Moab::StorageObjectValidator::MISSING_DIR =>"Missing directory: [\"metadata\"] Version: v0006")
         end
-        it 'Content sub dir has directory present, should only contain files.' do
+        it 'content directory should only contain files, but directories were present' do
           # v0007
-          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the content directory")
+          expect(verification_array[6]).to eq(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED =>"Version v0007: content directory should only contain files, not directories")
         end
-        it 'Metadata sub dir has directory present, should only contain files' do
+        it 'metadata directory should only contain files, but directories were present' do
           # v0008
-          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Should only contain files, but directories were present in the metadata directory")
+          expect(verification_array[7]).to eq(Moab::StorageObjectValidator::METADATA_SUB_DIRS_DETECTED =>"Version v0008: metadata directory should only contain files, not directories")
         end
         it 'Content does not have any files present' do
           # v0009
-          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version:  No files present in content dir")
+          expect(verification_array[8]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_CONTENT_DIR=>"Version v0009: No files present in content dir")
         end
         it 'Metadata does not have any files present' do
           # v0010
-          expect(verification_array[9]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version:  No files present in metadata dir")
+          expect(verification_array[9]).to eq(Moab::StorageObjectValidator::NO_FILES_IN_METADATA_DIR=>"Version v0010: No files present in metadata dir")
         end
       end
       context 'under manifest directory' do
@@ -74,15 +74,23 @@ RSpec.describe Moab::StorageObjectValidator do
         storage_obj_validator = described_class.new(storage_obj)
         verification_array = storage_obj_validator.validation_errors
         it 'does not have signatureCatalog.xml' do
-          expect(verification_array).to include(Moab::StorageObjectValidator::NO_SIGNATURE_CATALOG => "Version: v0001 Missing signatureCatalog.xml")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_SIGNATURE_CATALOG => "Version v0001: Missing signatureCatalog.xml")
         end
 
         it 'does not have manifestInventory.xml' do
-          expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version: v0002 Missing manifestInventory.xml")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version v0002: Missing manifestInventory.xml")
         end
 
         it 'does not have either signatureCatalog.xml or manifestInventory.xml' do
-          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version: v0003 No files present in manifest dir")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_MANIFEST_INVENTORY => "Version v0003: Missing manifestInventory.xml")
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_SIGNATURE_CATALOG => "Version v0003: Missing signatureCatalog.xml")
+        end
+
+        it 'has no files' do
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version v0004: No files present in manifest dir")
+        end
+        it 'has a folder' do
+          expect(verification_array).to include(Moab::StorageObjectValidator::NO_FILES_IN_MANIFEST_DIR => "Version v0005: No files present in manifest dir")
         end
       end
       it "has non contiguous version directories" do
@@ -99,23 +107,32 @@ RSpec.describe Moab::StorageObjectValidator do
         storage_obj = Moab::StorageObject.new(druid, druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         verification_array = storage_obj_validator.validation_errors
-        expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format")
+        expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: v0001a")
       end
-      it "incorrect items in path" do
+      it "incorrect items under version directory" do
         druid = 'bb000bb0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/bb/000/bb/0000/bb000bb0000'
         storage_obj = Moab::StorageObject.new(druid, druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         verification_array = storage_obj_validator.validation_errors
-        expect(verification_array).to include(Moab::StorageObjectValidator::INCORRECT_DIR => "Incorrect items in path")
+        files_present_err_msg = 'should not contain files; only the manifests and data directories'
+        expect(verification_array.size).to eq 7
+        expect(verification_array).to include(Moab::StorageObjectValidator::INCORRECT_DIR_CONTENTS => "Incorrect items under v0001 directory")
+        expect(verification_array).to include(Moab::StorageObjectValidator::FILES_IN_VERSION_DIR => "Version directory v0001 #{files_present_err_msg}")
+        expect(verification_array).to include(Moab::StorageObjectValidator::FILES_IN_VERSION_DIR => "Version directory v0002 #{files_present_err_msg}")
+        expect(verification_array).to include(Moab::StorageObjectValidator::FILES_IN_VERSION_DIR => "Version directory v0003 #{files_present_err_msg}")
+        expect(verification_array).to include(Moab::StorageObjectValidator::EXTRA_CHILD_DETECTED => "Unexpected item in path: [\"test2.txt\"] Version: v0004")
+        expect(verification_array).to include(Moab::StorageObjectValidator::INCORRECT_DIR_CONTENTS => "Incorrect items under v0005 directory")
+        expect(verification_array).to include(Moab::StorageObjectValidator::FILES_IN_VERSION_DIR => "Version directory v0005 #{files_present_err_msg}")
       end
+
       it "has incorrect version directory name" do
         druid = 'zz000zz0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/zz/000/zz/0000/zz000zz0000'
         storage_obj = Moab::StorageObject.new(druid, druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         verification_array = storage_obj_validator.validation_errors
-        expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT =>"Version directory name not in 'v00xx' format")
+        expect(verification_array).to include(Moab::StorageObjectValidator::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: x0001")
       end
       it 'does not call #check_expected_data_sub_dirs because moab does not have the expected version sub dirs' do
         druid = 'ee000ee0000'
