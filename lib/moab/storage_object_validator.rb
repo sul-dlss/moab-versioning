@@ -98,18 +98,19 @@ module Moab
       version_directories.each do |version_dir|
         version_path = File.join(storage_obj_path, version_dir)
         version_error_count = errors.size
-        errors.concat check_version_sub_dirs(directory_entries(version_path), version_dir)
+        errors.concat check_version_sub_dirs(version_path, version_dir)
         errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
         errors.concat check_data_directory(version_path, version_dir) if version_error_count == errors.size
       end
       errors
     end
 
-    def check_version_sub_dirs(version_sub_dirs, version)
+    def check_version_sub_dirs(version_path, version)
       errors = []
+      version_sub_dirs = directory_entries(version_path)
       version_sub_dir_count = version_sub_dirs.size
       if version_sub_dir_count == EXPECTED_VERSION_SUB_DIRS.size
-        errors.concat expected_dirs(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
+        errors.concat expected_version_sub_dirs(version_path, version)
       elsif version_sub_dir_count > EXPECTED_VERSION_SUB_DIRS.size
         errors.concat found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
       elsif version_sub_dir_count < EXPECTED_VERSION_SUB_DIRS.size
@@ -173,10 +174,6 @@ module Moab
         end
     end
 
-    def contains_sub_dir?(path)
-      directory_entries(path).detect { |entry| File.directory?("#{path}/#{entry}") }
-    end
-
     def found_unexpected(array, version, required_sub_dirs)
       errors = []
       unexpected = (array - required_sub_dirs)
@@ -193,10 +190,26 @@ module Moab
       errors
     end
 
-    def expected_dirs(array, _version, required_sub_dirs)
+    def expected_version_sub_dirs(version_path, version)
       errors = []
-      errors << result_hash(INCORRECT_DIR) unless array == required_sub_dirs
+      version_sub_dirs = directory_entries(version_path)
+      errors << result_hash(INCORRECT_DIR_CONTENTS, version) unless version_sub_dirs == EXPECTED_VERSION_SUB_DIRS
+      if contains_file?(version_path)
+        errors << result_hash(FILES_IN_VERSION_DIR, version)
+      end
       errors
+    end
+
+    def contains_sub_dir?(path)
+      directory_entries(path).detect { |entry| File.directory?(File.join(path, entry)) }
+    end
+
+    def contains_file?(path)
+      directory_entries(path).detect { |entry| File.file?(File.join(path, entry)) }
+    end
+
+    def basename(path)
+      path.split(File::SEPARATOR)[-1]
     end
 
     def result_hash(response_code, addl=nil)
@@ -209,7 +222,7 @@ module Moab
 
     def check_required_manifest_files(dir, version)
       errors = []
-      unless directory_entries("#{dir}/#{MANIFESTS_DIR}").detect { |entry| File.file?("#{dir}/#{MANIFESTS_DIR}/#{entry}") }
+      unless contains_file?(File.join(dir, MANIFESTS_DIR))
         errors << result_hash(NO_FILES_IN_MANIFEST_DIR, version)
         return errors
       end
