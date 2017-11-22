@@ -13,8 +13,8 @@ module Moab
     DATA_DIR = "data".freeze
     MANIFESTS_DIR = 'manifests'.freeze
     EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, MANIFESTS_DIR].freeze
-    MANIFEST_INVENTORY_PATH = "#{MANIFESTS_DIR}/manifestInventory.xml".freeze
-    SIGNATURE_CATALOG_PATH = "#{MANIFESTS_DIR}/signatureCatalog.xml".freeze
+    MANIFEST_INVENTORY_PATH = File.join(MANIFESTS_DIR, "manifestInventory.xml").freeze
+    SIGNATURE_CATALOG_PATH = File.join(MANIFESTS_DIR, "signatureCatalog.xml").freeze
 
     # error codes
     INCORRECT_DIR = 0
@@ -96,7 +96,7 @@ module Moab
     def check_correctly_formed_moab
       errors = []
       version_directories.each do |version_dir|
-        version_path = "#{storage_obj_path}/#{version_dir}"
+        version_path = File.join(storage_obj_path, version_dir)
         version_error_count = errors.size
         errors.concat check_version_sub_dirs(directory_entries(version_path), version_dir)
         errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
@@ -120,7 +120,7 @@ module Moab
 
     def check_data_directory(version_path, version)
       errors = []
-      data_dir_path = "#{version_path}/#{DATA_DIR}"
+      data_dir_path = File.join(version_path, DATA_DIR)
       data_sub_dirs = directory_entries(data_dir_path)
       errors.concat check_data_sub_dirs(version, data_sub_dirs)
       errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
@@ -214,17 +214,17 @@ module Moab
         return errors
       end
 
-      unless File.exist?("#{dir}/#{MANIFEST_INVENTORY_PATH}")
+      unless File.exist?(File.join(dir, MANIFEST_INVENTORY_PATH))
         errors << result_hash(NO_MANIFEST_INVENTORY, version)
       end
-      unless File.exist?("#{dir}/#{SIGNATURE_CATALOG_PATH}")
+      unless File.exist?(File.join(dir, SIGNATURE_CATALOG_PATH))
         errors << result_hash(NO_SIGNATURE_CATALOG, version)
       end
       errors
     end
 
     def latest_manifest_inventory
-      "#{storage_obj_path}/#{version_directories.last}/#{MANIFEST_INVENTORY_PATH}"
+      File.join(storage_obj_path, version_directories.last, MANIFEST_INVENTORY_PATH)
     end
 
     def object_id_from_manifest_inventory
