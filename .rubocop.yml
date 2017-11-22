@@ -18,6 +18,17 @@ AllCops:
 
 # --- Lint ---
 
+Lint/UselessAssignment:
+  Exclude:
+    - 'lib/moab/storage_repository.rb' # TODO: determine if we want to keep this exclusion
+    - 'lib/moab/storage_services.rb' # TODO: determine if we want to keep this exclusion
+    - 'lib/serializer/serializable.rb' # TODO: determine if we want to keep this exclusion
+    - 'spec/features/stanford/content_metadata_read_spec.rb' # TODO: determine if we want to keep this exclusion
+    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # TODO: determine if we want to keep this exclusion
+    - 'spec/unit_tests/moab/file_group_spec.rb' # TODO: determine if we want to keep this exclusion
+    - 'spec/unit_tests/moab/file_inventory_spec.rb' # TODO: determine if we want to keep this exclusion
+    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # NOT a useless assignment - rubocop is confused
+
 # --- Metrics ---
 
 # because this isn't 1994
@@ -25,7 +36,7 @@ Metrics/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
     - 'lib/moab/file_manifestation.rb'
-    - 'spec/unit_tests/moab/bagger_spec.rb' # remove after PR #52 merged
+    - lib/moab/storage_object_validator.rb # long interpolated error message line
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
     - 'spec/unit_tests/stanford/storage_object_validator_spec.rb'
@@ -45,12 +56,16 @@ Naming/FileName:
 
 # --- RSpec ---
 
+RSpec/NestedGroups:
+  Exclude:
+    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # Tests are more readable, all the tests should be under 1 context block
+
 # --- Style ---
 
 # Pointless change
 Style/FormatStringToken:
   Enabled: false
-  
+
 # Loops were easier to understand without using 'next' statement
 Style/Next:
   Enabled: false
