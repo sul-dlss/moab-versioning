@@ -16,6 +16,8 @@ module Moab
     MANIFEST_INVENTORY_PATH = File.join(MANIFESTS_DIR, "manifestInventory.xml").freeze
     SIGNATURE_CATALOG_PATH = File.join(MANIFESTS_DIR, "signatureCatalog.xml").freeze
 
+    FORBIDDEN_CONTENT_SUB_DIRS = ([DATA_DIR, MANIFESTS_DIR] + EXPECTED_DATA_SUB_DIRS).freeze
+
     # error codes
     INCORRECT_DIR_CONTENTS = 0
     MISSING_DIR = 1
@@ -30,6 +32,7 @@ module Moab
     NO_FILES_IN_METADATA_DIR = 10
     NO_FILES_IN_CONTENT_DIR = 11
     CONTENT_SUB_DIRS_DETECTED = 12
+    BAD_SUB_DIR_IN_CONTENT_DIR = 13
 
     attr_reader :storage_obj_path
 
@@ -61,7 +64,8 @@ module Moab
           VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
           NO_FILES_IN_METADATA_DIR => "Version %{addl}: No files present in metadata dir",
           NO_FILES_IN_CONTENT_DIR => "Version %{addl}: No files present in content dir",
-          CONTENT_SUB_DIRS_DETECTED => "Version %{addl}: content directory should only contain files, not directories"
+          CONTENT_SUB_DIRS_DETECTED => "Version %{addl}: content directory should only contain files, not directories",
+          BAD_SUB_DIR_IN_CONTENT_DIR => "Version %{addl}: content directory has forbidden sub-directory name: vnnnn or #{FORBIDDEN_CONTENT_SUB_DIRS}"
         }.freeze
     end
 
@@ -75,9 +79,13 @@ module Moab
       errors = []
       errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.count > 0
       version_directories.each do |version_dir|
-        errors << result_hash(VERSION_DIR_BAD_FORMAT, version_dir) unless version_dir =~ /^[v]\d{4}$/
+        errors << result_hash(VERSION_DIR_BAD_FORMAT, version_dir) unless version_dir_format?(version_dir)
       end
       errors
+    end
+
+    def version_dir_format?(dirname)
+      dirname =~ /^[v]\d{4}$/
     end
 
     # call only if the version directories are "correctly named" vdddd
@@ -125,7 +133,7 @@ module Moab
       data_sub_dirs = directory_entries(data_dir_path)
       errors.concat check_data_sub_dirs(version, data_sub_dirs)
       errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
-      errors.concat check_optional_content_dir_files_only(version_path) if data_sub_dirs.include?('content') && errors.empty?
+      errors.concat check_optional_content_dir(version_path) if data_sub_dirs.include?('content') && errors.empty?
       errors
     end
 
@@ -141,12 +149,22 @@ module Moab
       errors
     end
 
-    def check_optional_content_dir_files_only(version_path)
+    def check_optional_content_dir(version_path)
       errors = []
       content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
       errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(content_dir_path)
+      if contains_sub_dir?(content_dir_path) && contains_forbidden_content_sub_dir?(content_dir_path)
+        errors << result_hash(BAD_SUB_DIR_IN_CONTENT_DIR, basename(version_path))
+      end
       errors
+    end
+
+    def contains_forbidden_content_sub_dir?(path)
+      sub_dirs(path).detect { |sub_dir| content_sub_dir_forbidden?(sub_dir) }
+    end
+
+    def content_sub_dir_forbidden?(dirname)
+      FORBIDDEN_CONTENT_SUB_DIRS.include?(dirname) || version_dir_format?(dirname)
     end
 
     def subset?(first_array, second_array)
@@ -206,6 +224,10 @@ module Moab
 
     def contains_file?(path)
       directory_entries(path).detect { |entry| File.file?(File.join(path, entry)) }
+    end
+
+    def sub_dirs(path)
+      directory_entries(path).select { |entry| File.directory?(File.join(path, entry)) }
     end
 
     def basename(path)
