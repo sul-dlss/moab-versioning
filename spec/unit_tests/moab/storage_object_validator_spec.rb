@@ -61,6 +61,14 @@ RSpec.describe Moab::StorageObjectValidator do
             # metadata
             expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0015: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
           end
+          it 'allows multiple level sub directories' do
+            druid = 'gg000gg0000'
+            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000'
+            storage_obj = Moab::StorageObject.new(druid, druid_path)
+            storage_obj_validator = described_class.new(storage_obj)
+            verification_array = storage_obj_validator.validation_errors
+            expect(verification_array).to be_empty
+          end
         end
         context 'metadata directory' do
           it 'must only contain files' do
