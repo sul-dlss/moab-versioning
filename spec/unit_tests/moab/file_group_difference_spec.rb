@@ -1,6 +1,15 @@
 require 'spec_helper'
 
 describe 'Moab::FileGroupDifference' do
+  let(:group_diff) do
+    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
+    file_inventory_diff = Moab::FileInventoryDifference.new
+    file_inventory_diff.compare(v1_inventory, v3_inventory)
+    file_inventory_diff.group_differences[0]
+  end
 
   describe '#initialize' do
     specify 'empty options hash' do
@@ -13,16 +22,6 @@ describe 'Moab::FileGroupDifference' do
       diff = Moab::FileGroupDifference.new(opts)
       expect(diff.group_id).to eq opts[:group_id]
     end
-  end
-
-  let(:group_diff) do
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
-    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
-    file_inventory_diff = Moab::FileInventoryDifference.new
-    file_inventory_diff.compare(v1_inventory, v3_inventory)
-    file_inventory_diff.group_differences[0]
   end
 
   specify '#group_id' do
