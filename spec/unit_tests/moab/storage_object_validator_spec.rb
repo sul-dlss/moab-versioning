@@ -69,6 +69,56 @@ RSpec.describe Moab::StorageObjectValidator do
             verification_array = storage_obj_validator.validation_errors
             expect(verification_array).to be_empty
           end
+          context 'allow_content_subdirs argument' do
+            let(:no_subdirs_storage_obj_validator) do
+              no_subdirs_druid = 'bj103hs9687'
+              druid_path ='spec/fixtures/good_root01/moab_storage_trunk/bj/103/hs/9687/bj103hs9687'
+              storage_obj = Moab::StorageObject.new(no_subdirs_druid, druid_path)
+              described_class.new(storage_obj)
+            end
+            let(:allowed_subdirs_storage_obj_validator) do
+              druid = 'gg000gg0000'
+              druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000'
+              storage_obj = Moab::StorageObject.new(druid, druid_path)
+              described_class.new(storage_obj)
+            end
+
+            context 'defaults to true' do
+              it 'forbidden subdirectories error' do
+                expect(verification_array).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+              end
+              it 'non-forbidden subdirectories do not error' do
+                expect(allowed_subdirs_storage_obj_validator.validation_errors).to eq []
+              end
+              it 'lack of subdirectories do not error' do
+                expect(no_subdirs_storage_obj_validator.validation_errors).to eq []
+              end
+            end
+            context 'explicitly set to true' do
+              it 'forbidden subdirectories error' do
+                validation_errs = storage_obj_validator1.validation_errors(true)
+                expect(validation_errs).to include(Moab::StorageObjectValidator::BAD_SUB_DIR_IN_CONTENT_DIR=>"Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+              end
+              it 'non-forbidden subdirectories do not error' do
+                expect(allowed_subdirs_storage_obj_validator.validation_errors(true)).to eq []
+              end
+              it 'lack of subdirectories do not error' do
+                expect(no_subdirs_storage_obj_validator.validation_errors(true)).to eq []
+              end
+            end
+            context 'set to false' do
+              it 'forbidden subdirectories error' do
+                validation_errs = storage_obj_validator1.validation_errors(false)
+                expect(validation_errs).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED=>"Version v0015: content directory should only contain files, not directories")
+              end
+              it 'non-forbidden subdirectories error' do
+                expect(allowed_subdirs_storage_obj_validator.validation_errors(false).size).to be > 0
+              end
+              it 'lack of subdirectories do not error' do
+                expect(no_subdirs_storage_obj_validator.validation_errors(false)).to eq []
+              end
+            end
+          end
         end
         context 'metadata directory' do
           it 'must only contain files' do

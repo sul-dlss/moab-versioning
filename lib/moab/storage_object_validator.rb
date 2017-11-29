@@ -41,11 +41,11 @@ module Moab
       @directory_entries_hash = {}
     end
 
-    def validation_errors
+    def validation_errors(allow_content_subdirs=true)
       errors = []
       errors.concat check_correctly_named_version_dirs
       errors.concat check_sequential_version_dirs if errors.empty?
-      errors.concat check_correctly_formed_moab if errors.empty?
+      errors.concat check_correctly_formed_moab(allow_content_subdirs) if errors.empty?
       errors
     end
 
@@ -101,14 +101,14 @@ module Moab
       errors
     end
 
-    def check_correctly_formed_moab
+    def check_correctly_formed_moab(allow_content_subdirs=true)
       errors = []
       version_directories.each do |version_dir|
         version_path = File.join(storage_obj_path, version_dir)
         version_error_count = errors.size
         errors.concat check_version_sub_dirs(version_path, version_dir)
         errors.concat check_required_manifest_files(version_path, version_dir) if version_error_count == errors.size
-        errors.concat check_data_directory(version_path, version_dir) if version_error_count == errors.size
+        errors.concat check_data_directory(version_path, version_dir, allow_content_subdirs) if version_error_count == errors.size
       end
       errors
     end
@@ -127,13 +127,13 @@ module Moab
       errors
     end
 
-    def check_data_directory(version_path, version)
+    def check_data_directory(version_path, version, allow_content_subdirs=true)
       errors = []
       data_dir_path = File.join(version_path, DATA_DIR)
       data_sub_dirs = directory_entries(data_dir_path)
       errors.concat check_data_sub_dirs(version, data_sub_dirs)
       errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
-      errors.concat check_optional_content_dir(version_path) if data_sub_dirs.include?('content') && errors.empty?
+      errors.concat check_optional_content_dir(version_path, allow_content_subdirs) if data_sub_dirs.include?('content') && errors.empty?
       errors
     end
 
@@ -149,11 +149,12 @@ module Moab
       errors
     end
 
-    def check_optional_content_dir(version_path)
+    def check_optional_content_dir(version_path, allow_content_subdirs=true)
       errors = []
       content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
       errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
-      if contains_sub_dir?(content_dir_path) && contains_forbidden_content_sub_dir?(content_dir_path)
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(content_dir_path) && !allow_content_subdirs
+      if allow_content_subdirs && contains_sub_dir?(content_dir_path) && contains_forbidden_content_sub_dir?(content_dir_path)
         errors << result_hash(BAD_SUB_DIR_IN_CONTENT_DIR, basename(version_path))
       end
       errors
