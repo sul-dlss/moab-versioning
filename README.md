@@ -34,7 +34,7 @@ current_version = StorageServices.current_version('666') # where 666 is the id
 expect(current_version).to be_an_instance_of Integer
 ```
 
-##### ... if you know where the moab is stored (which storage_root)
+##### ... if you know where the moab is stored (which directory)
 
 ```ruby
 moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
@@ -47,7 +47,7 @@ object_size_in_bytes = StorageServices.object_size('666') # where 666 is the id
 expect(object_size_in_bytes).to be_an_instance_of Integer
 ```
 
-##### ... if you know where the moab is stored (which storage_root)
+##### ... if you know where the moab is stored (which directory)
 
 ```ruby
 moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
@@ -65,6 +65,16 @@ if validation_errors.empty?
 else
   p validation_errors
 end
+```
+
+##### Can Allow or Forbid data/content to have subdirectories
+
+```ruby
+moab = Moab::StorageObject.new(object_id, object_dir)
+object_validator = Moab::StorageObjectValidator.new(moab)
+errs = object_validator.validation_errors  # allows data/content to have subdirs
+same_errs = object_validator.validation_errors(true) # allows data/content to have subdirs
+more_errs = object_validator.validation_errors(false) # does not allow data/content to have subdirs
 ```
 
 ### Stanford-Specific
