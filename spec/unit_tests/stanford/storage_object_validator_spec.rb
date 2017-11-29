@@ -16,6 +16,14 @@ RSpec.describe Stanford::StorageObjectValidator do
       verification_array = storage_obj_validator.validation_errors
       expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
     end
+    it 'passes allow_content_subdirs argument to super' do
+      druid = 'xx000xx0000'
+      druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
+      storage_object = Moab::StorageObject.new(druid, druid_path)
+      stanford_validator = described_class.new(storage_object)
+      error_list = stanford_validator.validation_errors(false)
+      expect(error_list).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED => 'Version v0013: content directory should only contain files, not directories')
+    end
   end
 
   describe '#identify_druid' do
