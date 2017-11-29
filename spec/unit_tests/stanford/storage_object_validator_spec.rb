@@ -13,8 +13,8 @@ RSpec.describe Stanford::StorageObjectValidator do
       invalid_druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000'
       storage_obj = Moab::StorageObject.new('dd000dd0000', invalid_druid_path)
       storage_obj_validator = described_class.new(storage_obj)
-      verification_array = storage_obj_validator.validation_errors
-      expect(verification_array).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
+      error_list = storage_obj_validator.validation_errors
+      expect(error_list).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
     end
     it 'passes allow_content_subdirs argument to super' do
       druid = 'xx000xx0000'
