@@ -130,6 +130,7 @@ RSpec.describe Moab::StorageObjectValidator do
         end
       end
       context 'under manifest directory' do
+        described_class::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze
         druid = 'cc000cc0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/cc/000/cc/0000/cc000cc0000'
         storage_obj = Moab::StorageObject.new(druid, druid_path)

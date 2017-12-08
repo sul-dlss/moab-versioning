@@ -9,7 +9,7 @@ module Moab
     METADATA_DIR = "metadata".freeze
     CONTENT_DIR = "content".freeze
     EXPECTED_DATA_SUB_DIRS = [CONTENT_DIR, METADATA_DIR].freeze
-    IMPLICIT_DIRS = ['.', '..', '.keep'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
+    IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
     DATA_DIR = "data".freeze
     MANIFESTS_DIR = 'manifests'.freeze
     EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, MANIFESTS_DIR].freeze
