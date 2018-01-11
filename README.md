@@ -11,6 +11,8 @@
   require 'moab'
 ```
 
+See also https://github.com/sul-dlss/moab-versioning/wiki
+
 #### Configuration
 
 ```ruby
@@ -34,7 +36,7 @@ current_version = StorageServices.current_version('666') # where 666 is the id
 expect(current_version).to be_an_instance_of Integer
 ```
 
-##### ... if you know where the moab is stored (which directory)
+##### ... if you know where the Moab is stored (which directory)
 
 ```ruby
 moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
@@ -47,7 +49,7 @@ object_size_in_bytes = StorageServices.object_size('666') # where 666 is the id
 expect(object_size_in_bytes).to be_an_instance_of Integer
 ```
 
-##### ... if you know where the moab is stored (which directory)
+##### ... if you know where the Moab is stored (which directory)
 
 ```ruby
 moab = Moab::StorageObject.new(object_id, object_dir) # cheaper/faster to go directly to the correct directory
@@ -170,45 +172,25 @@ http://rubydoc.info/github/sul-dlss/moab-versioning/master/frames
 
 http://journal.code4lib.org/articles/8482
 
+https://github.com/sul-dlss/moab-versioning/wiki/Getting-Started-with-Moab-and-moab-versioning
+
 ## Modules
-
-### Serializer
-
-**Serializer** is a module containing classes whose methods faciliate serialization
-of data fields to various formats.  To obtain those benefits, a dependent class
-should inherit from **Serializable** or **Manifest**
-depending on whether XML serialization is required.
-
-* **Serializable** = utility methods to faciliate serialization to Hash, JSON, or YAML
-  * **Manifest** = adds methods for marshalling/unmarshalling data to a persistent XML file format
 
 ### Moab
 
 **Moab** is a module that provides a distinctive namespace for the collection of classes it contains.
 
-* **FileInventory** = container for recording information about a collection of related files
-  * **FileGroup** [1..*] = subset allow segregation of content and metadata files
-    * **FileManifestation** [1..*] = snapshot of a file's filesystem characteristics
-      * **FileSignature** [1] = file fixity information
-      * **FileInstance** [1..*] = filepath and timestamp of any physical file having that signature
+See https://github.com/sul-dlss/moab-versioning/wiki/Class-Relationships-(Conceptual)
 
-* **SignatureCatalog** = lookup table containing a cumulative collection of all files ever ingested
-  * **SignatureCatalogEntry** [1..*] = an row in the lookup table containing storage information about a single file
-    * **FileSignature** [1] = file fixity information
+### Serializer
 
-* **FileInventoryDifference** = compares two **FileInventory** instances based on file signatures and pathnames
-  * **FileGroupDifference** [1..*] = performs analysis and reports differences between two matching **FileGroup** objects
-    * **FileGroupDifferenceSubset** [1..5] = collects a set of file-level differences of a give change type
-      * **FileInstanceDifference** [1..*] = contains difference information at the file level
-        * **FileSignature** [1..2] = contains the file signature(s) of two file instances being compared
+**Serializer** is a module containing classes whose methods facilitate serialization
+of data fields to various formats.  To obtain those benefits, a dependent class
+should inherit from **Serializable** or **Manifest**
+depending on whether XML serialization is required.
 
-* **VersionMetadata** = descriptive information about a digital object's versions
-  * **VersionMetadataEntry** [1..*] = attributes of a digital object version
-    * **VersionMetadataEvent** [1..*] = object version lifecycle events with timestamps
-
-* **StorageObject** = represents a digital object's repository storage location and ingest/dissemination methods
-  * **StorageObjectVersion** [1..*] = represents a version subdirectory within an object's home directory
-    * **Bagger** [1] = utility for creating bagit packages for ingest or dissemination
+* **Serializable** = utility methods to facilitate serialization to Hash, JSON, or YAML
+  * **Manifest** = adds methods for marshalling/unmarshalling data to a persistent XML file format
 
 ### Stanford
 
