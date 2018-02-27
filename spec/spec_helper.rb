@@ -12,7 +12,6 @@ end
 require 'equivalent-xml'
 require 'moab/stanford'
 require 'spec_config'
-require 'ap'
 
 RSpec.configure do |config|
   config.before(:all) {fixture_setup}

@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'systemu' # universal capture of stdout and stderr and handling of child process pid
   s.add_dependency 'druid-tools', '>= 1.0.0 ' # druid validation, druid-tree, etc.; needs 1.0.0 for strict validation
 
-  s.add_development_dependency 'awesome_print'
   s.add_development_dependency 'equivalent-xml'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rdoc'
