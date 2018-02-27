@@ -24,10 +24,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'equivalent-xml'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rdoc'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'coveralls'
-  s.add_development_dependency 'yard'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rubocop', '~> 0.50.0' # avoid code churn due to rubocop changes
   s.add_development_dependency 'rubocop-rspec', '~> 1.18.0' # avoid code churn due to rubocop-rspec changes
