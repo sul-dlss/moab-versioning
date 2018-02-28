@@ -1,6 +1,3 @@
-require 'moab'
-require 'systemu'
-
 module Moab
 
   # A class used to create a BagIt package from a version inventory and a set of source files.
@@ -268,27 +265,24 @@ module Moab
       end
       raise "Unable to create tarfile #{tar_pathname}" unless tar_pathname.exist?
       return true
-
     end
 
-    # Executes a system command in a subprocess.
-    # The method will return stdout from the command if execution was successful.
-    # The method will raise an exception if if execution fails.
-    # The exception's message will contain the explaination of the failure.
-    # @param [String] command the command to be executed
-    # @return [String] stdout from the command if execution was successful
+    # Executes a system command in a subprocess
+    # if command isn't successful, grabs stdout and stderr and puts them in ruby exception message
+    # @return stdout if execution was successful
     def shell_execute(command)
-      status, stdout, stderr = systemu(command)
-      if (status.exitstatus != 0)
-        raise stderr
+      require 'open3'
+      stdout, stderr, status = Open3.capture3(command.chomp)
+      if status.success? && status.exitstatus.zero?
+        stdout
+      else
+        msg = "Shell command failed: [#{command}] caused by <STDERR = #{stderr}>"
+        msg << " STDOUT = #{stdout}" if stdout && stdout.length.positive?
+        raise(StandardError, msg)
       end
-      return stdout
-    rescue
-      msg = "Command failed to execute: [#{command}] caused by <STDERR = #{stderr.split($/).join('; ')}>"
-      msg << " STDOUT = #{stdout.split($/).join('; ')}" if (stdout && (stdout.length > 0))
-      raise msg
+    rescue SystemCallError => e
+      msg = "Shell command failed: [#{command}] caused by #{e.inspect}"
+      raise(StandardError, msg)
     end
-
   end
-
 end

@@ -166,8 +166,6 @@ end
 
 http://rubydoc.info/github/sul-dlss/moab-versioning/master/frames
 
-[rdoc-image: (https://www.omniref.com/ruby/gems/moab-versioning.png)](https://www.omniref.com/ruby/gems/moab-versioning)
-
 ## Design Documentation
 
 http://journal.code4lib.org/articles/8482
