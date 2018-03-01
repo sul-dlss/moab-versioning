@@ -187,8 +187,7 @@ module Moab
     def create_payload_manifests
       manifest_pathname = Hash.new
       manifest_file = Hash.new
-      manifest_types =  [:md5, :sha1, :sha256]
-      manifest_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = @bag_pathname.join("manifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
@@ -197,14 +196,14 @@ module Moab
           fixity = file.signature.fixity
           file.instances.each do |instance|
             data_path = File.join('data', group.group_id, instance.path)
-            manifest_types.each do |type|
+            DEFAULT_CHECKSUM_TYPES.each do |type|
               manifest_file[type].puts("#{fixity[type]} #{data_path}") if fixity[type]
             end
           end
         end
       end
     ensure
-      manifest_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         if manifest_file[type]
           manifest_file[type].close
           manifest_pathname[type].delete if
@@ -228,8 +227,7 @@ module Moab
     def create_tagfile_manifests()
       manifest_pathname = Hash.new
       manifest_file = Hash.new
-      manifest_types =  [:md5, :sha1, :sha256]
-      manifest_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = @bag_pathname.join("tagmanifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
@@ -237,13 +235,13 @@ module Moab
         unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
           signature = FileSignature.new.signature_from_file(file)
           fixity = signature.fixity
-          manifest_types.each do |type|
+          DEFAULT_CHECKSUM_TYPES.each do |type|
             manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
           end
         end
       end
     ensure
-      manifest_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         if manifest_file[type]
           manifest_file[type].close
           manifest_pathname[type].delete if

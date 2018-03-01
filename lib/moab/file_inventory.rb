@@ -212,12 +212,11 @@ module Moab
     # @return [Hash<Pathname,FileSignature>] The fixity data present in the bag's manifest files
     def signatures_from_bagit_manifests(bag_pathname)
       manifest_pathname = Hash.new
-      checksum_types =  [:md5, :sha1, :sha256]
-      checksum_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
       end
       signatures = Hash.new { |hash,path| hash[path] = FileSignature.new }
-      checksum_types.each do |type|
+      DEFAULT_CHECKSUM_TYPES.each do |type|
         if manifest_pathname[type].exist?
           manifest_pathname[type].each_line do |line|
             line.chomp!
