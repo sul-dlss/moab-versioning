@@ -1,0 +1,6 @@
+this file's checksums are ignored because sha666 is an unrecognized algorithm
+666 bagit.txt
+666 versionInventory.xml
+666 versionAdditions.xml
+666 manifest-sha256.txt
+666 bag-info.txt

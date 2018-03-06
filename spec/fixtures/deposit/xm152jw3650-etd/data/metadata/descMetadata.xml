@@ -1,0 +1,82 @@
+<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.4" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+   <titleInfo>
+      <title>Molecular and stable isotopic analyses of the fatty acyl components of the pottery of &#xC7;atalh&#xF6;y&#xFC;k, Turkey</title>
+      <subTitle>understanding the relationships between animal domestication, ceramic technology, environmental variation and their roles in the secondary products revolution</subTitle>
+   </titleInfo>
+   <name type="personal" usage="primary">
+      <namePart>Pitter, Sharmini.</namePart>
+   </name>
+   <name type="personal">
+      <namePart>Dunbar, Robert B.</namePart>
+      <namePart type="date">1954-</namePart>
+      <role>
+         <roleTerm type="text">primary advisor.</roleTerm>
+      </role>
+      <role>
+         <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+      </role>
+   </name>
+   <name type="personal">
+      <namePart>Chamberlain, C. Page</namePart>
+      <role>
+         <roleTerm type="text">advisor.</roleTerm>
+      </role>
+      <role>
+         <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+      </role>
+   </name>
+   <name type="personal">
+      <namePart>Evershed, Richard</namePart>
+      <role>
+         <roleTerm type="text">advisor.</roleTerm>
+      </role>
+      <role>
+         <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+      </role>
+   </name>
+   <name type="personal">
+      <namePart>Hodder, Ian</namePart>
+      <role>
+         <roleTerm type="text">advisor.</roleTerm>
+      </role>
+      <role>
+         <roleTerm authority="marcrelator" type="code">ths</roleTerm>
+      </role>
+   </name>
+   <name type="corporate">
+      <namePart>Stanford University</namePart>
+      <namePart>Dept. of Environmental Earth System Science.</namePart>
+   </name>
+   <typeOfResource>text</typeOfResource>
+   <genre authority="marcgt">theses</genre>
+   <originInfo>
+      <place>
+         <placeTerm type="code" authority="marccountry">xx</placeTerm>
+      </place>
+      <dateIssued>2013</dateIssued>
+      <issuance>monographic</issuance>
+   </originInfo>
+   <language>
+      <languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+   </language>
+   <physicalDescription>
+      <form authority="marcform">electronic</form>
+      <form authority="gmd">electronic resource</form>
+      <form authority="marccategory">electronic resource</form>
+      <form authority="marcsmd">remote</form>
+      <extent>1 online resource.</extent>
+   </physicalDescription>
+   <abstract>An extensive study of the organic residue associated with the Neolithic pottery of &#xC7;atalh&#xF6;y&#xFC;k has further confirmed the timing of dairy production on-site after following the methods of a previous study (Evershed et al. 2008). By utilizing gas chromatography (GC) on 313 potsherds, and high temperature-GC/mass spectrometry (HT-GC/MS), GC-combustion-IRMS (GC-C-IRMS) and GC-thermal conversion-IRMS (GC-TC-IRMS) on subsets of that pottery collection from the Neolithic site of &#xC7;atalh&#xF6;y&#xFC;k in central Turkey, the first well-dated stratigraphic record of both compound-specific &#x3B4;13C and &#x3B4;D values of C16:0 and C18:0 fatty acids has now been established. The combination of this new information with the faunal and stable isotope records of the same site has provided a more detailed account of changes in animal management strategy over time. This study provides an in-depth look at some of the oldest dairy residues found to date as well as environmental and social factors that may have contributed or resulted from the transition to secondary product use during the Neolithic. In addition, a newly developed palaeoenvironmental proxy may provide a direct link between changes in local precipitation levels and changes in subsistence practices by assessing stable hydrogen isotope (&#x3B4;D) values of fatty acids extracted from pottery residues. The origins of the fatty acids were determined based on their &#x3B4;13C values as arising largely from ruminant adipose and dairy fats. A &#x3B4;D record was constructed, based on a subset of ruminant adipose fats only, which showed most negative isotopic values from ~6900 to 6600 cal BC indicative of wet conditions, followed by a drying trend which reached a maximum at or just after 6280 cal BC, coincident with the 8.2 ka (~6200 cal BC) cold, dry climate event. The drying trend is consistent with that observed in the &#x3B4;18O record from the nearby lake Eski Ac&#x131;g&#xF6;l carbonates. Thus, &#x3B4;D analysis of archaeological residues may be useful in assessing broader environmental and climatic changes directly from cultural residues.</abstract>
+   <note type="statement of responsibility" altRepGroup="00">Sharmini Pitter.</note>
+   <note>Submitted to the Department of Environmental Earth System Science.</note>
+   <note type="thesis">Thesis (Ph.D.)--Stanford University, 2013.</note>
+   <location>
+      <url displayLabel="electronic resource" usage="primary display">http://purl.stanford.edu/xm152jw3650</url>
+   </location>
+   <recordInfo>
+      <recordContentSource authority="marcorg">CSt</recordContentSource>
+      <recordCreationDate encoding="marc">131204</recordCreationDate>
+      <recordIdentifier>a10322291</recordIdentifier>
+      <recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4_SDR.xsl (Version 1.2.5 2013/08/11)</recordOrigin>
+   </recordInfo>
+</mods>

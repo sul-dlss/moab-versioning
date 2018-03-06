@@ -1,0 +1,3 @@
+External-Identifier: druid:xm152jw3650-v1
+Payload-Oxum: 5468463.13
+Bag-Size: 5.22 MB

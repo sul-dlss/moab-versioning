@@ -1,0 +1,16 @@
+<contentMetadata type="file" objectId="druid:xm152jw3650">
+  <resource type="main-original" id="main">
+    <attr name="label">Body of dissertation (as submitted)</attr>
+    <file shelve="yes" size="2313515" publish="no" mimetype="application/pdf" preserve="yes" id="FINAL COMPLETE THESIS TO SUBMIT.pdf">
+      <checksum type="md5">17ddafff09c7ad0a60f5398989a2c457</checksum>
+      <checksum type="sha1">67dd5b4f7f4efd12148af04b8e3b16ae63d522fa</checksum>
+    </file>
+  </resource>
+  <resource type="main-augmented" objectId="druid:md730jr1617" id="main">
+    <attr name="label">Body of dissertation</attr>
+    <file shelve="yes" size="3140678" publish="yes" mimetype="application/pdf" preserve="yes" id="FINAL COMPLETE THESIS TO SUBMIT-augmented.pdf">
+      <checksum type="md5">6d894d7756b113f8da566f49dc069828</checksum>
+      <checksum type="sha1">af1f0bce68dc151500f197567e8bedee7554de5e</checksum>
+    </file>
+  </resource>
+</contentMetadata>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="version" objectId="druid:oo000oo0000" inventoryDatetime="2018-03-02T23:41:05Z" fileCount="11" byteCount="217686224" blockCount="212590">
+  <fileGroup groupId="metadata" dataSource="/dor/workspace/oo/000/oo/0000/oo000oo0000/metadata" fileCount="10" byteCount="57304" blockCount="61">
+    <file>
+      <fileSignature size="263" sha256="dce0ceb5bc94b47a4511425070117d1b94db49c34efa6b79ea5c5a415c4ed493"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2018-03-02T23:41:04Z"/>
+    </file>
+    <file>
+      <fileSignature size="721" sha256="a33b90a61f7e0b8085502610f92a5a69fca7cff7860b37da608597047d1d1610"/>
+      <fileInstance path="relationshipMetadata.xml" datetime="2018-03-02T23:41:04Z"/>
+    </file>
+    <file>
+      <fileSignature size="783" sha256="8b67199f81fe6cd7733f540e26895c844afa0b77eee363fa12f20712fdb863e7"/>
+      <fileInstance path="versionMetadata.xml" datetime="2018-03-02T23:41:05Z"/>
+    </file>
+    <file>
+      <fileSignature size="42666" sha256="b363d142eed647143eb849d732702e92870a34c03a482694d0a99bd3d6609702"/>
+      <fileInstance path="workflows.xml" datetime="2018-03-02T23:41:05Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>
