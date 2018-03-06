@@ -57,8 +57,8 @@ module Moab
     # @api internal
     # @return [void] Generate the bagit.txt tag file
     def create_bagit_txt()
-      @bag_pathname.mkpath
-      @bag_pathname.join("bagit.txt").open('w') do |f|
+      bag_pathname.mkpath
+      bag_pathname.join("bagit.txt").open('w') do |f|
         f.puts "Tag-File-Character-Encoding: UTF-8"
         f.puts "BagIt-Version: 0.97"
       end
@@ -67,12 +67,12 @@ module Moab
     # @return [NilClass] Delete the bagit files
     def delete_bag()
       # make sure this looks like a bag before deleting
-      if @bag_pathname.join('bagit.txt').exist?
-        if @bag_pathname.join('data').exist?
-          @bag_pathname.rmtree
+      if bag_pathname.join('bagit.txt').exist?
+        if bag_pathname.join('data').exist?
+          bag_pathname.rmtree
         else
-          @bag_pathname.children.each {|file| file.delete}
-          @bag_pathname.rmdir
+          bag_pathname.children.each {|file| file.delete}
+          bag_pathname.rmdir
         end
       end
       nil
@@ -80,8 +80,8 @@ module Moab
 
     # @param tar_pathname [Pathname] The location of the tar file (default is based on bag location)
     def delete_tarfile()
-      bag_name = @bag_pathname.basename
-      bag_parent = @bag_pathname.parent
+      bag_name = bag_pathname.basename
+      bag_parent = bag_pathname.parent
       tar_pathname = bag_parent.join("#{bag_name}.tar")
       tar_pathname.delete if tar_pathname.exist?
     end
@@ -106,17 +106,17 @@ module Moab
     # @return [FileInventory] Create, write, and return the inventory of the files that will become the payload
     def create_bag_inventory(package_mode)
       @package_mode = package_mode
-      @bag_pathname.mkpath
+      bag_pathname.mkpath
       case package_mode
         when :depositor
-          @version_inventory.write_xml_file(@bag_pathname, 'version')
-          @bag_inventory = @signature_catalog.version_additions(@version_inventory)
-          @bag_inventory.write_xml_file(@bag_pathname, 'additions')
+          version_inventory.write_xml_file(bag_pathname, 'version')
+          @bag_inventory = signature_catalog.version_additions(version_inventory)
+          bag_inventory.write_xml_file(bag_pathname, 'additions')
         when :reconstructor
-          @bag_inventory = @version_inventory
-          @bag_inventory.write_xml_file(@bag_pathname, 'version')
+          @bag_inventory = version_inventory
+          bag_inventory.write_xml_file(bag_pathname, 'version')
       end
-      @bag_inventory
+      bag_inventory
     end
 
     # @api internal
@@ -125,9 +125,9 @@ module Moab
     # This method uses Unix hard links in order to greatly speed up the process.
     # Hard links, however, require that the target bag must be created within the same filesystem as the source files
     def fill_payload(source_base_pathname)
-      @bag_inventory.groups.each do |group|
+      bag_inventory.groups.each do |group|
         group_id = group.group_id
-        case @package_mode
+        case package_mode
           when :depositor
             deposit_group(group_id, source_base_pathname.join(group_id))
           when :reconstructor
@@ -141,9 +141,9 @@ module Moab
     # @return [Boolean] Copy all the files listed in the group inventory to the bag.
     #    Return true if successful or nil if the group was not found in the inventory
     def deposit_group(group_id, source_dir)
-      group = @bag_inventory.group(group_id)
+      group = bag_inventory.group(group_id)
       return nil? if group.nil? or group.files.empty?
-      target_dir = @bag_pathname.join('data',group_id)
+      target_dir = bag_pathname.join('data',group_id)
       group.path_list.each do |relative_path|
         source = source_dir.join(relative_path)
         target = target_dir.join(relative_path)
@@ -158,11 +158,11 @@ module Moab
     # @return [Boolean] Copy all the files listed in the group inventory to the bag.
     #    Return true if successful or nil if the group was not found in the inventory
     def reconstuct_group(group_id, storage_object_dir)
-      group = @bag_inventory.group(group_id)
+      group = bag_inventory.group(group_id)
       return nil? if group.nil? or group.files.empty?
-      target_dir = @bag_pathname.join('data',group_id)
+      target_dir = bag_pathname.join('data',group_id)
       group.files.each do |file|
-        catalog_entry = @signature_catalog.signature_hash[file.signature]
+        catalog_entry = signature_catalog.signature_hash[file.signature]
         source = storage_object_dir.join(catalog_entry.storage_path)
         file.instances.each do |instance|
           target = target_dir.join(instance.path)
@@ -188,10 +188,10 @@ module Moab
       manifest_pathname = Hash.new
       manifest_file = Hash.new
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        manifest_pathname[type] = @bag_pathname.join("manifest-#{type}.txt")
+        manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
-      @bag_inventory.groups.each do |group|
+      bag_inventory.groups.each do |group|
         group.files.each do |file|
           fixity = file.signature.fixity
           file.instances.each do |instance|
@@ -215,10 +215,10 @@ module Moab
     # @api internal
     # @return [void] Generate the bag-info.txt tag file
     def create_bag_info_txt
-      @bag_pathname.join("bag-info.txt").open('w') do |f|
-        f.puts "External-Identifier: #{@bag_inventory.package_id}"
-        f.puts "Payload-Oxum: #{@bag_inventory.byte_count}.#{@bag_inventory.file_count}"
-        f.puts "Bag-Size: #{@bag_inventory.human_size}"
+      bag_pathname.join("bag-info.txt").open('w') do |f|
+        f.puts "External-Identifier: #{bag_inventory.package_id}"
+        f.puts "Payload-Oxum: #{bag_inventory.byte_count}.#{bag_inventory.file_count}"
+        f.puts "Bag-Size: #{bag_inventory.human_size}"
       end
     end
 
@@ -228,10 +228,10 @@ module Moab
       manifest_pathname = Hash.new
       manifest_file = Hash.new
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        manifest_pathname[type] = @bag_pathname.join("tagmanifest-#{type}.txt")
+        manifest_pathname[type] = bag_pathname.join("tagmanifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
-      @bag_pathname.children.each do |file|
+      bag_pathname.children.each do |file|
         unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
           signature = FileSignature.new.signature_from_file(file)
           fixity = signature.fixity
@@ -252,8 +252,8 @@ module Moab
 
     # @return [Boolean] Create a tar file containing the bag
     def create_tarfile(tar_pathname=nil)
-      bag_name = @bag_pathname.basename
-      bag_parent = @bag_pathname.parent
+      bag_name = bag_pathname.basename
+      bag_parent = bag_pathname.parent
       tar_pathname ||= bag_parent.join("#{bag_name}.tar")
       tar_cmd="cd '#{bag_parent}'; tar --dereference --force-local -cf  '#{tar_pathname}' '#{bag_name}'"
       begin
