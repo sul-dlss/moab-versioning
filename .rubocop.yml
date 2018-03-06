@@ -31,10 +31,15 @@ Lint/UselessAssignment:
 
 # --- Metrics ---
 
+Metrics/ClassLength:
+  Exclude:
+    - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse
+
 # because this isn't 1994
 Metrics/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
+    - lib/moab/deposit_bag_validator.rb # line 167 
     - 'lib/moab/file_manifestation.rb'
     - lib/moab/storage_object_validator.rb # long interpolated error message line
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
@@ -59,6 +64,7 @@ Naming/FileName:
 RSpec/NestedGroups:
   Exclude:
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # Tests are more readable, all the tests should be under 1 context block
+    - spec/unit_tests/moab/deposit_bag_validator_spec.rb # tests are readable
 
 # --- Style ---
 
