@@ -49,7 +49,7 @@ module Moab
     # @param change [String] the change type to search for
     # @return [FileGroupDifferenceSubset] Find a specified subset of changes
     def subset(change)
-      @subset_hash[change.to_sym]
+      subset_hash[change.to_sym]
     end
 
     # (see Serializable#initialize)
@@ -69,7 +69,7 @@ module Moab
 
     def difference_count
       count = 0
-      @subset_hash.each do |type,subset|
+      subset_hash.each do |type, subset|
         count += subset.count if type != :identical
       end
       count
@@ -79,49 +79,49 @@ module Moab
     # @return [Integer] How many files were unchanged
     attribute :identical, Integer, :on_save => Proc.new { |n| n.to_s }
     def identical
-      @subset_hash[:identical].count
+      subset_hash[:identical].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were added
     attribute :copyadded, Integer, :on_save => Proc.new { |n| n.to_s }
     def copyadded
-      @subset_hash[:copyadded].count
+      subset_hash[:copyadded].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were deleted
     attribute :copydeleted, Integer, :on_save => Proc.new { |n| n.to_s }
     def copydeleted
-      @subset_hash[:copydeleted].count
+      subset_hash[:copydeleted].count
     end
 
     # @attribute
     # @return [Integer] How many files were renamed
     attribute :renamed, Integer, :on_save => Proc.new { |n| n.to_s }
     def renamed
-      @subset_hash[:renamed].count
+      subset_hash[:renamed].count
     end
 
     # @attribute
     # @return [Integer] How many files were modified
     attribute :modified, Integer, :on_save => Proc.new { |n| n.to_s }
     def modified
-      @subset_hash[:modified].count
+      subset_hash[:modified].count
     end
 
     # @attribute
     # @return [Integer] How many files were added
     attribute :added, Integer, :on_save => Proc.new { |n| n.to_s }
     def added
-      @subset_hash[:added].count
+      subset_hash[:added].count
     end
 
     # @attribute
     # @return [Integer] How many files were deleted
     attribute :deleted, Integer, :on_save => Proc.new { |n| n.to_s }
     def deleted
-      @subset_hash[:deleted].count
+      subset_hash[:deleted].count
     end
 
     # @attribute
@@ -130,12 +130,12 @@ module Moab
     has_many :subsets, FileGroupDifferenceSubset, :tag => 'subset'
 
     def subsets
-      @subset_hash.values
+      subset_hash.values
     end
 
     def subsets=(array)
       if array
-        array.each{|subset| @subset_hash[subset.change.to_sym] = subset}
+        array.each{|subset| subset_hash[subset.change.to_sym] = subset}
       end
     end
 
@@ -237,12 +237,11 @@ module Moab
           fid.basis_path = path
           fid.other_path = "same"
           fid.signatures << signature
-          @subset_hash[:identical].files << fid
+          subset_hash[:identical].files << fid
         end
       end
       self
     end
-
 
     # @api internal
     # @param matching_signatures [Array<FileSignature>] The file signature of the file manifestations being compared
@@ -272,12 +271,11 @@ module Moab
           else
             fid.change = 'renamed'
           end
-          @subset_hash[fid.change.to_sym].files << fid
+          subset_hash[fid.change.to_sym].files << fid
         end
       end
       self
     end
-
 
     # @api internal
     # @param basis_path_hash [Hash<String,FileSignature>]
@@ -293,7 +291,7 @@ module Moab
         fid.other_path = "same"
         fid.signatures << basis_path_hash[path]
         fid.signatures << other_path_hash[path]
-        @subset_hash[:modified].files << fid
+        subset_hash[:modified].files << fid
       end
       self
     end
@@ -311,7 +309,7 @@ module Moab
         fid.basis_path = ""
         fid.other_path = path
         fid.signatures << other_path_hash[path]
-        @subset_hash[:added].files << fid
+        subset_hash[:added].files << fid
       end
       self
     end
@@ -329,7 +327,7 @@ module Moab
         fid.basis_path = path
         fid.other_path = ""
         fid.signatures << basis_path_hash[path]
-        @subset_hash[:deleted].files << fid
+        subset_hash[:deleted].files << fid
       end
       self
     end
@@ -340,15 +338,15 @@ module Moab
       deltas = Hash.new {|hash, key| hash[key] = []}
       # case where other_path is empty or 'same'.  (create array of strings)
       [:identical, :modified, :deleted, :copydeleted].each do |change|
-        deltas[change].concat(@subset_hash[change].files.collect{ |file| file.basis_path })
+        deltas[change].concat(subset_hash[change].files.collect{ |file| file.basis_path })
       end
       # case where basis_path and other_path are both present.  (create array of arrays)
       [:copyadded, :renamed].each do |change|
-        deltas[change].concat(@subset_hash[change].files.collect { |file| [file.basis_path,file.other_path] })
+        deltas[change].concat(subset_hash[change].files.collect { |file| [file.basis_path, file.other_path] })
       end
       # case where basis_path is empty.  (create array of strings)
       [:added].each do |change|
-        deltas[change].concat(@subset_hash[change].files.collect { |file| file.other_path })
+        deltas[change].concat(subset_hash[change].files.collect { |file| file.other_path })
       end
       deltas
     end
@@ -362,7 +360,7 @@ module Moab
       # Split the filepairs into two arrays
       oldnames = []
       newnames = []
-      filepairs.each do |old,new|
+      filepairs.each do |old, new|
         oldnames << old
         newnames << new
       end
@@ -374,7 +372,7 @@ module Moab
     # @param [Array<Array<String>>] filepairs The set of oldname, newname pairs for all files being renamed
     # @return [Array<Array<String>>] a set of file triples containing oldname, tempname, newname
     def rename_tempfile_triplets(filepairs)
-      filepairs.collect{|old,new| [old, new, "#{new}-#{Time.now.strftime('%Y%m%d%H%H%S')}-tmp"]}
+      filepairs.collect{ |old, new| [old, new, "#{new}-#{Time.now.strftime('%Y%m%d%H%H%S')}-tmp"] }
     end
 
   end

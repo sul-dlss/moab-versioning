@@ -68,7 +68,7 @@ module Moab
     # @return [Integer] The total disk usage (in 1 kB blocks) of all files that share this manifestation's signature
     #   (estimating du -k result)
     def block_count
-      block_size=1024
+      block_size = 1024
       instance_blocks = (signature.size.to_i + block_size - 1)/block_size
       file_count * instance_blocks
     end
