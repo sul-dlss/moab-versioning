@@ -52,11 +52,11 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
+    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new { |n| n.to_s }
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
-      @digital_object_id + '-' + StorageObject.version_dirname(@version_id)
+      digital_object_id + '-' + StorageObject.version_dirname(version_id)
     end
 
     # @attribute
@@ -64,7 +64,7 @@ module Moab
     attribute :inventory_datetime, String, :tag => 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
-      @inventory_datetime=Moab::UtcTime.input(datetime)
+      @inventory_datetime = Moab::UtcTime.input(datetime)
     end
 
     def inventory_datetime
@@ -73,7 +73,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files in the inventory (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new { |t| t.to_s }
 
     def file_count
       groups.inject(0) { |sum, group| sum + group.file_count }
@@ -81,7 +81,7 @@ module Moab
 
      # @attribute
     # @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new { |t| t.to_s }
 
     def byte_count
       groups.inject(0) { |sum, group| sum + group.byte_count }
@@ -89,7 +89,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new { |t| t.to_s }
 
     def block_count
       groups.inject(0) { |sum, group| sum + group.block_count }
@@ -101,20 +101,20 @@ module Moab
 
     # @return [Array<FileGroup] The set of data groups that contain files
     def non_empty_groups
-      @groups.select{|group| !group.files.empty?}
+      groups.select { |group| !group.files.empty? }
     end
 
     # @param non_empty [Boolean] if true, return group_id's only for groups having files
     # @return [Array<String>] group identifiers contained in this file inventory
     def group_ids(non_empty=nil)
-      groups = non_empty ? self.non_empty_groups : @groups
-      groups.map{|group| group.group_id}
+      my_groups = non_empty ? self.non_empty_groups : groups
+      my_groups.map { |g| g.group_id }
     end
 
     # @param [String] group_id The identifer of the group to be selected
     # @return [FileGroup] The file group in this inventory for the specified group_id
     def group(group_id)
-      @groups.find{ |group| group.group_id == group_id}
+      groups.find { |group| group.group_id == group_id}
     end
 
     # @param group_id [String] File group identifer (e.g. data, metadata, manifests)
@@ -134,10 +134,10 @@ module Moab
     # @return [FileSignature] The signature of the specified file
     def file_signature(group_id, file_id)
       file_group = group(group_id)
-      errmsg = "group #{group_id} not found for #{@digital_object_id} - #{@version_id}"
+      errmsg = "group #{group_id} not found for #{digital_object_id} - #{version_id}"
       raise FileNotFoundException, errmsg if file_group.nil?
       file_signature = file_group.path_hash[file_id]
-      errmsg = "#{group_id} file #{file_id} not found for #{@digital_object_id} - #{@version_id}"
+      errmsg = "#{group_id} file #{file_id} not found for #{digital_object_id} - #{version_id}"
       raise FileNotFoundException, errmsg if file_signature.nil?
       file_signature
     end
@@ -154,7 +154,7 @@ module Moab
     # @api internal
     # @return [String] Concatenation of the objectId and versionId values
     def package_id
-      "#{@digital_object_id}-v#{@version_id}"
+      "#{digital_object_id}-v#{version_id}"
     end
 
     # @api internal
@@ -174,7 +174,6 @@ module Moab
         else
           data_source
         end
-
       end
     end
 
@@ -186,10 +185,10 @@ module Moab
     # @example {include:file:spec/features/inventory/harvest_inventory_spec.rb}
     def inventory_from_directory(data_dir, group_id=nil)
       if group_id
-        @groups << FileGroup.new(group_id: group_id).group_from_directory(data_dir)
+        groups << FileGroup.new(group_id: group_id).group_from_directory(data_dir)
       else
         ['content', 'metadata'].each do |gid|
-          @groups << FileGroup.new(group_id: gid).group_from_directory(Pathname(data_dir).join(gid))
+          groups << FileGroup.new(group_id: gid).group_from_directory(Pathname(data_dir).join(gid))
         end
       end
       self
@@ -203,7 +202,7 @@ module Moab
       signatures_from_bag = signatures_from_bagit_manifests(bag_pathname)
       bag_data_subdirs = bag_pathname.join('data').children
       bag_data_subdirs.each do |subdir|
-        @groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_bagit_subdir(subdir, signatures_from_bag)
+        groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_bagit_subdir(subdir, signatures_from_bag)
       end
       self
     end
@@ -215,7 +214,7 @@ module Moab
       DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
       end
-      signatures = Hash.new { |hash,path| hash[path] = FileSignature.new }
+      signatures = Hash.new { |hash, path| hash[path] = FileSignature.new }
       DEFAULT_CHECKSUM_TYPES.each do |type|
         if manifest_pathname[type].exist?
           manifest_pathname[type].each_line do |line|
@@ -229,7 +228,7 @@ module Moab
           end
         end
       end
-      signatures.each {|file_pathname,signature| signature.size = file_pathname.size}
+      signatures.each { |file_pathname, signature| signature.size = file_pathname.size }
       signatures
     end
 
