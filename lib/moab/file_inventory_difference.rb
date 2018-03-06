@@ -55,7 +55,7 @@ module Moab
     attribute :report_datetime, String, :tag => 'reportDatetime'
 
     def report_datetime=(datetime)
-      @report_datetime=Moab::UtcTime.input(datetime)
+      @report_datetime = Moab::UtcTime.input(datetime)
     end
 
     def report_datetime
@@ -115,7 +115,7 @@ module Moab
       inv_diff = self.to_hash
       inv_diff["group_differences"].each_value do |group_diff|
         delete_subsets = []
-        group_diff["subsets"].each do |change_type,subset|
+        group_diff["subsets"].each do |change_type, subset|
           delete_subsets << change_type if change_type == "identical" or subset["count"] == 0
         end
         delete_subsets.each do |change_type|
