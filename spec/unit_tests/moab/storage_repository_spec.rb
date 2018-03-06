@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::StorageRepository' do
 
   let(:storage_repo) { Moab::StorageRepository.new() }

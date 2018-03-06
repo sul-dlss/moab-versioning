@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Stanford::DorMetadata' do
 
   specify '#initialize' do

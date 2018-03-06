@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Stanford::ActiveFedoraObject' do
 
   specify '#initialize' do

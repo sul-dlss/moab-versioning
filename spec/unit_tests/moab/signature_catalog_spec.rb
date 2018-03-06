@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::SignatureCatalog' do
 
   context '#initialize' do

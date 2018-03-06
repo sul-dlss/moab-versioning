@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::FileInstanceDifference' do
 
   describe '#initialize' do

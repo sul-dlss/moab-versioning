@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 def basic_expectations(file_group)
   expect(file_group).to be_instance_of(Moab::FileGroup)
   expect(file_group.files).to be_kind_of(Array)

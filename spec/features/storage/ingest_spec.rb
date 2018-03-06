@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Import digital object version to SDR" do
   #  In order to: ingest a new version of a digital object into SDR
   #  The application needs to: process a Bagit bag containing either a full set or subset of object files

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::VersionMetadataEntry' do
   context '#initialize' do
     it 'empty hash for options' do

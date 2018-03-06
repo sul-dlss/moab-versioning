@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::VersionMetadata' do
 
   let(:version_metadata) { Moab::VersionMetadata.new({}) }

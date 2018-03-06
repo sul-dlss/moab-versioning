@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Stanford::MoabStorageDirectory do
   let(:storage_dir) { @fixtures.join('storage_root01/moab_storage_trunk') }
 

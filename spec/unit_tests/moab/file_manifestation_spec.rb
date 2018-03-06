@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::FileManifestation' do
   let(:file_manifestation) do
     v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')

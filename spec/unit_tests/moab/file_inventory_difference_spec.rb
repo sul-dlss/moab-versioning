@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::FileInventoryDifference' do
   let(:new_diff) { Moab::FileInventoryDifference.new }
   let(:v1_inventory) do

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Compare versions" do
   #  In order to: determine what changes are present in a new version
   #  The application needs to: compare file inventories
