@@ -66,13 +66,12 @@ module Moab
       %w{group_id file_count byte_count block_count}
     end
 
-
     # @attribute
     # @return [Array<FileManifestation>] The set of files comprising the group
     has_many :files, FileManifestation, :tag => 'file'
 
     def files
-      @signature_hash.values
+      signature_hash.values
     end
 
     # @return [Hash<FileSignature, FileManifestation>] The actual in-memory store for the collection
@@ -84,7 +83,7 @@ module Moab
     #   used to test for existence of a filename in this file group
     def path_hash
       path_hash = Hash.new
-      @signature_hash.each do |signature,manifestation|
+      signature_hash.each do |signature,manifestation|
         manifestation.instances.each do |instance|
           path_hash[instance.path] = signature
         end
@@ -103,7 +102,7 @@ module Moab
     def path_hash_subset(signature_subset)
       path_hash = Hash.new
       signature_subset.each do |signature|
-        manifestation = @signature_hash[signature]
+        manifestation = signature_hash[signature]
         manifestation.instances.each do |instance|
           path_hash[instance.path] = signature
         end
@@ -135,12 +134,12 @@ module Moab
     # @return [void] Add a single {FileSignature},{FileInstance} key/value pair to this group.
     #   Data is actually stored in the {#signature_hash}
     def add_file_instance(signature,instance)
-      if @signature_hash.has_key?(signature)
-        manifestation = @signature_hash[signature]
+      if signature_hash.has_key?(signature)
+        manifestation = signature_hash[signature]
       else
         manifestation = FileManifestation.new
         manifestation.signature = signature
-        @signature_hash[signature] = manifestation
+        signature_hash[signature] = manifestation
       end
       manifestation.instances << instance
     end
@@ -150,7 +149,7 @@ module Moab
     # for example, the manifest inventory does not contain a file entry for itself
     def remove_file_having_path(path)
       signature = self.path_hash[path]
-      @signature_hash.delete(signature)
+      signature_hash.delete(signature)
     end
 
     # @return [Pathname] The full path used as the basis of the relative paths reported
@@ -203,13 +202,13 @@ module Moab
     # @see http://stackoverflow.com/questions/3974087/how-to-make-rubys-find-find-follow-symlinks
     # @see http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
     def harvest_directory(path, recursive, validated=nil)
-      pathname=Pathname.new(path).expand_path
+      pathname = Pathname.new(path).expand_path
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
         if child.basename.to_s == ".DS_Store"
           next
         elsif child.directory?
-          harvest_directory(child,recursive, validated) if recursive
+          harvest_directory(child, recursive, validated) if recursive
         else
           add_physical_file(child, validated)
         end
