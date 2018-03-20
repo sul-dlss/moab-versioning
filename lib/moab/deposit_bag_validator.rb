@@ -79,6 +79,7 @@ module Moab
       deposit_bag_pathname.exist?
     end
 
+    # assumes this is called when result_array is empty, as subsequent checks will use these required files
     def required_bag_files_exist?
       REQUIRED_BAG_FILES.each do |filename|
         pathname = deposit_bag_pathname.join(filename)
@@ -90,15 +91,15 @@ module Moab
     def verify_version
       version_md_pathname = deposit_bag_pathname.join(VERSION_METADATA_PATH)
       version_from_file = last_version_id_from_version_md_xml(version_md_pathname)
-      verify_version_in_xml_file(version_md_pathname, version_from_file) if version_from_file
+      verify_version_from_xml_file(version_md_pathname, version_from_file) if version_from_file
 
       version_additions_pathname = deposit_bag_pathname.join(VERSION_ADDITIONS_BASENAME)
       version_from_file = version_id_from_version_manifest_xml(version_additions_pathname)
-      verify_version_in_xml_file(version_additions_pathname, version_from_file) if version_from_file
+      verify_version_from_xml_file(version_additions_pathname, version_from_file) if version_from_file
 
       version_inventory_pathname = deposit_bag_pathname.join(VERSION_INVENTORY_BASENAME)
       version_from_file = version_id_from_version_manifest_xml(version_inventory_pathname)
-      verify_version_in_xml_file(version_inventory_pathname, version_from_file) if version_from_file
+      verify_version_from_xml_file(version_inventory_pathname, version_from_file) if version_from_file
     end
 
     def last_version_id_from_version_md_xml(version_md_pathname)
@@ -128,7 +129,7 @@ module Moab
       nil
     end
 
-    def verify_version_in_xml_file(file_pathname, found)
+    def verify_version_from_xml_file(file_pathname, found)
       return if found == expected_new_version
       err_data = {
         file_pathname: file_pathname,
@@ -262,9 +263,9 @@ module Moab
     def checksums_diff_hash(left_checksums, right_checksums, left_label, right_label)
       diff_hash = {}
       # NOTE: these are intentionally & and | instead of && and ||
-      matching_checksum_types = (left_checksums.keys & right_checksums.keys)
-      matching_checksum_types = (left_checksums.keys | right_checksums.keys) if matching_checksum_types.empty?
-      matching_checksum_types.each do |type|
+      checksum_types_to_compare = (left_checksums.keys & right_checksums.keys)
+      checksum_types_to_compare = (left_checksums.keys | right_checksums.keys) if checksum_types_to_compare.empty?
+      checksum_types_to_compare.each do |type|
         left_checksum = left_checksums[type]
         right_checksum = right_checksums[type]
         if left_checksum != right_checksum
