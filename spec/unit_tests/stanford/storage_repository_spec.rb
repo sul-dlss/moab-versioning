@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Stanford::StorageRepository' do
 
   let(:storage_repository) { Stanford::StorageRepository.new() }

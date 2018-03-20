@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'pp'
-
 describe "Build a version metadata datastream" do
   #  In order to:
   #  The application needs to:

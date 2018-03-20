@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Process contentMetadata datastream" do
   #  In order to: utilize the DOR contentMetadata
   #  The application needs to: extract file inventory data from a contentMetadata datastream

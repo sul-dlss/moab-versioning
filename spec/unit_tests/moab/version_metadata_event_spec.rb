@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::VersionMetadataEvent' do
 
   specify '#initialize' do

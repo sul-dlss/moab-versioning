@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::VerificationResult' do
 
   specify '.verify_value' do

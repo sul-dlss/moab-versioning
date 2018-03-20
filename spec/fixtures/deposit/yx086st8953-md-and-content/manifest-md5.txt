@@ -1,0 +1,8 @@
+73ba18d52f3eab34ec854b34ac7740de data/content/data.zip
+05f5a77082e0184743dfde307c083092 data/metadata/contentMetadata.xml
+04db36c01e00268ad948956b016f1da3 data/metadata/events.xml
+2ae17b63a4515abc22d92558e7cb3a8c data/metadata/geoMetadata.xml
+bafccb4577cef3751c1646dd14852ce6 data/metadata/provenanceMetadata.xml
+1005402b7840df0c8c36626e02462277 data/metadata/technicalMetadata.xml
+59fa85f799d5ddee9670b6a233d05ae9 data/metadata/versionMetadata.xml
+b568616ec8ca31a54468376dd676da40 data/metadata/workflows.xml

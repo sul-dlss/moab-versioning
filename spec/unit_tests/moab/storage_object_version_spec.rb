@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::StorageObjectVersion' do
   before(:all) do
     @temp_ingests = @temp.join("ingests")

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::FileInventory' do
   let(:v1_version_inventory) { @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
   let(:parsed_file_inventory) do

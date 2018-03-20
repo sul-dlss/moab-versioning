@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::Bagger' do
 
   specify '#initialize' do

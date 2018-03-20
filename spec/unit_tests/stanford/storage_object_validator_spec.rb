@@ -1,4 +1,3 @@
-require 'spec_helper'
 RSpec.describe Stanford::StorageObjectValidator do
   describe '#validation_errors' do
     it 'returns errors from calling the superclass validation_errors' do

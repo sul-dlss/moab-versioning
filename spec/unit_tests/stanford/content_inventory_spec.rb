@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Stanford::ContentInventory' do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 

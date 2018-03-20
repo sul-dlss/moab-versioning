@@ -1,4 +1,3 @@
-require 'spec_helper'
 RSpec.describe Moab::StorageObjectValidator do
   let(:druid1) { 'xx000xx0000'}
   let(:druid_path1) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000' }

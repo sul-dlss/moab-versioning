@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Serializer::Serializable' do
 
   before(:all) do

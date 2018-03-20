@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::SignatureCatalogEntry' do
 
   let(:sce) { Moab::SignatureCatalogEntry.new() }

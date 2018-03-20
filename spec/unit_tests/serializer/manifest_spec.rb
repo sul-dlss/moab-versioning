@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Serializer::Manifest' do
 
   context '.xml_filename' do

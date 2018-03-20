@@ -1,0 +1,2 @@
+this file's checksums are ignored because sha666 is an unrecognized algorithm
+666 data/metadata/versionMetadata.xml

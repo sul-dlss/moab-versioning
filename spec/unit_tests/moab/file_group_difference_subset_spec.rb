@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe 'Moab::FileGroupDifferenceSubset' do
   let(:diff_subset) { Moab::FileGroupDifferenceSubset.new }
 

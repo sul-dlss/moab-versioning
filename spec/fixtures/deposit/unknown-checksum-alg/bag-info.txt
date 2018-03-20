@@ -1,0 +1,3 @@
+External-Identifier: druid:oo000oo0000-v1
+Payload-Oxum: 164.1
+Bag-Size: .16 KB

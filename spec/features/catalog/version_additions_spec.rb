@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Determine version's file additions" do
   #  In order to: know which files are new or modified in a new version
   #  The application needs to: compare file signatures against the signature catalog

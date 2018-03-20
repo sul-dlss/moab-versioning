@@ -1,0 +1,35 @@
+<contentMetadata objectId="yx086st8953" type="geo">
+  <resource id="yx086st8953_1" sequence="1" type="object">
+    <label>Data</label>
+    <file preserve="yes" shelve="yes" publish="yes" id="data.zip" mimetype="application/zip" size="694462" role="master">
+      <geoData>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="http://purl.stanford.edu/yx086st8953">
+        <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">image/tiff; format=GeoTIFF</dc:format>
+        <dc:type xmlns:dc="http://purl.org/dc/elements/1.1/">Dataset#Raster</dc:type>
+        <gml:boundedBy xmlns:gml="http://www.opengis.net/gml/3.2/">
+          <gml:Envelope gml:srsName="EPSG:4326">
+            <gml:lowerCorner>-180.0 -90.0</gml:lowerCorner>
+            <gml:upperCorner>180.0 90.0</gml:upperCorner>
+          </gml:Envelope>
+        </gml:boundedBy>
+        <dc:coverage xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="http://sws.geonames.org/6295630/" dc:language="eng" dc:title="Earth (Planet)"/>
+      </rdf:Description>
+      </geoData>
+      <checksum type="sha1">8d8303873a228c06fea65705e9bbbfb1d2e178f7</checksum>
+      <checksum type="md5">73ba18d52f3eab34ec854b34ac7740de</checksum>
+    </file>
+    <file preserve="no" shelve="yes" publish="yes" id="data_EPSG_4326.zip" mimetype="application/zip" size="1221289" role="derivative">
+      <geoData srsName="EPSG:4326"/>
+      <checksum type="sha1">5839ff5bb66b3f982b066e5eb7b252e4ba563e25</checksum>
+      <checksum type="md5">70022fc5fa851b030e9b0844f6dbcafc</checksum>
+    </file>
+  </resource>
+  <resource id="yx086st8953_2" sequence="2" type="preview">
+    <label>Preview</label>
+    <file preserve="yes" shelve="yes" publish="yes" id="preview.jpg" mimetype="image/jpeg" size="2466" role="master">
+      <checksum type="sha1">485e2556ef6af1cc0d72d42b898eda7ed07dc4ae</checksum>
+      <checksum type="md5">ddc730c1ac5ce0aca03eac8e1578db90</checksum>
+      <imageData width="200" height="133"/>
+    </file>
+  </resource>
+</contentMetadata>

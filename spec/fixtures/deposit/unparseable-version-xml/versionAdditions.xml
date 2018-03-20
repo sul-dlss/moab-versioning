@@ -1,0 +1,22 @@
+asdfasdfasdfasdf
+<fileInventory type="additions" objectId="druid:oo000oo0000" versionId="1" inventoryDatetime="2018-03-02T23:41:05Z" fileCount="5" byteCount="45555" blockCount="47">
+  <fileGroup groupId="metadata" dataSource="" fileCount="5" byteCount="45555" blockCount="47">
+    asdfasdfasdf
+      <fileSignature size="1122" sha256="3fc4ffddbdf1fd014511c58745c1f14a891ede208ff758402a65b61c7167d5d3"/>
+      <fileInstance path="events.xml" datetime="2018-03-02T23:41:04Z"/>
+    </file>
+    <file>
+      <fileSignature size="263" sha256="dce0ceb5bc94b47a4511425070117d1b94db49c34efa6b79ea5c5a415c4ed493"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2018-03-02T23:41:04Z"/>
+    </file>
+    <file>
+      <fileSignature size="721" sha256="a33b90a61f7e0b8085502610f92a5a69fca7cff7860b37da608597047d1d1610"/>
+      <fileInstance path="relationshipMetadata.xml" datetime="2018-03-02T23:41:04Z"/>
+    </file>
+    <file>
+      <fileSignature size="783" sha256="8b67199f81fe6cd7733f540e26895c844afa0b77eee363fa12f20712fdb863e7"/>
+      <fileInstance path="versionMetadata.xml" datetime="2018-03-02T23:41:05Z"/>
+    </file>
+    </file>
+  </fileGroup>
+</fileInventory>
