@@ -49,25 +49,20 @@ describe 'Moab::FileGroupDifference' do
     expect(group_diff.subsets.size).to be >= 5
   end
 
-  before(:all) do
-    @v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    @v1_inventory = Moab::FileInventory.parse(@v1_inventory_pathname.read)
-    @v1_content = @v1_inventory.groups[0]
-
-    @v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-    @v3_inventory = Moab::FileInventory.parse(@v3_inventory_pathname.read)
-    @v3_content = @v3_inventory.groups[0]
+  let(:v1_content) do
+    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+    v1_inventory.groups[0]
   end
-
-  before(:each) do
-    @diff = Moab::FileGroupDifference.new
+  let(:v3_content) do
+    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
+    v3_inventory.groups[0]
   end
+  let(:new_diff) { Moab::FileGroupDifference.new }
 
   specify '#summary' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    @diff.compare_file_groups(basis_group, other_group)
-    summary = @diff.summary()
+    summary = new_diff.compare_file_groups(v1_content, v3_content).summary()
     expect(summary).to be_instance_of Moab::FileGroupDifference
     summary.group_id = ''
     summary.difference_count = 1
@@ -79,59 +74,53 @@ describe 'Moab::FileGroupDifference' do
     expect(summary.subsets.size).to eq 0
   end
 
-  specify '#matching_keys' do
-    basis_hash = @v1_content.path_hash
-    other_hash = @v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    matching_keys = @diff.matching_keys(basis_hash, other_hash)
-    expect(matching_keys.size).to eq 4
-    expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-  end
-
-  specify '#basis_only_keys' do
-    basis_hash = @v1_content.path_hash
-    other_hash = @v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    basis_only_keys = @diff.basis_only_keys(basis_hash, other_hash)
-    expect(basis_only_keys.size).to eq 2
-    expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
-  end
-
-  specify '#other_only_keys' do
-    basis_hash = @v1_content.path_hash
-    other_hash = @v3_content.path_hash
-    expect(basis_hash.keys).to eq ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
-    expect(other_hash.keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    other_only_keys = @diff.other_only_keys(basis_hash, other_hash)
-    expect(other_only_keys.size).to eq 1
-    expect(other_only_keys).to eq ["page-4.jpg"]
+  context 'key comparison methods' do
+    let(:basis_hash) { v1_content.path_hash }
+    let(:other_hash) { v3_content.path_hash }
+    # basis_hash.keys: ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+    # other_hash.keys: ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
+    specify '#matching_keys' do
+      matching_keys = new_diff.matching_keys(basis_hash, other_hash)
+      expect(matching_keys.size).to eq 4
+      expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+    end
+    specify '#basis_only_keys' do
+      basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
+      expect(basis_only_keys.size).to eq 2
+      expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
+    end
+    specify '#other_only_keys' do
+      other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
+      expect(other_only_keys.size).to eq 1
+      expect(other_only_keys).to eq ["page-4.jpg"]
+    end
   end
 
   specify '#compare_file_groups' do
-    basis_group = @v1_content
-    other_group = @v3_content
+    basis_group = v1_content
+    other_group = v3_content
     expect(basis_group.group_id).to eq "content"
     expect(basis_group.data_source).to include("data/jq937jp0017/v0001/content")
     expect(other_group.data_source).to include("data/jq937jp0017/v0003/content")
-    expect(@diff).to receive(:compare_matching_signatures).with(basis_group, other_group)
-    expect(@diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
-    return_value = @diff.compare_file_groups(basis_group, other_group)
-    expect(return_value).to eq @diff
-    expect(@diff.group_id).to eq basis_group.group_id
+    expect(new_diff).to receive(:compare_matching_signatures).with(basis_group, other_group)
+    expect(new_diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
+    return_value = new_diff.compare_file_groups(basis_group, other_group)
+    expect(return_value).to eq new_diff
+    expect(new_diff.group_id).to eq basis_group.group_id
   end
 
   specify '#compare_file_groups with empty group' do
-    basis_group = @v1_content
     other_group = Moab::FileGroup.new(group_id: "content")
-    diff = @diff.compare_file_groups(basis_group, other_group)
+    diff = new_diff.compare_file_groups(v1_content, other_group)
     expect(diff.difference_count).to eq 6
     expect(diff.deleted).to eq 6
   end
 
-  specify '#compare_file_groups copyadded, copydeleted, renamed' do
-    basis_group_string = <<-XML
+  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
+
+  describe '#compare_file_groups' do
+    let(:comp_file_groups_diff) do
+      basis_group_string = <<-XML
         <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="3" byteCount="6368941" blockCount="6222">
           <file>
             <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
@@ -147,8 +136,8 @@ describe 'Moab::FileGroupDifference' do
             <fileInstance path="Original-3" datetime=""/>
           </file>
         </fileGroup>
-    XML
-    other_group_string = <<-XML
+      XML
+      other_group_string = <<-XML
         <fileGroup groupId="content" dataSource="contentMetadata-all" fileCount="2" byteCount="3186054" blockCount="3113">
           <file>
             <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
@@ -164,80 +153,83 @@ describe 'Moab::FileGroupDifference' do
             <fileInstance path="File-renamed" datetime=""/>
           </file>
         </fileGroup>
-    XML
-    basis_group = Moab::FileGroup.parse(basis_group_string)
-    other_group = Moab::FileGroup.parse(other_group_string)
-    diff = @diff.compare_file_groups(basis_group, other_group)
-    expect(diff.difference_count).to eq 3
-    expect(diff.identical).to eq 2
-    expect(diff.copyadded).to eq 1
-    expect(diff.copydeleted).to eq 1
-    expect(diff.renamed).to eq 1
+      XML
+      basis_file_group = Moab::FileGroup.parse(basis_group_string)
+      other_file_group = Moab::FileGroup.parse(other_group_string)
+      new_diff.compare_file_groups(basis_file_group, other_file_group)
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:copyadded].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="copyadded" count="1">
-        <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
-          <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'sets attributes' do
+      expect(comp_file_groups_diff.difference_count).to eq 3
+      expect(comp_file_groups_diff.identical).to eq 2
+      expect(comp_file_groups_diff.copyadded).to eq 1
+      expect(comp_file_groups_diff.copydeleted).to eq 1
+      expect(comp_file_groups_diff.renamed).to eq 1
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:copydeleted].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="copydeleted" count="1">
-        <file change="copydeleted" basisPath="Copy-removed" otherPath="">
-          <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'copyadded subset' do
+      copyadded_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copyadded].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="copyadded" count="1">
+          <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
+            <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(copyadded_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
 
-    xmlObj1 = Nokogiri::XML(diff.subset_hash[:renamed].to_xml)
-    xmlObj2 = Nokogiri::XML(<<-XML
-      <subset change="renamed" count="1">
-        <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
-          <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
-        </file>
-      </subset>
-    XML
-    )
-    same = EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts = { :element_order => false, :normalize_whitespace => true })
-    expect(same).to be true
+    specify 'copydeleted subset' do
+      copydeleted_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copydeleted].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="copydeleted" count="1">
+          <file change="copydeleted" basisPath="Copy-removed" otherPath="">
+            <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(copydeleted_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
+
+    specify 'renamed subset' do
+      renamed_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:renamed].to_xml)
+      exp_ng_xml = Nokogiri::XML(<<-XML
+        <subset change="renamed" count="1">
+          <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
+            <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
+          </file>
+        </subset>
+      XML
+      )
+      expect(EquivalentXml.equivalent?(renamed_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    end
   end
 
   specify '#compare_matching_signatures' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    @diff.compare_matching_signatures(basis_group, other_group)
-    expect(@diff.subsets.size).to eq 2
-    expect(@diff.subsets.collect {|s| s.change }).to eq ["identical", "renamed"]
-    expect(@diff.subsets.collect {|s| s.files.size }).to eq [1, 2]
-    expect(@diff.identical).to eq 1
-    expect(@diff.renamed).to eq 2
+    new_diff.compare_matching_signatures(v1_content, v3_content)
+    expect(new_diff.subsets.size).to eq 2
+    expect(new_diff.subsets.collect {|s| s.change }).to eq ["identical", "renamed"]
+    expect(new_diff.subsets.collect {|s| s.files.size }).to eq [1, 2]
+    expect(new_diff.identical).to eq 1
+    expect(new_diff.renamed).to eq 2
   end
 
   specify '#compare_non_matching_signatures' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    @diff.compare_non_matching_signatures(basis_group, other_group)
-    expect(@diff.subsets.size).to eq 3
-    expect(@diff.subsets.collect {|s| s.change }).to eq ["modified", "added", "deleted"]
-    expect(@diff.subsets.collect {|s| s.files.size }).to eq [1, 1, 2]
-    expect(@diff.modified).to eq 1
-    expect(@diff.deleted).to eq 2
-    expect(@diff.added).to eq 1
+    new_diff.compare_non_matching_signatures(v1_content, v3_content)
+    expect(new_diff.subsets.size).to eq 3
+    expect(new_diff.subsets.collect {|s| s.change }).to eq ["modified", "added", "deleted"]
+    expect(new_diff.subsets.collect {|s| s.files.size }).to eq [1, 1, 2]
+    expect(new_diff.modified).to eq 1
+    expect(new_diff.deleted).to eq 2
+    expect(new_diff.added).to eq 1
   end
 
   specify '#tabulate_unchanged_files' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    signatures =  @diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_group = v1_content
+    other_group = v3_content
+    signatures = new_diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
     expected_sig_fixity1 = {
       size: "39450",
       md5: "82fc107c88446a3119a51a8663d1e955",
@@ -257,12 +249,12 @@ describe 'Moab::FileGroupDifference' do
       sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
     }
     expect(signatures.collect { |s| s.fixity }).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    @diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
-    unchanged_subset = @diff.subset('identical')
+    new_diff.tabulate_unchanged_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+    unchanged_subset = new_diff.subset('identical')
     expect(unchanged_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(unchanged_subset.change).to eq 'identical'
     expect(unchanged_subset.files.size).to eq 1
-    expect(@diff.identical).to eq 1
+    expect(new_diff.identical).to eq 1
     file0 = unchanged_subset.files[0]
     expect(file0.change).to eq 'identical'
     expect(file0.basis_path).to eq 'title.jpg'
@@ -277,9 +269,9 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_renamed_files' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    signatures =  @diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_group = v1_content
+    other_group = v3_content
+    signatures = new_diff.matching_keys(basis_group.signature_hash, other_group.signature_hash)
     expected_sig_fixity1 = {
       size: "39450",
       md5: "82fc107c88446a3119a51a8663d1e955",
@@ -299,12 +291,12 @@ describe 'Moab::FileGroupDifference' do
       sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
     }
     expect(signatures.collect { |s| s.fixity }).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    @diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
-    renamed_subset = @diff.subset('renamed')
+    new_diff.tabulate_renamed_files(signatures, basis_group.signature_hash, other_group.signature_hash)
+    renamed_subset = new_diff.subset('renamed')
     expect(renamed_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(renamed_subset.change).to eq 'renamed'
     expect(renamed_subset.files.size).to eq 2
-    expect(@diff.renamed).to eq 2
+    expect(new_diff.renamed).to eq 2
     file0 = renamed_subset.files[0]
     expect(file0.change).to eq 'renamed'
     expect(file0.basis_path).to eq 'page-2.jpg'
@@ -330,12 +322,12 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_modified_files' do
-    basis_group = @v1_content
-    other_group = @v3_content
+    basis_group = v1_content
+    other_group = v3_content
     expect((other_path_hash = other_group.path_hash).keys).to eq(
       ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
     )
-    signatures =  @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
     expected_sig_fixity1 = {
       size: "41981",
       md5: "915c0305bf50c55143f1506295dc122c",
@@ -355,16 +347,16 @@ describe 'Moab::FileGroupDifference' do
       sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
     }
     expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
     basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
     other_path_hash = other_group.path_hash_subset(other_only_signatures)
-    @diff.tabulate_modified_files(basis_path_hash, other_path_hash)
-    modified_subset = @diff.subset('modified')
+    new_diff.tabulate_modified_files(basis_path_hash, other_path_hash)
+    modified_subset = new_diff.subset('modified')
     expect(modified_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(modified_subset.change).to eq 'modified'
     expect(modified_subset.files.size).to eq 1
-    expect(@diff.modified).to eq 1
+    expect(new_diff.modified).to eq 1
     file0 = modified_subset.files[0]
     expect(file0.change).to eq 'modified'
     expect(file0.basis_path).to eq 'page-1.jpg'
@@ -379,12 +371,12 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_deleted_files' do
-    basis_group = @v1_content
-    other_group = @v3_content
+    basis_group = v1_content
+    other_group = v3_content
     expect((other_path_hash = other_group.path_hash).keys).to eq(
       ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
     )
-    signatures =  @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
     expected_sig_fixity1 = {
       size: "41981",
       md5: "915c0305bf50c55143f1506295dc122c",
@@ -404,16 +396,16 @@ describe 'Moab::FileGroupDifference' do
       sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
     }
     expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2, expected_sig_fixity3]
-    basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
     basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
     other_path_hash = other_group.path_hash_subset(other_only_signatures)
-    @diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
-    deleted_subset = @diff.subset('deleted')
+    new_diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
+    deleted_subset = new_diff.subset('deleted')
     expect(deleted_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(deleted_subset.change).to eq 'deleted'
     expect(deleted_subset.files.size).to eq 2
-    expect(@diff.deleted).to eq 2
+    expect(new_diff.deleted).to eq 2
     file0 = deleted_subset.files[0]
     expect(file0.change).to eq 'deleted'
     expect(file0.basis_path).to eq 'intro-1.jpg'
@@ -439,9 +431,9 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#tabulate_added_files' do
-    basis_group = @v1_content
-    other_group = @v3_content
-    signatures =  @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_group = v1_content
+    other_group = v3_content
+    signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
     expected_sig_fixity1 = {
       size: "32915",
       md5: "c1c34634e2f18a354cd3e3e1574c3194",
@@ -456,16 +448,16 @@ describe 'Moab::FileGroupDifference' do
     }
     expect(signatures.collect { |s| s.fixity}).to eq [expected_sig_fixity1, expected_sig_fixity2]
 
-    basis_only_signatures = @diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
-    other_only_signatures = @diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    basis_only_signatures = new_diff.basis_only_keys(basis_group.signature_hash, other_group.signature_hash)
+    other_only_signatures = new_diff.other_only_keys(basis_group.signature_hash, other_group.signature_hash)
     basis_path_hash = basis_group.path_hash_subset(basis_only_signatures)
     other_path_hash = other_group.path_hash_subset(other_only_signatures)
-    @diff.tabulate_added_files(basis_path_hash, other_path_hash)
-    added_subset = @diff.subset('added')
+    new_diff.tabulate_added_files(basis_path_hash, other_path_hash)
+    added_subset = new_diff.subset('added')
     expect(added_subset).to be_instance_of Moab::FileGroupDifferenceSubset
     expect(added_subset.change).to eq 'added'
     expect(added_subset.files.size).to eq 1
-    expect(@diff.added).to eq 1
+    expect(new_diff.added).to eq 1
     file0 = added_subset.files[0]
     expect(file0.change).to eq 'added'
     expect(file0.basis_path).to eq ''
@@ -495,7 +487,7 @@ describe 'Moab::FileGroupDifference' do
   end
 
   specify '#file_deltas' do
-    deltas = @diff.file_deltas
+    deltas = new_diff.file_deltas
     expect(deltas).to eq(
       {
         identical: [],
@@ -507,10 +499,8 @@ describe 'Moab::FileGroupDifference' do
         added: []
       }
     )
-    basis_group = @v1_content
-    other_group = @v3_content
-    @diff.compare_file_groups(basis_group, other_group)
-    deltas = @diff.file_deltas
+    new_diff.compare_file_groups(v1_content, v3_content)
+    deltas = new_diff.file_deltas
     expect(deltas).to eq(
       {
         identical: [ "title.jpg" ],
@@ -526,14 +516,14 @@ describe 'Moab::FileGroupDifference' do
 
   specify '#renames_require_temp_files' do
     renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
-    expect(@diff.rename_require_temp_files(renamed)).to eq true
+    expect(new_diff.rename_require_temp_files(renamed)).to eq true
     renamed = [ [ "page-1.jpg", "page-1b.jpg" ], [ "page-2.jpg", "page-2b.jpg" ] ]
-    expect(@diff.rename_require_temp_files(renamed)).to eq false
+    expect(new_diff.rename_require_temp_files(renamed)).to eq false
   end
 
   specify '#renames_require_temp_files' do
     renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
-    triplets = @diff.rename_tempfile_triplets(renamed)
+    triplets = new_diff.rename_tempfile_triplets(renamed)
     expect(triplets[0][0]).to eq "page-2.jpg"
     expect(triplets[0][1]).to eq "page-3.jpg"
     expect(triplets[0][2]).to match(/^page-3.jpg.*-tmp$/)
