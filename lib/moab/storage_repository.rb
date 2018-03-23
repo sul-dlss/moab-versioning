@@ -33,7 +33,7 @@ module Moab
     # @return [String] The trunk segment of the object storage path
     def storage_trunk
       unless defined?(@storage_trunk)
-        raise "oab::Config.storage_trunk not found in config file" if Moab::Config.storage_trunk.nil?
+        raise "Moab::Config.storage_trunk not found in config file" if Moab::Config.storage_trunk.nil?
         @storage_trunk  = Moab::Config.storage_trunk
       end
       @storage_trunk
