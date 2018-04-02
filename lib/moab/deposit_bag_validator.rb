@@ -85,7 +85,7 @@ module Moab
         pathname = deposit_bag_pathname.join(filename)
         result_array << single_error_hash(REQUIRED_FILE_NOT_FOUND, file_pathname: pathname) unless pathname.exist?
       end
-      result_array.empty? ? true : false
+      result_array.empty?
     end
 
     def verify_version
