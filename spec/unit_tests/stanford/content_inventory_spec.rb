@@ -1,11 +1,8 @@
 describe 'Stanford::ContentInventory' do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
-  before(:all) do
-    @digital_object_id = @obj
-    @version_id = 2
+  before(:all) do # rubocop:disable RSpec/BeforeAfterAll
     @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
-    @content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
@@ -15,8 +12,7 @@ describe 'Stanford::ContentInventory' do
 
   context '#inventory_from_cm' do
     it 'version_id = 2' do
-      version_id = 2
-      inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', version_id)
+      inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', 2)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_xml = <<-XML
@@ -46,8 +42,7 @@ describe 'Stanford::ContentInventory' do
     end
     it 'version_id = 1' do
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
-      version_id = 1
-      inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', version_id)
+      inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_xml = <<-XML
@@ -93,18 +88,19 @@ describe 'Stanford::ContentInventory' do
     end
   end
 
-  # testing boundary case where all subset attributes are no (e.g. shelve='no')
-  specify '#inventory_from_cm with empty subset' do
-    empty_inventory = <<-XML
+  let(:content_metadata_empty_subset) { IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
+  let(:empty_inventory) do
+    <<-XML
       <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
         <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
       </fileInventory>
     XML
-    druid = 'druid:ms205ty4764'
-    version_id = 1
-    subsets = %w(shelve publish preserve)
-    subsets.each do |subset|
-      inventory = @content_inventory.inventory_from_cm(@content_metadata_empty_subset, druid, subset, version_id)
+  end
+
+  # testing boundary case where all subset attributes are no (e.g. shelve='no')
+  specify '#inventory_from_cm with empty subset' do
+    %w(shelve publish preserve).each do |subset|
+      inventory = @content_inventory.inventory_from_cm(content_metadata_empty_subset, 'druid:ms205ty4764', subset, 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_ng_xml = Nokogiri::XML(empty_inventory)
@@ -178,7 +174,7 @@ describe 'Stanford::ContentInventory' do
   specify '#generate_content_metadata' do
     directory = @data.join('v0002/content')
     group= Moab::FileGroup.new.group_from_directory(directory, true)
-    cm = @content_inventory.generate_content_metadata(group, @digital_object_id, @version_id)
+    cm = @content_inventory.generate_content_metadata(group, @obj, 2)
     generated_ng_xml = Nokogiri::XML(cm)
     generated_ng_xml.xpath('//@datetime').remove
     exp_xml = <<-XML
