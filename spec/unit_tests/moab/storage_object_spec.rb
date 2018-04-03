@@ -47,8 +47,8 @@ describe 'Moab::StorageObject' do
   end
 
   specify '#deposit_bag_pathname' do
-     expect(@storage_object.deposit_bag_pathname).to eq(@packages.join('jq937jp0017'))
-   end
+    expect(@storage_object.deposit_bag_pathname).to eq(@packages.join('jq937jp0017'))
+  end
 
   context '#ingest_bag' do
     it 'by the version folder' do

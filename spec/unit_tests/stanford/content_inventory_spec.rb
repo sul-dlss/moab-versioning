@@ -1,7 +1,7 @@
 describe 'Stanford::ContentInventory' do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
-  before (:all) do
+  before(:all) do
     @digital_object_id = @obj
     @version_id = 2
     @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))

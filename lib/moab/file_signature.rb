@@ -150,7 +150,7 @@ module Moab
       sha1_digest = Digest::SHA1.new
       sha256_digest = Digest::SHA2.new(256)
       pathname.open("r") do |stream|
-        while buffer = stream.read(8192)
+        while (buffer = stream.read(8192))
           md5_digest.update(buffer)
           sha1_digest.update(buffer)
           sha256_digest.update(buffer)

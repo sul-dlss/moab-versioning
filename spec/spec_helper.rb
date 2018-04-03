@@ -1,5 +1,3 @@
-#$LOAD_PATH.unshift(File.dirname(__FILE__))
-#$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'coveralls'
 Coveralls.wear_merged! # because we run travis on multiple rubies
 
@@ -34,7 +32,7 @@ RSpec::Matchers.define :hash_match do |expected|
     diff = Serializer::Serializable.deep_diff(:expected, expected, :detected, detected)
     diff == {}
   end
-  failure_message do |actual|
+  failure_message do |_actual|
     # ai is a kernel mixin that calls AwesomePrint::Inspector
     "Hash difference found: \n#{diff.ai}"
   end

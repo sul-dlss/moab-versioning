@@ -116,7 +116,7 @@ module Moab
     def files=(manifestiation_array)
       manifestiation_array.each do |manifestiation|
         add_file(manifestiation)
-     end
+      end
     end
 
     # @api internal

@@ -264,35 +264,6 @@ Layout/SpaceInsideParens:
     - 'spec/unit_tests/moab/utc_time_spec.rb'
 
 # Offense count: 1
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'lib/moab/file_signature.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, SupportedStylesAlignWith.
-# SupportedStylesAlignWith: either, start_of_block, start_of_line
-Lint/BlockAlignment:
-  Exclude:
-    - 'lib/moab/file_group.rb'
-    - 'spec/unit_tests/moab/file_signature_spec.rb'
-    - 'spec/unit_tests/moab/storage_object_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, SupportedStylesAlignWith, AutoCorrect.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Lint/EndAlignment:
-  Exclude:
-    - 'lib/stanford/content_inventory.rb'
-
-# Offense count: 1
-Lint/ParenthesesAsGroupedExpression:
-  Exclude:
-    - 'spec/unit_tests/stanford/content_inventory_spec.rb'
-
-# Offense count: 1
 Lint/RescueException:
   Exclude:
     - 'lib/moab/file_group.rb'
@@ -302,13 +273,6 @@ Lint/RescueWithoutErrorClass:
   Exclude:
     - 'lib/moab/bagger.rb'
     - 'lib/stanford/content_inventory.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'spec/spec_helper.rb'
 
 # Offense count: 35
 Metrics/AbcSize:

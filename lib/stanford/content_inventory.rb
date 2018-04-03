@@ -40,17 +40,17 @@ module Stanford
       ng_doc = Nokogiri::XML(content_metadata)
       validate_content_metadata(ng_doc)
       nodeset = case subset.to_s.downcase
-        when 'preserve'
-          ng_doc.xpath("//file[@preserve='yes']")
-        when 'publish'
-          ng_doc.xpath("//file[@publish='yes']")
-        when 'shelve'
-          ng_doc.xpath("//file[@shelve='yes']")
-        when 'all'
-          ng_doc.xpath("//file")
-        else
-            raise "Unknown disposition subset (#{subset})"
-        end
+                when 'preserve'
+                  ng_doc.xpath("//file[@preserve='yes']")
+                when 'publish'
+                  ng_doc.xpath("//file[@publish='yes']")
+                when 'shelve'
+                  ng_doc.xpath("//file[@shelve='yes']")
+                when 'all'
+                  ng_doc.xpath("//file")
+                else
+                  raise "Unknown disposition subset (#{subset})"
+                end
       content_group = Moab::FileGroup.new(:group_id=>'content', :data_source => "contentMetadata-#{subset}")
       nodeset.each do |file_node|
         signature = generate_signature(file_node)
@@ -69,12 +69,12 @@ module Stanford
       checksum_nodes = node.xpath('checksum')
       checksum_nodes.each do |checksum_node|
         case checksum_node.attributes['type'].content.upcase
-          when 'MD5'
-            signature.md5 = checksum_node.text
-          when 'SHA1', 'SHA-1'
-            signature.sha1 = checksum_node.text
-          when 'SHA256', 'SHA-256'
-            signature.sha256 = checksum_node.text
+        when 'MD5'
+          signature.md5 = checksum_node.text
+        when 'SHA1', 'SHA-1'
+          signature.sha1 = checksum_node.text
+        when 'SHA256', 'SHA-256'
+          signature.sha256 = checksum_node.text
         end
       end
       signature
@@ -135,15 +135,15 @@ module Stanford
       result = []
       content_metadata_doc =
         case content_metadata.class.name
-          when "String"
-            Nokogiri::XML(content_metadata)
-          when "Pathname"
-            Nokogiri::XML(content_metadata.read)
-          when "Nokogiri::XML::Document"
-            content_metadata
-          else
-            raise Moab::InvalidMetadataException, "Content Metadata is in unrecognized format"
-          end
+        when "String"
+          Nokogiri::XML(content_metadata)
+        when "Pathname"
+          Nokogiri::XML(content_metadata.read)
+        when "Nokogiri::XML::Document"
+          content_metadata
+        else
+          raise Moab::InvalidMetadataException, "Content Metadata is in unrecognized format"
+        end
       nodeset = content_metadata_doc.xpath("//file")
       nodeset.each do |file_node|
         missing = ['id', 'size','md5','sha1']
@@ -152,10 +152,10 @@ module Stanford
         checksum_nodes = file_node.xpath('checksum')
         checksum_nodes.each do |checksum_node|
           case checksum_node.attributes['type'].content.upcase
-            when 'MD5'
-              missing.delete('md5')
-            when 'SHA1', 'SHA-1'
-              missing.delete('sha1')
+          when 'MD5'
+            missing.delete('md5')
+          when 'SHA1', 'SHA-1'
+            missing.delete('sha1')
           end
         end
         if missing.include?('id')
@@ -231,7 +231,5 @@ module Stanford
         end
       end
     end
-
   end
-
 end

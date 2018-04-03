@@ -68,7 +68,7 @@ describe 'Moab::FileSignature' do
   specify '#eql?' do
     expect(title_v1_signature.eql?(title_v2_signature)).to eq true
     expect(page1_v1_signature.eql?(page1_v2_signature)).to eq false
- end
+  end
 
   specify '#==' do
     expect(title_v1_signature == title_v2_signature).to eq true
