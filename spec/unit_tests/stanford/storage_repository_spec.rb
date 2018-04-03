@@ -1,4 +1,4 @@
-describe 'Stanford::StorageRepository' do
+describe Stanford::StorageRepository do
 
   let(:storage_repository) { Stanford::StorageRepository.new() }
 

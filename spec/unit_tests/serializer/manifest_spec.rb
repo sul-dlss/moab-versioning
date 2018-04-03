@@ -1,4 +1,4 @@
-describe 'Serializer::Manifest' do
+describe Serializer::Manifest do
 
   context '.xml_filename' do
     it 'unspecified name returns class name' do

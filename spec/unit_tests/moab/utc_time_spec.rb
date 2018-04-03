@@ -1,4 +1,4 @@
-describe 'Moab::UtcTime' do
+describe Moab::UtcTime do
 
   let(:time_string) { "Apr 12 19:36:07 UTC 2012" }
   let(:time_class_parsed_string) { Time.parse( time_string) }

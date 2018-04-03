@@ -1,4 +1,4 @@
-describe 'Moab::FileInstanceDifference' do
+describe Moab::FileInstanceDifference do
 
   describe '#initialize' do
     specify 'empty options hash' do

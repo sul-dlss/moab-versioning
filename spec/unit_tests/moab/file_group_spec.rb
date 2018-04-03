@@ -4,7 +4,7 @@ def basic_expectations(file_group)
   expect(file_group.signature_hash).to be_kind_of(Hash)
 end
 
-describe 'Moab::FileGroup' do
+describe Moab::FileGroup do
 
   it '#initialize' do
     basic_expectations(Moab::FileGroup.new())

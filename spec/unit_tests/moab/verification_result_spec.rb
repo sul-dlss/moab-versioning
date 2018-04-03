@@ -1,4 +1,4 @@
-describe 'Moab::VerificationResult' do
+describe Moab::VerificationResult do
 
   specify '.verify_value' do
     result = Moab::VerificationResult.verify_value('greeting', "hello", "goodbye")

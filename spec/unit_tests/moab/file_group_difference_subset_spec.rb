@@ -1,4 +1,4 @@
-describe 'Moab::FileGroupDifferenceSubset' do
+describe Moab::FileGroupDifferenceSubset do
   let(:diff_subset) { Moab::FileGroupDifferenceSubset.new }
 
   describe '#initialize' do

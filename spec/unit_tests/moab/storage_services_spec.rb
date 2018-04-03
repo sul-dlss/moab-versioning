@@ -1,4 +1,4 @@
-describe 'Moab::StorageServices' do
+describe Moab::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
   specify '.storage_roots' do

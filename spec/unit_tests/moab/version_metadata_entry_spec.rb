@@ -1,4 +1,4 @@
-describe 'Moab::VersionMetadataEntry' do
+describe Moab::VersionMetadataEntry do
   context '#initialize' do
     it 'empty hash for options' do
       vme = Moab::VersionMetadataEntry.new({})

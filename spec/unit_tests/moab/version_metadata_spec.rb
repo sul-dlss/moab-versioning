@@ -1,4 +1,4 @@
-describe 'Moab::VersionMetadata' do
+describe Moab::VersionMetadata do
 
   let(:version_metadata) { Moab::VersionMetadata.new({}) }
 

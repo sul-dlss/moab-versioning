@@ -1,4 +1,4 @@
-describe 'Moab::VersionMetadataEvent' do
+describe Moab::VersionMetadataEvent do
 
   specify '#initialize' do
     opts = {

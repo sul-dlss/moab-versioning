@@ -1,4 +1,4 @@
-describe 'Stanford::ActiveFedoraObject' do
+describe Stanford::ActiveFedoraObject do
 
   specify '#initialize' do
     fedora_object = double('FedoraObject')

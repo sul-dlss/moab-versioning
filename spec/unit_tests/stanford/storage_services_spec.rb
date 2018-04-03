@@ -1,4 +1,4 @@
-describe 'Stanford::StorageServices' do
+describe Stanford::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
   let(:content_metadata) { IO.read(@data.join('v0002/metadata/contentMetadata.xml')) }
 

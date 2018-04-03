@@ -1,4 +1,4 @@
-describe 'Moab::SignatureCatalog' do
+describe Moab::SignatureCatalog do
 
   context '#initialize' do
     it 'empty options hash' do

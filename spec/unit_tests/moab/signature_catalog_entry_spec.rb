@@ -1,4 +1,4 @@
-describe 'Moab::SignatureCatalogEntry' do
+describe Moab::SignatureCatalogEntry do
 
   let(:sce) { Moab::SignatureCatalogEntry.new() }
 

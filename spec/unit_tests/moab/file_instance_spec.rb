@@ -1,4 +1,4 @@
-describe 'Moab::FileInstance' do
+describe Moab::FileInstance do
   let(:v1_base_directory) { @fixtures.join('data/jq937jp0017/v0001/content') }
   let(:v2_base_directory) { @fixtures.join('data/jq937jp0017/v0002/content') }
   let(:title_v1_instance) do

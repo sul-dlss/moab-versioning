@@ -1,4 +1,4 @@
-describe 'Moab::StorageObjectVersion' do
+describe Moab::StorageObjectVersion do
   before(:all) do
     @temp_ingests = @temp.join("ingests")
     @temp_object_dir = @temp_ingests.join(@obj)

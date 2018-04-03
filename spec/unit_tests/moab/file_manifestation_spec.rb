@@ -1,4 +1,4 @@
-describe 'Moab::FileManifestation' do
+describe Moab::FileManifestation do
   let(:file_manifestation) do
     v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
     title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')

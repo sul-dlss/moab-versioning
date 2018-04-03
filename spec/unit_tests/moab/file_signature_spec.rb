@@ -1,4 +1,4 @@
-describe 'Moab::FileSignature' do
+describe Moab::FileSignature do
   let(:title_v1_pathname) { @fixtures.join('data/jq937jp0017/v0001/content/title.jpg') }
   let(:title_v1_signature) { Moab::FileSignature.new.signature_from_file(title_v1_pathname) }
   let(:title_v2_signature) do

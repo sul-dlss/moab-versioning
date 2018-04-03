@@ -1,4 +1,4 @@
-describe 'Moab::Bagger' do
+describe Moab::Bagger do
 
   specify '#initialize' do
     version_inventory = double(Moab::FileInventory.name)

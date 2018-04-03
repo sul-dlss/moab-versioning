@@ -1,4 +1,4 @@
-describe 'Moab::StorageRepository' do
+describe Moab::StorageRepository do
 
   let(:storage_repo) { Moab::StorageRepository.new() }
 

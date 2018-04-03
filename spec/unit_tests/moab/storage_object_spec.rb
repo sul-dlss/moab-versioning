@@ -1,4 +1,4 @@
-describe 'Moab::StorageObject' do
+describe Moab::StorageObject do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
   specify '.version_dirname' do

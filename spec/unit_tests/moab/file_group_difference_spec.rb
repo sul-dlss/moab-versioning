@@ -1,4 +1,4 @@
-describe 'Moab::FileGroupDifference' do
+describe Moab::FileGroupDifference do
   let(:group_diff) do
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
