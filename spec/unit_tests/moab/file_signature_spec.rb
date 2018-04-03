@@ -1,17 +1,17 @@
 describe Moab::FileSignature do
   let(:title_v1_pathname) { @fixtures.join('data/jq937jp0017/v0001/content/title.jpg') }
-  let(:title_v1_signature) { Moab::FileSignature.new.signature_from_file(title_v1_pathname) }
+  let(:title_v1_signature) { described_class.new.signature_from_file(title_v1_pathname) }
   let(:title_v2_signature) do
     title_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/title.jpg')
-    Moab::FileSignature.new.signature_from_file(title_v2_pathname)
+    described_class.new.signature_from_file(title_v2_pathname)
   end
   let(:page1_v1_signature) do
     page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
-    Moab::FileSignature.new.signature_from_file(page1_v1_pathname)
+    described_class.new.signature_from_file(page1_v1_pathname)
   end
   let(:page1_v2_signature) do
     page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
-    Moab::FileSignature.new.signature_from_file(page1_v2_pathname)
+    described_class.new.signature_from_file(page1_v2_pathname)
   end
 
   specify '#initialize' do
@@ -20,14 +20,14 @@ describe Moab::FileSignature do
       md5: 'Test md5',
       sha1: 'Test sha1'
     }
-    file_signature = Moab::FileSignature.new(opts)
+    file_signature = described_class.new(opts)
     expect(file_signature.size).to eq opts[:size]
     expect(file_signature.md5).to eq opts[:md5]
     expect(file_signature.sha1).to eq opts[:sha1]
   end
 
   describe '#set_checksum' do
-    let(:file_sig) { Moab::FileSignature.new }
+    let(:file_sig) { described_class.new }
 
     it 'known checksum types' do
       file_sig.set_checksum(:md5, '1a726cd7963bd6d3ceb10a8c353ec166')
@@ -99,24 +99,24 @@ describe Moab::FileSignature do
     end
 
     specify 'when given all checksums' do
-      fs = Moab::FileSignature.new(page2_fixity)
+      fs = described_class.new(page2_fixity)
       signature = fs.normalized_signature(page2_v1_pathname)
       expect(signature.fixity).to eq(page2_fixity)
     end
     specify 'when given partial checksums' do
-      fs = Moab::FileSignature.new(size: "39450", sha1: 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
+      fs = described_class.new(size: "39450", sha1: 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = fs.normalized_signature(page2_v1_pathname)
       expect(signature.fixity).to eq(page2_fixity)
     end
     specify 'when given bad checksum' do
-      fs = Moab::FileSignature.new(sha1: 'dummy')
+      fs = described_class.new(sha1: 'dummy')
       exp_err_regex = /Signature inconsistent between inventory and file/
       expect{ fs.normalized_signature(page2_v1_pathname) }.to raise_exception(exp_err_regex)
     end
   end
 
   specify '.checksum_names_for_type' do
-    expect(Moab::FileSignature.checksum_names_for_type).to eq(
+    expect(described_class.checksum_names_for_type).to eq(
       {
         md5: ["MD5"],
         sha1: ["SHA-1", "SHA1"],
@@ -126,7 +126,7 @@ describe Moab::FileSignature do
   end
 
   specify '.checksum_type_for_name' do
-    expect(Moab::FileSignature.checksum_type_for_name).to eq(
+    expect(described_class.checksum_type_for_name).to eq(
       {
         "MD5" => :md5,
         "SHA1" => :sha1,

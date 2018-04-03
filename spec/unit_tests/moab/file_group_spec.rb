@@ -5,19 +5,18 @@ def basic_expectations(file_group)
 end
 
 describe Moab::FileGroup do
-
   it '#initialize' do
-    basic_expectations(Moab::FileGroup.new())
+    basic_expectations(described_class.new())
   end
   it '#initialize with empty hash argument' do
-    basic_expectations(Moab::FileGroup.new({}))
+    basic_expectations(described_class.new({}))
   end
   it '#initialize with populated hash argument' do
     # test initialization with options hash
     opts = Hash.new
     opts[:group_id]    = 'Test group_id'
     opts[:data_source] = 'Test data_source'
-    file_group = Moab::FileGroup.new(opts)
+    file_group = described_class.new(opts)
     basic_expectations(file_group)
     expect(file_group.group_id   ).to eq(opts[:group_id])
     expect(file_group.data_source).to eq(opts[:data_source])
@@ -28,7 +27,7 @@ describe Moab::FileGroup do
   end
 
   before(:all) do
-    @file_group = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'),recursive=true)
+    @file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'),recursive=true)
   end
 
   it 'Provides instance attribute get/set' do
@@ -45,10 +44,9 @@ describe Moab::FileGroup do
   end
 
   describe 'INSTANCE METHODS' do
-
     before(:each) do
-      @v1_file_group  = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
-      @new_file_group = Moab::FileGroup.new
+      @v1_file_group  = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),recursive=true)
+      @new_file_group = described_class.new
     end
 
     it 'provides path_hash, path_list, path_hash_subset' do
@@ -79,7 +77,7 @@ describe Moab::FileGroup do
     end
 
     it '#remove_file_having_path affects file_count' do
-      file_group = Moab::FileGroup.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),true)
+      file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'),true)
       before_file_count = file_group.file_count
       file_group.remove_file_having_path("page-1.jpg")
       expect(file_group.file_count).to eq(before_file_count - 1)
@@ -116,13 +114,13 @@ describe Moab::FileGroup do
 
     it '#harvest_directory does something?!?' do         ## TODO: NO EXPECTATIONS DEFINED
       path = @fixtures.join('derivatives/manifests')
-      file_group = Moab::FileGroup.new
+      file_group = described_class.new
       file_group.base_directory=path
       file_group.harvest_directory(path,true)
       file_group.file_count=0
 
       path = @fixtures.join('derivatives/packages/v0001')
-      second_group = Moab::FileGroup.new
+      second_group = described_class.new
       second_group.base_directory=path
       second_group.harvest_directory(path,false)
       second_group.file_count=0
@@ -130,7 +128,7 @@ describe Moab::FileGroup do
 
     it '#add_physical_file adds data for a physical file to array of files in group' do
       pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
-      group = Moab::FileGroup.new
+      group = described_class.new
       group.base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
       group.add_physical_file(pathname)
       expect(group.files.size).to eq(1)

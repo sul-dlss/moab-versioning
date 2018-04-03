@@ -4,7 +4,7 @@ describe Moab::StorageObjectVersion do
     @temp_object_dir = @temp_ingests.join(@obj)
     @existing_object_pathname = @ingests.join(@obj)
     @existing_storage_object = Moab::StorageObject.new(@druid, @existing_object_pathname)
-    @existing_storage_object_version = Moab::StorageObjectVersion.new(@existing_storage_object, 2)
+    @existing_storage_object_version = described_class.new(@existing_storage_object, 2)
     @temp_storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
     @temp_package_pathname = @temp.join("packages")
     bad_object_pathname = @temp.join(@obj)
@@ -29,12 +29,12 @@ describe Moab::StorageObjectVersion do
 
     it 'numeric version' do
       version_id = 2
-      storage_object_version = Moab::StorageObjectVersion.new(storage_object, version_id)
+      storage_object_version = described_class.new(storage_object, version_id)
       expect(storage_object_version.storage_object).to eq storage_object
       expect(storage_object_version.version_id).to eq version_id
     end
     it 'version as directory name' do
-      v0003 = Moab::StorageObjectVersion.new(storage_object, 'v0003')
+      v0003 = described_class.new(storage_object, 'v0003')
       expect(v0003.version_id).to eq 3
     end
   end
@@ -155,7 +155,7 @@ describe Moab::StorageObjectVersion do
   end
 
   specify '#ingest_bag_data' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 1)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
     files = Array.new
     @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
@@ -184,7 +184,7 @@ describe Moab::StorageObjectVersion do
 
   specify '#ingest_dir' do
     source_dir = @packages.join("v0001/data")
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 1)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     target_dir = temp_storage_object_version.version_pathname.join('data')
     use_links = true
     temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
@@ -212,7 +212,7 @@ describe Moab::StorageObjectVersion do
 
   context '#ingest_file' do
     it 'versionInventory.xml' do
-      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 2)
+      temp_storage_object_version = described_class.new(@temp_storage_object, 2)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
       source_file = @packages.join("v0002").join('versionInventory.xml')
@@ -244,7 +244,7 @@ describe Moab::StorageObjectVersion do
   end
 
   specify '#update_catalog' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 4)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 4)
     signature_catalog = double(Moab::SignatureCatalog.name)
     new_inventory = double(Moab::FileInventory.name)
 
@@ -265,7 +265,7 @@ describe Moab::StorageObjectVersion do
   end
 
   specify '#generate_manifest_inventory' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 2)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 2)
     temp_version_pathname = temp_storage_object_version.version_pathname
     temp_version_pathname.mkpath
     vers_inv_file = @packages.join("v0002").join('versionInventory.xml')

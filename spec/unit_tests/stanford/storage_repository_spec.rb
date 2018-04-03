@@ -1,6 +1,6 @@
 describe Stanford::StorageRepository do
 
-  let(:storage_repository) { Stanford::StorageRepository.new() }
+  let(:storage_repository) { described_class.new() }
 
   context '#storage_branch' do
     it 'Moab::Config.path_method :druid_tree' do

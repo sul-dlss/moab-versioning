@@ -1,14 +1,20 @@
 describe Stanford::ContentInventory do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:content_metadata_empty_subset) { IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
+  let(:empty_inventory) do
+    <<-XML
+      <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
+        <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
+      </fileInventory>
+    XML
+  end
 
   before(:all) do # rubocop:disable RSpec/BeforeAfterAll
     @content_metadata = IO.read(@data.join('v0002/metadata/contentMetadata.xml'))
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
-  before(:each) do
-    @content_inventory = Stanford::ContentInventory.new()
-  end
+  before(:each) { @content_inventory = described_class.new() }
 
   context '#inventory_from_cm' do
     it 'version_id = 2' do
@@ -42,7 +48,7 @@ describe Stanford::ContentInventory do
     end
     it 'version_id = 1' do
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
-      inventory = Stanford::ContentInventory.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
+      inventory = described_class.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_xml = <<-XML
@@ -88,15 +94,6 @@ describe Stanford::ContentInventory do
     end
   end
 
-  let(:content_metadata_empty_subset) { IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
-  let(:empty_inventory) do
-    <<-XML
-      <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
-        <fileGroup groupId="content" dataSource="contentMetadata-subset" fileCount="0" byteCount="0" blockCount="0"/>
-      </fileInventory>
-    XML
-  end
-
   # testing boundary case where all subset attributes are no (e.g. shelve='no')
   specify '#inventory_from_cm with empty subset' do
     %w(shelve publish preserve).each do |subset|
@@ -119,24 +116,24 @@ describe Stanford::ContentInventory do
     end
 
     it '"all" subset' do
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "all")
+      group = described_class.new.group_from_cm(cm_with_subsets, "all")
       expect(group.files.size).to eq(12)
     end
     it '"shelve" subset' do
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "shelve")
+      group = described_class.new.group_from_cm(cm_with_subsets, "shelve")
       expect(group.files.size).to eq(8)
     end
     it '"publish" subset' do
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "publish")
+      group = described_class.new.group_from_cm(cm_with_subsets, "publish")
       expect(group.files.size).to eq(12)
     end
     it '"preserve" subset' do
-      group = Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "preserve")
+      group = described_class.new.group_from_cm(cm_with_subsets, "preserve")
       expect(group.files.size).to eq(8)
     end
     it 'raises exception for unknown subset' do
       exp_regex = /Unknown disposition subset/
-      expect{Stanford::ContentInventory.new.group_from_cm(cm_with_subsets, "dummy")}.to raise_exception(exp_regex)
+      expect{described_class.new.group_from_cm(cm_with_subsets, "dummy")}.to raise_exception(exp_regex)
     end
   end
 

@@ -1,8 +1,7 @@
 describe Moab::SignatureCatalog do
-
-  context '#initialize' do
+  describe '#initialize' do
     it 'empty options hash' do
-      signature_catalog = Moab::SignatureCatalog.new({})
+      signature_catalog = described_class.new({})
       expect(signature_catalog.entries).to be_kind_of(Array)
       expect(signature_catalog.signature_hash).to be_kind_of(Hash)
     end
@@ -12,7 +11,7 @@ describe Moab::SignatureCatalog do
         version_id: 9,
         catalog_datetime: "Apr 12 19:36:07 UTC 2012"
       }
-      signature_catalog = Moab::SignatureCatalog.new(opts)
+      signature_catalog = described_class.new(opts)
       expect(signature_catalog.digital_object_id).to eq(opts[:digital_object_id])
       expect(signature_catalog.version_id).to eq(opts[:version_id])
       expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
@@ -26,7 +25,7 @@ describe Moab::SignatureCatalog do
     @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
   end
   before(:each) do
-    @signature_catalog = Moab::SignatureCatalog.parse(@v1_catalog_pathname.read)
+    @signature_catalog = described_class.parse(@v1_catalog_pathname.read)
     @original_entry_count = @signature_catalog.entries.count
   end
 
@@ -62,7 +61,7 @@ describe Moab::SignatureCatalog do
 
   describe '#catalog_datetime' do
     it 'reformats date as ISO8601 (UTC Z format)' do
-      signature_catalog = Moab::SignatureCatalog.new
+      signature_catalog = described_class.new
       signature_catalog.catalog_datetime = "Apr 12 19:36:07 UTC 2012"
       expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
     end
@@ -134,8 +133,7 @@ describe Moab::SignatureCatalog do
   end
 
   specify "#summary has fields set in #summary_fields" do
-    hash = @signature_catalog.summary
-    expect(hash).to eq({
+    expect(@signature_catalog.summary).to eq({
       "digital_object_id" => "druid:jq937jp0017",
       "version_id" => 1,
       "catalog_datetime" => "#{@signature_catalog.catalog_datetime}",
@@ -146,7 +144,6 @@ describe Moab::SignatureCatalog do
   end
 
   specify "Serialization to string using HappyMapper to_xml" do
-    text = @signature_catalog.to_xml
-    expect(text).to match(/.*<\/signatureCatalog>$/)
+    expect(@signature_catalog.to_xml).to match(/.*<\/signatureCatalog>$/)
   end
 end

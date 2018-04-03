@@ -8,7 +8,7 @@ describe Moab::FileManifestation do
     title_v1_instance = Moab::FileInstance.new.instance_from_file(title_v1_pathname, v1_base_directory)
     page1_v1_instance = Moab::FileInstance.new.instance_from_file(page1_v1_pathname, v1_base_directory)
 
-    fm = Moab::FileManifestation.new
+    fm = described_class.new
     fm.signature = title_v1_signature
     fm.instances << title_v1_instance
     fm.instances << page1_v1_instance
@@ -17,7 +17,7 @@ describe Moab::FileManifestation do
 
   describe '#initialize' do
     specify 'empty options hash' do
-      file_manifestation = Moab::FileManifestation.new({})
+      file_manifestation = described_class.new({})
       expect(file_manifestation.instances).to be_instance_of Array
     end
     specify 'options passed in' do
@@ -25,7 +25,7 @@ describe Moab::FileManifestation do
         signature: double(Moab::FileSignature.name),
         instances: double(Moab::FileInstance.name)
       }
-      file_manifestation = Moab::FileManifestation.new(opts)
+      file_manifestation = described_class.new(opts)
       expect(file_manifestation.signature).to eq opts[:signature]
       expect(file_manifestation.instances).to eq opts[:instances]
     end

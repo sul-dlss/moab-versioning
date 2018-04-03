@@ -15,7 +15,7 @@ describe Serializer::Serializable do
     let(:hash3) { @v3_content.files[0].to_hash }
 
     it 'specified versions' do
-      diff = Serializer::Serializable.deep_diff('v0001',hash1, 'v0003', hash3)
+      diff = described_class.deep_diff('v0001',hash1, 'v0003', hash3)
       expect(diff["signature"]).to hash_match({
               "size" => {
                   "v0001" => 41981,
@@ -38,7 +38,7 @@ describe Serializer::Serializable do
     end
 
     it 'no versions specified' do
-      diff = Serializer::Serializable.deep_diff(hash1, hash3)
+      diff = described_class.deep_diff(hash1, hash3)
       expect(diff["signature"]).to hash_match({
             "size" => {
                  :left => 41981,
@@ -60,19 +60,19 @@ describe Serializer::Serializable do
     end
 
     it 'single argument raises ArgumentError' do
-      expect{Serializer::Serializable.deep_diff(hash1)}.to raise_exception ArgumentError
+      expect{described_class.deep_diff(hash1)}.to raise_exception ArgumentError
     end
   end
 
   context '#initialize' do
     it 'empty options Hash does not raise exception' do
-      expect{Serializer::Serializable.new(Hash.new)}.not_to raise_exception
+      expect{described_class.new(Hash.new)}.not_to raise_exception
     end
 
     it 'options hash with bad variable raises exception' do
       opts = { dummy: 'dummy' }
       err_msg = 'dummy is not a variable name in Serializer::Serializable'
-      expect{Serializer::Serializable.new(opts)}.to raise_exception(RuntimeError, err_msg)
+      expect{described_class.new(opts)}.to raise_exception(RuntimeError, err_msg)
     end
   end
 
@@ -142,7 +142,7 @@ describe Serializer::Serializable do
 
   specify '#array_to_hash' do
     array = %w{this is an array of words}
-    expect(Serializer::Serializable.new.array_to_hash(array)).to hash_match({
+    expect(described_class.new.array_to_hash(array)).to hash_match({
         0 => "this",
         1 => "is",
         2 => "an",

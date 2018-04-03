@@ -1,6 +1,5 @@
 describe Moab::StorageRepository do
-
-  let(:storage_repo) { Moab::StorageRepository.new() }
+  let(:storage_repo) { described_class.new }
 
   specify '#storage_roots' do
     # these are set in spec_config.rb

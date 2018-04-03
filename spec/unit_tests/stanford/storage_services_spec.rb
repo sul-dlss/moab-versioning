@@ -3,7 +3,7 @@ describe Stanford::StorageServices do
   let(:content_metadata) { IO.read(@data.join('v0002/metadata/contentMetadata.xml')) }
 
   specify '.cm_remediate' do
-    remediated_cm = Stanford::StorageServices.cm_remediate(@obj, 1)
+    remediated_cm = described_class.cm_remediate(@obj, 1)
     remediated_cm_ng_xml = Nokogiri::XML(remediated_cm)
     exp_xml = <<-XML
     <contentMetadata type="sample" objectId="druid:jq937jp0017">
@@ -47,7 +47,7 @@ describe Stanford::StorageServices do
 
   context '.compare_cm_to_version_inventory' do
     it 'returns expected Moab::FileInventoryDifference (all subset)' do
-      diff = Stanford::StorageServices.compare_cm_to_version(content_metadata, @druid, 'all', 1)
+      diff = described_class.compare_cm_to_version(content_metadata, @druid, 'all', 1)
       expect(diff).to be_instance_of(Moab::FileInventoryDifference)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
@@ -94,9 +94,9 @@ describe Stanford::StorageServices do
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
-      expect(Stanford::StorageServices)
+      expect(described_class)
         .to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
-      diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', 1)
+      diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
       exp_xml = <<-XML
@@ -164,7 +164,7 @@ describe Stanford::StorageServices do
     it 'shelve subset without specified version' do
       druid = "druid:no000non0000"
       new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
-      diff = Stanford::StorageServices.compare_cm_to_version(new_cm, druid, 'shelve', nil)
+      diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
       exp_xml = <<-XML
@@ -228,7 +228,7 @@ describe Stanford::StorageServices do
       subsets = %w(shelve publish preserve)
       content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
       subsets.each do |subset|
-        diff = Stanford::StorageServices.compare_cm_to_version(content_metadata_empty_subset, druid, subset, version_id)
+        diff = described_class.compare_cm_to_version(content_metadata_empty_subset, druid, subset, version_id)
         expect(diff).to be_instance_of(Moab::FileInventoryDifference)
         diff_ng_xml = Nokogiri::XML(diff.to_xml)
         diff_ng_xml.xpath('//@reportDatetime').remove
@@ -241,7 +241,7 @@ describe Stanford::StorageServices do
 
   context '.cm_version_additions' do
     it 'returns expected Moab::FileInventory' do
-      adds = Stanford::StorageServices.cm_version_additions(content_metadata, @druid, 1)
+      adds = described_class.cm_version_additions(content_metadata, @druid, 1)
       expect(adds).to be_instance_of(Moab::FileInventory)
       adds_ng_xml = Nokogiri::XML(adds.to_xml)
       adds_ng_xml.xpath('//@inventoryDatetime').remove
@@ -260,7 +260,7 @@ describe Stanford::StorageServices do
     end
 
     it 'nil version' do
-      adds = Stanford::StorageServices.cm_version_additions(content_metadata, "druid:no000non0000", nil)
+      adds = described_class.cm_version_additions(content_metadata, "druid:no000non0000", nil)
       expect(adds).to be_instance_of(Moab::FileInventory)
       adds_ng_xml = Nokogiri::XML(adds.to_xml)
       adds_ng_xml.xpath('//@inventoryDatetime').remove

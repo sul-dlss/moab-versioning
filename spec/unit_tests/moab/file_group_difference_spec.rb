@@ -11,13 +11,13 @@ describe Moab::FileGroupDifference do
 
   describe '#initialize' do
     specify 'empty options hash' do
-      diff = Moab::FileGroupDifference.new({})
+      diff = described_class.new({})
       expect(diff.subsets).to be_kind_of Array
       expect(diff.subsets.size).to eq 0
     end
     specify 'options passed in' do
       opts = { group_id: 'Test group_id' }
-      diff = Moab::FileGroupDifference.new(opts)
+      diff = described_class.new(opts)
       expect(diff.group_id).to eq opts[:group_id]
     end
   end
@@ -57,11 +57,11 @@ describe Moab::FileGroupDifference do
     v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
     v3_inventory.groups[0]
   end
-  let(:new_diff) { Moab::FileGroupDifference.new }
+  let(:new_diff) { described_class.new }
 
   specify '#summary' do
     summary = new_diff.compare_file_groups(v1_content, v3_content).summary()
-    expect(summary).to be_instance_of Moab::FileGroupDifference
+    expect(summary).to be_instance_of described_class
     summary.group_id = ''
     summary.difference_count = 1
     summary.identical = 1
