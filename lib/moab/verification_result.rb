@@ -1,6 +1,7 @@
 require 'moab'
 
 module Moab
+  # A recursive "Tree" type object for verifications
   class VerificationResult
     # @return [String] The name of the entity that was verified
     attr_accessor :entity
@@ -15,34 +16,30 @@ module Moab
     attr_accessor :subentities
 
     # @param entity [Object] The name of the entity being verified
-    def initialize(entity)
+    # @param verified [Boolean]
+    # @param details [Hash]
+    def initialize(entity, verified = false, details = nil)
       @entity = entity
-      @verified = false
-      @details = nil
+      @verified = verified
+      @details = details
       @subentities = Array.new
     end
 
-    # @param entity [Symbol] The name of the entity being verified
+    # @param entity [#to_s] The name of the entity being verified
     # @param expected [Object] The expected value
     # @param found [Object] The found value
     # @return [VerificationResult] The result of comparing the expected and found values
     def self.verify_value(entity, expected, found)
-      result = VerificationResult.new(entity.to_s)
-      result.verified = (expected == found)
-      result.details = { 'expected' => expected, 'found' => found }
-      result
+      new(entity.to_s, (expected == found), 'expected' => expected, 'found' => found)
     end
 
-    # @param entity [Symbol] The name of the entity being verified
+    # @param entity [#to_s] The name of the entity being verified
     # @param expression [Object] The expression that will be evaluated as true or false
     # @param details [Object] optional details that could be reported
     # @return [VerificationResult] The result of evaluating the expression
     def self.verify_truth(entity, expression, details = nil)
-      result = VerificationResult.new(entity.to_s)
       # TODO: add expression.empty?
-      result.verified = !(expression.nil? or (expression == false))
-      result.details = details
-      result
+      new(entity.to_s, !(expression.nil? || (expression == false)), details)
     end
 
     # @param verbose [Boolean] If true, always provide all details of the verification
@@ -55,27 +52,21 @@ module Moab
     # @param level [Integer] Used to test the depth of recursion
     # @return [Hash] The verification result serialized to a hash
     def to_hash(verbose = false, level = 0)
-      hash = Hash.new
-      hash['verified'] = @verified
-      if (verbose or @verified == false)
-        hash['details'] = @details ? @details : subentities_to_hash(verbose, level)
+      hash = { 'verified' => verified }
+      if verbose || verified == false
+        hash['details'] = details || subentities_to_hash(verbose, level)
       end
-      if level > 0
-        hash
-      else
-        { @entity => hash }
-      end
+      return hash if level > 0
+      { entity => hash }
     end
+
+    private
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @param level [Integer] Used to increment the depth of recursion
     # @return [Hash] The verification result of subentities serialized to a hash
     def subentities_to_hash(verbose, level)
-      hash = Hash.new
-      @subentities.each do |s|
-        hash[s.entity] = s.to_hash(verbose, level + 1)
-      end
-      hash
+      subentities.map { |s| [s.entity, s.to_hash(verbose, level + 1)] }.to_h
     end
   end
 end
