@@ -1,58 +1,58 @@
-describe 'Moab::StorageServices' do
+describe Moab::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
   specify '.storage_roots' do
-    expect(Moab::StorageServices.storage_roots).to eq([@derivatives, @fixtures.join('newnode')])
+    expect(described_class.storage_roots).to eq([@derivatives, @fixtures.join('newnode')])
   end
 
   specify '.deposit_trunk' do
-    expect(Moab::StorageServices.deposit_trunk).to eq 'packages'
+    expect(described_class.deposit_trunk).to eq 'packages'
   end
 
   specify '.deposit_branch' do
-    expect(Moab::StorageServices.deposit_branch(@obj)).to eq 'jq937jp0017'
+    expect(described_class.deposit_branch(@obj)).to eq 'jq937jp0017'
   end
 
   context '.find_storage_object' do
     it 'include_deposit = false' do
-      expect(Moab::StorageServices.repository).to receive(:find_storage_object).with(@obj, false)
-      Moab::StorageServices.find_storage_object(@obj)
+      expect(described_class.repository).to receive(:find_storage_object).with(@obj, false)
+      described_class.find_storage_object(@obj)
     end
     it 'include_deposit = true' do
-      expect(Moab::StorageServices.repository).to receive(:find_storage_object).with(@obj, true)
-      Moab::StorageServices.find_storage_object(@obj, true)
+      expect(described_class.repository).to receive(:find_storage_object).with(@obj, true)
+      described_class.find_storage_object(@obj, true)
     end
   end
 
   context '.storage_object' do
     it 'create = false' do
-      expect(Moab::StorageServices.repository).to receive(:storage_object).with(@obj, false)
-      Moab::StorageServices.storage_object(@obj)
+      expect(described_class.repository).to receive(:storage_object).with(@obj, false)
+      described_class.storage_object(@obj)
     end
     it 'create = true' do
-      expect(Moab::StorageServices.repository).to receive(:storage_object).with(@obj, true)
-      Moab::StorageServices.storage_object(@obj, true)
+      expect(described_class.repository).to receive(:storage_object).with(@obj, true)
+      described_class.storage_object(@obj, true)
     end
   end
 
   specify '.object_path' do
-    expect(Moab::StorageServices.object_path(@obj)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
+    expect(described_class.object_path(@obj)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
   end
 
   specify '.object_version_path' do
-    expect(Moab::StorageServices.object_version_path(@obj, 1)).to match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
+    expect(described_class.object_version_path(@obj, 1)).to match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
   end
 
   specify '.current_version' do
-    expect(Moab::StorageServices.current_version(@obj)).to eq 3
+    expect(described_class.current_version(@obj)).to eq 3
   end
 
   specify '.object_size' do
-    expect(Moab::StorageServices.object_size(@obj)).to be_between(340000,350000)
+    expect(described_class.object_size(@obj)).to be_between(340000, 350000)
   end
 
   specify '.version_metadata' do
-    vm_ng_xml = Nokogiri::XML(Moab::StorageServices.version_metadata(@obj).read)
+    vm_ng_xml = Nokogiri::XML(described_class.version_metadata(@obj).read)
     exp_xml = <<-XML
       <versionMetadata objectId="druid:jq937jp0017">
         <version versionId="1" label="1.0" significance="major">
@@ -73,34 +73,34 @@ describe 'Moab::StorageServices' do
 
   context '.retrieve_file_group' do
     it 'content' do
-      group = Moab::StorageServices.retrieve_file_group('content', @obj, 2)
+      group = described_class.retrieve_file_group('content', @obj, 2)
       expect(group.group_id).to eq 'content'
     end
     it 'metadata' do
-      group = Moab::StorageServices.retrieve_file_group('metadata', @obj, 2)
+      group = described_class.retrieve_file_group('metadata', @obj, 2)
       expect(group.group_id).to eq 'metadata'
     end
     it 'manifest' do
-      group = Moab::StorageServices.retrieve_file_group('manifest', @obj, 2)
+      group = described_class.retrieve_file_group('manifest', @obj, 2)
       expect(group.group_id).to eq 'manifests'
     end
   end
 
   context '.retrieve_file' do
     it 'content' do
-      content_pathname = Moab::StorageServices.retrieve_file('content', 'page-1.jpg', @obj, 2)
+      content_pathname = described_class.retrieve_file('content', 'page-1.jpg', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content/page-1.jpg}
       expect(content_pathname.to_s).to match(exp_regex)
       expect(content_pathname).to exist
     end
     it 'metadata' do
-      metadata_pathname = Moab::StorageServices.retrieve_file('metadata', 'contentMetadata.xml', @obj, 2)
+      metadata_pathname = described_class.retrieve_file('metadata', 'contentMetadata.xml', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml}
       expect(metadata_pathname.to_s).to match(exp_regex)
       expect(metadata_pathname).to exist
     end
     it 'manifest' do
-      manifest_pathname = Moab::StorageServices.retrieve_file('manifest', 'versionAdditions.xml', @obj, 2)
+      manifest_pathname = described_class.retrieve_file('manifest', 'versionAdditions.xml', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/manifests/versionAdditions.xml}
       expect(manifest_pathname.to_s).to match(exp_regex)
       expect(manifest_pathname).to exist
@@ -109,45 +109,45 @@ describe 'Moab::StorageServices' do
 
   specify '.retrieve_file_using_signature' do
     fixity_hash = {
-      :size=>"40873",
-      :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-      :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      :size => "40873",
+      :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
+      :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
-    filepath = Moab::StorageServices.retrieve_file_using_signature('content', file_signature, @obj, 2)
+    filepath = described_class.retrieve_file_using_signature('content', file_signature, @obj, 2)
     exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
     expect(filepath.to_s).to match(exp_regex)
   end
 
   context '.retrieve_file_signature' do
     it 'content signature' do
-      content_signature = Moab::StorageServices.retrieve_file_signature('content', 'page-1.jpg', @obj, 2)
+      content_signature = described_class.retrieve_file_signature('content', 'page-1.jpg', @obj, 2)
       expected_sig_fixity = {
-        :size=>"32915",
-        :md5=>"c1c34634e2f18a354cd3e3e1574c3194",
-        :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-        :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+        :size => "32915",
+        :md5 => "c1c34634e2f18a354cd3e3e1574c3194",
+        :sha1 => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+        :sha256 => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
       }
       expect(content_signature.fixity).to eq expected_sig_fixity
     end
     it 'metadata signature' do
-      metadata_signature = Moab::StorageServices.retrieve_file_signature('metadata', 'contentMetadata.xml', @obj, 2)
+      metadata_signature = described_class.retrieve_file_signature('metadata', 'contentMetadata.xml', @obj, 2)
       expected_sig_fixity = {
-        :size=>"1303",
-        :md5=>"8672613ac1757cda4e44cc464559cd04",
-        :sha1=>"c3961c0f619a81eaf8779a122219b1f860dbc2f9",
-        :sha256=>"02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"
+        :size => "1303",
+        :md5 => "8672613ac1757cda4e44cc464559cd04",
+        :sha1 => "c3961c0f619a81eaf8779a122219b1f860dbc2f9",
+        :sha256 => "02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"
       }
       expect(metadata_signature.fixity).to eq expected_sig_fixity
     end
     it 'manifest signature' do
-      manifest_signature = Moab::StorageServices.retrieve_file_signature('manifest', 'versionAdditions.xml', @obj, 2)
+      manifest_signature = described_class.retrieve_file_signature('manifest', 'versionAdditions.xml', @obj, 2)
       expect(manifest_signature.size).to eq 1631
     end
   end
 
   specify '.version_differences' do
-    differences = Moab::StorageServices.version_differences(@obj, 2, 3)
+    differences = described_class.version_differences(@obj, 2, 3)
     diff_ng_xml = Nokogiri::XML(differences.to_xml)
     diff_ng_xml.xpath('//@reportDatetime').remove
     exp_xml = <<-XML

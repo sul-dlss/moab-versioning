@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A file-level entry in a digital object's {SignatureCatalog}.
   # It has a child {FileSignature} element that identifies the file's contents (the bytestream)
   # along with data that specfies the SDR storage location that was used to preserve a single file instance.
@@ -14,20 +13,19 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class SignatureCatalogEntry < Serializer::Serializable
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'entry'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       super(opts)
     end
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'originalVersion', :key => true, :on_save => Proc.new {|n| n.to_s}
+    attribute :version_id, Integer, :tag => 'originalVersion', :key => true, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [String] The name of the file group
@@ -53,9 +51,7 @@ module Moab
     # @api internal
     # @return [String] Returns the storage path to a file, relative to the object storage home directory
     def storage_path
-      File.join(StorageObject.version_dirname(version_id),'data', group_id, path)
+      File.join(StorageObject.version_dirname(version_id), 'data', group_id, path)
     end
-
   end
-
 end

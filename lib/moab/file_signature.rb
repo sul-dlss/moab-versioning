@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # The fixity properties of a file, used to determine file content equivalence regardless of filename.
   # Placing this data in a class by itself facilitates using file size together with the MD5 and SHA1 checksums
   # as a single key when doing comparisons against other file instances.  The Moab design assumes that this file signature
@@ -40,14 +39,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class FileSignature < Serializer::Serializable
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'fileSignature'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       super(opts)
     end
 
@@ -70,16 +68,16 @@ module Moab
     # @param type [Symbol,String] The type of checksum
     # @param value [String] The checksum value
     # @return [void] Set the value of the specified checksum type
-    def set_checksum(type,value)
+    def set_checksum(type, value)
       case type.to_s.downcase.to_sym
-        when :md5
-          @md5 = value
-        when :sha1
-          @sha1 = value
-        when :sha256
-          @sha256 = value
-        else
-          raise ArgumentError, "Unknown checksum type '#{type}'"
+      when :md5
+        @md5 = value
+      when :sha1
+        @sha1 = value
+      when :sha256
+        @sha256 = value
+      else
+        raise ArgumentError, "Unknown checksum type '#{type}'"
       end
     end
 
@@ -150,7 +148,7 @@ module Moab
       sha1_digest = Digest::SHA1.new
       sha256_digest = Digest::SHA2.new(256)
       pathname.open("r") do |stream|
-        while buffer = stream.read(8192)
+        while (buffer = stream.read(8192))
           md5_digest.update(buffer)
           sha1_digest.update(buffer)
           sha256_digest.update(buffer)
@@ -195,7 +193,5 @@ module Moab
       end
       type_for_name
     end
-
   end
-
 end

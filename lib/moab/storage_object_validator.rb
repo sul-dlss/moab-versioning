@@ -5,7 +5,6 @@ module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
   class StorageObjectValidator
-
     METADATA_DIR = "metadata".freeze
     CONTENT_DIR = "content".freeze
     EXPECTED_DATA_SUB_DIRS = [CONTENT_DIR, METADATA_DIR].freeze
@@ -25,7 +24,7 @@ module Moab
     VERSION_DIR_BAD_FORMAT = 3
     NO_SIGNATURE_CATALOG = 4
     NO_MANIFEST_INVENTORY = 5
-    NO_FILES_IN_MANIFEST_DIR= 6
+    NO_FILES_IN_MANIFEST_DIR = 6
     VERSIONS_NOT_IN_ORDER = 7
     METADATA_SUB_DIRS_DETECTED = 8
     FILES_IN_VERSION_DIR = 9
@@ -41,7 +40,7 @@ module Moab
       @directory_entries_hash = {}
     end
 
-    def validation_errors(allow_content_subdirs=true)
+    def validation_errors(allow_content_subdirs = true)
       errors = []
       errors.concat check_correctly_named_version_dirs
       errors.concat check_sequential_version_dirs if errors.empty?
@@ -101,7 +100,7 @@ module Moab
       errors
     end
 
-    def check_correctly_formed_moab(allow_content_subdirs=true)
+    def check_correctly_formed_moab(allow_content_subdirs = true)
       errors = []
       version_directories.each do |version_dir|
         version_path = File.join(storage_obj_path, version_dir)
@@ -127,7 +126,7 @@ module Moab
       errors
     end
 
-    def check_data_directory(version_path, version, allow_content_subdirs=true)
+    def check_data_directory(version_path, version, allow_content_subdirs = true)
       errors = []
       data_dir_path = File.join(version_path, DATA_DIR)
       data_sub_dirs = directory_entries(data_dir_path)
@@ -149,7 +148,7 @@ module Moab
       errors
     end
 
-    def check_optional_content_dir(version_path, allow_content_subdirs=true)
+    def check_optional_content_dir(version_path, allow_content_subdirs = true)
       errors = []
       content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
       errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
@@ -204,7 +203,7 @@ module Moab
     def missing_dir(array, version, required_sub_dirs)
       errors = []
       missing = (required_sub_dirs - array)
-      missing ="#{missing} Version: #{version}"
+      missing = "#{missing} Version: #{version}"
       errors << result_hash(MISSING_DIR, missing)
       errors
     end
@@ -235,11 +234,11 @@ module Moab
       path.split(File::SEPARATOR)[-1]
     end
 
-    def result_hash(response_code, addl=nil)
+    def result_hash(response_code, addl = nil)
       { response_code => error_code_msg(response_code, addl) }
     end
 
-    def error_code_msg(response_code, addl=nil)
+    def error_code_msg(response_code, addl = nil)
       format(self.class.error_code_to_messages[response_code], addl: addl)
     end
 

@@ -1,32 +1,32 @@
-describe 'Moab::FileInventory' do
+describe Moab::FileInventory do
   let(:v1_version_inventory) { @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
   let(:parsed_file_inventory) do
-    fi = Moab::FileInventory.parse(v1_version_inventory.read)
+    fi = described_class.parse(v1_version_inventory.read)
     fi.inventory_datetime = "2012-04-13T13:16:54Z"
     fi
   end
 
   describe '.xml_filename' do
     specify 'version' do
-      expect(Moab::FileInventory.xml_filename('version')).to eq 'versionInventory.xml'
+      expect(described_class.xml_filename('version')).to eq 'versionInventory.xml'
     end
     specify 'additions' do
-      expect(Moab::FileInventory.xml_filename("additions")).to eq 'versionAdditions.xml'
+      expect(described_class.xml_filename("additions")).to eq 'versionAdditions.xml'
     end
     specify 'manifests' do
-      expect(Moab::FileInventory.xml_filename("manifests")).to eq 'manifestInventory.xml'
+      expect(described_class.xml_filename("manifests")).to eq 'manifestInventory.xml'
     end
     specify 'directory' do
-      expect(Moab::FileInventory.xml_filename("directory")).to eq 'directoryInventory.xml'
+      expect(described_class.xml_filename("directory")).to eq 'directoryInventory.xml'
     end
     specify 'unknown type raises ArgumentError' do
-      expect { Moab::FileInventory.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
+      expect { described_class.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
     end
   end
 
   describe '#initialize' do
     specify 'empty options hash' do
-      file_inventory = Moab::FileInventory.new({})
+      file_inventory = described_class.new({})
       expect(file_inventory.groups).to be_kind_of Array
       expect(file_inventory.groups.size).to eq 0
     end
@@ -37,7 +37,7 @@ describe 'Moab::FileInventory' do
         version_id: 81,
         inventory_datetime: "Apr 12 19:36:07 UTC 2012"
       }
-      file_inventory = Moab::FileInventory.new(opts)
+      file_inventory = described_class.new(opts)
       expect(file_inventory.type).to eq opts[:type]
       expect(file_inventory.digital_object_id).to eq opts[:digital_object_id]
       expect(file_inventory.version_id).to eq opts[:version_id]
@@ -88,7 +88,7 @@ describe 'Moab::FileInventory' do
     expect(parsed_file_inventory.groups.size).to eq 3
     expect(parsed_file_inventory.group_ids).to eq ["content", "metadata", "empty"]
     expect(parsed_file_inventory.non_empty_groups.size).to eq 2
-    expect(parsed_file_inventory.group_ids(non_empty=true)).to eq ["content", "metadata"]
+    expect(parsed_file_inventory.group_ids(non_empty = true)).to eq ["content", "metadata"]
   end
 
   specify '#group' do
@@ -117,7 +117,7 @@ describe 'Moab::FileInventory' do
   end
 
   specify '#copy_ids' do
-    new_file_inventory = Moab::FileInventory.new
+    new_file_inventory = described_class.new
     new_file_inventory.copy_ids(parsed_file_inventory)
     expect(new_file_inventory.digital_object_id).to eq parsed_file_inventory.digital_object_id
     expect(new_file_inventory.version_id).to eq parsed_file_inventory.version_id
@@ -127,20 +127,20 @@ describe 'Moab::FileInventory' do
   specify '#data_source' do
     expect(parsed_file_inventory.data_source).to eq "v1"
     directory = @fixtures.join('derivatives/manifests/all')
-    directory_inventory = Moab::FileInventory.new(type: 'directory').inventory_from_directory(directory, group_id="mygroup")
+    directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, group_id = "mygroup")
     expect(directory_inventory.data_source).to include "derivatives/manifests/all"
   end
 
   specify '#inventory_from_directory' do
     data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
     group_id = 'Test group_id'
-    inventory_1 = Moab::FileInventory.new.inventory_from_directory(data_dir_1, group_id)
+    inventory_1 = described_class.new.inventory_from_directory(data_dir_1, group_id)
     expect(inventory_1.groups.size).to eq 1
     expect(inventory_1.groups[0].group_id).to eq group_id
     expect(inventory_1.file_count).to eq 5
 
     data_dir_2 = @fixtures.join('data/jq937jp0017/v0001')
-    inventory_2 = Moab::FileInventory.new.inventory_from_directory(data_dir_2)
+    inventory_2 = described_class.new.inventory_from_directory(data_dir_2)
     expect(inventory_2.groups.size).to eq 2
     expect(inventory_2.groups[0].group_id).to eq 'content'
     expect(inventory_2.groups[1].group_id).to eq 'metadata'
@@ -149,7 +149,7 @@ describe 'Moab::FileInventory' do
 
   specify '#inventory_from_bagit_bag' do
     bag_dir = @packages.join('v0001')
-    inventory = Moab::FileInventory.new.inventory_from_bagit_bag(bag_dir)
+    inventory = described_class.new.inventory_from_bagit_bag(bag_dir)
     expect(inventory.groups.size).to eq 2
     expect(inventory.groups.collect { |group| group.group_id }.sort).to eq ['content', 'metadata']
     expect(inventory.file_count).to eq 11
@@ -157,7 +157,7 @@ describe 'Moab::FileInventory' do
 
   specify '#signatures_from_bagit_manifests' do
     bag_pathname = @packages.join('v0001')
-    signature_for_path = Moab::FileInventory.new.signatures_from_bagit_manifests(bag_pathname)
+    signature_for_path = described_class.new.signatures_from_bagit_manifests(bag_pathname)
     expect(signature_for_path.size).to eq 11
     expect(signature_for_path.keys[0]).to eq @packages.join('v0001/data/content/intro-1.jpg')
     expect(signature_for_path[@packages.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
@@ -166,7 +166,7 @@ describe 'Moab::FileInventory' do
   specify '#write_xml_file' do
     parent_dir = @temp.join('parent_dir')
     type = 'Test type'
-    expect(Moab::FileInventory).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
+    expect(described_class).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
     parsed_file_inventory.write_xml_file(parent_dir, type)
   end
 
@@ -174,14 +174,14 @@ describe 'Moab::FileInventory' do
     specify '#summary' do
       hash = parsed_file_inventory.summary
       expect(hash).to eq({
-        "type" => "version",
-        "digital_object_id" => "druid:jq937jp0017",
-        "version_id" => 1,
-        "file_count" => 11,
-        "byte_count" => 217820,
-        "block_count" => 216,
-        "inventory_datetime" => parsed_file_inventory.inventory_datetime,
-        "groups" =>
+                           "type" => "version",
+                           "digital_object_id" => "druid:jq937jp0017",
+                           "version_id" => 1,
+                           "file_count" => 11,
+                           "byte_count" => 217820,
+                           "block_count" => 216,
+                           "inventory_datetime" => parsed_file_inventory.inventory_datetime,
+                           "groups" =>
           {
             "metadata" =>
               {
@@ -195,13 +195,13 @@ describe 'Moab::FileInventory' do
                 "group_id" => "content",
                 "file_count" => 6,
                 "byte_count" => 206432,
-                "block_count"=>203
+                "block_count" => 203
               }
           }
-        })
+                         })
     end
     specify '#to_json summary' do
-      json = parsed_file_inventory.to_json(summary=true)
+      json = parsed_file_inventory.to_json(summary = true)
       expect("#{json}\n").to eq <<-JSON
 {
   "type": "version",

@@ -89,7 +89,7 @@ describe Moab::DepositBagValidator do
       end
       let(:vdn_errors) { described_class.new(@storage_obj).validation_errors }
       let(:exp_code) { described_class::CHECKSUM_TYPE_UNRECOGNIZED }
-      let(:err_msg_prefix) { Regexp.escape("Checksum type unrecognized: sha666; file: ")}
+      let(:err_msg_prefix) { Regexp.escape("Checksum type unrecognized: sha666; file: ") }
 
       it 'tagmanifest file of unrecognized checksum type' do
         expect(vdn_errors.size).to eq 2

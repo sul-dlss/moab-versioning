@@ -1,17 +1,17 @@
-describe 'Moab::StorageObjectVersion' do
+describe Moab::StorageObjectVersion do
   before(:all) do
     @temp_ingests = @temp.join("ingests")
     @temp_object_dir = @temp_ingests.join(@obj)
     @existing_object_pathname = @ingests.join(@obj)
     @existing_storage_object = Moab::StorageObject.new(@druid, @existing_object_pathname)
-    @existing_storage_object_version = Moab::StorageObjectVersion.new(@existing_storage_object, 2)
+    @existing_storage_object_version = described_class.new(@existing_storage_object, 2)
     @temp_storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
     @temp_package_pathname = @temp.join("packages")
     bad_object_pathname = @temp.join(@obj)
     bad_object_pathname.rmtree if bad_object_pathname.exist?
     bad_object_pathname.mkpath
     FileUtils.cp_r(@existing_object_pathname.join('v0001').to_s, bad_object_pathname.join('v0001').to_s)
-    @object_with_manifest_errors = Moab::StorageObject.new(@druid,bad_object_pathname)
+    @object_with_manifest_errors = Moab::StorageObject.new(@druid, bad_object_pathname)
     @version_with_manifest_errors = @object_with_manifest_errors.storage_object_version(1)
     new_manifest_file = @version_with_manifest_errors.version_pathname.join('manifests', 'dummy1.xml')
     new_manifest_file.open('w') { |f| f.puts "dummy" }
@@ -29,12 +29,12 @@ describe 'Moab::StorageObjectVersion' do
 
     it 'numeric version' do
       version_id = 2
-      storage_object_version = Moab::StorageObjectVersion.new(storage_object, version_id)
+      storage_object_version = described_class.new(storage_object, version_id)
       expect(storage_object_version.storage_object).to eq storage_object
       expect(storage_object_version.version_id).to eq version_id
     end
     it 'version as directory name' do
-      v0003 = Moab::StorageObjectVersion.new(storage_object, 'v0003')
+      v0003 = described_class.new(storage_object, 'v0003')
       expect(v0003.version_id).to eq 3
     end
   end
@@ -51,20 +51,20 @@ describe 'Moab::StorageObjectVersion' do
     it 'content' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
       expected_sig_fixity = {
-        :size=>"40873",
-        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
-        :sha256=>"8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+        :size => "40873",
+        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad",
+        :sha256 => "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
     it 'content with hyphen in file name' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       expected_sig_fixity = {
-        :size=>"32915",
-        :md5=>"c1c34634e2f18a354cd3e3e1574c3194",
-        :sha1=>"0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-        :sha256=>"b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+        :size => "32915",
+        :md5 => "c1c34634e2f18a354cd3e3e1574c3194",
+        :sha1 => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+        :sha256 => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
@@ -74,7 +74,7 @@ describe 'Moab::StorageObjectVersion' do
       expect(signature.size).to eq exp_result
     end
     it 'non-existent file raises Moab::FileNotFoundException' do
-      expect{ @existing_storage_object_version.find_signature('manifest', 'dummy.xml') }
+      expect { @existing_storage_object_version.find_signature('manifest', 'dummy.xml') }
         .to raise_exception Moab::FileNotFoundException
     end
   end
@@ -95,16 +95,16 @@ describe 'Moab::StorageObjectVersion' do
       expect(pathname.to_s).to include "#{exp_dir}/v0002/manifests/versionInventory.xml"
     end
     it 'non-existent file raises Moab::FileNotFoundException' do
-      expect{ @existing_storage_object_version.find_filepath('manifest', 'dummy.xml') }
+      expect { @existing_storage_object_version.find_filepath('manifest', 'dummy.xml') }
         .to raise_exception Moab::FileNotFoundException
     end
   end
 
   specify '#find_filepath_using_signature' do
     fixity_hash = {
-      :size=>40873,
-      :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-      :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+      :size => 40873,
+      :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
+      :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
     exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
@@ -155,36 +155,36 @@ describe 'Moab::StorageObjectVersion' do
   end
 
   specify '#ingest_bag_data' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 1)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
     files = Array.new
     @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq [
-        "ingests/jq937jp0017",
-        "ingests/jq937jp0017/v0001",
-        "ingests/jq937jp0017/v0001/data",
-        "ingests/jq937jp0017/v0001/data/content",
-        "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-        "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-        "ingests/jq937jp0017/v0001/data/content/title.jpg",
-        "ingests/jq937jp0017/v0001/data/metadata",
-        "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-        "ingests/jq937jp0017/v0001/manifests",
-        "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-        "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
+      "ingests/jq937jp0017",
+      "ingests/jq937jp0017/v0001",
+      "ingests/jq937jp0017/v0001/data",
+      "ingests/jq937jp0017/v0001/data/content",
+      "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+      "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+      "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+      "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+      "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+      "ingests/jq937jp0017/v0001/data/content/title.jpg",
+      "ingests/jq937jp0017/v0001/data/metadata",
+      "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+      "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+      "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+      "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+      "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+      "ingests/jq937jp0017/v0001/manifests",
+      "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+      "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
     ]
   end
 
   specify '#ingest_dir' do
     source_dir = @packages.join("v0001/data")
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 1)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     target_dir = temp_storage_object_version.version_pathname.join('data')
     use_links = true
     temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
@@ -212,7 +212,7 @@ describe 'Moab::StorageObjectVersion' do
 
   context '#ingest_file' do
     it 'versionInventory.xml' do
-      temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 2)
+      temp_storage_object_version = described_class.new(@temp_storage_object, 2)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
       source_file = @packages.join("v0002").join('versionInventory.xml')
@@ -244,7 +244,7 @@ describe 'Moab::StorageObjectVersion' do
   end
 
   specify '#update_catalog' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 4)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 4)
     signature_catalog = double(Moab::SignatureCatalog.name)
     new_inventory = double(Moab::FileInventory.name)
 
@@ -265,7 +265,7 @@ describe 'Moab::StorageObjectVersion' do
   end
 
   specify '#generate_manifest_inventory' do
-    temp_storage_object_version = Moab::StorageObjectVersion.new(@temp_storage_object, 2)
+    temp_storage_object_version = described_class.new(@temp_storage_object, 2)
     temp_version_pathname = temp_storage_object_version.version_pathname
     temp_version_pathname.mkpath
     vers_inv_file = @packages.join("v0002").join('versionInventory.xml')
@@ -350,7 +350,7 @@ describe 'Moab::StorageObjectVersion' do
           }
         }
         JSON
-        )
+                                                                              )
       end
     end
   end
@@ -387,7 +387,7 @@ describe 'Moab::StorageObjectVersion' do
           }
         }
       JSON
-      )
+                                          )
     end
   end
 
@@ -430,7 +430,7 @@ describe 'Moab::StorageObjectVersion' do
           }
         }
       JSON
-      )
+                                          )
     end
   end
 
@@ -508,7 +508,7 @@ describe 'Moab::StorageObjectVersion' do
           }
         }
         JSON
-        )
+                                                                              )
       end
     end
   end
@@ -524,7 +524,7 @@ describe 'Moab::StorageObjectVersion' do
     expect(version.exist?).to eq true
     version.deactivate(timestamp)
     expect(version.exist?).to eq false
-    inactive_location = @temp_object_dir.join(timestamp.utc.iso8601.gsub(/[-:]/,''))
+    inactive_location = @temp_object_dir.join(timestamp.utc.iso8601.gsub(/[-:]/, ''))
     expect(inactive_location.children.size).to eq 1
   end
 end

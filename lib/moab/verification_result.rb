@@ -1,9 +1,7 @@
 require 'moab'
 
 module Moab
-
   class VerificationResult
-
     # @return [String] The name of the entity that was verified
     attr_accessor :entity
 
@@ -31,7 +29,7 @@ module Moab
     def self.verify_value(entity, expected, found)
       result = VerificationResult.new(entity.to_s)
       result.verified = (expected == found)
-      result.details = {'expected' => expected, 'found' => found}
+      result.details = { 'expected' => expected, 'found' => found }
       result
     end
 
@@ -39,7 +37,7 @@ module Moab
     # @param expression [Object] The expression that will be evaluated as true or false
     # @param details [Object] optional details that could be reported
     # @return [VerificationResult] The result of evaluating the expression
-    def self.verify_truth(entity,expression,details=nil)
+    def self.verify_truth(entity, expression, details = nil)
       result = VerificationResult.new(entity.to_s)
       # TODO: add expression.empty?
       result.verified = !(expression.nil? or (expression == false))
@@ -49,36 +47,35 @@ module Moab
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @return [String] The verification result serialized to JSON
-    def to_json(verbose=false)
+    def to_json(verbose = false)
       JSON.pretty_generate(to_hash(verbose))
     end
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @param level [Integer] Used to test the depth of recursion
     # @return [Hash] The verification result serialized to a hash
-    def to_hash(verbose=false,level=0)
+    def to_hash(verbose = false, level = 0)
       hash = Hash.new
       hash['verified'] = @verified
       if (verbose or @verified == false)
-        hash['details'] = @details ? @details : subentities_to_hash(verbose,level)
+        hash['details'] = @details ? @details : subentities_to_hash(verbose, level)
       end
       if level > 0
         hash
       else
-        {@entity => hash}
+        { @entity => hash }
       end
     end
 
     # @param verbose [Boolean] If true, always provide all details of the verification
     # @param level [Integer] Used to increment the depth of recursion
     # @return [Hash] The verification result of subentities serialized to a hash
-    def subentities_to_hash(verbose,level)
+    def subentities_to_hash(verbose, level)
       hash = Hash.new
       @subentities.each do |s|
-       hash[s.entity] = s.to_hash(verbose, level+1)
+        hash[s.entity] = s.to_hash(verbose, level + 1)
       end
       hash
     end
-
   end
 end

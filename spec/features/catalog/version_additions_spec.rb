@@ -18,5 +18,4 @@ describe "Determine version's file additions" do
     expect(version_additions.byte_count).to eq(35181)
     expect(version_additions.block_count).to eq(37)
   end
-
 end

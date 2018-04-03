@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A container for a standard subset of a digital objects {FileManifestation} objects
   # Used to segregate depositor content from repository metadata files
   # This is a child element of {FileInventory}, which contains a full example
@@ -16,14 +15,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class FileGroup < Serializer::Serializable
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'fileGroup'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @signature_hash = Hash.new
       @data_source = ""
       super(opts)
@@ -39,7 +37,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|i| i.to_s}
+    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new { |i| i.to_s }
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
@@ -47,7 +45,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|i| i.to_s}
+    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new { |i| i.to_s }
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
@@ -55,7 +53,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|i| i.to_s}
+    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new { |i| i.to_s }
 
     def block_count
       files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
@@ -83,7 +81,7 @@ module Moab
     #   used to test for existence of a filename in this file group
     def path_hash
       path_hash = Hash.new
-      signature_hash.each do |signature,manifestation|
+      signature_hash.each do |signature, manifestation|
         manifestation.instances.each do |instance|
           path_hash[instance.path] = signature
         end
@@ -93,7 +91,7 @@ module Moab
 
     # @return [Array<String>] The list of file paths in this group
     def path_list
-      files.collect{|file| file.instances.collect{|instance| instance.path}}.flatten
+      files.collect { |file| file.instances.collect { |instance| instance.path } }.flatten
     end
 
     # @api internal
@@ -116,7 +114,7 @@ module Moab
     def files=(manifestiation_array)
       manifestiation_array.each do |manifestiation|
         add_file(manifestiation)
-     end
+      end
     end
 
     # @api internal
@@ -133,7 +131,7 @@ module Moab
     # @param instance [FileInstance] The pathname and datetime of the file instance to be added
     # @return [void] Add a single {FileSignature},{FileInstance} key/value pair to this group.
     #   Data is actually stored in the {#signature_hash}
-    def add_file_instance(signature,instance)
+    def add_file_instance(signature, instance)
       if signature_hash.has_key?(signature)
         manifestation = signature_hash[signature]
       else
@@ -165,7 +163,7 @@ module Moab
     def is_descendent_of_base?(pathname)
       raise("base_directory has not been set") if @base_directory.nil?
       is_descendent = false
-      pathname.expand_path.ascend {|ancestor| is_descendent ||= (ancestor == @base_directory)}
+      pathname.expand_path.ascend { |ancestor| is_descendent ||= (ancestor == @base_directory) }
       raise("#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
       is_descendent
     end
@@ -174,7 +172,7 @@ module Moab
     # @param signatures_from_bag [Hash<Pathname,Signature>] The fixity data already calculated for the files
     # @param recursive [Boolean] if true, descend into child directories
     # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
-    def group_from_bagit_subdir(directory, signatures_from_bag, recursive=true)
+    def group_from_bagit_subdir(directory, signatures_from_bag, recursive = true)
       @signatures_from_bag = signatures_from_bag
       group_from_directory(directory, recursive)
     end
@@ -183,7 +181,7 @@ module Moab
     # @param directory [Pathname,String] The location of the files to harvest
     # @param recursive [Boolean] if true, descend into child directories
     # @return [FileGroup] Harvest a directory and add all files to the file group
-    def group_from_directory(directory, recursive=true)
+    def group_from_directory(directory, recursive = true)
       self.base_directory = directory
       @data_source = @base_directory.to_s
       harvest_directory(directory, recursive)
@@ -201,7 +199,7 @@ module Moab
     #   Note that unlike Find.find and Dir.glob, Pathname passes through symbolic links
     # @see http://stackoverflow.com/questions/3974087/how-to-make-rubys-find-find-follow-symlinks
     # @see http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
-    def harvest_directory(path, recursive, validated=nil)
+    def harvest_directory(path, recursive, validated = nil)
       pathname = Pathname.new(path).expand_path
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
@@ -221,7 +219,7 @@ module Moab
     # @param _validated (unused; kept here for backwards compatibility)
     # @return [void] Add a single physical file's data to the array of files in this group.
     #   If fixity data was supplied in bag manifests, then utilize that data.
-    def add_physical_file(pathname, _validated=nil)
+    def add_physical_file(pathname, _validated = nil)
       pathname = Pathname.new(pathname).expand_path
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
       if @signatures_from_bag && @signatures_from_bag[pathname]
@@ -234,7 +232,5 @@ module Moab
       end
       add_file_instance(signature, instance)
     end
-
   end
-
 end

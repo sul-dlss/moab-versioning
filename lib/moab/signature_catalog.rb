@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A digital object's Signature Catalog is derived from an filtered aggregation of the file inventories
   # of a digital object's set of versions.  (see {#update})
   # It has an entry for every file (identified by {FileSignature}) found in any of the versions,
@@ -32,7 +31,7 @@ module Moab
     tag 'signatureCatalog'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @entries = Array.new
       @signature_hash = Hash.new
       super(opts)
@@ -44,7 +43,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
+    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new { |n| n.to_s }
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
@@ -56,7 +55,7 @@ module Moab
     attribute :catalog_datetime, Time, :tag => 'catalogDatetime'
 
     def catalog_datetime=(datetime)
-      @catalog_datetime=Moab::UtcTime.input(datetime)
+      @catalog_datetime = Moab::UtcTime.input(datetime)
     end
 
     def catalog_datetime
@@ -65,7 +64,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new { |t| t.to_s }
 
     def file_count
       entries.size
@@ -73,7 +72,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new { |t| t.to_s }
 
     def byte_count
       entries.inject(0) { |sum, entry| sum + entry.signature.size.to_i }
@@ -81,11 +80,11 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new {|t| t.to_s}
+    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new { |t| t.to_s }
 
     def block_count
-      block_size=1024
-      entries.inject(0) { |sum, entry| sum + (entry.signature.size.to_i + block_size - 1)/block_size }
+      block_size = 1024
+      entries.inject(0) { |sum, entry| sum + (entry.signature.size.to_i + block_size - 1) / block_size }
     end
 
     # @return [Array<String>] The data fields to include in summary reports
@@ -128,8 +127,8 @@ module Moab
     # @param group [FileGroup] A group of the files from a file inventory
     # @param group_pathname [Pathname] The location of the directory containing the group's files
     # @return [void] Inspect and upgrade the group's signature data to include all desired checksums
-    def normalize_group_signatures(group, group_pathname=nil)
-      unless  group_pathname.nil?
+    def normalize_group_signatures(group, group_pathname = nil)
+      unless group_pathname.nil?
         group_pathname = Pathname(group_pathname)
         raise "Could not locate #{group_pathname}" unless group_pathname.exist?
       end
@@ -162,7 +161,7 @@ module Moab
             if file.signature.complete?
               entry.signature = file.signature
             else
-              file_pathname = data_pathname.join(group.group_id,entry.path)
+              file_pathname = data_pathname.join(group.group_id, entry.path)
               entry.signature = file.signature.normalized_signature(file_pathname)
             end
             add_entry(entry)
@@ -179,20 +178,18 @@ module Moab
     #   containing only those files that were added in this version
     # @example {include:file:spec/features/catalog/version_additions_spec.rb}
     def version_additions(version_inventory)
-      version_additions = FileInventory.new(:type=>'additions')
+      version_additions = FileInventory.new(:type => 'additions')
       version_additions.copy_ids(version_inventory)
       version_inventory.groups.each do |group|
         group_addtions = FileGroup.new(:group_id => group.group_id)
         group.files.each do |file|
           unless @signature_hash.has_key?(file.signature)
-            group_addtions.add_file_instance(file.signature,file.instances[0])
+            group_addtions.add_file_instance(file.signature, file.instances[0])
           end
         end
         version_additions.groups << group_addtions if group_addtions.files.size > 0
       end
       version_additions
     end
-
   end
-
 end

@@ -1,12 +1,13 @@
-describe 'Moab::StorageObject' do
+describe Moab::StorageObject do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:storage_object) { described_class.new(@druid, @ingest_object_dir) }
 
   specify '.version_dirname' do
-    expect(Moab::StorageObject.version_dirname(1)).to eq "v0001"
-    expect(Moab::StorageObject.version_dirname(22)).to eq "v0022"
-    expect(Moab::StorageObject.version_dirname(333)).to eq "v0333"
-    expect(Moab::StorageObject.version_dirname(4444)).to eq "v4444"
-    expect(Moab::StorageObject.version_dirname(55555)).to eq "v55555"
+    expect(described_class.version_dirname(1)).to eq "v0001"
+    expect(described_class.version_dirname(22)).to eq "v0022"
+    expect(described_class.version_dirname(333)).to eq "v0333"
+    expect(described_class.version_dirname(4444)).to eq "v4444"
+    expect(described_class.version_dirname(55555)).to eq "v55555"
   end
 
   before(:all) do
@@ -22,13 +23,13 @@ describe 'Moab::StorageObject' do
   end
 
   specify '#initialize' do
-    storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
+    storage_object = described_class.new(@druid, @temp_object_dir)
     expect(storage_object.digital_object_id).to eq @druid
     expect(storage_object.object_pathname.to_s).to include('temp/ingests/jq937jp0017')
   end
 
   before(:each) do
-    @storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
+    @storage_object = described_class.new(@druid, @temp_object_dir)
     @storage_object.initialize_storage
     @storage_object.storage_root = @fixtures.join('derivatives')
   end
@@ -47,8 +48,8 @@ describe 'Moab::StorageObject' do
   end
 
   specify '#deposit_bag_pathname' do
-     expect(@storage_object.deposit_bag_pathname).to eq(@packages.join('jq937jp0017'))
-   end
+    expect(@storage_object.deposit_bag_pathname).to eq(@packages.join('jq937jp0017'))
+  end
 
   context '#ingest_bag' do
     it 'by the version folder' do
@@ -58,66 +59,65 @@ describe 'Moab::StorageObject' do
         object_dir.mkpath
         unless object_dir.join("v000#{version}").exist?
           bag_dir = @packages.join(@vname[version])
-          Moab::StorageObject.new(@druid, object_dir).ingest_bag(bag_dir)
+          described_class.new(@druid, object_dir).ingest_bag(bag_dir)
         end
       end
 
       files = Array.new
       ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
-          "ingests",
-          "ingests/jq937jp0017",
-          "ingests/jq937jp0017/v0001",
-          "ingests/jq937jp0017/v0001/data",
-          "ingests/jq937jp0017/v0001/data/content",
-          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-          "ingests/jq937jp0017/v0001/data/content/title.jpg",
-          "ingests/jq937jp0017/v0001/data/metadata",
-          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0001/manifests",
-          "ingests/jq937jp0017/v0001/manifests/fileInventoryDifference.xml",
-          "ingests/jq937jp0017/v0001/manifests/manifestInventory.xml",
-          "ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml",
-          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml",
-          "ingests/jq937jp0017/v0002",
-          "ingests/jq937jp0017/v0002/data",
-          "ingests/jq937jp0017/v0002/data/content",
-          "ingests/jq937jp0017/v0002/data/content/page-1.jpg",
-          "ingests/jq937jp0017/v0002/data/metadata",
-          "ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml",
-          "ingests/jq937jp0017/v0002/data/metadata/provenanceMetadata.xml",
-          "ingests/jq937jp0017/v0002/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0002/manifests",
-          "ingests/jq937jp0017/v0002/manifests/fileInventoryDifference.xml",
-          "ingests/jq937jp0017/v0002/manifests/manifestInventory.xml",
-          "ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml",
-          "ingests/jq937jp0017/v0002/manifests/versionAdditions.xml",
-          "ingests/jq937jp0017/v0002/manifests/versionInventory.xml",
-          "ingests/jq937jp0017/v0003",
-          "ingests/jq937jp0017/v0003/data",
-          "ingests/jq937jp0017/v0003/data/content",
-          "ingests/jq937jp0017/v0003/data/content/page-2.jpg",
-          "ingests/jq937jp0017/v0003/data/metadata",
-          "ingests/jq937jp0017/v0003/data/metadata/contentMetadata.xml",
-          "ingests/jq937jp0017/v0003/data/metadata/provenanceMetadata.xml",
-          "ingests/jq937jp0017/v0003/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0003/manifests",
-          "ingests/jq937jp0017/v0003/manifests/fileInventoryDifference.xml",
-          "ingests/jq937jp0017/v0003/manifests/manifestInventory.xml",
-          "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
-          "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
-          "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
+        "ingests",
+        "ingests/jq937jp0017",
+        "ingests/jq937jp0017/v0001",
+        "ingests/jq937jp0017/v0001/data",
+        "ingests/jq937jp0017/v0001/data/content",
+        "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+        "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+        "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+        "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+        "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+        "ingests/jq937jp0017/v0001/data/content/title.jpg",
+        "ingests/jq937jp0017/v0001/data/metadata",
+        "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+        "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+        "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+        "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+        "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+        "ingests/jq937jp0017/v0001/manifests",
+        "ingests/jq937jp0017/v0001/manifests/fileInventoryDifference.xml",
+        "ingests/jq937jp0017/v0001/manifests/manifestInventory.xml",
+        "ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml",
+        "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+        "ingests/jq937jp0017/v0001/manifests/versionInventory.xml",
+        "ingests/jq937jp0017/v0002",
+        "ingests/jq937jp0017/v0002/data",
+        "ingests/jq937jp0017/v0002/data/content",
+        "ingests/jq937jp0017/v0002/data/content/page-1.jpg",
+        "ingests/jq937jp0017/v0002/data/metadata",
+        "ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml",
+        "ingests/jq937jp0017/v0002/data/metadata/provenanceMetadata.xml",
+        "ingests/jq937jp0017/v0002/data/metadata/versionMetadata.xml",
+        "ingests/jq937jp0017/v0002/manifests",
+        "ingests/jq937jp0017/v0002/manifests/fileInventoryDifference.xml",
+        "ingests/jq937jp0017/v0002/manifests/manifestInventory.xml",
+        "ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml",
+        "ingests/jq937jp0017/v0002/manifests/versionAdditions.xml",
+        "ingests/jq937jp0017/v0002/manifests/versionInventory.xml",
+        "ingests/jq937jp0017/v0003",
+        "ingests/jq937jp0017/v0003/data",
+        "ingests/jq937jp0017/v0003/data/content",
+        "ingests/jq937jp0017/v0003/data/content/page-2.jpg",
+        "ingests/jq937jp0017/v0003/data/metadata",
+        "ingests/jq937jp0017/v0003/data/metadata/contentMetadata.xml",
+        "ingests/jq937jp0017/v0003/data/metadata/provenanceMetadata.xml",
+        "ingests/jq937jp0017/v0003/data/metadata/versionMetadata.xml",
+        "ingests/jq937jp0017/v0003/manifests",
+        "ingests/jq937jp0017/v0003/manifests/fileInventoryDifference.xml",
+        "ingests/jq937jp0017/v0003/manifests/manifestInventory.xml",
+        "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
+        "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
+        "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
       ]
-
       ingests_dir.rmtree if ingests_dir.exist? # cleanup
     end
     it 'creates versionInventory and versionAdditions' do
@@ -132,19 +132,17 @@ describe 'Moab::StorageObject' do
       bag_dir.join('versionAdditions.xml').delete
       expect(bag_dir.join('versionInventory.xml').exist?).to eq false
       expect(bag_dir.join('versionAdditions.xml').exist?).to eq false
-      Moab::StorageObject.new(@druid, object_dir).ingest_bag(bag_dir)
+      described_class.new(@druid, object_dir).ingest_bag(bag_dir)
       expect(bag_dir.join('versionInventory.xml').exist?).to eq true
       expect(bag_dir.join('versionAdditions.xml').exist?).to eq true
-
       ingests_dir.rmtree if ingests_dir.exist? # cleanup
     end
   end
 
-
   specify '#versionize_bag' do
     bag_dir = @temp.join('plain_bag')
     bag_dir.rmtree if bag_dir.exist?
-    FileUtils.cp_r(@packages.join(@vname[1]).to_s,bag_dir.to_s, preserve: true)
+    FileUtils.cp_r(@packages.join(@vname[1]).to_s, bag_dir.to_s, preserve: true)
     bag_dir.join('versionInventory.xml').rename(bag_dir.join('vi.save'))
     bag_dir.join('versionAdditions.xml').rename(bag_dir.join('va.save'))
     current_version = @storage_object.storage_object_version(0)
@@ -153,7 +151,7 @@ describe 'Moab::StorageObject' do
 
     new_inventory_ng_xml = Nokogiri::XML(new_inventory.to_xml)
     new_inventory_ng_xml.xpath('//@datetime').each { |d| d.value = '' }
-    new_inventory_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub(/.*moab-versioning/,'moab-versioning') }
+    new_inventory_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub(/.*moab-versioning/, 'moab-versioning') }
     new_inventory_ng_xml.xpath('//@inventoryDatetime').remove
     exp_xml = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
@@ -265,7 +263,6 @@ describe 'Moab::StorageObject' do
       </fileInventory>
     XML
     expect(EquivalentXml.equivalent?(inventory_w_additions_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
-
     bag_dir.rmtree if bag_dir.exist?
   end
 
@@ -275,110 +272,106 @@ describe 'Moab::StorageObject' do
     (1..3).each do |version|
       bag_dir = reconstructs_dir.join(@vname[version])
       unless bag_dir.exist?
-        Moab::StorageObject.new(@druid, @ingest_object_dir).reconstruct_version(version, bag_dir)
+        described_class.new(@druid, @ingest_object_dir).reconstruct_version(version, bag_dir)
       end
     end
 
     files = Array.new
     reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq [
-        "reconstructs",
-        "reconstructs/v0001",
-        "reconstructs/v0001/bag-info.txt",
-        "reconstructs/v0001/bagit.txt",
-        "reconstructs/v0001/data",
-        "reconstructs/v0001/data/content",
-        "reconstructs/v0001/data/content/intro-1.jpg",
-        "reconstructs/v0001/data/content/intro-2.jpg",
-        "reconstructs/v0001/data/content/page-1.jpg",
-        "reconstructs/v0001/data/content/page-2.jpg",
-        "reconstructs/v0001/data/content/page-3.jpg",
-        "reconstructs/v0001/data/content/title.jpg",
-        "reconstructs/v0001/data/metadata",
-        "reconstructs/v0001/data/metadata/contentMetadata.xml",
-        "reconstructs/v0001/data/metadata/descMetadata.xml",
-        "reconstructs/v0001/data/metadata/identityMetadata.xml",
-        "reconstructs/v0001/data/metadata/provenanceMetadata.xml",
-        "reconstructs/v0001/data/metadata/versionMetadata.xml",
-        "reconstructs/v0001/manifest-md5.txt",
-        "reconstructs/v0001/manifest-sha1.txt",
-        "reconstructs/v0001/manifest-sha256.txt",
-        "reconstructs/v0001/tagmanifest-md5.txt",
-        "reconstructs/v0001/tagmanifest-sha1.txt",
-        "reconstructs/v0001/tagmanifest-sha256.txt",
-        "reconstructs/v0001/versionInventory.xml",
-        "reconstructs/v0002",
-        "reconstructs/v0002/bag-info.txt",
-        "reconstructs/v0002/bagit.txt",
-        "reconstructs/v0002/data",
-        "reconstructs/v0002/data/content",
-        "reconstructs/v0002/data/content/page-1.jpg",
-        "reconstructs/v0002/data/content/page-2.jpg",
-        "reconstructs/v0002/data/content/page-3.jpg",
-        "reconstructs/v0002/data/content/title.jpg",
-        "reconstructs/v0002/data/metadata",
-        "reconstructs/v0002/data/metadata/contentMetadata.xml",
-        "reconstructs/v0002/data/metadata/descMetadata.xml",
-        "reconstructs/v0002/data/metadata/identityMetadata.xml",
-        "reconstructs/v0002/data/metadata/provenanceMetadata.xml",
-        "reconstructs/v0002/data/metadata/versionMetadata.xml",
-        "reconstructs/v0002/manifest-md5.txt",
-        "reconstructs/v0002/manifest-sha1.txt",
-        "reconstructs/v0002/manifest-sha256.txt",
-        "reconstructs/v0002/tagmanifest-md5.txt",
-        "reconstructs/v0002/tagmanifest-sha1.txt",
-        "reconstructs/v0002/tagmanifest-sha256.txt",
-        "reconstructs/v0002/versionInventory.xml",
-        "reconstructs/v0003",
-        "reconstructs/v0003/bag-info.txt",
-        "reconstructs/v0003/bagit.txt",
-        "reconstructs/v0003/data",
-        "reconstructs/v0003/data/content",
-        "reconstructs/v0003/data/content/page-1.jpg",
-        "reconstructs/v0003/data/content/page-2.jpg",
-        "reconstructs/v0003/data/content/page-3.jpg",
-        "reconstructs/v0003/data/content/page-4.jpg",
-        "reconstructs/v0003/data/content/title.jpg",
-        "reconstructs/v0003/data/metadata",
-        "reconstructs/v0003/data/metadata/contentMetadata.xml",
-        "reconstructs/v0003/data/metadata/descMetadata.xml",
-        "reconstructs/v0003/data/metadata/identityMetadata.xml",
-        "reconstructs/v0003/data/metadata/provenanceMetadata.xml",
-        "reconstructs/v0003/data/metadata/versionMetadata.xml",
-        "reconstructs/v0003/manifest-md5.txt",
-        "reconstructs/v0003/manifest-sha1.txt",
-        "reconstructs/v0003/manifest-sha256.txt",
-        "reconstructs/v0003/tagmanifest-md5.txt",
-        "reconstructs/v0003/tagmanifest-sha1.txt",
-        "reconstructs/v0003/tagmanifest-sha256.txt",
-        "reconstructs/v0003/versionInventory.xml"
+      "reconstructs",
+      "reconstructs/v0001",
+      "reconstructs/v0001/bag-info.txt",
+      "reconstructs/v0001/bagit.txt",
+      "reconstructs/v0001/data",
+      "reconstructs/v0001/data/content",
+      "reconstructs/v0001/data/content/intro-1.jpg",
+      "reconstructs/v0001/data/content/intro-2.jpg",
+      "reconstructs/v0001/data/content/page-1.jpg",
+      "reconstructs/v0001/data/content/page-2.jpg",
+      "reconstructs/v0001/data/content/page-3.jpg",
+      "reconstructs/v0001/data/content/title.jpg",
+      "reconstructs/v0001/data/metadata",
+      "reconstructs/v0001/data/metadata/contentMetadata.xml",
+      "reconstructs/v0001/data/metadata/descMetadata.xml",
+      "reconstructs/v0001/data/metadata/identityMetadata.xml",
+      "reconstructs/v0001/data/metadata/provenanceMetadata.xml",
+      "reconstructs/v0001/data/metadata/versionMetadata.xml",
+      "reconstructs/v0001/manifest-md5.txt",
+      "reconstructs/v0001/manifest-sha1.txt",
+      "reconstructs/v0001/manifest-sha256.txt",
+      "reconstructs/v0001/tagmanifest-md5.txt",
+      "reconstructs/v0001/tagmanifest-sha1.txt",
+      "reconstructs/v0001/tagmanifest-sha256.txt",
+      "reconstructs/v0001/versionInventory.xml",
+      "reconstructs/v0002",
+      "reconstructs/v0002/bag-info.txt",
+      "reconstructs/v0002/bagit.txt",
+      "reconstructs/v0002/data",
+      "reconstructs/v0002/data/content",
+      "reconstructs/v0002/data/content/page-1.jpg",
+      "reconstructs/v0002/data/content/page-2.jpg",
+      "reconstructs/v0002/data/content/page-3.jpg",
+      "reconstructs/v0002/data/content/title.jpg",
+      "reconstructs/v0002/data/metadata",
+      "reconstructs/v0002/data/metadata/contentMetadata.xml",
+      "reconstructs/v0002/data/metadata/descMetadata.xml",
+      "reconstructs/v0002/data/metadata/identityMetadata.xml",
+      "reconstructs/v0002/data/metadata/provenanceMetadata.xml",
+      "reconstructs/v0002/data/metadata/versionMetadata.xml",
+      "reconstructs/v0002/manifest-md5.txt",
+      "reconstructs/v0002/manifest-sha1.txt",
+      "reconstructs/v0002/manifest-sha256.txt",
+      "reconstructs/v0002/tagmanifest-md5.txt",
+      "reconstructs/v0002/tagmanifest-sha1.txt",
+      "reconstructs/v0002/tagmanifest-sha256.txt",
+      "reconstructs/v0002/versionInventory.xml",
+      "reconstructs/v0003",
+      "reconstructs/v0003/bag-info.txt",
+      "reconstructs/v0003/bagit.txt",
+      "reconstructs/v0003/data",
+      "reconstructs/v0003/data/content",
+      "reconstructs/v0003/data/content/page-1.jpg",
+      "reconstructs/v0003/data/content/page-2.jpg",
+      "reconstructs/v0003/data/content/page-3.jpg",
+      "reconstructs/v0003/data/content/page-4.jpg",
+      "reconstructs/v0003/data/content/title.jpg",
+      "reconstructs/v0003/data/metadata",
+      "reconstructs/v0003/data/metadata/contentMetadata.xml",
+      "reconstructs/v0003/data/metadata/descMetadata.xml",
+      "reconstructs/v0003/data/metadata/identityMetadata.xml",
+      "reconstructs/v0003/data/metadata/provenanceMetadata.xml",
+      "reconstructs/v0003/data/metadata/versionMetadata.xml",
+      "reconstructs/v0003/manifest-md5.txt",
+      "reconstructs/v0003/manifest-sha1.txt",
+      "reconstructs/v0003/manifest-sha256.txt",
+      "reconstructs/v0003/tagmanifest-md5.txt",
+      "reconstructs/v0003/tagmanifest-sha1.txt",
+      "reconstructs/v0003/tagmanifest-sha256.txt",
+      "reconstructs/v0003/versionInventory.xml"
     ]
-
     reconstructs_dir.rmtree if reconstructs_dir.exist?
   end
 
   context '#storage_filepath' do
     it 'returns Pathname if file exists' do
       catalog_filepath = 'v0001/data/content/intro-1.jpg'
-      storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
       filepath = storage_object.storage_filepath(catalog_filepath)
       expect(filepath).to be_instance_of Pathname
       expect(filepath.to_s).to include 'ingests/jq937jp0017/v0001/data/content/intro-1.jpg'
     end
     it 'non-existent file raises Moab::FileNotFoundException' do
-      expect{@storage_object.storage_filepath('dummy')}.to raise_exception Moab::FileNotFoundException
+      expect { @storage_object.storage_filepath('dummy') }.to raise_exception Moab::FileNotFoundException
     end
   end
 
   specify '#version_id_list' do
     expect(@storage_object.version_id_list.size).to eq 0
-    storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
     expect(storage_object.version_id_list.size).to eq 3
   end
 
   specify '#version_list' do
     expect(@storage_object.version_list.size).to eq 0
-    storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
     version_list = storage_object.version_list
     expect(version_list.size).to eq 3
     expect(version_list[1].version_id).to eq 2
@@ -386,21 +379,18 @@ describe 'Moab::StorageObject' do
 
   specify '#current_version_id' do
     expect(@storage_object.current_version_id).to eq 0
-    storage_object = Moab::StorageObject.new(@obj, @ingest_object_dir)
     expect(storage_object.current_version_id).to eq 3
   end
 
   specify '#current_version' do
     expect(@storage_object.current_version.version_id).to eq 0
-    storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
     expect(storage_object.current_version.version_id).to eq 3
   end
 
   specify '#validate_new_inventory' do
-    storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
     version_inventory_3 = double(Moab::FileInventory.name + "3")
     expect(version_inventory_3).to receive(:version_id).twice.and_return 3
-    expect{storage_object.validate_new_inventory(version_inventory_3)}.to raise_exception(/version mismatch/)
+    expect { storage_object.validate_new_inventory(version_inventory_3) }.to raise_exception(/version mismatch/)
 
     version_inventory_4 = double(Moab::FileInventory.name + "4")
     expect(version_inventory_4).to receive(:version_id).and_return 4
@@ -408,9 +398,7 @@ describe 'Moab::StorageObject' do
   end
 
   context '#find_object_version' do
-    before(:each) do
-      @storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
-    end
+    before(:each) { @storage_object = described_class.new(@druid, @ingest_object_dir) }
     it 'existing version' do
       version_2 = @storage_object.find_object_version(2)
       expect(version_2).to be_instance_of(Moab::StorageObjectVersion)
@@ -426,15 +414,13 @@ describe 'Moab::StorageObject' do
       expect(version_latest.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0003/)
     end
     it 'non-existent versions' do
-      expect{@storage_object.find_object_version(0)}.to raise_exception(/Version ID 0 does not exist/)
-      expect{@storage_object.find_object_version(4)}.to raise_exception(/Version ID 4 does not exist/)
+      expect { @storage_object.find_object_version(0) }.to raise_exception(/Version ID 0 does not exist/)
+      expect { @storage_object.find_object_version(4) }.to raise_exception(/Version ID 4 does not exist/)
     end
   end
 
   context '#storage_object_version' do
-    before(:each) do
-      @storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
-    end
+    before(:each) { @storage_object = described_class.new(@druid, @ingest_object_dir) }
     it 'existing version' do
       version_2 = @storage_object.storage_object_version(2)
       expect(version_2).to be_instance_of(Moab::StorageObjectVersion)
@@ -443,18 +429,16 @@ describe 'Moab::StorageObject' do
       expect(version_2.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0002/)
     end
     it 'non-existent versions do not raise exception' do
-      expect{@storage_object.storage_object_version(0)}.not_to raise_exception
-      expect{@storage_object.storage_object_version(4)}.not_to raise_exception
+      expect { @storage_object.storage_object_version(0) }.not_to raise_exception
+      expect { @storage_object.storage_object_version(4) }.not_to raise_exception
     end
     it 'nil version raises exception' do
-      expect{@storage_object.storage_object_version(nil)}.to raise_exception(/Version ID not specified/)
+      expect { @storage_object.storage_object_version(nil) }.to raise_exception(/Version ID not specified/)
     end
   end
 
   specify '#verify_object_storage' do
-    storage_object = Moab::StorageObject.new(@druid, @ingest_object_dir)
-    result = storage_object.verify_object_storage
-    expect(result.verified).to eq true
+    expect(storage_object.verify_object_storage.verified).to eq true
   end
 
   specify '#restore_object' do

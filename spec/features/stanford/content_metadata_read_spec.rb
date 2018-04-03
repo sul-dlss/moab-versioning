@@ -14,5 +14,4 @@ describe "Process contentMetadata datastream" do
     expect(group).to be_instance_of(Moab::FileGroup)
     expect(group.data_source).to eq("contentMetadata-preserve")
   end
-
 end

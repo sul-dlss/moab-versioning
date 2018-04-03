@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A class to represent a digital object's repository storage location
   # and methods for
   # * packaging a bag for ingest of a new object version to the repository
@@ -18,7 +17,6 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageObject
-
     # @return [String] The digital object ID (druid)
     attr_accessor :digital_object_id
 
@@ -30,7 +28,7 @@ module Moab
 
     # @param object_id [String] The digital object identifier
     # @param object_dir [Pathname,String] The location of the object's storage home directory
-    def initialize(object_id, object_dir, mkpath=false)
+    def initialize(object_id, object_dir, mkpath = false)
       @digital_object_id = object_id
       @object_pathname = Pathname.new(object_dir)
       initialize_storage if mkpath
@@ -44,7 +42,7 @@ module Moab
     # @api external
     # @return [void] Create the directory for the digital object home unless it already exists
     def initialize_storage
-        @object_pathname.mkpath
+      @object_pathname.mkpath
     end
 
     # @return [Pathname] The absolute location of the area in which bags are deposited
@@ -61,20 +59,20 @@ module Moab
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
     # @return [void] Ingest a new object version contained in a bag into this objects storage area
     # @example {include:file:spec/features/storage/ingest_spec.rb}
-    def ingest_bag(bag_dir=deposit_bag_pathname)
+    def ingest_bag(bag_dir = deposit_bag_pathname)
       bag_dir = Pathname(bag_dir)
-      current_version = StorageObjectVersion.new(self,current_version_id)
+      current_version = StorageObjectVersion.new(self, current_version_id)
       current_inventory = current_version.file_inventory('version')
-      new_version = StorageObjectVersion.new(self,current_version_id + 1)
-      if FileInventory.xml_pathname_exist?(bag_dir,'version')
-        new_inventory = FileInventory.read_xml_file(bag_dir,'version')
+      new_version = StorageObjectVersion.new(self, current_version_id + 1)
+      if FileInventory.xml_pathname_exist?(bag_dir, 'version')
+        new_inventory = FileInventory.read_xml_file(bag_dir, 'version')
       elsif current_version.version_id == 0
-        new_inventory = versionize_bag(bag_dir,current_version,new_version)
+        new_inventory = versionize_bag(bag_dir, current_version, new_version)
       end
       validate_new_inventory(new_inventory)
       new_version.ingest_bag_data(bag_dir)
-      new_version.update_catalog(current_version.signature_catalog,new_inventory)
-      new_version.generate_differences_report(current_inventory,new_inventory)
+      new_version.update_catalog(current_version.signature_catalog, new_inventory)
+      new_version.generate_differences_report(current_inventory, new_inventory)
       new_version.generate_manifest_inventory
       new_version
     end
@@ -84,12 +82,12 @@ module Moab
     # @param current_version[StorageObjectVersion] The current latest version of the object
     # @param new_version [StorageObjectVersion] The version to be added
     # @return [FileInventory] The file inventory of the specified type for this version
-    def versionize_bag(bag_dir,current_version,new_version)
+    def versionize_bag(bag_dir, current_version, new_version)
       new_inventory = FileInventory.new(
-          :type=>'version',
-          :digital_object_id=>@digital_object_id,
-          :version_id=>new_version.version_id,
-          :inventory_datetime => Time.now
+        :type => 'version',
+        :digital_object_id => @digital_object_id,
+        :version_id => new_version.version_id,
+        :inventory_datetime => Time.now
       )
       new_inventory.inventory_from_bagit_bag(bag_dir)
       new_inventory.write_xml_file(bag_dir)
@@ -104,11 +102,11 @@ module Moab
     # @return [void] Reconstruct an object version and package it in a bag for dissemination
     # @example {include:file:spec/features/storage/reconstruct_spec.rb}
     def reconstruct_version(version_id, bag_dir)
-      storage_version = StorageObjectVersion.new(self,version_id)
+      storage_version = StorageObjectVersion.new(self, version_id)
       version_inventory = storage_version.file_inventory('version')
       signature_catalog = storage_version.signature_catalog
       bagger = Bagger.new(version_inventory, signature_catalog, bag_dir)
-      bagger.fill_bag(:reconstructor,@object_pathname)
+      bagger.fill_bag(:reconstructor, @object_pathname)
     end
 
     # @param [String] catalog_filepath The object-relative path of the file
@@ -142,7 +140,7 @@ module Moab
 
     # @return [Array<StorageObjectVersion>] The list of all versions in this storage object
     def version_list
-      version_id_list.collect{|id| self.storage_object_version(id)}
+      version_id_list.collect { |id| self.storage_object_version(id) }
     end
     alias :versions :version_list
 
@@ -175,15 +173,15 @@ module Moab
     # @api external
     # @param version_id [Integer] The existing version to return.  If nil, return latest version
     # @return [StorageObjectVersion] The representation of an existing version's storage area
-    def find_object_version(version_id=nil)
+    def find_object_version(version_id = nil)
       current = current_version_id
       case version_id
-        when nil
-          StorageObjectVersion.new(self,current)
-        when 1..current
-          StorageObjectVersion.new(self,version_id)
-        else
-          raise "Version ID #{version_id} does not exist"
+      when nil
+        StorageObjectVersion.new(self, current)
+      when 1..current
+        StorageObjectVersion.new(self, version_id)
+      else
+        raise "Version ID #{version_id} does not exist"
       end
     end
 
@@ -194,7 +192,7 @@ module Moab
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
       if version_id
-        StorageObjectVersion.new(self,version_id)
+        StorageObjectVersion.new(self, version_id)
       else
         raise "Version ID not specified"
       end
@@ -207,7 +205,7 @@ module Moab
         result.subentities << version.verify_version_storage
       end
       result.subentities << current_version.verify_signature_catalog
-      result.verified = result.subentities.all?{|entity| entity.verified}
+      result.verified = result.subentities.all? { |entity| entity.verified }
       result
     end
 
@@ -222,7 +220,7 @@ module Moab
         # rename/save the original
         storage_version.deactivate(timestamp)
         # copy the recovered version into place
-        FileUtils.cp_r(recovery_version.version_pathname.to_s,storage_version.version_pathname.to_s)
+        FileUtils.cp_r(recovery_version.version_pathname.to_s, storage_version.version_pathname.to_s)
       end
       self
     end
@@ -236,5 +234,4 @@ module Moab
       size
     end
   end
-
 end

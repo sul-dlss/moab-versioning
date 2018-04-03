@@ -1,5 +1,4 @@
-describe 'Serializer::Manifest' do
-
+describe Serializer::Manifest do
   context '.xml_filename' do
     it 'unspecified name returns class name' do
       expect(Moab::SignatureCatalog.xml_filename()).to eq("signatureCatalog.xml")
@@ -21,7 +20,7 @@ describe 'Serializer::Manifest' do
   end
 
   specify '.xml_pathname_exist?' do
-    expect(Serializer::Manifest.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
+    expect(described_class.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
     expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
   end
 

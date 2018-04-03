@@ -6,14 +6,14 @@ describe "Feature: File Inventory Serialization" do
     # action: a call the object's write_xml_file method
     # outcome: produces a XML document containing all the inventory metadata
 
-    inventory_object = Moab::FileInventory.read_xml_file(@manifests.join("v0001"),'version')
+    inventory_object = Moab::FileInventory.read_xml_file(@manifests.join("v0001"), 'version')
     output_dir = @temp.join('inventory')
     output_dir.mkpath
-    inventory_object.write_xml_file(output_dir,'version')
+    inventory_object.write_xml_file(output_dir, 'version')
     inventory_pathname = output_dir.join('versionInventory.xml')
 
     xmlObj1 = Nokogiri::XML(inventory_pathname.read)
-    xmlObj1.xpath('//@datetime').each {|d| d.value = '' }
+    xmlObj1.xpath('//@datetime').each { |d| d.value = '' }
     xmlObj1.xpath('//@inventoryDatetime').remove
     output_dir.rmtree
 
@@ -73,5 +73,4 @@ describe "Feature: File Inventory Serialization" do
     opts = { :element_order => false, :normalize_whitespace => true }
     expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
   end
-
 end

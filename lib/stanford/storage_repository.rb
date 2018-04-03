@@ -2,7 +2,6 @@ require 'moab/stanford'
 require 'druid-tools'
 
 module Stanford
-
   # A class to represent the SDR repository store
   #
   # ====Data Model
@@ -11,7 +10,6 @@ module Stanford
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository < Moab::StorageRepository
-
     # @param object_id [String] The identifier of the digital object
     # @return [String] The branch segment of the object storage path
     def storage_branch(object_id)
@@ -40,7 +38,5 @@ module Stanford
       raise syntax_msg unless DruidTools::Druid.valid?(identifier, true)
       DruidTools::Druid.new(identifier, true).tree.join(File::SEPARATOR)
     end
-
   end
-
 end

@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A container for a file signature and all the physical file instances that have that signature
   # This element has one child {FileSignature} element, and one or more {FileInstance} elements
   # Regarding the class name, see
@@ -24,7 +23,7 @@ module Moab
     tag 'file'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @instances = Array.new
       super(opts)
     end
@@ -48,7 +47,7 @@ module Moab
     # @api internal
     # @return [Array<String>] Create an array from all the file paths of the child {FileInstance} objects
     def paths
-      instances.collect { |i| i.path}
+      instances.collect { |i| i.path }
     end
 
     # @api internal
@@ -69,7 +68,7 @@ module Moab
     #   (estimating du -k result)
     def block_count
       block_size = 1024
-      instance_blocks = (signature.size.to_i + block_size - 1)/block_size
+      instance_blocks = (signature.size.to_i + block_size - 1) / block_size
       file_count * instance_blocks
     end
 
@@ -80,7 +79,5 @@ module Moab
       return false unless (other.respond_to?(:signature) && other.respond_to?(:instances)) # Cannot equal an incomparable type!
       (self.signature == other.signature) && (self.instances == other.instances)
     end
-
   end
-
 end

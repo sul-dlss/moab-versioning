@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # The file path and last modification date properties of a file
   #
   # ====Data Model
@@ -14,14 +13,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class FileInstance < Serializer::Serializable
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'fileInstance'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       super(opts)
     end
 
@@ -34,13 +32,12 @@ module Moab
     attribute :datetime, String
 
     def datetime=(event_datetime)
-      @datetime=Moab::UtcTime.input(event_datetime)
+      @datetime = Moab::UtcTime.input(event_datetime)
     end
 
     def datetime
       Moab::UtcTime.output(@datetime)
     end
-
 
     # @api internal
     # @param pathname [Pathname] The location of the physical file
@@ -56,7 +53,7 @@ module Moab
     # @param other [FileInstance] The other file instance being compared to this instance
     # @return [Boolean] Returns true if self and other have the same path.
     def eql?(other)
-      return false unless other.respond_to?(:path)  # Cannot equal an incomparable type!
+      return false unless other.respond_to?(:path) # Cannot equal an incomparable type!
       self.path == other.path
     end
 
@@ -77,7 +74,5 @@ module Moab
     def hash
       path.hash
     end
-
   end
-
 end

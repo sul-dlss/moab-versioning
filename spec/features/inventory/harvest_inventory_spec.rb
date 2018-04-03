@@ -9,7 +9,7 @@ describe "Harvest file properties from a file directory" do
 
     data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
     group_id = 'metadata'
-    inventory_1 = Moab::FileInventory.new.inventory_from_directory(data_dir_1,group_id)
+    inventory_1 = Moab::FileInventory.new.inventory_from_directory(data_dir_1, group_id)
     expect(inventory_1.groups.size).to eq(1)
     expect(inventory_1.groups[0].group_id).to eq(group_id)
     expect(inventory_1.file_count).to eq(5)
@@ -21,5 +21,4 @@ describe "Harvest file properties from a file directory" do
     expect(inventory_2.groups[1].group_id).to eq('metadata')
     expect(inventory_2.file_count).to eq(11)
   end
-
 end

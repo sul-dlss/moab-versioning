@@ -1,5 +1,5 @@
-describe 'Moab::FileInventoryDifference' do
-  let(:new_diff) { Moab::FileInventoryDifference.new }
+describe Moab::FileInventoryDifference do
+  let(:new_diff) { described_class.new }
   let(:v1_inventory) do
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     Moab::FileInventory.parse(v1_inventory_pathname.read)
@@ -23,7 +23,7 @@ describe 'Moab::FileInventoryDifference' do
         other: 'Test other',
         report_datetime: 'Apr 12 19:36:07 UTC 2012'
       }
-      fid = Moab::FileInventoryDifference.new(opts)
+      fid = described_class.new(opts)
       expect(fid.digital_object_id).to eq opts[:digital_object_id]
       expect(fid.difference_count).to eq 0
       expect(fid.basis).to eq opts[:basis]
@@ -34,7 +34,7 @@ describe 'Moab::FileInventoryDifference' do
 
   describe '#compare' do
     specify 'returns instance of FileInventoryDifference' do
-      expect(diff_v1_v2).to be_instance_of(Moab::FileInventoryDifference)
+      expect(diff_v1_v2).to be_instance_of(described_class)
     end
     context 'sets attributes' do
       specify '#digital_object_id' do
@@ -91,35 +91,35 @@ describe 'Moab::FileInventoryDifference' do
     hash = diff_v1_v2.summary
     hash.delete('report_datetime')
     expect(hash).to eq({
-      'digital_object_id' => 'druid:jq937jp0017',
-      'basis' => 'v1',
-      'other' => 'v2',
-      'difference_count' => 6,
-      'group_differences' => {
-        'metadata' => {
-          'group_id' => 'metadata',
-          'difference_count' => 3,
-          'identical' => 2,
-          'added' => 0,
-          'modified' => 3,
-          'deleted' => 0,
-          'renamed' => 0,
-          'copyadded' => 0,
-          'copydeleted' => 0
-        },
-        'content' => {
-          'group_id' => 'content',
-          'difference_count' => 3,
-          'identical' => 3,
-          'added' => 0,
-          'modified' => 1,
-          'deleted' => 2,
-          'renamed' => 0,
-          'copyadded' => 0,
-          'copydeleted' => 0
-        }
-      }
-    })
+                         'digital_object_id' => 'druid:jq937jp0017',
+                         'basis' => 'v1',
+                         'other' => 'v2',
+                         'difference_count' => 6,
+                         'group_differences' => {
+                           'metadata' => {
+                             'group_id' => 'metadata',
+                             'difference_count' => 3,
+                             'identical' => 2,
+                             'added' => 0,
+                             'modified' => 3,
+                             'deleted' => 0,
+                             'renamed' => 0,
+                             'copyadded' => 0,
+                             'copydeleted' => 0
+                           },
+                           'content' => {
+                             'group_id' => 'content',
+                             'difference_count' => 3,
+                             'identical' => 3,
+                             'added' => 0,
+                             'modified' => 1,
+                             'deleted' => 2,
+                             'renamed' => 0,
+                             'copyadded' => 0,
+                             'copydeleted' => 0
+                           }
+                         }
+                       })
   end
 
   specify '#differences_detail' do

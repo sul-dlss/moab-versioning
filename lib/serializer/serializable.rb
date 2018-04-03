@@ -1,5 +1,4 @@
 module Serializer
-
   # Some utility methods to faciliate serialization of data fields to Hash, JSON, or YAML shared by all subclasses.
   # This class assumes that HappyMapper is used for declaration of fields to be serialized.
   #
@@ -11,7 +10,6 @@ module Serializer
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class Serializable
-
     include HappyMapper
 
     # A flexible initializer based on the DataMapper "create factory" design pattern.
@@ -19,7 +17,7 @@ module Serializer
     # @see Serializable#initialize
     # @param opts [Hash<Symbol,Object>] a hash containing any number of symbol => value pairs.
     #   The symbols should correspond to attributes declared using HappyMapper syntax
-    def initialize(opts={})
+    def initialize(opts = {})
       opts.each do |key, value|
         if variable_names.include?(key.to_s) || key == :test
           instance_variable_set("@#{key}", value)
@@ -47,7 +45,7 @@ module Serializer
     # @api internal
     # @return [Array] Extract the names of the variables
     def variable_names
-      variables.collect { |variable| variable.name}
+      variables.collect { |variable| variable.name }
     end
 
     # @api internal
@@ -80,12 +78,12 @@ module Serializer
     # @return [Hash] Generate a hash from an array of objects.
     #   If the array member has a field tagged as a key, that field will be used as the hash.key.
     #   Otherwise the index position of the array member will be used as the key
-    def array_to_hash(array,summary=false)
+    def array_to_hash(array, summary = false)
       item_hash = Hash.new
       array.each_index do |index|
         item = array[index]
-        ikey = (item.respond_to?(:key) && item.key) ?  item.key : index
-        item_hash[ikey] =  item.respond_to?(:to_hash) ? item.to_hash(summary) : item
+        ikey = (item.respond_to?(:key) && item.key) ? item.key : index
+        item_hash[ikey] = item.respond_to?(:to_hash) ? item.to_hash(summary) : item
       end
       item_hash
     end
@@ -93,19 +91,19 @@ module Serializer
     # @api internal
     # @return [Hash] Recursively generate an Hash containing the object's properties
     # @param summary [Boolean] Controls the depth and detail of recursion
-    def to_hash(summary=false)
+    def to_hash(summary = false)
       oh = Hash.new
-      vars = summary ? variables.select{|v| summary_fields.include?(v.name)} : variables
+      vars = summary ? variables.select { |v| summary_fields.include?(v.name) } : variables
       vars.each do |variable|
         key = variable.name.to_s
         value = self.send(variable.name)
         case value
-          when Array
-            oh[key] = array_to_hash(value,summary)
-          when Serializable
-            oh[key] = value.to_hash
-          else
-            oh[key] = value
+        when Array
+          oh[key] = array_to_hash(value, summary)
+        when Serializable
+          oh[key] = value.to_hash
+        else
+          oh[key] = value
         end
       end
       oh
@@ -113,7 +111,7 @@ module Serializer
 
     # @return [Hash] Calls to_hash(summary=true)
     def summary
-      self.to_hash(summary=true)
+      self.to_hash(summary = true)
     end
 
     # @api internal
@@ -141,12 +139,12 @@ module Serializer
     def Serializable.deep_diff(*hashes)
       diff = Hash.new
       case hashes.length
-        when 4
-          ltag, left, rtag, right = hashes
-        when 2
-          ltag, left, rtag, right = :left, hashes[0], :right, hashes[1]
-        else
-          raise ArgumentError, "wrong number of arguments (#{hashes.length} for 2 or 4)"
+      when 4
+        ltag, left, rtag, right = hashes
+      when 2
+        ltag, left, rtag, right = :left, hashes[0], :right, hashes[1]
+      else
+        raise ArgumentError, "wrong number of arguments (#{hashes.length} for 2 or 4)"
       end
       (left.keys | right.keys).each do |k|
         if left[k] != right[k]
@@ -162,17 +160,15 @@ module Serializer
 
     # @api internal
     # @return [String] Generate JSON output from a hash of the object's variables
-    def to_json(summary=false)
-      hash=self.to_hash(summary)
+    def to_json(summary = false)
+      hash = self.to_hash(summary)
       JSON.pretty_generate(hash)
     end
 
     # @api internal
     # @return [String] Generate YAML output from a hash of the object's variables
-    def to_yaml(summary=false)
+    def to_yaml(summary = false)
       self.to_hash(summary).to_yaml
     end
-
   end
-
 end
