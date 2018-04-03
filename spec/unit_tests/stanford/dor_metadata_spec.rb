@@ -1,5 +1,4 @@
 describe Stanford::DorMetadata do
-
   specify '#initialize' do
     digital_object_id = 'Test digital_object_id'
     version_id = 68

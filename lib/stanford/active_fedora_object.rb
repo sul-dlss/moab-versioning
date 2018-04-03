@@ -1,7 +1,6 @@
 require 'moab/stanford'
 
 module Stanford
-
   # Utility Class for extracting content or other information from a Fedora Instance
   #
   # ====Data Model
@@ -12,7 +11,6 @@ module Stanford
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class ActiveFedoraObject
-
     # @param fedora_object [Object]  The Active Fedora representation of the Fedora Object
     # @return [Stanford::ActiveFedoraObject] Create a u
     def initialize(fedora_object)
@@ -28,7 +26,5 @@ module Stanford
     def get_datastream_content(ds_id)
       @fedora_object.datastreams[ds_id].content
     end
-
   end
-
 end

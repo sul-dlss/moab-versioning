@@ -233,7 +233,7 @@ describe Stanford::StorageServices do
         diff_ng_xml = Nokogiri::XML(diff.to_xml)
         diff_ng_xml.xpath('//@reportDatetime').remove
         exp_ng_xml = Nokogiri::XML(inventory_diff)
-        exp_ng_xml.xpath('//@other').each {|o| o.value = o.value.gsub(/xyz/, subset) }
+        exp_ng_xml.xpath('//@other').each { |o| o.value = o.value.gsub(/xyz/, subset) }
         expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
     end

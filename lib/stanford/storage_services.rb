@@ -1,10 +1,8 @@
 require 'moab/stanford'
 
 module Stanford
-
   # An interface class to support access to SDR storage via a RESTful server
   class StorageServices < Moab::StorageServices
-
     # @return [StorageRepository] an instance of the interface to SDR storage
     @@repository = Stanford::StorageRepository.new
 
@@ -15,7 +13,7 @@ module Stanford
     #  contentMetadata (all|preserve|publish|shelve)
     # @param base_version [Integer] The ID of the version whose inventory is the basis of, if nil use latest version
     # @return [FileInventoryDifference] The report of differences between the content metadata and the specified version
-    def self.compare_cm_to_version(new_content_metadata, object_id, subset, base_version=nil)
+    def self.compare_cm_to_version(new_content_metadata, object_id, subset, base_version = nil)
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, subset)
       begin
         # ObjectNotFoundException is raised if the object does not exist in storage
@@ -26,7 +24,7 @@ module Stanford
       rescue Moab::ObjectNotFoundException, Moab::FileNotFoundException
         # Create a skeletal FileInventory object, containing no file entries
         storage_object = Moab::StorageObject.new(object_id, 'dummy')
-        base_version = Moab::StorageObjectVersion.new(storage_object,0)
+        base_version = Moab::StorageObjectVersion.new(storage_object, 0)
         base_inventory = base_version.file_inventory('version')
       end
       diff = Moab::FileInventoryDifference.new.compare(base_inventory, new_inventory)
@@ -39,7 +37,7 @@ module Stanford
     # @param object_id [String] The digital object identifier of the object whose signature catalog is to be used
     # @param version_id [Integer] The ID of the version whose signature catalog is to be used, if nil use latest version
     # @return [FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
-    def self.cm_version_additions(new_content_metadata, object_id, version_id=nil)
+    def self.cm_version_additions(new_content_metadata, object_id, version_id = nil)
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, 'preserve')
       begin
         # ObjectNotFoundException is raised if the object does not exist in storage
@@ -48,7 +46,7 @@ module Stanford
         signature_catalog = storage_object_version.signature_catalog
       rescue Moab::ObjectNotFoundException
         storage_object = Moab::StorageObject.new(object_id, 'dummy')
-        base_version = Moab::StorageObjectVersion.new(storage_object,0)
+        base_version = Moab::StorageObjectVersion.new(storage_object, 0)
         signature_catalog = base_version.signature_catalog
       end
       signature_catalog.version_additions(new_inventory)
@@ -57,12 +55,10 @@ module Stanford
     # @param object_id [String] The digital object identifier of the object whose contentMetadata is to be remediated
     # @param version_id [Integer] The ID of the version whose file data is to be used, if nil use latest version
     # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
-    def self.cm_remediate(object_id, version_id=nil)
+    def self.cm_remediate(object_id, version_id = nil)
       cm = self.retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)
       group = self.retrieve_file_group('content', object_id, version_id)
-      Stanford::ContentInventory.new.remediate_content_metadata(cm,group)
+      Stanford::ContentInventory.new.remediate_content_metadata(cm, group)
     end
-
   end
-
 end

@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A class to represent the SDR repository store
   #
   # ====Data Model
@@ -14,7 +13,6 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class StorageRepository
-
     # Note that Moab::Config is not initialized from environment config file until after
     #  this object is initialized by StorageServices
     #  (see sequence of requires in spec_helper.rb and in applications that use)
@@ -23,9 +21,9 @@ module Moab
     def storage_roots
       unless defined?(@storage_roots)
         raise "Moab::Config.storage_roots not found in config file" if Moab::Config.storage_roots.nil?
-        @storage_roots = [Moab::Config.storage_roots].flatten.collect{|filesystem| Pathname(filesystem)}
-        raise "Moab::Config.storage_roots empty" if  @storage_roots.empty?
-        @storage_roots.each{|root| raise "Storage root #{root} not found on system" unless root.exist?}
+        @storage_roots = [Moab::Config.storage_roots].flatten.collect { |filesystem| Pathname(filesystem) }
+        raise "Moab::Config.storage_roots empty" if @storage_roots.empty?
+        @storage_roots.each { |root| raise "Storage root #{root} not found on system" unless root.exist? }
       end
       @storage_roots
     end
@@ -69,7 +67,7 @@ module Moab
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
     # @return [Pathname] The location of the desired object's home directory (default=pairtree)
-    def find_storage_root(object_id, include_deposit=false)
+    def find_storage_root(object_id, include_deposit = false)
       # Search for the object's home directory in the storage areas
       branch = storage_branch(object_id)
       storage_roots.each do |root|
@@ -95,7 +93,7 @@ module Moab
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
     # @return [StorageObject] The representation of a digitial object's  storage directory, which might not exist yet.
-    def find_storage_object(object_id, include_deposit=false)
+    def find_storage_object(object_id, include_deposit = false)
       root = find_storage_root(object_id, include_deposit)
       storage_pathname = root.join(storage_trunk, storage_branch(object_id))
       storage_object = StorageObject.new(object_id, storage_pathname)
@@ -106,7 +104,7 @@ module Moab
     # @param object_id [String] The identifier of the digital object whose size is desired
     # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
     # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).
-    def object_size(object_id, include_deposit=false)
+    def object_size(object_id, include_deposit = false)
       storage_pathname = find_storage_object(object_id, include_deposit).object_pathname
       size = 0
       Find.find(storage_pathname) do |path|
@@ -118,27 +116,25 @@ module Moab
     # @param object_id [String] The identifier of the digital object whose version is desired
     # @param create [Boolean] If true, the object home directory should be created if it does not exist
     # @return [StorageObject] The representation of a digitial object's storage directory, which must exist.
-    def storage_object(object_id, create=false)
-    storage_object = find_storage_object(object_id)
-    unless storage_object.object_pathname.exist?
-      if create
+    def storage_object(object_id, create = false)
+      storage_object = find_storage_object(object_id)
+      unless storage_object.object_pathname.exist?
+        if create
           storage_object.object_pathname.mkpath
-      else
-        raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
+        else
+          raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
+        end
       end
-    end
-    storage_object
+      storage_object
     end
 
     # @depricated Please use StorageObject#ingest_bag
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
-    def store_new_object_version(druid, bag_pathname )
-      storage_object = self.storage_object(druid, create=true)
+    def store_new_object_version(druid, bag_pathname)
+      storage_object = self.storage_object(druid, create = true)
       new_version = storage_object.ingest_bag(bag_pathname)
       new_version
     end
-
   end
-
 end

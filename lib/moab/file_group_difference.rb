@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # Performs analysis and reports the differences between two matching {FileGroup} objects.
   # The descending elements of the report hold a detailed breakdown of file-level differences, organized by change type.
   # This stanza is a child element of {FileInventoryDifference}, the documentation of which contains a full example.
@@ -53,8 +52,8 @@ module Moab
     end
 
     # (see Serializable#initialize)
-    def initialize(opts={})
-      @subset_hash = Hash.new {|hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s)}
+    def initialize(opts = {})
+      @subset_hash = Hash.new { |hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s) }
       super(opts)
     end
 
@@ -135,7 +134,7 @@ module Moab
 
     def subsets=(array)
       if array
-        array.each{|subset| subset_hash[subset.change.to_sym] = subset}
+        array.each { |subset| subset_hash[subset.change.to_sym] = subset }
       end
     end
 
@@ -144,19 +143,18 @@ module Moab
       %w{group_id difference_count identical copyadded copydeleted renamed modified deleted added}
     end
 
-
     # @api internal
     # @return [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
     def summary()
       FileGroupDifference.new(
-          :group_id => group_id,
-          :identical => identical,
-          :copyadded => copyadded,
-          :copydeleted => copydeleted,
-          :renamed => renamed,
-          :modified => modified,
-          :added => added,
-          :deleted => deleted
+        :group_id => group_id,
+        :identical => identical,
+        :copyadded => copyadded,
+        :copydeleted => copydeleted,
+        :renamed => renamed,
+        :modified => modified,
+        :added => added,
+        :deleted => deleted
       )
     end
 
@@ -258,7 +256,7 @@ module Moab
         basis_only_paths = basis_paths - other_paths
         other_only_paths = other_paths - basis_paths
         maxsize = [basis_only_paths.size, other_only_paths.size].max
-        (0..maxsize-1).each do |n|
+        (0..maxsize - 1).each do |n|
           fid = FileInstanceDifference.new()
           fid.basis_path = basis_only_paths[n]
           fid.other_path = other_only_paths[n]
@@ -335,10 +333,10 @@ module Moab
     # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
     def file_deltas()
       # The hash to be returned
-      deltas = Hash.new {|hash, key| hash[key] = []}
+      deltas = Hash.new { |hash, key| hash[key] = [] }
       # case where other_path is empty or 'same'.  (create array of strings)
       [:identical, :modified, :deleted, :copydeleted].each do |change|
-        deltas[change].concat(subset_hash[change].files.collect{ |file| file.basis_path })
+        deltas[change].concat(subset_hash[change].files.collect { |file| file.basis_path })
       end
       # case where basis_path and other_path are both present.  (create array of arrays)
       [:copyadded, :renamed].each do |change|
@@ -372,9 +370,7 @@ module Moab
     # @param [Array<Array<String>>] filepairs The set of oldname, newname pairs for all files being renamed
     # @return [Array<Array<String>>] a set of file triples containing oldname, tempname, newname
     def rename_tempfile_triplets(filepairs)
-      filepairs.collect{ |old, new| [old, new, "#{new}-#{Time.now.strftime('%Y%m%d%H%H%S')}-tmp"] }
+      filepairs.collect { |old, new| [old, new, "#{new}-#{Time.now.strftime('%Y%m%d%H%H%S')}-tmp"] }
     end
-
   end
-
 end

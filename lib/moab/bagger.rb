@@ -1,5 +1,4 @@
 module Moab
-
   # A class used to create a BagIt package from a version inventory and a set of source files.
   # The {#fill_bag} method is called with a package_mode parameter that specifies
   # whether the bag is being created for deposit into the repository or is to contain the output of a version reconstruction.
@@ -18,7 +17,6 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class Bagger
-
     # @param version_inventory [FileInventory] The complete inventory of the files comprising a digital object version
     # @param signature_catalog [SignatureCatalog] The signature catalog, used to specify source paths (in :reconstructor mode),
     #   or to filter the version inventory (in :depositor mode)
@@ -71,7 +69,7 @@ module Moab
         if bag_pathname.join('data').exist?
           bag_pathname.rmtree
         else
-          bag_pathname.children.each {|file| file.delete}
+          bag_pathname.children.each { |file| file.delete }
           bag_pathname.rmdir
         end
       end
@@ -108,13 +106,13 @@ module Moab
       @package_mode = package_mode
       bag_pathname.mkpath
       case package_mode
-        when :depositor
-          version_inventory.write_xml_file(bag_pathname, 'version')
-          @bag_inventory = signature_catalog.version_additions(version_inventory)
-          bag_inventory.write_xml_file(bag_pathname, 'additions')
-        when :reconstructor
-          @bag_inventory = version_inventory
-          bag_inventory.write_xml_file(bag_pathname, 'version')
+      when :depositor
+        version_inventory.write_xml_file(bag_pathname, 'version')
+        @bag_inventory = signature_catalog.version_additions(version_inventory)
+        bag_inventory.write_xml_file(bag_pathname, 'additions')
+      when :reconstructor
+        @bag_inventory = version_inventory
+        bag_inventory.write_xml_file(bag_pathname, 'version')
       end
       bag_inventory
     end
@@ -128,10 +126,10 @@ module Moab
       bag_inventory.groups.each do |group|
         group_id = group.group_id
         case package_mode
-          when :depositor
-            deposit_group(group_id, source_base_pathname.join(group_id))
-          when :reconstructor
-            reconstuct_group(group_id, source_base_pathname)
+        when :depositor
+          deposit_group(group_id, source_base_pathname.join(group_id))
+        when :reconstructor
+          reconstuct_group(group_id, source_base_pathname)
         end
       end
     end
@@ -143,7 +141,7 @@ module Moab
     def deposit_group(group_id, source_dir)
       group = bag_inventory.group(group_id)
       return nil? if group.nil? or group.files.empty?
-      target_dir = bag_pathname.join('data',group_id)
+      target_dir = bag_pathname.join('data', group_id)
       group.path_list.each do |relative_path|
         source = source_dir.join(relative_path)
         target = target_dir.join(relative_path)
@@ -160,7 +158,7 @@ module Moab
     def reconstuct_group(group_id, storage_object_dir)
       group = bag_inventory.group(group_id)
       return nil? if group.nil? or group.files.empty?
-      target_dir = bag_pathname.join('data',group_id)
+      target_dir = bag_pathname.join('data', group_id)
       group.files.each do |file|
         catalog_entry = signature_catalog.signature_hash[file.signature]
         source = storage_object_dir.join(catalog_entry.storage_path)
@@ -251,15 +249,15 @@ module Moab
     end
 
     # @return [Boolean] Create a tar file containing the bag
-    def create_tarfile(tar_pathname=nil)
+    def create_tarfile(tar_pathname = nil)
       bag_name = bag_pathname.basename
       bag_parent = bag_pathname.parent
       tar_pathname ||= bag_parent.join("#{bag_name}.tar")
-      tar_cmd="cd '#{bag_parent}'; tar --dereference --force-local -cf  '#{tar_pathname}' '#{bag_name}'"
+      tar_cmd = "cd '#{bag_parent}'; tar --dereference --force-local -cf  '#{tar_pathname}' '#{bag_name}'"
       begin
         shell_execute(tar_cmd)
       rescue
-        shell_execute(tar_cmd.sub('--force-local',''))
+        shell_execute(tar_cmd.sub('--force-local', ''))
       end
       raise "Unable to create tarfile #{tar_pathname}" unless tar_pathname.exist?
       return true

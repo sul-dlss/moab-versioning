@@ -3,12 +3,11 @@ require 'moab'
 module Stanford
   # druids are Stanford specific entities
   class StorageObjectValidator < Moab::StorageObjectValidator
-
     # TODO: test to make sure constants don't collide on underlying int vals?
     # keep from stepping on previously defined error code constants.
     DRUID_MISMATCH = superclass.error_code_to_messages.keys.max + 1
 
-    def validation_errors(allow_content_subdirs=true)
+    def validation_errors(allow_content_subdirs = true)
       errors = []
       errors.concat super(allow_content_subdirs)
       errors.concat(identify_druid) if errors.empty?

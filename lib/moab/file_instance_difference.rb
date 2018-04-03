@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A container for recording difference information at the file level
   # * If there was no change, the change type is set to <i>identical</i>
   # * If the signature is unchanged, but the path has moved, the change type is set to <i>renamed</i>
@@ -21,15 +20,14 @@ module Moab
   #
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
-  class FileInstanceDifference  < Serializer::Serializable
-
+  class FileInstanceDifference < Serializer::Serializable
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'file'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @signatures = Array.new
       super(opts)
     end
@@ -49,7 +47,5 @@ module Moab
     # @attribute
     # @return [Array<FileSignature>] The fixity data of the file manifestation(s) (plural if change was a content modification)
     has_many :signatures, FileSignature, :tag => 'fileSignature'
-
   end
-
 end

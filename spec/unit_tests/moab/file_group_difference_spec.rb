@@ -171,40 +171,37 @@ describe Moab::FileGroupDifference do
 
       specify 'copyadded subset' do
         copyadded_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copyadded].to_xml)
-        exp_ng_xml = Nokogiri::XML(<<-XML
+        exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="copyadded" count="1">
             <file change="copyadded" basisPath="Original-2" otherPath="Copy-added">
               <fileSignature size="3167" md5="0effae25b53d55c6450d9fdb391488b3" sha1="e3abd068b7ee49a23a4af9e7b7818a41742b2aad" sha256=""/>
             </file>
           </subset>
         XML
-        )
         expect(EquivalentXml.equivalent?(copyadded_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
 
       specify 'copydeleted subset' do
         copydeleted_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copydeleted].to_xml)
-        exp_ng_xml = Nokogiri::XML(<<-XML
+        exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="copydeleted" count="1">
             <file change="copydeleted" basisPath="Copy-removed" otherPath="">
               <fileSignature size="3182887" md5="ea6726038e370846910b4d103ffc1443" sha1="11b7a71251dbb57288782e0340685a1d5a12918d" sha256=""/>
             </file>
           </subset>
         XML
-        )
         expect(EquivalentXml.equivalent?(copydeleted_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
 
       specify 'renamed subset' do
         renamed_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:renamed].to_xml)
-        exp_ng_xml = Nokogiri::XML(<<-XML
+        exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="renamed" count="1">
             <file change="renamed" basisPath="Original-3" otherPath="File-renamed">
               <fileSignature size="3167" md5="c6450d9fdb391488b30effae25b53d55" sha1="ee49a23a4af9e7b7818a41742b2aade3abd068b7" sha256=""/>
             </file>
           </subset>
         XML
-        )
         expect(EquivalentXml.equivalent?(renamed_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
     end
@@ -213,8 +210,8 @@ describe Moab::FileGroupDifference do
   specify '#compare_matching_signatures' do
     new_diff.compare_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 2
-    expect(new_diff.subsets.collect {|s| s.change }).to eq ["identical", "renamed"]
-    expect(new_diff.subsets.collect {|s| s.files.size }).to eq [1, 2]
+    expect(new_diff.subsets.collect { |s| s.change }).to eq ["identical", "renamed"]
+    expect(new_diff.subsets.collect { |s| s.files.size }).to eq [1, 2]
     expect(new_diff.identical).to eq 1
     expect(new_diff.renamed).to eq 2
   end
@@ -222,8 +219,8 @@ describe Moab::FileGroupDifference do
   specify '#compare_non_matching_signatures' do
     new_diff.compare_non_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 3
-    expect(new_diff.subsets.collect {|s| s.change }).to eq ["modified", "added", "deleted"]
-    expect(new_diff.subsets.collect {|s| s.files.size }).to eq [1, 1, 2]
+    expect(new_diff.subsets.collect { |s| s.change }).to eq ["modified", "added", "deleted"]
+    expect(new_diff.subsets.collect { |s| s.files.size }).to eq [1, 1, 2]
     expect(new_diff.modified).to eq 1
     expect(new_diff.deleted).to eq 2
     expect(new_diff.added).to eq 1
@@ -370,7 +367,7 @@ describe Moab::FileGroupDifference do
   end
 
   specify '.parse' do
-    fixture = @ingests.join('jq937jp0017','v0003','manifests','fileInventoryDifference.xml')
+    fixture = @ingests.join('jq937jp0017', 'v0003', 'manifests', 'fileInventoryDifference.xml')
     fid = Moab::FileInventoryDifference.parse(IO.read(fixture))
     fgd = fid.group_difference('content')
     expect(fgd.subsets.count).to be >= 5
@@ -401,26 +398,26 @@ describe Moab::FileGroupDifference do
     deltas = new_diff.file_deltas
     expect(deltas).to eq(
       {
-        identical: [ "title.jpg" ],
-        modified: [ "page-1.jpg" ],
-        deleted: [ "intro-1.jpg", "intro-2.jpg" ],
+        identical: ["title.jpg"],
+        modified: ["page-1.jpg"],
+        deleted: ["intro-1.jpg", "intro-2.jpg"],
         copydeleted: [],
         copyadded: [],
-        renamed: [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ],
-        added: [ "page-2.jpg" ]
+        renamed: [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]],
+        added: ["page-2.jpg"]
       }
     )
   end
 
   specify '#rename_require_temp_files' do
-    renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
+    renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
     expect(new_diff.rename_require_temp_files(renamed)).to eq true
-    renamed = [ [ "page-1.jpg", "page-1b.jpg" ], [ "page-2.jpg", "page-2b.jpg" ] ]
+    renamed = [["page-1.jpg", "page-1b.jpg"], ["page-2.jpg", "page-2b.jpg"]]
     expect(new_diff.rename_require_temp_files(renamed)).to eq false
   end
 
   specify '#rename_tempfile_triplets' do
-    renamed = [ [ "page-2.jpg", "page-3.jpg" ], [ "page-3.jpg", "page-4.jpg" ] ]
+    renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
     triplets = new_diff.rename_tempfile_triplets(renamed)
     expect(triplets[0][0]).to eq "page-2.jpg"
     expect(triplets[0][1]).to eq "page-3.jpg"

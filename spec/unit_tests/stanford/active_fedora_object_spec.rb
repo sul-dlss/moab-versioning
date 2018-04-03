@@ -1,5 +1,4 @@
 describe Stanford::ActiveFedoraObject do
-
   specify '#initialize' do
     fedora_object = double('FedoraObject')
     active_fedora_object = described_class.new(fedora_object)
@@ -17,5 +16,4 @@ describe Stanford::ActiveFedoraObject do
     expect(mock_datastream).to receive(:content)
     active_fedora_object.get_datastream_content(ds_id)
   end
-
 end

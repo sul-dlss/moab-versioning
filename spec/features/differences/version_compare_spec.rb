@@ -25,5 +25,4 @@ describe "Compare versions" do
     expect(diff.difference_count).to eq(6)
     expect(diff.digital_object_id).to eq("druid:jq937jp0017")
   end
-
 end

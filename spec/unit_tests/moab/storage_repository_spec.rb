@@ -35,7 +35,7 @@ describe Moab::StorageRepository do
     end
     it 'exception raised when storage_trunk is bogus' do
       allow(storage_repo).to receive(:storage_trunk).and_return('junk')
-      expect{storage_repo.find_storage_root('abcdef')}.to raise_exception(/Storage area not found/)
+      expect { storage_repo.find_storage_root('abcdef') }.to raise_exception(/Storage area not found/)
     end
   end
 
@@ -56,7 +56,7 @@ describe Moab::StorageRepository do
     end
 
     it 'raises exception when object not found' do
-      expect{storage_repo.storage_object('jq937jp0017')}.to raise_exception(Moab::ObjectNotFoundException)
+      expect { storage_repo.storage_object('jq937jp0017') }.to raise_exception(Moab::ObjectNotFoundException)
     end
 
     it 'creates path when create set to true' do

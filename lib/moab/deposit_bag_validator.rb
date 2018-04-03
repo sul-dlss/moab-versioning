@@ -1,5 +1,4 @@
 module Moab
-
   # Given a deposit bag, ensures the contents valid for becoming a StorageObjectVersion
   # this is a Shameless Green implementation, combining code from:
   #  - sdr-preservation-core/lib/sdr_ingest/validate_bag  <-- old preservation robots
@@ -11,7 +10,6 @@ module Moab
   #  - deposit_bag_validator
   #  - file_signature
   class DepositBagValidator
-
     BAG_DIR_NOT_FOUND = :bag_dir_not_found
     CHECKSUM_MISMATCH = :checksum_mismatch
     CHECKSUM_TYPE_UNRECOGNIZED = :checksum_type_unrecognized
@@ -221,7 +219,7 @@ module Moab
       file_checksums
     end
 
-    def digester_hash(types_to_generate=DEFAULT_CHECKSUM_TYPES)
+    def digester_hash(types_to_generate = DEFAULT_CHECKSUM_TYPES)
       types_to_generate.each_with_object({}) do |checksum_type, digester_hash|
         case checksum_type
         when :md5

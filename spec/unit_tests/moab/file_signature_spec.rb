@@ -42,7 +42,7 @@ describe Moab::FileSignature do
       )
     end
     it 'unknown checksum type' do
-      expect{file_sig.set_checksum('xyz', 'dummy')}.to raise_exception(ArgumentError, /Unknown checksum type 'xyz'/)
+      expect { file_sig.set_checksum('xyz', 'dummy') }.to raise_exception(ArgumentError, /Unknown checksum type 'xyz'/)
     end
   end
 
@@ -111,7 +111,7 @@ describe Moab::FileSignature do
     specify 'when given bad checksum' do
       fs = described_class.new(sha1: 'dummy')
       exp_err_regex = /Signature inconsistent between inventory and file/
-      expect{ fs.normalized_signature(page2_v1_pathname) }.to raise_exception(exp_err_regex)
+      expect { fs.normalized_signature(page2_v1_pathname) }.to raise_exception(exp_err_regex)
     end
   end
 

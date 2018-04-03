@@ -3,7 +3,7 @@ describe Moab::VerificationResult do
     result = described_class.verify_value('greeting', "hello", "goodbye")
     expect(result.entity).to eq 'greeting'
     expect(result.verified).to eq false
-    expect(result.details).to eq({ "expected"=>"hello", "found"=>"goodbye" })
+    expect(result.details).to eq({ "expected" => "hello", "found" => "goodbye" })
     expect(result.subentities).to be_an_instance_of Array
     expect(result.subentities.size).to eq 0
   end
@@ -34,10 +34,10 @@ describe Moab::VerificationResult do
     result.subentities.each do |s|
       if (s.entity == 'subentity_2')
         s.verified = false
-        s.details = {"its a" => "shame"}
+        s.details = { "its a" => "shame" }
       else
         s.verified = true
-        s.details = {"all is" => "good"}
+        s.details = { "all is" => "good" }
       end
     end
     result

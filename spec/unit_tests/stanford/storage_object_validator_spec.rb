@@ -43,7 +43,7 @@ RSpec.describe Stanford::StorageObjectValidator do
 
       it 'returns the right error code when druid is not the same' do
         expect(storage_obj_validator2.identify_druid).to eq [
-          { Stanford::StorageObjectValidator::DRUID_MISMATCH=>'manifestInventory object_id does not match druid' }
+          { Stanford::StorageObjectValidator::DRUID_MISMATCH => 'manifestInventory object_id does not match druid' }
         ]
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Stanford::StorageObjectValidator do
 
       it 'returns the right error code when druid is not the same' do
         expect(storage_obj_validator2.identify_druid).to eq [
-          { Stanford::StorageObjectValidator::DRUID_MISMATCH=>'manifestInventory object_id does not match druid' }
+          { Stanford::StorageObjectValidator::DRUID_MISMATCH => 'manifestInventory object_id does not match druid' }
         ]
       end
     end

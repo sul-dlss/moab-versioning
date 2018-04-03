@@ -1,5 +1,4 @@
 describe Serializer::Manifest do
-
   context '.xml_filename' do
     it 'unspecified name returns class name' do
       expect(Moab::SignatureCatalog.xml_filename()).to eq("signatureCatalog.xml")

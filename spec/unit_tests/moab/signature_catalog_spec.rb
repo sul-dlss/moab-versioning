@@ -79,29 +79,29 @@ describe Moab::SignatureCatalog do
     filepath = @signature_catalog.catalog_filepath(file_signature)
     expect(filepath).to eq('v0001/data/content/intro-1.jpg')
     file_signature.size = 0
-    expect{@signature_catalog.catalog_filepath(file_signature)}.to raise_exception Moab::FileNotFoundException
+    expect { @signature_catalog.catalog_filepath(file_signature) }.to raise_exception Moab::FileNotFoundException
   end
 
   specify '#normalize_group_signatures' do
     @v2_inventory.groups.each do |group|
-      group.data_source = @v2_inventory_pathname.parent.parent.join('data',group.group_id).to_s
+      group.data_source = @v2_inventory_pathname.parent.parent.join('data', group.group_id).to_s
       if group.group_id == 'content'
         group.files.each do |file|
           file.signature.sha256 = nil
         end
       end
     end
-    content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
-    expect(content_signatures.collect{|sig| sig.sha256}).to eq([nil,nil,nil,nil])
+    content_signatures = @v2_inventory.group('content').files.collect { |file| file.signature }
+    expect(content_signatures.collect { |sig| sig.sha256 }).to eq([nil, nil, nil, nil])
     @v2_inventory.groups.each do |group|
       @signature_catalog.normalize_group_signatures(group, group.data_source)
     end
-    content_signatures = @v2_inventory.group('content').files.collect{|file| file.signature}
-    expect(content_signatures.collect{|sig| sig.sha256}).to eq(
-        ["b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
-         "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0",
-         "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271",
-         "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"]
+    content_signatures = @v2_inventory.group('content').files.collect { |file| file.signature }
+    expect(content_signatures.collect { |sig| sig.sha256 }).to eq(
+      ["b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+       "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0",
+       "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271",
+       "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"]
     )
   end
 
@@ -109,7 +109,7 @@ describe Moab::SignatureCatalog do
     @v2_inventory.groups.each do |group|
       if group.group_id == 'metadata'
         group.files.each do |file|
-          file.signature.sha256 = nil if [1303,399].include?(file.signature.size.to_i)
+          file.signature.sha256 = nil if [1303, 399].include?(file.signature.size.to_i)
         end
       end
     end
@@ -134,13 +134,13 @@ describe Moab::SignatureCatalog do
 
   specify "#summary has fields set in #summary_fields" do
     expect(@signature_catalog.summary).to eq({
-      "digital_object_id" => "druid:jq937jp0017",
-      "version_id" => 1,
-      "catalog_datetime" => "#{@signature_catalog.catalog_datetime}",
-      "file_count" => 11,
-      "byte_count" => 217820,
-      "block_count" => 216
-    })
+                                               "digital_object_id" => "druid:jq937jp0017",
+                                               "version_id" => 1,
+                                               "catalog_datetime" => "#{@signature_catalog.catalog_datetime}",
+                                               "file_count" => 11,
+                                               "byte_count" => 217820,
+                                               "block_count" => 216
+                                             })
   end
 
   specify "Serialization to string using HappyMapper to_xml" do

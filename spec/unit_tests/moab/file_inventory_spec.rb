@@ -88,7 +88,7 @@ describe Moab::FileInventory do
     expect(parsed_file_inventory.groups.size).to eq 3
     expect(parsed_file_inventory.group_ids).to eq ["content", "metadata", "empty"]
     expect(parsed_file_inventory.non_empty_groups.size).to eq 2
-    expect(parsed_file_inventory.group_ids(non_empty=true)).to eq ["content", "metadata"]
+    expect(parsed_file_inventory.group_ids(non_empty = true)).to eq ["content", "metadata"]
   end
 
   specify '#group' do
@@ -127,7 +127,7 @@ describe Moab::FileInventory do
   specify '#data_source' do
     expect(parsed_file_inventory.data_source).to eq "v1"
     directory = @fixtures.join('derivatives/manifests/all')
-    directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, group_id="mygroup")
+    directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, group_id = "mygroup")
     expect(directory_inventory.data_source).to include "derivatives/manifests/all"
   end
 
@@ -174,14 +174,14 @@ describe Moab::FileInventory do
     specify '#summary' do
       hash = parsed_file_inventory.summary
       expect(hash).to eq({
-        "type" => "version",
-        "digital_object_id" => "druid:jq937jp0017",
-        "version_id" => 1,
-        "file_count" => 11,
-        "byte_count" => 217820,
-        "block_count" => 216,
-        "inventory_datetime" => parsed_file_inventory.inventory_datetime,
-        "groups" =>
+                           "type" => "version",
+                           "digital_object_id" => "druid:jq937jp0017",
+                           "version_id" => 1,
+                           "file_count" => 11,
+                           "byte_count" => 217820,
+                           "block_count" => 216,
+                           "inventory_datetime" => parsed_file_inventory.inventory_datetime,
+                           "groups" =>
           {
             "metadata" =>
               {
@@ -195,13 +195,13 @@ describe Moab::FileInventory do
                 "group_id" => "content",
                 "file_count" => 6,
                 "byte_count" => 206432,
-                "block_count"=>203
+                "block_count" => 203
               }
           }
-        })
+                         })
     end
     specify '#to_json summary' do
-      json = parsed_file_inventory.to_json(summary=true)
+      json = parsed_file_inventory.to_json(summary = true)
       expect("#{json}\n").to eq <<-JSON
 {
   "type": "version",

@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A structured container for recording information about a collection of related files.
   #
   # The <b>scope</b> of the file collection depends on inventory type:
@@ -29,14 +28,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class FileInventory < Serializer::Manifest
-
     include HappyMapper
 
     # The name of the XML element used to serialize this object's data
     tag 'fileInventory'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @groups = Array.new
       @inventory_datetime = Time.now
       super(opts)
@@ -106,7 +104,7 @@ module Moab
 
     # @param non_empty [Boolean] if true, return group_id's only for groups having files
     # @return [Array<String>] group identifiers contained in this file inventory
-    def group_ids(non_empty=nil)
+    def group_ids(non_empty = nil)
       my_groups = non_empty ? self.non_empty_groups : groups
       my_groups.map { |g| g.group_id }
     end
@@ -114,7 +112,7 @@ module Moab
     # @param [String] group_id The identifer of the group to be selected
     # @return [FileGroup] The file group in this inventory for the specified group_id
     def group(group_id)
-      groups.find { |group| group.group_id == group_id}
+      groups.find { |group| group.group_id == group_id }
     end
 
     # @param group_id [String] File group identifer (e.g. data, metadata, manifests)
@@ -183,7 +181,7 @@ module Moab
     #   if nil, then the directory is assumed to contain both content and metadata subdirectories
     # @return [FileInventory] Traverse a directory and return an inventory of the files it contains
     # @example {include:file:spec/features/inventory/harvest_inventory_spec.rb}
-    def inventory_from_directory(data_dir, group_id=nil)
+    def inventory_from_directory(data_dir, group_id = nil)
       if group_id
         groups << FileGroup.new(group_id: group_id).group_from_directory(data_dir)
       else
@@ -202,7 +200,7 @@ module Moab
       signatures_from_bag = signatures_from_bagit_manifests(bag_pathname)
       bag_data_subdirs = bag_pathname.join('data').children
       bag_data_subdirs.each do |subdir|
-        groups << FileGroup.new(:group_id=>subdir.basename.to_s).group_from_bagit_subdir(subdir, signatures_from_bag)
+        groups << FileGroup.new(:group_id => subdir.basename.to_s).group_from_bagit_subdir(subdir, signatures_from_bag)
       end
       self
     end
@@ -219,7 +217,7 @@ module Moab
         if manifest_pathname[type].exist?
           manifest_pathname[type].each_line do |line|
             line.chomp!
-            checksum,data_path = line.split(/\s+\**/,2)
+            checksum, data_path = line.split(/\s+\**/, 2)
             if checksum && data_path
               file_pathname = bag_pathname.join(data_path)
               signature = signatures[file_pathname]
@@ -251,18 +249,18 @@ module Moab
     # @api internal
     # @param type [String] Specifies the type of inventory, and thus the filename used for storage
     # @return [String] The standard name for the serialized inventory file of the given type
-    def self.xml_filename(type=nil)
+    def self.xml_filename(type = nil)
       case type
-        when "version"
-          'versionInventory.xml'
-        when "additions"
-          'versionAdditions.xml'
-        when "manifests"
-          'manifestInventory.xml'
-        when "directory"
-          'directoryInventory.xml'
-        else
-          raise ArgumentError, "unknown inventory type: #{type}"
+      when "version"
+        'versionInventory.xml'
+      when "additions"
+        'versionAdditions.xml'
+      when "manifests"
+        'manifestInventory.xml'
+      when "directory"
+        'directoryInventory.xml'
+      else
+        raise ArgumentError, "unknown inventory type: #{type}"
       end
     end
 
@@ -271,11 +269,9 @@ module Moab
     # @param type [String] The inventory type, which governs the filename used for serialization
     # @return [void] write the {FileInventory} instance to a file
     # @example {include:file:spec/features/inventory/write_inventory_xml_spec.rb}
-    def write_xml_file(parent_dir, type=nil)
+    def write_xml_file(parent_dir, type = nil)
       type = @type if type.nil?
       self.class.write_xml_file(self, parent_dir, type)
     end
-
   end
-
 end

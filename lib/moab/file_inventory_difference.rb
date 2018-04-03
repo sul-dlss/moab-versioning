@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # Compares two {FileInventory} instances based primarily on file signatures and secondarily on file pathnames.
   # Although the usual use will be to compare the content of 2 different temporal versions of the same object,
   # it can also be used to verify an inventory document against an inventory harvested from a directory.
@@ -18,14 +17,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class FileInventoryDifference < Serializer::Manifest
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'fileInventoryDifference'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @group_differences = Array.new
       super(opts)
     end
@@ -36,7 +34,7 @@ module Moab
 
     # @attribute
     # @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
-    attribute :difference_count, Integer, :tag=> 'differenceCount',:on_save => Proc.new {|i| i.to_s}
+    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
 
     def difference_count
       @group_differences.inject(0) { |sum, group| sum + group.difference_count }
@@ -74,7 +72,7 @@ module Moab
     # @param [String] group_id The identifer of the group to be selected
     # @return [FileGroupDifference] The subset of this report for the specified group_id (or nil if not found)
     def group_difference(group_id)
-      @group_differences.find{ |group_difference| group_difference.group_id == group_id}
+      @group_differences.find { |group_difference| group_difference.group_id == group_id }
     end
 
     # @api external
@@ -126,7 +124,5 @@ module Moab
       end
       inv_diff
     end
-
   end
-
 end

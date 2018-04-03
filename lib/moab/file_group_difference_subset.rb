@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # A container for reporting a set of file-level differences of the type specified by the change attribute
   #
   # ====Data Model
@@ -20,7 +19,7 @@ module Moab
     tag 'subset'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @files = Array.new
       super(opts)
     end
@@ -39,7 +38,6 @@ module Moab
 
     # @attribute
     # @return [Array<FileInstanceDifference>] The set of file instances having this type of change
-    has_many :files, FileInstanceDifference, :tag=>'file'
-
+    has_many :files, FileInstanceDifference, :tag => 'file'
   end
 end

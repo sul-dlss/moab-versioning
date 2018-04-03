@@ -17,5 +17,4 @@ describe "Manifest file parsing" do
     expect(catalog).to be_instance_of(Moab::SignatureCatalog)
     expect(catalog.entries.size).to eq(11)
   end
-
 end

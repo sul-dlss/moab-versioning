@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # The descriptive information about a digital object's collection of versions
   #
   # ====Data Model
@@ -13,14 +12,13 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class VersionMetadata < Serializer::Manifest
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'versionMetadata'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @versions = Array.new
       super(opts)
     end
@@ -32,7 +30,5 @@ module Moab
     # @attribute
     # @return [Array<VersionMetadataEntry>] An array of version metadata entries, one per version
     has_many :versions, VersionMetadataEntry, :tag => 'version'
-
   end
-
 end

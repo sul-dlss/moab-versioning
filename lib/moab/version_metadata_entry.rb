@@ -1,7 +1,6 @@
 require 'moab'
 
 module Moab
-
   # The descriptive attributes of a digital object version.
   #
   # ====Data Model
@@ -12,21 +11,20 @@ module Moab
   # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
   #   All rights reserved.  See {file:LICENSE.rdoc} for details.
   class VersionMetadataEntry < Serializer::Serializable
-
     include HappyMapper
 
     # The name of the XML element used to serialize this objects data
     tag 'version'
 
     # (see Serializable#initialize)
-    def initialize(opts={})
+    def initialize(opts = {})
       @events = Array.new
       super(opts)
     end
 
     # @attribute
     # @return [Integer] The object version number (A sequential integer)
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new {|n| n.to_s}
+    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new { |n| n.to_s }
 
     # @attribute
     # @return [String] "an external version label that increments the most significant digit for major revisions,
@@ -57,7 +55,5 @@ module Moab
     # @attribute
     # @return [Array<VersionMetadataEvent>] Array of events with timestamps that track lifecycle stages
     has_many :events, VersionMetadataEvent, :tag => 'event'
-
   end
-
 end

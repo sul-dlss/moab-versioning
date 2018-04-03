@@ -101,7 +101,7 @@ describe Stanford::ContentInventory do
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_ng_xml = Nokogiri::XML(empty_inventory)
-      exp_ng_xml.xpath('//@dataSource').each {|d| d.value = d.value.gsub(/subset/, subset) }
+      exp_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub(/subset/, subset) }
       expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
   end
@@ -133,29 +133,29 @@ describe Stanford::ContentInventory do
     end
     it 'raises exception for unknown subset' do
       exp_regex = /Unknown disposition subset/
-      expect{described_class.new.group_from_cm(cm_with_subsets, "dummy")}.to raise_exception(exp_regex)
+      expect { described_class.new.group_from_cm(cm_with_subsets, "dummy") }.to raise_exception(exp_regex)
     end
   end
 
   context '#generate_signature' do
     it 'returns expected fixity' do
       exp_fixity = {
-        :size=>"40873",
-        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad"
+        :size => "40873",
+        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
       }
       expect(@content_inventory.generate_signature(@node).fixity).to eq(exp_fixity)
     end
     it 'returns expected fixity after adding a sha256 checksum' do
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
-        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type=>"SHA-256"
+        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type => "SHA-256"
       end
       exp_fixity = {
-        :size=>"40873",
-        :md5=>"1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1=>"583220e0572640abcd3ddd97393d224e8053a6ad",
-        :sha256=>"291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
+        :size => "40873",
+        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
+        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad",
+        :sha256 => "291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
       }
       expect(@content_inventory.generate_signature(node2).fixity).to eq(exp_fixity)
     end
@@ -163,14 +163,14 @@ describe Stanford::ContentInventory do
 
   specify '#generate_instance' do
     expect(@content_inventory.generate_instance(@node)).to hash_match({
-        "path" => "title.jpg",
-        "datetime" => "2012-03-26T14:15:11Z"
-    })
+                                                                        "path" => "title.jpg",
+                                                                        "datetime" => "2012-03-26T14:15:11Z"
+                                                                      })
   end
 
   specify '#generate_content_metadata' do
     directory = @data.join('v0002/content')
-    group= Moab::FileGroup.new.group_from_directory(directory, true)
+    group = Moab::FileGroup.new.group_from_directory(directory, true)
     cm = @content_inventory.generate_content_metadata(group, @obj, 2)
     generated_ng_xml = Nokogiri::XML(cm)
     generated_ng_xml.xpath('//@datetime').remove
@@ -211,7 +211,7 @@ describe Stanford::ContentInventory do
     end
     it 'raises Moab::InvalidMetadataException for bad data' do
       cm = @fixtures.join('bad_data', 'contentMetadata.xml')
-      expect{@content_inventory.validate_content_metadata(cm)}.to raise_exception(Moab::InvalidMetadataException)
+      expect { @content_inventory.validate_content_metadata(cm) }.to raise_exception(Moab::InvalidMetadataException)
     end
   end
 
@@ -221,15 +221,15 @@ describe Stanford::ContentInventory do
       content_metadata_doc = Nokogiri::XML(cm)
       result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
       expect(result).to eq([
-          "File node 0 is missing id",
-          "File node having id='page-1.jpg' is missing size",
-          "File node having id='page-2.jpg' is missing md5",
-          "File node having id='page-3.jpg' is missing sha1"
-      ])
+                             "File node 0 is missing id",
+                             "File node having id='page-1.jpg' is missing size",
+                             "File node having id='page-2.jpg' is missing md5",
+                             "File node having id='page-3.jpg' is missing sha1"
+                           ])
     end
     it 'empty hash raises exception' do
       exp_regex = /Content Metadata is in unrecognized format/
-      expect{@content_inventory.validate_content_metadata_details(Hash.new)}.to raise_exception(exp_regex)
+      expect { @content_inventory.validate_content_metadata_details(Hash.new) }.to raise_exception(exp_regex)
     end
   end
 
@@ -280,13 +280,13 @@ describe Stanford::ContentInventory do
     it 'bad size raises exception' do
       cm_bad_size = cm.sub(/40873/, '37804')
       exp_regex = /Inconsistent size for title.jpg: 37804 != 40873/
-      expect{@content_inventory.remediate_content_metadata(cm_bad_size, group)}.to raise_exception(exp_regex)
+      expect { @content_inventory.remediate_content_metadata(cm_bad_size, group) }.to raise_exception(exp_regex)
     end
 
     it 'bad checksum raises exception' do
       cm_bad_checksum = cm.sub(/1a726cd7963bd6d3ceb10a8c353ec166/, '915c0305bf50c55143f1506295dc122c')
       exp_regex = /Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/
-      expect{@content_inventory.remediate_content_metadata(cm_bad_checksum, group)}.to raise_exception(exp_regex)
+      expect { @content_inventory.remediate_content_metadata(cm_bad_checksum, group) }.to raise_exception(exp_regex)
     end
   end
 end

@@ -1,5 +1,4 @@
 describe Moab::Bagger do
-
   specify '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
     signature_catalog = double(Moab::SignatureCatalog.name)
@@ -11,7 +10,7 @@ describe Moab::Bagger do
   end
 
   let(:submit_source_base) { @data.join('v0002') }
-  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'),'version') }
+  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'), 'version') }
   let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001')) }
   let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
   let(:submit_bag) do
@@ -22,8 +21,8 @@ describe Moab::Bagger do
   end
 
   let(:disseminate_base) { @ingests.join(@obj) }
-  let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002','manifests')) }
-  let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002','manifests'),'version') }
+  let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002', 'manifests')) }
+  let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002', 'manifests'), 'version') }
   let(:disseminate_bag) do
     db = described_class.new(disseminate_inventory, disseminate_catalog, @disseminate_bag_pathname)
     db.package_mode = :reconstructor
@@ -63,7 +62,7 @@ describe Moab::Bagger do
   specify '#delete_tarfile' do
     packages = @temp.join('packages')
     tar_file = packages.join('deleteme.tar')
-    tar_file.open('w') {|f| f.puts "delete me please"}
+    tar_file.open('w') { |f| f.puts "delete me please" }
     expect(tar_file.exist?).to eq true
     bag_dir = packages.join('deleteme')
     bagger = described_class.new(nil, nil, bag_dir)
@@ -80,14 +79,14 @@ describe Moab::Bagger do
         package = packages_dir.join(vname)
         unless package.join('data').exist?
           data_dir = @data.join(vname)
-          inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname),'version')
+          inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
           catalog = case version
-                      when 1
-                        Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-                      else
-                        Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version-1]))
+                    when 1
+                      Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                    else
+                      Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
                     end
-          described_class.new(inventory,catalog,package).fill_bag(:depositor, data_dir)
+          described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
         end
       end
 
@@ -270,7 +269,7 @@ describe Moab::Bagger do
     submit_bag.fill_bag(:depositor, submit_source_base)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')
     expect(md5.exist?).to eq true
-    expect(md5.readlines.collect{ |line| line.split(/ /)[1] }).to match_array [
+    expect(md5.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
       "bag-info.txt\n",
       "bagit.txt\n",
       "manifest-md5.txt\n",
@@ -282,7 +281,7 @@ describe Moab::Bagger do
 
     sha1 = submit_bag.bag_pathname.join('tagmanifest-sha1.txt')
     expect(sha1.exist?).to eq true
-    expect(sha1.readlines.collect{ |line| line.split(/ /)[1] }).to match_array [
+    expect(sha1.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
       "bag-info.txt\n",
       "bagit.txt\n",
       "manifest-md5.txt\n",
@@ -299,6 +298,6 @@ describe Moab::Bagger do
     bagger = described_class.new(nil, nil, bag_dir)
     cmd = "cd '#{@packages}'; tar --dereference --force-local -cf  '#{@temp}/test.tar' 'v0001'"
     expect(bagger).to receive(:shell_execute).with(cmd)
-    expect{bagger.create_tarfile(tarfile)}.to raise_exception(/Unable to create tarfile/)
+    expect { bagger.create_tarfile(tarfile) }.to raise_exception(/Unable to create tarfile/)
   end
 end
