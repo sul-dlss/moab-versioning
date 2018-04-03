@@ -182,39 +182,26 @@ module Moab
     # This method removes the implicit '.' and '..' directories.
     # Returns an array of strings.
     def directory_entries(path)
-      @directory_entries_hash[path] ||=
-        begin
-          dirs = []
-          (Dir.entries(path).sort - IMPLICIT_DIRS).each do |child|
-            dirs << child
-          end
-          dirs
-        end
+      @directory_entries_hash[path] ||= Dir.entries(path).sort - IMPLICIT_DIRS
     end
 
+    # @return [Array<Hash<Integer => String>>]
     def found_unexpected(array, version, required_sub_dirs)
-      errors = []
       unexpected = (array - required_sub_dirs)
-      unexpected = "#{unexpected} Version: #{version}"
-      errors << result_hash(EXTRA_CHILD_DETECTED, unexpected)
-      errors
+      [result_hash(EXTRA_CHILD_DETECTED, "#{unexpected} Version: #{version}")]
     end
 
+    # @return [Array<Hash<Integer => String>>]
     def missing_dir(array, version, required_sub_dirs)
-      errors = []
       missing = (required_sub_dirs - array)
-      missing = "#{missing} Version: #{version}"
-      errors << result_hash(MISSING_DIR, missing)
-      errors
+      [result_hash(MISSING_DIR, "#{missing} Version: #{version}")]
     end
 
     def expected_version_sub_dirs(version_path, version)
       errors = []
       version_sub_dirs = directory_entries(version_path)
       errors << result_hash(INCORRECT_DIR_CONTENTS, version) unless version_sub_dirs == EXPECTED_VERSION_SUB_DIRS
-      if contains_file?(version_path)
-        errors << result_hash(FILES_IN_VERSION_DIR, version)
-      end
+      errors << result_hash(FILES_IN_VERSION_DIR, version) if contains_file?(version_path)
       errors
     end
 
@@ -243,12 +230,10 @@ module Moab
     end
 
     def check_required_manifest_files(dir, version)
-      errors = []
       unless contains_file?(File.join(dir, MANIFESTS_DIR))
-        errors << result_hash(NO_FILES_IN_MANIFEST_DIR, version)
-        return errors
+        return [result_hash(NO_FILES_IN_MANIFEST_DIR, version)]
       end
-
+      errors = []
       unless File.exist?(File.join(dir, MANIFEST_INVENTORY_PATH))
         errors << result_hash(NO_MANIFEST_INVENTORY, version)
       end
