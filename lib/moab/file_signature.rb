@@ -44,11 +44,6 @@ module Moab
     # The name of the XML element used to serialize this objects data
     tag 'fileSignature'
 
-    # (see Serializable#initialize)
-    def initialize(opts = {})
-      super(opts)
-    end
-
     # @attribute
     # @return [Integer] The size of the file in bytes
     attribute :size, Integer, :on_save => Proc.new { |n| n.to_s }
@@ -64,6 +59,30 @@ module Moab
     # @attribute
     # @return [String] The SHA256 checksum value of the file
     attribute :sha256, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
+
+    KNOWN_ALGOS = {
+      md5: proc { Digest::MD5.new },
+      sha1: proc { Digest::SHA1.new },
+      sha256: proc { Digest::SHA2.new(256) }
+    }.freeze
+
+    # Reads the file once for ALL (requested) algorithms, not once per.
+    # @param [Pathname] pathname
+    # @param [Array<Symbol>] one or more keys of KNOWN_ALGOS to be computed
+    # @return [Moab::FileSignature] object populated with (requested) checksums
+    def self.from_file(pathname, algos_to_use = KNOWN_ALGOS.keys)
+      raise 'Unrecognized algorithm requested' unless algos_to_use.all? { |a| KNOWN_ALGOS.include?(a) }
+
+      signatures = algos_to_use.map { |k| [k, KNOWN_ALGOS[k].call] }.to_h
+
+      pathname.open("r") do |stream|
+        while (buffer = stream.read(8192))
+          signatures.each_value { |digest| digest.update(buffer) }
+        end
+      end
+
+      new(signatures.map { |k, digest| [k, digest.hexdigest] }.to_h.merge(size: pathname.size))
+    end
 
     # @param type [Symbol,String] The type of checksum
     # @param value [String] The checksum value
@@ -139,24 +158,17 @@ module Moab
       @size.to_i
     end
 
-    # @api internal
+    # @deprecated
+    # this method is a holdover from an earlier version.  use the class method .from_file going forward.
+    # @api external
     # @param pathname [Pathname] The location of the file to be digested
     # @return [FileSignature] Generate a FileSignature instance containing size and checksums for a physical file
     def signature_from_file(pathname)
-      @size = pathname.size
-      md5_digest = Digest::MD5.new
-      sha1_digest = Digest::SHA1.new
-      sha256_digest = Digest::SHA2.new(256)
-      pathname.open("r") do |stream|
-        while (buffer = stream.read(8192))
-          md5_digest.update(buffer)
-          sha1_digest.update(buffer)
-          sha256_digest.update(buffer)
-        end
-      end
-      @md5 = md5_digest.hexdigest
-      @sha1 = sha1_digest.hexdigest
-      @sha256 = sha256_digest.hexdigest
+      file_signature = self.class.from_file(pathname)
+      self.size = file_signature.size
+      self.md5 = file_signature.md5
+      self.sha1 = file_signature.sha1
+      self.sha256 = file_signature.sha256
       self
     end
 
