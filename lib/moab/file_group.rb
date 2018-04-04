@@ -202,9 +202,8 @@ module Moab
       pathname = Pathname.new(path).expand_path
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
-        if child.basename.to_s == ".DS_Store"
-          next
-        elsif child.directory?
+        next if child.basename.to_s == '.DS_Store'
+        if child.directory?
           harvest_directory(child, recursive, validated) if recursive
         else
           add_physical_file(child, validated)
