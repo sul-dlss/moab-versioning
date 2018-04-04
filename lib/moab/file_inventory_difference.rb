@@ -24,7 +24,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @group_differences = Array.new
+      @group_differences = []
       super(opts)
     end
 
@@ -34,7 +34,7 @@ module Moab
 
     # @attribute
     # @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
-    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
+    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => proc { |i| i.to_s }
 
     def difference_count
       @group_differences.inject(0) { |sum, group| sum + group.difference_count }
@@ -66,7 +66,7 @@ module Moab
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{digital_object_id difference_count basis other report_datetime group_differences}
+      %w[digital_object_id difference_count basis other report_datetime group_differences]
     end
 
     # @param [String] group_id The identifer of the group to be selected
@@ -110,11 +110,11 @@ module Moab
     # @return [Hash] Serializes the data and then filters it to report only the changes
     def differences_detail
       #return self.summary if difference_count == 0
-      inv_diff = self.to_hash
+      inv_diff = to_hash
       inv_diff["group_differences"].each_value do |group_diff|
         delete_subsets = []
         group_diff["subsets"].each do |change_type, subset|
-          delete_subsets << change_type if change_type == "identical" or subset["count"] == 0
+          delete_subsets << change_type if (change_type == "identical") || (subset["count"] == 0)
         end
         delete_subsets.each do |change_type|
           group_diff["subsets"].delete(change_type)

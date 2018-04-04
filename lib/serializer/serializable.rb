@@ -45,7 +45,7 @@ module Serializer
     # @api internal
     # @return [Array] Extract the names of the variables
     def variable_names
-      variables.collect { |variable| variable.name }
+      variables.collect(&:name)
     end
 
     # @api internal
@@ -54,7 +54,7 @@ module Serializer
     #   This follows the same convention as used by DataMapper
     # @see http://datamapper.org/docs/properties.html
     def key_name
-      if not defined?(@key_name)
+      unless defined?(@key_name)
         @key_name = nil
         self.class.attributes.each do |attribute|
           if attribute.options[:key]
@@ -69,7 +69,7 @@ module Serializer
     # @api internal
     # @return [String] For the current object instance, return the string to use as a hash key
     def key
-      return self.send(key_name) if key_name
+      return send(key_name) if key_name
       nil
     end
 
@@ -79,10 +79,10 @@ module Serializer
     #   If the array member has a field tagged as a key, that field will be used as the hash.key.
     #   Otherwise the index position of the array member will be used as the key
     def array_to_hash(array, summary = false)
-      item_hash = Hash.new
+      item_hash = {}
       array.each_index do |index|
         item = array[index]
-        ikey = (item.respond_to?(:key) && item.key) ? item.key : index
+        ikey = item.respond_to?(:key) && item.key ? item.key : index
         item_hash[ikey] = item.respond_to?(:to_hash) ? item.to_hash(summary) : item
       end
       item_hash
@@ -92,26 +92,26 @@ module Serializer
     # @return [Hash] Recursively generate an Hash containing the object's properties
     # @param summary [Boolean] Controls the depth and detail of recursion
     def to_hash(summary = false)
-      oh = Hash.new
+      oh = {}
       vars = summary ? variables.select { |v| summary_fields.include?(v.name) } : variables
       vars.each do |variable|
         key = variable.name.to_s
-        value = self.send(variable.name)
-        case value
-        when Array
-          oh[key] = array_to_hash(value, summary)
-        when Serializable
-          oh[key] = value.to_hash
-        else
-          oh[key] = value
-        end
+        value = send(variable.name)
+        oh[key] = case value
+                  when Array
+                    array_to_hash(value, summary)
+                  when Serializable
+                    value.to_hash
+                  else
+                    value
+                  end
       end
       oh
     end
 
     # @return [Hash] Calls to_hash(summary=true)
     def summary
-      self.to_hash(summary = true)
+      to_hash(summary = true)
     end
 
     # @api internal
@@ -120,13 +120,13 @@ module Serializer
     def diff(other)
       raise "Cannot compare different classes" if self.class != other.class
       left = other.to_hash
-      right = self.to_hash
-      if self.key.nil? or other.key.nil?
+      right = to_hash
+      if key.nil? || other.key.nil?
         ltag = :old
         rtag = :new
       else
         ltag = other.key
-        rtag = self.key
+        rtag = key
       end
       Serializable.deep_diff(ltag, left, rtag, right)
     end
@@ -136,23 +136,26 @@ module Serializer
     # @return [Hash] Generate a hash containing the differences between two hashes
     #   (recursively descend parallel trees of hashes)
     # @see https://gist.github.com/146844
-    def Serializable.deep_diff(*hashes)
-      diff = Hash.new
+    def self.deep_diff(*hashes)
+      diff = {}
       case hashes.length
       when 4
         ltag, left, rtag, right = hashes
       when 2
-        ltag, left, rtag, right = :left, hashes[0], :right, hashes[1]
+        ltag = :left
+        left = hashes[0]
+        rtag = :right
+        right = hashes[1]
       else
         raise ArgumentError, "wrong number of arguments (#{hashes.length} for 2 or 4)"
       end
       (left.keys | right.keys).each do |k|
         if left[k] != right[k]
-          if left[k].is_a?(Hash) && right[k].is_a?(Hash)
-            diff[k] = deep_diff(ltag, left[k], rtag, right[k])
-          else
-            diff[k] = Hash.[](ltag, left[k], rtag, right[k])
-          end
+          diff[k] = if left[k].is_a?(Hash) && right[k].is_a?(Hash)
+                      deep_diff(ltag, left[k], rtag, right[k])
+                    else
+                      Hash.[](ltag, left[k], rtag, right[k])
+                    end
         end
       end
       diff
@@ -161,14 +164,14 @@ module Serializer
     # @api internal
     # @return [String] Generate JSON output from a hash of the object's variables
     def to_json(summary = false)
-      hash = self.to_hash(summary)
+      hash = to_hash(summary)
       JSON.pretty_generate(hash)
     end
 
     # @api internal
     # @return [String] Generate YAML output from a hash of the object's variables
     def to_yaml(summary = false)
-      self.to_hash(summary).to_yaml
+      to_hash(summary).to_yaml
     end
   end
 end

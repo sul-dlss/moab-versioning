@@ -32,7 +32,7 @@ module Moab
     def initialize(storage_object, version_id)
       if version_id.is_a?(Integer)
         @version_id = version_id
-      elsif version_id.is_a?(String) and version_id =~ /^v(\d+)$/
+      elsif version_id.is_a?(String) && version_id =~ /^v(\d+)$/
         @version_id = version_id.sub(/^v/, '').to_i
       else
         raise "version_id (#{version_id}) is not in a recognized format"
@@ -40,7 +40,7 @@ module Moab
       @version_name = StorageObject.version_dirname(@version_id)
       @version_pathname = storage_object.object_pathname.join(@version_name)
       @storage_object = storage_object
-      @inventory_cache = Hash.new
+      @inventory_cache = {}
     end
 
     # @return [String] The unique identifier concatenating digital object id with version id
@@ -110,10 +110,10 @@ module Moab
     # @see FileInventory#read_xml_file
     def file_inventory(type)
       if version_id > 0
-        return @inventory_cache[type] if @inventory_cache.has_key?(type)
+        return @inventory_cache[type] if @inventory_cache.key?(type)
         @inventory_cache[type] = FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
       else
-        groups = ['content', 'metadata'].collect { |id| FileGroup.new(:group_id => id) }
+        groups = %w[content metadata].collect { |id| FileGroup.new(:group_id => id) }
         FileInventory.new(
           :type => 'version',
           :digital_object_id => @storage_object.digital_object_id,
@@ -208,12 +208,12 @@ module Moab
     end
 
     # @return [VerificationResult] return result of testing correctness of version manifests
-    def verify_version_storage()
-      result = VerificationResult.new(self.composite_key)
-      result.subentities << self.verify_manifest_inventory
-      result.subentities << self.verify_version_inventory
-      result.subentities << self.verify_version_additions
-      result.verified = result.subentities.all? { |entity| entity.verified }
+    def verify_version_storage
+      result = VerificationResult.new(composite_key)
+      result.subentities << verify_manifest_inventory
+      result.subentities << verify_version_inventory
+      result.subentities << verify_version_additions
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 
@@ -221,8 +221,8 @@ module Moab
     def verify_manifest_inventory
       # read/parse manifestInventory.xml
       result = VerificationResult.new("manifest_inventory")
-      manifest_inventory = self.file_inventory('manifests')
-      result.subentities << VerificationResult.verify_value('composite_key', self.composite_key, manifest_inventory.composite_key)
+      manifest_inventory = file_inventory('manifests')
+      result.subentities << VerificationResult.verify_value('composite_key', composite_key, manifest_inventory.composite_key)
       result.subentities << VerificationResult.verify_truth('manifests_group', !manifest_inventory.group_empty?('manifests'))
       # measure the manifest signatures of the files in the directory (excluding manifestInventory.xml)
       directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'), 'manifests')
@@ -236,7 +236,7 @@ module Moab
       compare_result.verified = (diff.difference_count == 0)
       compare_result.details = diff.differences_detail
       result.subentities << compare_result
-      result.verified = result.subentities.all? { |entity| entity.verified }
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 
@@ -244,10 +244,10 @@ module Moab
     def verify_signature_catalog
       result = VerificationResult.new("signature_catalog")
       signature_catalog = self.signature_catalog
-      result.subentities << VerificationResult.verify_value('signature_key', self.composite_key, signature_catalog.composite_key)
+      result.subentities << VerificationResult.verify_value('signature_key', composite_key, signature_catalog.composite_key)
       found = 0
-      missing = Array.new
-      object_pathname = self.storage_object.object_pathname
+      missing = []
+      object_pathname = storage_object.object_pathname
       signature_catalog.entries.each do |catalog_entry|
         storage_location = object_pathname.join(catalog_entry.storage_path)
         if storage_location.exist?
@@ -264,19 +264,19 @@ module Moab
       }
       file_result.details['missing'] = missing unless missing.empty?
       result.subentities << file_result
-      result.verified = result.subentities.all? { |entity| entity.verified }
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 
     # @return [Boolean] true if files & signatures listed in version inventory can all be found
     def verify_version_inventory
       result = VerificationResult.new("version_inventory")
-      version_inventory = self.file_inventory('version')
-      result.subentities << VerificationResult.verify_value('inventory_key', self.composite_key, version_inventory.composite_key)
+      version_inventory = file_inventory('version')
+      result.subentities << VerificationResult.verify_value('inventory_key', composite_key, version_inventory.composite_key)
       signature_catalog = self.signature_catalog
-      result.subentities << VerificationResult.verify_value('signature_key', self.composite_key, signature_catalog.composite_key)
+      result.subentities << VerificationResult.verify_value('signature_key', composite_key, signature_catalog.composite_key)
       found = 0
-      missing = Array.new
+      missing = []
       version_inventory.groups.each do |group|
         group.files.each do |file|
           file.instances.each do |instance|
@@ -298,15 +298,15 @@ module Moab
       }
       file_result.details['missing'] = missing unless missing.empty?
       result.subentities << file_result
-      result.verified = result.subentities.all? { |entity| entity.verified }
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 
     # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
     def verify_version_additions
       result = VerificationResult.new("version_additions")
-      version_additions = self.file_inventory('additions')
-      result.subentities << VerificationResult.verify_value('composite_key', self.composite_key, version_additions.composite_key)
+      version_additions = file_inventory('additions')
+      result.subentities << VerificationResult.verify_value('composite_key', composite_key, version_additions.composite_key)
       data_directory = @version_pathname.join('data')
       directory_inventory = FileInventory.new(:type => 'directory').inventory_from_directory(data_directory)
       diff = FileInventoryDifference.new
@@ -315,7 +315,7 @@ module Moab
       compare_result.verified = (diff.difference_count == 0)
       compare_result.details = diff.differences_detail
       result.subentities << compare_result
-      result.verified = result.subentities.all? { |entity| entity.verified }
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 

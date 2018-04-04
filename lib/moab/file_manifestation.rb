@@ -24,7 +24,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @instances = Array.new
+      @instances = []
       super(opts)
     end
 
@@ -47,7 +47,7 @@ module Moab
     # @api internal
     # @return [Array<String>] Create an array from all the file paths of the child {FileInstance} objects
     def paths
-      instances.collect { |i| i.path }
+      instances.collect(&:path)
     end
 
     # @api internal
@@ -76,8 +76,8 @@ module Moab
     # @param other [FileManifestation] The {FileManifestation} object to compare with self
     # @return [Boolean] True if {FileManifestation} objects have same content
     def ==(other)
-      return false unless (other.respond_to?(:signature) && other.respond_to?(:instances)) # Cannot equal an incomparable type!
-      (self.signature == other.signature) && (self.instances == other.instances)
+      return false unless other.respond_to?(:signature) && other.respond_to?(:instances) # Cannot equal an incomparable type!
+      (signature == other.signature) && (instances == other.instances)
     end
   end
 end

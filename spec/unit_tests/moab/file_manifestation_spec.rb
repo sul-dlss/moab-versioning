@@ -45,19 +45,19 @@ describe Moab::FileManifestation do
   end
 
   specify '#paths' do
-    expect(file_manifestation.paths()).to eq ["title.jpg", "page-1.jpg"]
+    expect(file_manifestation.paths).to eq ["title.jpg", "page-1.jpg"]
   end
 
   specify '#file_count' do
-    expect(file_manifestation.file_count()).to eq 2
+    expect(file_manifestation.file_count).to eq 2
   end
 
   specify '#byte_count' do
-    expect(file_manifestation.byte_count()).to eq 81746
+    expect(file_manifestation.byte_count).to eq 81746
   end
 
   specify '#block_count' do
-    expect(file_manifestation.block_count()).to eq 80
+    expect(file_manifestation.block_count).to eq 80
   end
 
   specify '#==' do
