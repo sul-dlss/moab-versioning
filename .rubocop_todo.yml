@@ -200,29 +200,12 @@ Style/Documentation:
     - 'spec/**/*'
     - 'test/**/*'
 
-# Offense count: 7
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'lib/moab/file_group.rb'
-    - 'lib/moab/file_group_difference.rb'
-    - 'lib/moab/file_signature.rb'
-    - 'lib/moab/storage_object.rb'
-    - 'lib/moab/storage_object_version.rb'
-    - 'lib/moab/storage_repository.rb'
-    - 'lib/serializer/serializable.rb'
-
 # Offense count: 230
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
 # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
 Style/HashSyntax:
   Enabled: false
-
-# Offense count: 1
-Style/IfInsideElse:
-  Exclude:
-    - 'lib/moab/file_inventory.rb'
 
 # Offense count: 4
 Style/NumericPredicate:

@@ -146,8 +146,7 @@ module Moab
     # @return [void] Remove a file from the inventory
     # for example, the manifest inventory does not contain a file entry for itself
     def remove_file_having_path(path)
-      signature = path_hash[path]
-      signature_hash.delete(signature)
+      signature_hash.delete(path_hash[path])
     end
 
     # @return [Pathname] The full path used as the basis of the relative paths reported
@@ -203,9 +202,8 @@ module Moab
       pathname = Pathname.new(path).expand_path
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
-        if child.basename.to_s == ".DS_Store"
-          next
-        elsif child.directory?
+        next if child.basename.to_s == '.DS_Store'
+        if child.directory?
           harvest_directory(child, recursive, validated) if recursive
         else
           add_physical_file(child, validated)

@@ -133,9 +133,8 @@ module Moab
     end
 
     def subsets=(array)
-      if array
-        array.each { |subset| subset_hash[subset.change.to_sym] = subset }
-      end
+      return unless array
+      array.each { |subset| subset_hash[subset.change.to_sym] = subset }
     end
 
     # @return [Array<String>] The data fields to include in summary reports

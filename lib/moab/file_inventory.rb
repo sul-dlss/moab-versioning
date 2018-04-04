@@ -161,17 +161,9 @@ module Moab
     def data_source
       data_source = (groups.collect { |g| g.data_source.to_s }).join('|')
       if data_source.start_with?('contentMetadata')
-        if version_id
-          "v#{version_id}-#{data_source}"
-        else
-          "new-#{data_source}"
-        end
+        version_id ? "v#{version_id}-#{data_source}" : "new-#{data_source}"
       else
-        if version_id
-          "v#{version_id}"
-        else
-          data_source
-        end
+        version_id ? "v#{version_id}" : data_source
       end
     end
 

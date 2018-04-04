@@ -189,11 +189,8 @@ module Moab
     # * Version 0 is a special case used to generate empty manifests
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
-      if version_id
-        StorageObjectVersion.new(self, version_id)
-      else
-        raise "Version ID not specified"
-      end
+      raise "Version ID not specified" unless version_id
+      StorageObjectVersion.new(self, version_id)
     end
 
     # @return [VerificationResult] Return result of storage verification
