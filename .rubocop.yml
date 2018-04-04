@@ -29,8 +29,6 @@ Lint/UselessAssignment:
     - 'spec/unit_tests/moab/file_inventory_spec.rb' # TODO: determine if we want to keep this exclusion
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # NOT a useless assignment - rubocop is confused
 
-# --- Metrics ---
-
 Metrics/ClassLength:
   Exclude:
     - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse
@@ -39,7 +37,7 @@ Metrics/ClassLength:
 Metrics/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
-    - lib/moab/deposit_bag_validator.rb # line 167 
+    - lib/moab/deposit_bag_validator.rb # line 167
     - 'lib/moab/file_manifestation.rb'
     - lib/moab/storage_object_validator.rb # long interpolated error message line
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
@@ -50,23 +48,15 @@ Metrics/LineLength:
 Metrics/PerceivedComplexity:
   Max: 9
 
-# --- Naming ---
-
 Naming/FileName:
   Exclude:
     - 'Gemfile'
     - 'moab-versioning.gemspec'
 
-# -- Performance ---
-
-# --- RSpec ---
-
 RSpec/NestedGroups:
   Exclude:
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # Tests are more readable, all the tests should be under 1 context block
     - spec/unit_tests/moab/deposit_bag_validator_spec.rb # tests are readable
-
-# --- Style ---
 
 # Pointless change
 Style/FormatStringToken:
@@ -79,3 +69,7 @@ Style/Next:
 # because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:
   Enabled: false
+
+Style/ZeroLengthPredicate:
+  Exclude:
+    - 'lib/moab/bagger.rb' # is calling `x.size == 0` on Pathname objects, which don't have `.empty?` on old Rubies
