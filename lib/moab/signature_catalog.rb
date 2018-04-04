@@ -187,7 +187,7 @@ module Moab
             group_addtions.add_file_instance(file.signature, file.instances[0])
           end
         end
-        version_additions.groups << group_addtions if group_addtions.files.size > 0
+        version_additions.groups << group_addtions if !group_addtions.files.empty?
       end
       version_additions
     end

@@ -124,7 +124,7 @@ module Stanford
     # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
-      raise Moab::InvalidMetadataException, result[0] + " ..." if result.size > 0
+      raise Moab::InvalidMetadataException, result[0] + " ..." if !result.empty?
       true
     end
 
@@ -159,7 +159,7 @@ module Stanford
         end
         if missing.include?('id')
           result << "File node #{nodeset.index(file_node)} is missing #{missing.join(',')}"
-        elsif missing.size > 0
+        elsif !missing.empty?
           id = file_node['id']
           result << "File node having id='#{id}' is missing #{missing.join(',')}"
         end
@@ -173,7 +173,7 @@ module Stanford
     # @see http://blog.slashpoundbang.com/post/1454850669/how-to-pretty-print-xml-with-nokogiri
     def remediate_content_metadata(content_metadata, content_group)
       return nil if content_metadata.nil?
-      return content_metadata if content_group.nil? or content_group.files.size < 1
+      return content_metadata if content_group.nil? or content_group.files.empty?
       signature_for_path = content_group.path_hash
       @type_for_name = Moab::FileSignature.checksum_type_for_name
       @names_for_type = Moab::FileSignature.checksum_names_for_type
