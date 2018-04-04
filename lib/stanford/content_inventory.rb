@@ -216,12 +216,11 @@ module Stanford
       end
       # add new <checksum> elements for the other checksum types that were missing
       @names_for_type.each do |type, names|
-        unless checksum_nodes.key?(type)
-          checksum_node = Nokogiri::XML::Element.new('checksum', file_node.document)
-          checksum_node['type'] = names[0]
-          file_node << checksum_node
-          checksum_nodes[type] = checksum_node
-        end
+        next if checksum_nodes.key?(type)
+        checksum_node = Nokogiri::XML::Element.new('checksum', file_node.document)
+        checksum_node['type'] = names[0]
+        file_node << checksum_node
+        checksum_nodes[type] = checksum_node
       end
       # make sure the <checksum> element has a content value
       checksum_nodes.each do |type, checksum_node|

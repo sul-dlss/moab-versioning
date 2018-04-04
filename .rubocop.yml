@@ -14,21 +14,6 @@ AllCops:
     - 'lib/**/*.rake'
     - 'vendor/**/*' # avoid running rubocop on travis cached bundler
 
-# --- Layout ---
-
-# --- Lint ---
-
-Lint/UselessAssignment:
-  Exclude:
-    - 'lib/moab/storage_repository.rb' # TODO: determine if we want to keep this exclusion
-    - 'lib/moab/storage_services.rb' # TODO: determine if we want to keep this exclusion
-    - 'lib/serializer/serializable.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/features/stanford/content_metadata_read_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_group_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_inventory_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # NOT a useless assignment - rubocop is confused
-
 Metrics/ClassLength:
   Exclude:
     - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse
@@ -37,10 +22,8 @@ Metrics/ClassLength:
 Metrics/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
-    - lib/moab/deposit_bag_validator.rb # line 167
     - 'lib/moab/file_manifestation.rb'
     - lib/moab/storage_object_validator.rb # long interpolated error message line
-    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
     - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
     - 'spec/unit_tests/stanford/storage_object_validator_spec.rb'
 
@@ -62,9 +45,9 @@ RSpec/NestedGroups:
 Style/FormatStringToken:
   Enabled: false
 
-# Loops were easier to understand without using 'next' statement
-Style/Next:
-  Enabled: false
+Style/BracesAroundHashParameters:
+  Exclude:
+    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # In Array of Hashes, the braces on the last Hash are redundant, but there to keep format w/ the rest
 
 # because ' vs " isn't a big deal for readability or maintainability or execution time
 Style/StringLiterals:

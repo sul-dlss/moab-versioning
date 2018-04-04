@@ -153,19 +153,18 @@ module Moab
     def update(version_inventory, data_pathname)
       version_inventory.groups.each do |group|
         group.files.each do |file|
-          unless @signature_hash.key?(file.signature)
-            entry = SignatureCatalogEntry.new
-            entry.version_id = version_inventory.version_id
-            entry.group_id = group.group_id
-            entry.path = file.instances[0].path
-            if file.signature.complete?
-              entry.signature = file.signature
-            else
-              file_pathname = data_pathname.join(group.group_id, entry.path)
-              entry.signature = file.signature.normalized_signature(file_pathname)
-            end
-            add_entry(entry)
+          next if @signature_hash.key?(file.signature)
+          entry = SignatureCatalogEntry.new
+          entry.version_id = version_inventory.version_id
+          entry.group_id = group.group_id
+          entry.path = file.instances[0].path
+          if file.signature.complete?
+            entry.signature = file.signature
+          else
+            file_pathname = data_pathname.join(group.group_id, entry.path)
+            entry.signature = file.signature.normalized_signature(file_pathname)
           end
+          add_entry(entry)
         end
       end
       @version_id = version_inventory.version_id

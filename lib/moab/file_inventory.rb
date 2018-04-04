@@ -206,16 +206,14 @@ module Moab
       end
       signatures = Hash.new { |hash, path| hash[path] = FileSignature.new }
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        if manifest_pathname[type].exist?
-          manifest_pathname[type].each_line do |line|
-            line.chomp!
-            checksum, data_path = line.split(/\s+\**/, 2)
-            if checksum && data_path
-              file_pathname = bag_pathname.join(data_path)
-              signature = signatures[file_pathname]
-              signature.set_checksum(type, checksum)
-            end
-          end
+        next unless manifest_pathname[type].exist?
+        manifest_pathname[type].each_line do |line|
+          line.chomp!
+          checksum, data_path = line.split(/\s+\**/, 2)
+          next unless checksum && data_path
+          file_pathname = bag_pathname.join(data_path)
+          signature = signatures[file_pathname]
+          signature.set_checksum(type, checksum)
         end
       end
       signatures.each { |file_pathname, signature| signature.size = file_pathname.size }

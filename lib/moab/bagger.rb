@@ -202,11 +202,10 @@ module Moab
       end
     ensure
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        if manifest_file[type]
-          manifest_file[type].close
-          manifest_pathname[type].delete if
-              manifest_pathname[type].exist? && manifest_pathname[type].size == 0
-        end
+        next unless manifest_file[type]
+        manifest_file[type].close
+        manifest_pathname[type].delete if
+            manifest_pathname[type].exist? && manifest_pathname[type].size == 0
       end
     end
 
@@ -230,21 +229,19 @@ module Moab
         manifest_file[type] = manifest_pathname[type].open('w')
       end
       bag_pathname.children.each do |file|
-        unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
-          signature = FileSignature.new.signature_from_file(file)
-          fixity = signature.fixity
-          DEFAULT_CHECKSUM_TYPES.each do |type|
-            manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
-          end
+        next if file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
+        signature = FileSignature.new.signature_from_file(file)
+        fixity = signature.fixity
+        DEFAULT_CHECKSUM_TYPES.each do |type|
+          manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
         end
       end
     ensure
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        if manifest_file[type]
-          manifest_file[type].close
-          manifest_pathname[type].delete if
-              manifest_pathname[type].exist? && manifest_pathname[type].size == 0
-        end
+        next unless manifest_file[type]
+        manifest_file[type].close
+        manifest_pathname[type].delete if
+            manifest_pathname[type].exist? && manifest_pathname[type].size == 0
       end
     end
 

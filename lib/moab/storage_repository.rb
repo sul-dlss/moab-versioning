@@ -129,7 +129,7 @@ module Moab
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
     def store_new_object_version(druid, bag_pathname)
-      storage_object(druid, create = true).ingest_bag(bag_pathname)
+      storage_object(druid, true).ingest_bag(bag_pathname)
     end
   end
 end

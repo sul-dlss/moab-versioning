@@ -85,10 +85,9 @@ describe Moab::SignatureCatalog do
   specify '#normalize_group_signatures' do
     @v2_inventory.groups.each do |group|
       group.data_source = @v2_inventory_pathname.parent.parent.join('data', group.group_id).to_s
-      if group.group_id == 'content'
-        group.files.each do |file|
-          file.signature.sha256 = nil
-        end
+      next unless group.group_id == 'content'
+      group.files.each do |file|
+        file.signature.sha256 = nil
       end
     end
     content_signatures = @v2_inventory.group('content').files.collect(&:signature)
@@ -107,10 +106,9 @@ describe Moab::SignatureCatalog do
 
   specify '#update' do
     @v2_inventory.groups.each do |group|
-      if group.group_id == 'metadata'
-        group.files.each do |file|
-          file.signature.sha256 = nil if [1303, 399].include?(file.signature.size.to_i)
-        end
+      next unless group.group_id == 'metadata'
+      group.files.each do |file|
+        file.signature.sha256 = nil if [1303, 399].include?(file.signature.size.to_i)
       end
     end
     @signature_catalog.update(@v2_inventory, @v2_inventory_pathname.parent.parent.join('data'))

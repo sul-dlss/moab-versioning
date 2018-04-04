@@ -108,7 +108,7 @@ module Serializer
 
     # @return [Hash] Calls to_hash(summary=true)
     def summary
-      to_hash(summary = true)
+      to_hash(true)
     end
 
     # @api internal
@@ -147,13 +147,12 @@ module Serializer
         raise ArgumentError, "wrong number of arguments (#{hashes.length} for 2 or 4)"
       end
       (left.keys | right.keys).each do |k|
-        if left[k] != right[k]
-          diff[k] = if left[k].is_a?(Hash) && right[k].is_a?(Hash)
-                      deep_diff(ltag, left[k], rtag, right[k])
-                    else
-                      Hash.[](ltag, left[k], rtag, right[k])
-                    end
-        end
+        next unless left[k] != right[k]
+        diff[k] = if left[k].is_a?(Hash) && right[k].is_a?(Hash)
+                    deep_diff(ltag, left[k], rtag, right[k])
+                  else
+                    Hash.[](ltag, left[k], rtag, right[k])
+                  end
       end
       diff
     end

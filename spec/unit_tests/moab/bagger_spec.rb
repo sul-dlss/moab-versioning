@@ -77,17 +77,16 @@ describe Moab::Bagger do
       (1..3).each do |version|
         vname = @vname[version]
         package = packages_dir.join(vname)
-        unless package.join('data').exist?
-          data_dir = @data.join(vname)
-          inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
-          catalog = case version
-                    when 1
-                      Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-                    else
-                      Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
-                    end
-          described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
-        end
+        next if package.join('data').exist?
+        data_dir = @data.join(vname)
+        inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
+        catalog = case version
+                  when 1
+                    Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                  else
+                    Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
+                  end
+        described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
       end
 
       files = []
