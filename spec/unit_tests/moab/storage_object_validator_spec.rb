@@ -61,24 +61,21 @@ describe Moab::StorageObjectValidator do
             expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0015: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
           end
           it 'allows multiple level sub directories' do
-            druid = 'gg000gg0000'
             druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000'
-            storage_obj = Moab::StorageObject.new(druid, druid_path)
+            storage_obj = Moab::StorageObject.new('gg000gg0000', druid_path)
             storage_obj_validator = described_class.new(storage_obj)
             error_list = storage_obj_validator.validation_errors
             expect(error_list).to be_empty
           end
           context 'allow_content_subdirs argument' do
             let(:no_subdirs_storage_obj_validator) do
-              no_subdirs_druid = 'bj103hs9687'
               druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/bj/103/hs/9687/bj103hs9687'
-              storage_obj = Moab::StorageObject.new(no_subdirs_druid, druid_path)
+              storage_obj = Moab::StorageObject.new('bj103hs9687', druid_path)
               described_class.new(storage_obj)
             end
             let(:allowed_subdirs_storage_obj_validator) do
-              druid = 'gg000gg0000'
               druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000'
-              storage_obj = Moab::StorageObject.new(druid, druid_path)
+              storage_obj = Moab::StorageObject.new('gg000gg0000', druid_path)
               described_class.new(storage_obj)
             end
 
@@ -128,26 +125,23 @@ describe Moab::StorageObjectValidator do
           end
         end
       end
+
       context 'under manifest directory' do
         described_class::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze
-        druid = 'cc000cc0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/cc/000/cc/0000/cc000cc0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('cc000cc0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         error_list = storage_obj_validator.validation_errors
         it 'does not have signatureCatalog.xml' do
           expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => "Version v0001: Missing signatureCatalog.xml")
         end
-
         it 'does not have manifestInventory.xml' do
           expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => "Version v0002: Missing manifestInventory.xml")
         end
-
-        it 'does not have either signatureCatalog.xml or manifestInventory.xml' do
+        it 'does not have signatureCatalog.xml or manifestInventory.xml' do
           expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => "Version v0003: Missing manifestInventory.xml")
           expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => "Version v0003: Missing signatureCatalog.xml")
         end
-
         it 'has no files' do
           expect(error_list).to include(described_class::NO_FILES_IN_MANIFEST_DIR => "Version v0004: No files present in manifest dir")
         end
@@ -156,25 +150,22 @@ describe Moab::StorageObjectValidator do
         end
       end
       it "has non contiguous version directories" do
-        druid = 'yy000yy0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('yy000yy0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         error_list = storage_obj_validator.validation_errors
         expect(error_list).to include(described_class::VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]")
       end
       it "has extra characters in version directory name" do
-        druid = 'aa000aa0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/aa/000/aa/0000/aa000aa0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('aa000aa0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         error_list = storage_obj_validator.validation_errors
         expect(error_list).to include(described_class::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: v0001a")
       end
       it "incorrect items under version directory" do
-        druid = 'bb000bb0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/bb/000/bb/0000/bb000bb0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('bb000bb0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         error_list = storage_obj_validator.validation_errors
         files_present_err_msg = 'should not contain files; only the manifests and data directories'
@@ -189,25 +180,22 @@ describe Moab::StorageObjectValidator do
       end
 
       it "has incorrect version directory name" do
-        druid = 'zz000zz0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/zz/000/zz/0000/zz000zz0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('zz000zz0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         error_list = storage_obj_validator.validation_errors
         expect(error_list).to include(described_class::VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: x0001")
       end
       it 'does not call #check_expected_data_sub_dirs because moab does not have the expected version sub dirs' do
-        druid = 'ee000ee0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/ee/000/ee/0000/ee000ee0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('ee000ee0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         expect(storage_obj_validator).not_to receive(:check_expected_data_sub_dirs)
         storage_obj_validator.validation_errors
       end
       it 'does not call #check_metadata_dir_files_only because moab does not have the expected data sub dirs' do
-        druid = 'ff000ff0000'
         druid_path = 'spec/fixtures/bad_root01/bad_moab_storage_trunk/ff/000/ff/0000/ff000ff0000'
-        storage_obj = Moab::StorageObject.new(druid, druid_path)
+        storage_obj = Moab::StorageObject.new('ff000ff0000', druid_path)
         storage_obj_validator = described_class.new(storage_obj)
         expect(storage_obj_validator).not_to receive(:check_metadata_dir_files_only)
         storage_obj_validator.validation_errors
@@ -244,37 +232,33 @@ describe Moab::StorageObjectValidator do
         storage_obj_validator.validation_errors
       end
 
+      # These tests were logically flawed and previously pretended to test things they didn't.
+      # No point testing `.not_to include(...)` after you've already determined it is empty.
+      #
+      # Take them as stubs, basically.
       context 'manifests directory' do
-        it 'may have files in addition to required files' do
-          expect(error_list).not_to include(described_class::EXTRA_CHILD_DETECTED)
-        end
+        # it 'may have files in addition to required files' do
+        #   expect(error_list).not_to include(described_class::EXTRA_CHILD_DETECTED)
+        # end
         it 'may only have required files' do
-          druid = 'mm000mm0000'
-          druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/mm/000/mm/0000/mm000mm0000'
           expect(error_list).to be_empty
         end
       end
 
-      context 'data directory' do
-        context 'content directory' do
-          it 'may be missing' do
-            druid = 'xx000xx0000'
-            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
-            expect(error_list).to be_empty
-          end
-          it 'may be present' do
-            expect(error_list).not_to include(described_class::EXTRA_CHILD_DETECTED)
-          end
-          it 'may have sub-directories if not verboten sub-dir name' do
-            druid = 'nn000nn0000'
-            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/nn/000/nn/0000/nn000nn0000'
-            expect(error_list).to be_empty
-            druid = 'xx000xx000'
-            druid_path = 'spec/fixtures/good_root01/moab_storage_trunk/xx/000/xx/0000/xx000xx0000'
-            expect(error_list).not_to include(described_class::CONTENT_SUB_DIRS_DETECTED => "Version v0007: content directory should only contain files, not directories")
-          end
-        end
-      end
+      # context 'data directory' do
+      #   context 'content directory' do
+      #     it 'may be missing' do
+      #       expect(error_list).to be_empty
+      #     end
+      #     it 'may be present' do
+      #       expect(error_list).not_to include(described_class::EXTRA_CHILD_DETECTED)
+      #     end
+      #     it 'may have sub-directories if not verboten sub-dir name' do
+      #       expect(error_list).to be_empty
+      #       expect(error_list).not_to include(described_class::CONTENT_SUB_DIRS_DETECTED => "Version v0007: content directory should only contain files, not directories")
+      #     end
+      #   end
+      # end
     end
   end
 end
