@@ -20,7 +20,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @files = Array.new
+      @files = []
       super(opts)
     end
 
@@ -30,7 +30,7 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were changed
-    attribute :count, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :count, Integer, :on_save => proc { |n| n.to_s }
 
     def count
       files.size

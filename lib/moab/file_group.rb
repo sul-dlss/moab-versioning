@@ -22,7 +22,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @signature_hash = Hash.new
+      @signature_hash = {}
       @data_source = ""
       super(opts)
     end
@@ -37,7 +37,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new { |i| i.to_s }
+    attribute :file_count, Integer, :tag => 'fileCount', :on_save => proc { |i| i.to_s }
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
@@ -45,7 +45,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new { |i| i.to_s }
+    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => proc { |i| i.to_s }
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
@@ -53,7 +53,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new { |i| i.to_s }
+    attribute :block_count, Integer, :tag => 'blockCount', :on_save => proc { |i| i.to_s }
 
     def block_count
       files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
@@ -61,7 +61,7 @@ module Moab
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{group_id file_count byte_count block_count}
+      %w[group_id file_count byte_count block_count]
     end
 
     # @attribute
@@ -80,7 +80,7 @@ module Moab
     # @return [Hash<String,FileSignature>] An index of file paths,
     #   used to test for existence of a filename in this file group
     def path_hash
-      path_hash = Hash.new
+      path_hash = {}
       signature_hash.each do |signature, manifestation|
         manifestation.instances.each do |instance|
           path_hash[instance.path] = signature
@@ -91,14 +91,14 @@ module Moab
 
     # @return [Array<String>] The list of file paths in this group
     def path_list
-      files.collect { |file| file.instances.collect { |instance| instance.path } }.flatten
+      files.collect { |file| file.instances.collect(&:path) }.flatten
     end
 
     # @api internal
     # @param signature_subset [Array<FileSignature>] The signatures used to select the entries to return
     # @return [Hash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
     def path_hash_subset(signature_subset)
-      path_hash = Hash.new
+      path_hash = {}
       signature_subset.each do |signature|
         manifestation = signature_hash[signature]
         manifestation.instances.each do |instance|
@@ -132,7 +132,7 @@ module Moab
     # @return [void] Add a single {FileSignature},{FileInstance} key/value pair to this group.
     #   Data is actually stored in the {#signature_hash}
     def add_file_instance(signature, instance)
-      if signature_hash.has_key?(signature)
+      if signature_hash.key?(signature)
         manifestation = signature_hash[signature]
       else
         manifestation = FileManifestation.new
@@ -146,7 +146,7 @@ module Moab
     # @return [void] Remove a file from the inventory
     # for example, the manifest inventory does not contain a file entry for itself
     def remove_file_having_path(path)
-      signature = self.path_hash[path]
+      signature = path_hash[path]
       signature_hash.delete(signature)
     end
 

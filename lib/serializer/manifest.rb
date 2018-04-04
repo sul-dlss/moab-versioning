@@ -19,7 +19,7 @@ module Serializer
       if filename
         filename
       else
-        cname = self.name.split(/::/).last
+        cname = name.split(/::/).last
         cname[0, 1].downcase + cname[1..-1] + '.xml'
       end
     end
@@ -29,7 +29,7 @@ module Serializer
     # @param filename [String] Optional filename if one wishes to override the default filename
     # @return [Pathname] The location of the xml file
     def self.xml_pathname(parent_dir, filename = nil)
-      Pathname.new(parent_dir).join(self.xml_filename(filename))
+      Pathname.new(parent_dir).join(xml_filename(filename))
     end
 
     # @api external
@@ -37,7 +37,7 @@ module Serializer
     # @param filename [String] Optional filename if one wishes to override the default filename
     # @return [Boolean] Returns true if the xml file exists
     def self.xml_pathname_exist?(parent_dir, filename = nil)
-      self.xml_pathname(parent_dir, filename).exist?
+      xml_pathname(parent_dir, filename).exist?
     end
 
     # @api external
@@ -46,7 +46,7 @@ module Serializer
     # @return [Serializable] Read the xml file and return the parsed XML
     # @example {include:file:spec/features/serializer/read_xml_spec.rb}
     def self.read_xml_file(parent_dir, filename = nil)
-      self.parse(self.xml_pathname(parent_dir, filename).read)
+      parse(xml_pathname(parent_dir, filename).read)
     end
 
     # @api external
@@ -56,7 +56,7 @@ module Serializer
     # @return [void] Serializize the in-memory object to a xml file instance
     def self.write_xml_file(xml_object, parent_dir, filename = nil)
       parent_dir.mkpath
-      self.xml_pathname(parent_dir, filename).open('w') do |f|
+      xml_pathname(parent_dir, filename).open('w') do |f|
         xmlBuilder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8')
         xmlBuilder = xml_object.to_xml(xmlBuilder)
         f << xmlBuilder.to_xml

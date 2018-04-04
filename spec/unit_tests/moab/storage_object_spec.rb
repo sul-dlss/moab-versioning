@@ -38,7 +38,7 @@ describe Moab::StorageObject do
     @temp_object_dir.rmtree if @temp_object_dir.exist?
     expect(@temp_object_dir.exist?).to eq false
     expect(@storage_object.exist?).to eq false
-    @storage_object.initialize_storage()
+    @storage_object.initialize_storage
     expect(@temp_object_dir.exist?).to eq true
     expect(@storage_object.exist?).to eq true
   end
@@ -63,7 +63,7 @@ describe Moab::StorageObject do
         end
       end
 
-      files = Array.new
+      files = []
       ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "ingests",
@@ -276,7 +276,7 @@ describe Moab::StorageObject do
       end
     end
 
-    files = Array.new
+    files = []
     reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq [
       "reconstructs",
@@ -407,7 +407,7 @@ describe Moab::StorageObject do
       expect(version_2.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0002/)
     end
     it 'latest version' do
-      version_latest = @storage_object.find_object_version()
+      version_latest = @storage_object.find_object_version
       expect(version_latest).to be_instance_of(Moab::StorageObjectVersion)
       expect(version_latest.version_id).to eq 3
       expect(version_latest.version_name).to eq 'v0003'

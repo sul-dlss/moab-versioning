@@ -62,7 +62,7 @@ module Stanford
     # @param node [Nokogiri::XML::Node] The XML node containing file information
     # @return [FileSignature] The {FileSignature} object generated from the XML data
     def generate_signature(node)
-      signature = Moab::FileSignature.new()
+      signature = Moab::FileSignature.new
       signature.size = node.attributes['size'].content
       checksum_nodes = node.xpath('checksum')
       checksum_nodes.each do |checksum_node|
@@ -82,9 +82,13 @@ module Stanford
     # @param node (see #generate_signature)
     # @return [FileInstance] The {FileInstance} object generated from the XML data
     def generate_instance(node)
-      instance = Moab::FileInstance.new()
+      instance = Moab::FileInstance.new
       instance.path = node.attributes['id'].content
-      instance.datetime = node.attributes['datetime'].content rescue nil
+      instance.datetime = begin
+                            node.attributes['datetime'].content
+                          rescue
+                            nil
+                          end
       instance
     end
 
@@ -94,8 +98,8 @@ module Stanford
     # @example {include:file:spec/features/stanford/content_metadata_write_spec.rb}
     def generate_content_metadata(file_group, object_id, version_id)
       cm = Nokogiri::XML::Builder.new do |xml|
-        xml.contentMetadata(:type => "sample", :objectId => object_id) {
-          xml.resource(:type => "version", :sequence => "1", :id => "version-#{version_id}") {
+        xml.contentMetadata(:type => "sample", :objectId => object_id) do
+          xml.resource(:type => "version", :sequence => "1", :id => "version-#{version_id}") do
             file_group.files.each do |file_manifestation|
               signature = file_manifestation.signature
               file_manifestation.instances.each do |instance|
@@ -106,16 +110,16 @@ module Stanford
                   :shelve => 'yes',
                   :publish => 'yes',
                   :preserve => 'yes'
-                ) {
+                ) do
                   fixity = signature.fixity
                   xml.checksum(:type => "MD5") { xml.text signature.md5 } if fixity[:md5]
                   xml.checksum(:type => "SHA-1") { xml.text signature.sha1 } if fixity[:sha1]
                   xml.checksum(:type => "SHA-256") { xml.text signature.sha256 } if fixity[:sha256]
-                }
+                end
               end
             end
-          }
-        }
+          end
+        end
       end
       cm.to_xml
     end
@@ -124,7 +128,7 @@ module Stanford
     # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
-      raise Moab::InvalidMetadataException, result[0] + " ..." if result.size > 0
+      raise Moab::InvalidMetadataException, result[0] + " ..." unless result.empty?
       true
     end
 
@@ -145,7 +149,7 @@ module Stanford
         end
       nodeset = content_metadata_doc.xpath("//file")
       nodeset.each do |file_node|
-        missing = ['id', 'size', 'md5', 'sha1']
+        missing = %w[id size md5 sha1]
         missing.delete('id') if file_node.has_attribute?('id')
         missing.delete('size') if file_node.has_attribute?('size')
         checksum_nodes = file_node.xpath('checksum')
@@ -159,7 +163,7 @@ module Stanford
         end
         if missing.include?('id')
           result << "File node #{nodeset.index(file_node)} is missing #{missing.join(',')}"
-        elsif missing.size > 0
+        elsif !missing.empty?
           id = file_node['id']
           result << "File node having id='#{id}' is missing #{missing.join(',')}"
         end
@@ -173,11 +177,11 @@ module Stanford
     # @see http://blog.slashpoundbang.com/post/1454850669/how-to-pretty-print-xml-with-nokogiri
     def remediate_content_metadata(content_metadata, content_group)
       return nil if content_metadata.nil?
-      return content_metadata if content_group.nil? or content_group.files.size < 1
+      return content_metadata if content_group.nil? || content_group.files.empty?
       signature_for_path = content_group.path_hash
       @type_for_name = Moab::FileSignature.checksum_type_for_name
       @names_for_type = Moab::FileSignature.checksum_names_for_type
-      ng_doc = Nokogiri::XML(content_metadata) { |x| x.noblanks }
+      ng_doc = Nokogiri::XML(content_metadata, &:noblanks)
       nodeset = ng_doc.xpath("//file")
       nodeset.each do |file_node|
         filepath = file_node['id']
@@ -193,7 +197,7 @@ module Stanford
     # @return [void] update the file size attribute if missing, raise exception if inconsistent
     def remediate_file_size(file_node, signature)
       file_size = file_node['size']
-      if file_size.nil? or file_size.empty?
+      if file_size.nil? || file_size.empty?
         file_node['size'] = signature.size.to_s
       elsif file_size != signature.size.to_s
         raise "Inconsistent size for #{file_node['id']}: #{file_size} != #{signature.size}"
@@ -205,14 +209,14 @@ module Stanford
     # @return [void] update the file's checksum elements if data missing, raise exception if inconsistent
     def remediate_checksum_nodes(file_node, signature)
       # collect <checksum> elements for checksum types that are already present
-      checksum_nodes = Hash.new
+      checksum_nodes = {}
       file_node.xpath('checksum').each do |checksum_node|
         type = @type_for_name[checksum_node['type']]
         checksum_nodes[type] = checksum_node
       end
       # add new <checksum> elements for the other checksum types that were missing
       @names_for_type.each do |type, names|
-        unless checksum_nodes.has_key?(type)
+        unless checksum_nodes.key?(type)
           checksum_node = Nokogiri::XML::Element.new('checksum', file_node.document)
           checksum_node['type'] = names[0]
           file_node << checksum_node
@@ -223,7 +227,7 @@ module Stanford
       checksum_nodes.each do |type, checksum_node|
         cm_checksum = checksum_node.content
         sig_checksum = signature.checksums[type]
-        if cm_checksum.nil? or cm_checksum.empty?
+        if cm_checksum.nil? || cm_checksum.empty?
           checksum_node.content = sig_checksum
         elsif cm_checksum != sig_checksum
           raise "Inconsistent #{type} for #{file_node['id']}: #{cm_checksum} != #{sig_checksum}"

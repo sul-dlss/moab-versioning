@@ -83,12 +83,12 @@ describe Moab::FileInventory do
 
   specify '#non_empty_groups' do
     expect(parsed_file_inventory.groups.size).to eq 2
-    expect(parsed_file_inventory.group_ids).to eq ["content", "metadata"]
+    expect(parsed_file_inventory.group_ids).to eq %w[content metadata]
     parsed_file_inventory.groups << Moab::FileGroup.new(group_id: 'empty')
     expect(parsed_file_inventory.groups.size).to eq 3
-    expect(parsed_file_inventory.group_ids).to eq ["content", "metadata", "empty"]
+    expect(parsed_file_inventory.group_ids).to eq %w[content metadata empty]
     expect(parsed_file_inventory.non_empty_groups.size).to eq 2
-    expect(parsed_file_inventory.group_ids(non_empty = true)).to eq ["content", "metadata"]
+    expect(parsed_file_inventory.group_ids(non_empty = true)).to eq %w[content metadata]
   end
 
   specify '#group' do
@@ -151,7 +151,7 @@ describe Moab::FileInventory do
     bag_dir = @packages.join('v0001')
     inventory = described_class.new.inventory_from_bagit_bag(bag_dir)
     expect(inventory.groups.size).to eq 2
-    expect(inventory.groups.collect { |group| group.group_id }.sort).to eq ['content', 'metadata']
+    expect(inventory.groups.collect(&:group_id).sort).to eq %w[content metadata]
     expect(inventory.file_count).to eq 11
   end
 
@@ -173,15 +173,14 @@ describe Moab::FileInventory do
   describe "#summary_fields" do
     specify '#summary' do
       hash = parsed_file_inventory.summary
-      expect(hash).to eq({
-                           "type" => "version",
-                           "digital_object_id" => "druid:jq937jp0017",
-                           "version_id" => 1,
-                           "file_count" => 11,
-                           "byte_count" => 217820,
-                           "block_count" => 216,
-                           "inventory_datetime" => parsed_file_inventory.inventory_datetime,
-                           "groups" =>
+      expect(hash).to eq("type" => "version",
+                         "digital_object_id" => "druid:jq937jp0017",
+                         "version_id" => 1,
+                         "file_count" => 11,
+                         "byte_count" => 217820,
+                         "block_count" => 216,
+                         "inventory_datetime" => parsed_file_inventory.inventory_datetime,
+                         "groups" =>
           {
             "metadata" =>
               {
@@ -197,8 +196,7 @@ describe Moab::FileInventory do
                 "byte_count" => 206432,
                 "block_count" => 203
               }
-          }
-                         })
+          })
     end
     specify '#to_json summary' do
       json = parsed_file_inventory.to_json(summary = true)

@@ -225,7 +225,7 @@ describe Stanford::StorageServices do
       XML
       druid = 'druid:ms205ty4764'
       version_id = 1
-      subsets = %w(shelve publish preserve)
+      subsets = %w[shelve publish preserve]
       content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
       subsets.each do |subset|
         diff = described_class.compare_cm_to_version(content_metadata_empty_subset, druid, subset, version_id)

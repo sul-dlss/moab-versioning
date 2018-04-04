@@ -77,7 +77,7 @@ module Moab
         return root if root_trunk_branch.exist?
       end
       # Search for the object's directory in the deposit areas
-      if include_deposit and deposit_trunk
+      if include_deposit && deposit_trunk
         branch = deposit_branch(object_id)
         storage_roots.each do |root|
           root_trunk = root.join(deposit_trunk)

@@ -35,7 +35,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @groups = Array.new
+      @groups = []
       @inventory_datetime = Time.now
       super(opts)
     end
@@ -50,7 +50,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new { |n| n.to_s }
+    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => proc { |n| n.to_s }
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
@@ -71,7 +71,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files in the inventory (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => Proc.new { |t| t.to_s }
+    attribute :file_count, Integer, :tag => 'fileCount', :on_save => proc { |t| t.to_s }
 
     def file_count
       groups.inject(0) { |sum, group| sum + group.file_count }
@@ -79,7 +79,7 @@ module Moab
 
      # @attribute
     # @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => Proc.new { |t| t.to_s }
+    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => proc { |t| t.to_s }
 
     def byte_count
       groups.inject(0) { |sum, group| sum + group.byte_count }
@@ -87,7 +87,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => Proc.new { |t| t.to_s }
+    attribute :block_count, Integer, :tag => 'blockCount', :on_save => proc { |t| t.to_s }
 
     def block_count
       groups.inject(0) { |sum, group| sum + group.block_count }
@@ -99,14 +99,14 @@ module Moab
 
     # @return [Array<FileGroup] The set of data groups that contain files
     def non_empty_groups
-      groups.select { |group| !group.files.empty? }
+      groups.reject { |group| group.files.empty? }
     end
 
     # @param non_empty [Boolean] if true, return group_id's only for groups having files
     # @return [Array<String>] group identifiers contained in this file inventory
     def group_ids(non_empty = nil)
-      my_groups = non_empty ? self.non_empty_groups : groups
-      my_groups.map { |g| g.group_id }
+      my_groups = non_empty ? non_empty_groups : groups
+      my_groups.map(&:group_id)
     end
 
     # @param [String] group_id The identifer of the group to be selected
@@ -119,12 +119,12 @@ module Moab
     # @return [Boolean] true if the group is missing or empty
     def group_empty?(group_id)
       group = self.group(group_id)
-      group.nil? or group.files.empty?
+      group.nil? || group.files.empty?
     end
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{type digital_object_id version_id inventory_datetime file_count byte_count block_count groups}
+      %w[type digital_object_id version_id inventory_datetime file_count byte_count block_count groups]
     end
 
     # @param [String] group_id The identifer of the group to be selected
@@ -185,7 +185,7 @@ module Moab
       if group_id
         groups << FileGroup.new(group_id: group_id).group_from_directory(data_dir)
       else
-        ['content', 'metadata'].each do |gid|
+        %w[content metadata].each do |gid|
           groups << FileGroup.new(group_id: gid).group_from_directory(Pathname(data_dir).join(gid))
         end
       end
@@ -208,7 +208,7 @@ module Moab
     # @param  bag_pathname [Pathname] The location of the BagIt bag to be inventoried
     # @return [Hash<Pathname,FileSignature>] The fixity data present in the bag's manifest files
     def signatures_from_bagit_manifests(bag_pathname)
-      manifest_pathname = Hash.new
+      manifest_pathname = {}
       DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
       end
@@ -235,14 +235,14 @@ module Moab
     def human_size
       count = 0
       size = byte_count
-      while size >= 1024 and count < 4
+      while (size >= 1024) && (count < 4)
         size /= 1024.0
         count += 1
       end
       if count == 0
-        sprintf("%d B", size)
+        format("%d B", size)
       else
-        sprintf("%.2f %s", size, %w[B KB MB GB TB][count])
+        format("%.2f %s", size, %w[B KB MB GB TB][count])
       end
     end
 
