@@ -30,7 +30,8 @@ module Moab
     # @param found [Object] The found value
     # @return [VerificationResult] The result of comparing the expected and found values
     def self.verify_value(entity, expected, found)
-      new(entity.to_s, (expected == found), 'expected' => expected, 'found' => found)
+      details = { 'expected' => expected, 'found' => found }
+      new(entity.to_s, (expected == found), details)
     end
 
     # @param entity [#to_s] The name of the entity being verified
