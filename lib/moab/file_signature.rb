@@ -114,7 +114,7 @@ module Moab
       self_checksums = self.checksums
       other_checksums = other.checksums
       matching_keys = self_checksums.keys & other_checksums.keys
-      return false if matching_keys.size == 0
+      return false if matching_keys.empty?
       matching_keys.each do |key|
         return false if self_checksums[key] != other_checksums[key]
       end
