@@ -15,12 +15,12 @@ module Moab
     # @return [Array<VerificationResult>] The subentities, if any, on which this verification is based
     attr_accessor :subentities
 
-    # @param entity [Object] The name of the entity being verified
+    # @param entity [#to_s] The name of the entity being verified
     # @param verified [Boolean]
     # @param details [Hash]
     def initialize(entity, verified = false, details = nil)
-      @entity = entity
-      @verified = verified
+      @entity = entity.to_s  # force to string
+      @verified = !!verified # rubocop:disable Style/DoubleNegation
       @details = details
       @subentities = Array.new
     end
@@ -31,16 +31,16 @@ module Moab
     # @return [VerificationResult] The result of comparing the expected and found values
     def self.verify_value(entity, expected, found)
       details = { 'expected' => expected, 'found' => found }
-      new(entity.to_s, (expected == found), details)
+      new(entity, (expected == found), details)
     end
 
+    # @deprecated Just use the constructor
     # @param entity [#to_s] The name of the entity being verified
     # @param expression [Object] The expression that will be evaluated as true or false
     # @param details [Object] optional details that could be reported
     # @return [VerificationResult] The result of evaluating the expression
     def self.verify_truth(entity, expression, details = nil)
-      # TODO: add expression.empty?
-      new(entity.to_s, !(expression.nil? || (expression == false)), details)
+      new(entity, expression, details)
     end
 
     # @param verbose [Boolean] If true, always provide all details of the verification
@@ -54,7 +54,7 @@ module Moab
     # @return [Hash] The verification result serialized to a hash
     def to_hash(verbose = false, level = 0)
       hash = { 'verified' => verified }
-      if verbose || verified == false
+      if verbose || !verified
         hash['details'] = details || subentities_to_hash(verbose, level)
       end
       return hash if level > 0
