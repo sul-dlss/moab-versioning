@@ -14,6 +14,24 @@ describe Moab::FileSignature do
     described_class.new.signature_from_file(page1_v2_pathname)
   end
 
+  describe '.from_file' do
+    it 'raises if unrecognized checksum requested' do
+      expect { described_class.from_file('whatever', [:rot13]) }.to raise_exception(/Unrecognized algorithm/)
+    end
+    it 'computes all checksums by default' do
+      sig = described_class.from_file(title_v1_pathname)
+      expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
+      expect(sig.sha1).to eq '583220e0572640abcd3ddd97393d224e8053a6ad'
+      expect(sig.sha256).to eq '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
+    end
+    it 'only computes requested checksum(s)' do
+      sig = described_class.from_file(title_v1_pathname, [:md5, :sha1])
+      expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
+      expect(sig.sha1).to eq '583220e0572640abcd3ddd97393d224e8053a6ad'
+      expect(sig.sha256).to be_nil
+    end
+  end
+
   specify '#initialize' do
     opts = {
       size: 75,
