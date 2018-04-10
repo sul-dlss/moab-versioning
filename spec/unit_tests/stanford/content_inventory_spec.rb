@@ -14,7 +14,7 @@ describe Stanford::ContentInventory do
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
-  before(:each) { @content_inventory = described_class.new() }
+  before { @content_inventory = described_class.new() }
 
   context '#inventory_from_cm' do
     it 'version_id = 2' do

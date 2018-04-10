@@ -35,7 +35,7 @@ describe Moab::Bagger do
     @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
   end
 
-  before(:each) do
+  before do
     @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
     @submit_bag_pathname.mkpath
 

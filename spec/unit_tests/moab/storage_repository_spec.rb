@@ -47,7 +47,7 @@ describe Moab::StorageRepository do
   end
 
   context '#storage_object' do
-    before(:each) do
+    before do
       mock_storage_obj = double(Moab::StorageObject)
       allow(storage_repo).to receive(:find_storage_object).and_return(mock_storage_obj)
       @mock_path = double(Pathname)

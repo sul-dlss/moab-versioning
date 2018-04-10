@@ -28,7 +28,7 @@ describe Moab::StorageObject do
     expect(storage_object.object_pathname.to_s).to include('temp/ingests/jq937jp0017')
   end
 
-  before(:each) do
+  before do
     @storage_object = described_class.new(@druid, @temp_object_dir)
     @storage_object.initialize_storage
     @storage_object.storage_root = @fixtures.join('derivatives')
@@ -398,7 +398,7 @@ describe Moab::StorageObject do
   end
 
   context '#find_object_version' do
-    before(:each) { @storage_object = described_class.new(@druid, @ingest_object_dir) }
+    before { @storage_object = described_class.new(@druid, @ingest_object_dir) }
     it 'existing version' do
       version_2 = @storage_object.find_object_version(2)
       expect(version_2).to be_instance_of(Moab::StorageObjectVersion)
@@ -420,7 +420,7 @@ describe Moab::StorageObject do
   end
 
   context '#storage_object_version' do
-    before(:each) { @storage_object = described_class.new(@druid, @ingest_object_dir) }
+    before { @storage_object = described_class.new(@druid, @ingest_object_dir) }
     it 'existing version' do
       version_2 = @storage_object.storage_object_version(2)
       expect(version_2).to be_instance_of(Moab::StorageObjectVersion)

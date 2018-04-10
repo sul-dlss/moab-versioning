@@ -83,7 +83,7 @@ describe Moab::DepositBagValidator do
     end
 
     describe 'when unrecognized checksum, result array has CHECKSUM_TYPE_UNRECOGNIZED result hash' do
-      before(:each) do
+      before do
         bag_pathname = Pathname(File.join(deposit_dir_pathname, 'unknown-checksum-alg'))
         @storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 0)
       end
