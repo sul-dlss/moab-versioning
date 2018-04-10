@@ -30,16 +30,6 @@ describe Moab::FileSignature do
       expect(sig.sha1).to eq '583220e0572640abcd3ddd97393d224e8053a6ad'
       expect(sig.sha256).to be_nil
     end
-
-    context 'when Moab::Config specifies checksums' do
-      before { allow(Moab::Config).to receive(:checksum_algos).and_return([:md5]) }
-      it 'only computes configured checksum(s)' do
-        sig = described_class.from_file(title_v1_pathname)
-        expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
-        expect(sig.sha1).to be_nil
-        expect(sig.sha256).to be_nil
-      end
-    end
   end
 
   specify '#initialize' do
