@@ -24,7 +24,7 @@ describe Moab::SignatureCatalog do
     @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
   end
-  before(:each) do
+  before do
     @signature_catalog = described_class.parse(@v1_catalog_pathname.read)
     @original_entry_count = @signature_catalog.entries.count
   end

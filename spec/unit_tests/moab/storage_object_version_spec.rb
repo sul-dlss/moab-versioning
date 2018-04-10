@@ -39,7 +39,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  before(:each) do
+  before do
     @temp_object_dir.rmtree if @temp_object_dir.exist?
   end
 

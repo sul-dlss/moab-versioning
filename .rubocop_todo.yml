@@ -131,12 +131,6 @@ RSpec/EmptyLineAfterFinalLet:
 RSpec/ExampleLength:
   Enabled: false
 
-# Offense count: 11
-# Configuration parameters: SupportedStyles.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  EnforcedStyle: each
-
 # Offense count: 465
 # Configuration parameters: AssignmentOnly.
 RSpec/InstanceVariable:

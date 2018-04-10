@@ -66,11 +66,15 @@ module Moab
       sha256: proc { Digest::SHA2.new(256) }
     }.freeze
 
+    def self.active_algos
+      Moab::Config.checksum_algos
+    end
+
     # Reads the file once for ALL (requested) algorithms, not once per.
     # @param [Pathname] pathname
     # @param [Array<Symbol>] one or more keys of KNOWN_ALGOS to be computed
     # @return [Moab::FileSignature] object populated with (requested) checksums
-    def self.from_file(pathname, algos_to_use = KNOWN_ALGOS.keys)
+    def self.from_file(pathname, algos_to_use = active_algos)
       raise 'Unrecognized algorithm requested' unless algos_to_use.all? { |a| KNOWN_ALGOS.include?(a) }
 
       signatures = algos_to_use.map { |k| [k, KNOWN_ALGOS[k].call] }.to_h

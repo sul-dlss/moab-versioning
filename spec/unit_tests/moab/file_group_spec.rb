@@ -44,7 +44,7 @@ describe Moab::FileGroup do
   end
 
   describe 'INSTANCE METHODS' do
-    before(:each) do
+    before do
       @v1_file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'), true)
       @new_file_group = described_class.new
     end
@@ -85,7 +85,7 @@ describe Moab::FileGroup do
 
     context "#is_descendent_of_base?" do
       # FIXME:  shouldn't this method be named descendent_of_base?
-      before(:each) { @new_file_group.base_directory = @fixtures.join('data') }
+      before { @new_file_group.base_directory = @fixtures.join('data') }
       it "true when condition met" do
         expect(@new_file_group).to be_is_descendent_of_base(@fixtures.join('data/jq937jp0017/v0001'))
       end
