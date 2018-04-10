@@ -89,15 +89,11 @@ module Moab
 
     # call only if the version directories are "correctly named" vdddd
     def check_sequential_version_dirs
-      errors = []
       version_directories.each_with_index do |dir_name, index|
-        expected_vers_num = index + 1 # version numbering starts at 1, array indexing starts at 0
-        if dir_name[1..-1].to_i != expected_vers_num
-          errors << result_hash(VERSIONS_NOT_IN_ORDER, version_directories)
-          break
-        end
+        next if dir_name[1..-1].to_i == index + 1 # version numbering starts at 1, array indexing at 0
+        return [result_hash(VERSIONS_NOT_IN_ORDER, version_directories)]
       end
-      errors
+      []
     end
 
     def check_correctly_formed_moab(allow_content_subdirs = true)
@@ -113,17 +109,12 @@ module Moab
     end
 
     def check_version_sub_dirs(version_path, version)
-      errors = []
       version_sub_dirs = directory_entries(version_path)
-      version_sub_dir_count = version_sub_dirs.size
-      if version_sub_dir_count == EXPECTED_VERSION_SUB_DIRS.size
-        errors.concat expected_version_sub_dirs(version_path, version)
-      elsif version_sub_dir_count > EXPECTED_VERSION_SUB_DIRS.size
-        errors.concat found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
-      elsif version_sub_dir_count < EXPECTED_VERSION_SUB_DIRS.size
-        errors.concat missing_dir(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS)
-      end
-      errors
+      count = version_sub_dirs.size
+      return expected_version_sub_dirs(version_path, version) if count == EXPECTED_VERSION_SUB_DIRS.size
+      return found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS) if count > EXPECTED_VERSION_SUB_DIRS.size
+      return missing_dir(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS) if count < EXPECTED_VERSION_SUB_DIRS.size
+      []
     end
 
     def check_data_directory(version_path, version, allow_content_subdirs = true)
@@ -137,14 +128,10 @@ module Moab
     end
 
     def check_data_sub_dirs(version, data_sub_dirs)
+      return found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) if data_sub_dirs.size > EXPECTED_DATA_SUB_DIRS.size
       errors = []
-      if data_sub_dirs.size > EXPECTED_DATA_SUB_DIRS.size
-        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS)
-      else
-        errors.concat missing_dir(data_sub_dirs, version, [METADATA_DIR]) unless data_sub_dirs.include?(METADATA_DIR)
-        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) unless subset?(data_sub_dirs,
-                                                                                                      EXPECTED_DATA_SUB_DIRS)
-      end
+      errors.concat missing_dir(data_sub_dirs, version, [METADATA_DIR]) unless data_sub_dirs.include?(METADATA_DIR)
+      errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) unless data_sub_dirs.to_set.subset?(EXPECTED_DATA_SUB_DIRS.to_set)
       errors
     end
 
@@ -165,10 +152,6 @@ module Moab
 
     def content_sub_dir_forbidden?(dirname)
       FORBIDDEN_CONTENT_SUB_DIRS.include?(dirname) || version_dir_format?(dirname)
-    end
-
-    def subset?(first_array, second_array)
-      first_array.to_set.subset?(second_array.to_set)
     end
 
     def check_metadata_dir_files_only(version_path)
@@ -230,24 +213,15 @@ module Moab
     end
 
     def check_required_manifest_files(dir, version)
-      unless contains_file?(File.join(dir, MANIFESTS_DIR))
-        return [result_hash(NO_FILES_IN_MANIFEST_DIR, version)]
-      end
+      return [result_hash(NO_FILES_IN_MANIFEST_DIR, version)] unless contains_file?(File.join(dir, MANIFESTS_DIR))
       errors = []
-      unless File.exist?(File.join(dir, MANIFEST_INVENTORY_PATH))
-        errors << result_hash(NO_MANIFEST_INVENTORY, version)
-      end
-      unless File.exist?(File.join(dir, SIGNATURE_CATALOG_PATH))
-        errors << result_hash(NO_SIGNATURE_CATALOG, version)
-      end
+      errors << result_hash(NO_MANIFEST_INVENTORY, version) unless File.exist?(File.join(dir, MANIFEST_INVENTORY_PATH))
+      errors << result_hash(NO_SIGNATURE_CATALOG, version) unless File.exist?(File.join(dir, SIGNATURE_CATALOG_PATH))
       errors
     end
 
-    def latest_manifest_inventory
-      File.join(storage_obj_path, version_directories.last, MANIFEST_INVENTORY_PATH)
-    end
-
     def object_id_from_manifest_inventory
+      latest_manifest_inventory = File.join(storage_obj_path, version_directories.last, MANIFEST_INVENTORY_PATH)
       Nokogiri::XML(File.open(latest_manifest_inventory)).at_xpath('//fileInventory/@objectId').value
     end
   end

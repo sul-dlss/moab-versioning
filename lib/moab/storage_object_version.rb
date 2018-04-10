@@ -217,7 +217,7 @@ module Moab
       result
     end
 
-    # @return [Boolean] return true if the manifest inventory matches the actual files
+    # @return [VerificationResult] return true if the manifest inventory matches the actual files
     def verify_manifest_inventory
       # read/parse manifestInventory.xml
       result = VerificationResult.new("manifest_inventory")
@@ -240,6 +240,7 @@ module Moab
       result
     end
 
+    # @return [VerificationResult]
     def verify_signature_catalog
       result = VerificationResult.new("signature_catalog")
       signature_catalog = self.signature_catalog

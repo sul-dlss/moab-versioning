@@ -206,7 +206,6 @@ Style/AndOr:
     - 'lib/moab/file_signature.rb'
     - 'lib/moab/storage_object_version.rb'
     - 'lib/moab/storage_repository.rb'
-    - 'lib/moab/verification_result.rb'
     - 'lib/serializer/serializable.rb'
     - 'lib/stanford/content_inventory.rb'
 
@@ -279,7 +278,6 @@ Style/Documentation:
   Exclude:
     - 'spec/**/*'
     - 'test/**/*'
-    - 'lib/moab/verification_result.rb'
 
 # Offense count: 47
 # Cop supports --auto-correct.
@@ -386,7 +384,6 @@ Style/ParenthesesAroundCondition:
   Exclude:
     - 'lib/moab/file_manifestation.rb'
     - 'lib/moab/file_signature.rb'
-    - 'lib/moab/verification_result.rb'
     - 'spec/unit_tests/moab/verification_result_spec.rb'
 
 # Offense count: 8
