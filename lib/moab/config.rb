@@ -7,6 +7,5 @@ module Moab
     storage_trunk nil
     deposit_trunk nil
     path_method :druid_tree
-    checksum_algos [:md5, :sha1, :sha256]
   end
 end
