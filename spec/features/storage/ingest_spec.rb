@@ -24,7 +24,7 @@ describe "Import digital object version to SDR" do
       end
     end
 
-    files = Array.new
+    files = []
     ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq([
                                "ingests",

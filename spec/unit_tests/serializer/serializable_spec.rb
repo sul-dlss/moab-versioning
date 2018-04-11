@@ -15,46 +15,42 @@ describe Serializer::Serializable do
 
     it 'specified versions' do
       diff = described_class.deep_diff('v0001', hash1, 'v0003', hash3)
-      expect(diff["signature"]).to hash_match({
-                                                "size" => {
-                                                  "v0001" => 41981,
-                                                  "v0003" => 32915
-                                                },
-                                                "md5" => {
-                                                  "v0001" => "915c0305bf50c55143f1506295dc122c",
-                                                  "v0003" => "c1c34634e2f18a354cd3e3e1574c3194"
-                                                },
-                                                "sha1" => {
-                                                  "v0001" => "60448956fbe069979fce6a6e55dba4ce1f915178",
-                                                  "v0003" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
-                                                },
-                                                "sha256" => {
-                                                  "v0001" => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
-                                                  "v0003" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
-                                                }
+      expect(diff["signature"]).to hash_match("size" => {
+                                                "v0001" => 41981,
+                                                "v0003" => 32915
+                                              },
+                                              "md5" => {
+                                                "v0001" => "915c0305bf50c55143f1506295dc122c",
+                                                "v0003" => "c1c34634e2f18a354cd3e3e1574c3194"
+                                              },
+                                              "sha1" => {
+                                                "v0001" => "60448956fbe069979fce6a6e55dba4ce1f915178",
+                                                "v0003" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+                                              },
+                                              "sha256" => {
+                                                "v0001" => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
+                                                "v0003" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
                                               })
       expect(diff["instances"]["intro-1.jpg"]["v0001"]["path"]).to eq("intro-1.jpg")
     end
 
     it 'no versions specified' do
       diff = described_class.deep_diff(hash1, hash3)
-      expect(diff["signature"]).to hash_match({
-                                                "size" => {
-                                                  :left => 41981,
-                                                  :right => 32915
-                                                },
-                                                "md5" => {
-                                                  :left => "915c0305bf50c55143f1506295dc122c",
-                                                  :right => "c1c34634e2f18a354cd3e3e1574c3194"
-                                                },
-                                                "sha1" => {
-                                                  :left => "60448956fbe069979fce6a6e55dba4ce1f915178",
-                                                  :right => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
-                                                },
-                                                "sha256" => {
-                                                  :left => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
-                                                  :right => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
-                                                }
+      expect(diff["signature"]).to hash_match("size" => {
+                                                :left => 41981,
+                                                :right => 32915
+                                              },
+                                              "md5" => {
+                                                :left => "915c0305bf50c55143f1506295dc122c",
+                                                :right => "c1c34634e2f18a354cd3e3e1574c3194"
+                                              },
+                                              "sha1" => {
+                                                :left => "60448956fbe069979fce6a6e55dba4ce1f915178",
+                                                :right => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+                                              },
+                                              "sha256" => {
+                                                :left => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
+                                                :right => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
                                               })
     end
 
@@ -65,7 +61,7 @@ describe Serializer::Serializable do
 
   context '#initialize' do
     it 'empty options Hash does not raise exception' do
-      expect { described_class.new(Hash.new) }.not_to raise_exception
+      expect { described_class.new({}) }.not_to raise_exception
     end
 
     it 'options hash with bad variable raises exception' do
@@ -77,13 +73,13 @@ describe Serializer::Serializable do
 
   context '#variables' do
     it 'FileInstance has 2' do
-      expect(Moab::FileInstance.new.variables().size).to eq(2)
+      expect(Moab::FileInstance.new.variables.size).to eq(2)
     end
     it 'SignatureCatalog has 7' do
-      expect(Moab::SignatureCatalog.new.variables().size).to eq(7)
+      expect(Moab::SignatureCatalog.new.variables.size).to eq(7)
     end
     it 'FileSignature has 4' do
-      expect(Moab::FileSignature.new.variables().size).to eq(4)
+      expect(Moab::FileSignature.new.variables.size).to eq(4)
     end
     it 'subclass has attributes and elements' do
       class MyClass < Serializer::Serializable
@@ -98,27 +94,27 @@ describe Serializer::Serializable do
 
   context '#variable_names' do
     it 'FileInstance' do
-      expect(Moab::FileInstance.new.variable_names()).to eq(["path", "datetime"])
+      expect(Moab::FileInstance.new.variable_names).to eq(%w[path datetime])
     end
     it 'SignatureCatalog' do
-      expect(Moab::SignatureCatalog.new.variable_names()).to eq(
-        ["digital_object_id", "version_id", "catalog_datetime", "file_count", "byte_count", "block_count", "entries"]
+      expect(Moab::SignatureCatalog.new.variable_names).to eq(
+        %w[digital_object_id version_id catalog_datetime file_count byte_count block_count entries]
       )
     end
     it 'FileSignature' do
-      expect(Moab::FileSignature.new.variable_names()).to eq(["size", "md5", "sha1", "sha256"])
+      expect(Moab::FileSignature.new.variable_names).to eq(%w[size md5 sha1 sha256])
     end
   end
 
   context '#key_name' do
     it 'path for FileInstance' do
-      expect(Moab::FileInstance.new.key_name()).to eq("path")
+      expect(Moab::FileInstance.new.key_name).to eq("path")
     end
     it 'version_id for SignatureCatalog' do
-      expect(Moab::SignatureCatalog.new.key_name()).to eq("version_id")
+      expect(Moab::SignatureCatalog.new.key_name).to eq("version_id")
     end
     it 'nil for FileSignature' do
-      expect(Moab::FileSignature.new.key_name()).to eq(nil)
+      expect(Moab::FileSignature.new.key_name).to eq(nil)
     end
   end
 
@@ -126,49 +122,45 @@ describe Serializer::Serializable do
     it 'FileInstance' do
       file_instance = Moab::FileInstance.new
       expect(file_instance).to receive(:path)
-      file_instance.key()
+      file_instance.key
     end
     it 'SignatureCatalog' do
       signature_catalog = Moab::SignatureCatalog.new
       expect(signature_catalog).to receive(:version_id)
-      signature_catalog.key()
+      signature_catalog.key
     end
     it 'FileSignature key is nil' do
       file_signature = Moab::FileSignature.new
-      expect(file_signature.key()).to eq(nil)
+      expect(file_signature.key).to eq(nil)
     end
   end
 
   specify '#array_to_hash' do
-    array = %w{this is an array of words}
-    expect(described_class.new.array_to_hash(array)).to hash_match({
-                                                                     0 => "this",
-                                                                     1 => "is",
-                                                                     2 => "an",
-                                                                     3 => "array",
-                                                                     4 => "of",
-                                                                     5 => "words"
-                                                                   })
+    array = %w[this is an array of words]
+    expect(described_class.new.array_to_hash(array)).to hash_match(0 => "this",
+                                                                   1 => "is",
+                                                                   2 => "an",
+                                                                   3 => "array",
+                                                                   4 => "of",
+                                                                   5 => "words")
   end
 
   specify '#to_hash' do
     additions = Moab::FileInventory.read_xml_file(@manifests.join("v0002"), 'additions')
-    hash = additions.groups[0].to_hash()
+    hash = additions.groups[0].to_hash
     hash['files'][0].delete('instances')
-    expect(hash).to hash_match({
-                                 "group_id" => "content",
-                                 "data_source" => "",
-                                 "file_count" => 1,
-                                 "byte_count" => 32915,
-                                 "block_count" => 33,
-                                 "files" => {
-                                   0 => {
-                                     "signature" => {
-                                       "size" => 32915,
-                                       "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
-                                       "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                                       "sha256" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
-                                     }
+    expect(hash).to hash_match("group_id" => "content",
+                               "data_source" => "",
+                               "file_count" => 1,
+                               "byte_count" => 32915,
+                               "block_count" => 33,
+                               "files" => {
+                                 0 => {
+                                   "signature" => {
+                                     "size" => 32915,
+                                     "md5" => "c1c34634e2f18a354cd3e3e1574c3194",
+                                     "sha1" => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                                     "sha256" => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
                                    }
                                  }
                                })
@@ -178,24 +170,22 @@ describe Serializer::Serializable do
     it 'file read from disk' do
       diff = @v1_content.files[0].diff(@v3_content.files[0])
       diff.delete('instances')
-      expect(diff).to hash_match({
-                                   "signature" => {
-                                     "size" => {
-                                       :old => 32915,
-                                       :new => 41981
-                                     },
-                                     "md5" => {
-                                       :old => "c1c34634e2f18a354cd3e3e1574c3194",
-                                       :new => "915c0305bf50c55143f1506295dc122c"
-                                     },
-                                     "sha1" => {
-                                       :old => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                                       :new => "60448956fbe069979fce6a6e55dba4ce1f915178"
-                                     },
-                                     "sha256" => {
-                                       :old => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
-                                       :new => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
-                                     }
+      expect(diff).to hash_match("signature" => {
+                                   "size" => {
+                                     :old => 32915,
+                                     :new => 41981
+                                   },
+                                   "md5" => {
+                                     :old => "c1c34634e2f18a354cd3e3e1574c3194",
+                                     :new => "915c0305bf50c55143f1506295dc122c"
+                                   },
+                                   "sha1" => {
+                                     :old => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                                     :new => "60448956fbe069979fce6a6e55dba4ce1f915178"
+                                   },
+                                   "sha256" => {
+                                     :old => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+                                     :new => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
                                    }
                                  })
     end

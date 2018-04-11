@@ -77,20 +77,19 @@ describe Moab::Bagger do
       (1..3).each do |version|
         vname = @vname[version]
         package = packages_dir.join(vname)
-        unless package.join('data').exist?
-          data_dir = @data.join(vname)
-          inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
-          catalog = case version
-                    when 1
-                      Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-                    else
-                      Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
-                    end
-          described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
-        end
+        next if package.join('data').exist?
+        data_dir = @data.join(vname)
+        inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
+        catalog = case version
+                  when 1
+                    Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                  else
+                    Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
+                  end
+        described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
       end
 
-      files = Array.new
+      files = []
       packages_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "packages",
@@ -189,7 +188,7 @@ describe Moab::Bagger do
   describe '#fill_payload' do
     it 'submit_bag' do
       submit_bag.fill_payload(submit_source_base)
-      files = Array.new
+      files = []
       submit_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "submit_bag_pathname/data",
@@ -203,7 +202,7 @@ describe Moab::Bagger do
     end
     it 'disseminate_bag' do
       disseminate_bag.fill_payload(disseminate_base)
-      files = Array.new
+      files = []
       disseminate_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "disseminate_bag_pathname/data",
@@ -224,7 +223,7 @@ describe Moab::Bagger do
 
   specify '#create_payload_manifests' do
     submit_bag.fill_payload(submit_source_base)
-    submit_bag.create_payload_manifests()
+    submit_bag.create_payload_manifests
     md5 = submit_bag.bag_pathname.join('manifest-md5.txt')
     expect(md5.exist?).to eq true
     expect(md5.readlines.sort).to eq [
@@ -244,7 +243,7 @@ describe Moab::Bagger do
   end
 
   specify '#create_bag_info_txt' do
-    submit_bag.create_bag_info_txt()
+    submit_bag.create_bag_info_txt
     bag_info = submit_bag.bag_pathname.join('bag-info.txt')
     expect(bag_info.exist?).to eq true
     expect(bag_info.readlines).to eq [
@@ -255,7 +254,7 @@ describe Moab::Bagger do
   end
 
   specify '#create_bagit_txt' do
-    submit_bag.create_bagit_txt()
+    submit_bag.create_bagit_txt
     bagit = submit_bag.bag_pathname.join('bagit.txt')
     expect(bagit.exist?).to eq true
     expect(bagit.readlines).to eq [

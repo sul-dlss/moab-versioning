@@ -79,7 +79,7 @@ module Moab
     # @param [String] object_id The digital object identifier of the object
     # @return [Pathname] Pathname object containing the full path for the specified file
     def self.version_metadata(object_id)
-      self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
+      retrieve_file('metadata', 'versionMetadata.xml', object_id)
     end
 
     # @param [String] object_id The digital object identifier of the object
@@ -87,13 +87,12 @@ module Moab
     # @return [FileInventory] the file inventory for the specified object version
     def self.retrieve_file_group(file_category, object_id, version_id = nil)
       storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      if file_category =~ /manifest/
-        inventory_type = file_category = 'manifests'
-      else
-        inventory_type = 'version'
-      end
-      inventory = storage_object_version.file_inventory(inventory_type)
-      inventory.group(file_category)
+      inventory_type = if file_category =~ /manifest/
+                         file_category = 'manifests'
+                       else
+                         'version'
+                       end
+      storage_object_version.file_inventory(inventory_type).group(file_category)
     end
 
     # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
@@ -102,8 +101,9 @@ module Moab
     # @param [Integer] version_id The ID of the version, if nil use latest version
     # @return [Pathname] Pathname object containing the full path for the specified file
     def self.retrieve_file(file_category, file_id, object_id, version_id = nil)
-      storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      file_pathname = storage_object_version.find_filepath(file_category, file_id)
+      @@repository.storage_object(object_id)
+                  .find_object_version(version_id)
+                  .find_filepath(file_category, file_id)
     end
 
     # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
@@ -112,8 +112,9 @@ module Moab
     # @param [Integer] version_id The ID of the version, if nil use latest version
     # @return [Pathname] Pathname object containing the full path for the specified file
     def self.retrieve_file_using_signature(file_category, file_signature, object_id, version_id = nil)
-      storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      file_pathname = storage_object_version.find_filepath_using_signature(file_category, file_signature)
+      @@repository.storage_object(object_id)
+                  .find_object_version(version_id)
+                  .find_filepath_using_signature(file_category, file_signature)
     end
 
     # @param [String] file_category The category of file ('content', 'metdata', or 'manifest')
@@ -122,8 +123,9 @@ module Moab
     # @param [Integer] version_id The ID of the version, if nil use latest version
     # @return [FileSignature] The signature of the file
     def self.retrieve_file_signature(file_category, file_id, object_id, version_id = nil)
-      storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      file_pathname = storage_object_version.find_signature(file_category, file_id)
+      @@repository.storage_object(object_id)
+                  .find_object_version(version_id)
+                  .find_signature(file_category, file_id)
     end
 
     # @param [String] object_id The digital object identifier of the object

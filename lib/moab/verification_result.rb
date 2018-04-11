@@ -22,7 +22,7 @@ module Moab
       @entity = entity.to_s  # force to string
       @verified = !!verified # rubocop:disable Style/DoubleNegation
       @details = details
-      @subentities = Array.new
+      @subentities = []
     end
 
     # @param entity [#to_s] The name of the entity being verified

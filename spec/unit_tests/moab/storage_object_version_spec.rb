@@ -151,13 +151,13 @@ describe Moab::StorageObjectVersion do
 
   specify '#signature_catalog' do
     # TODO: write better test
-    expect(@existing_storage_object_version.signature_catalog()).to be_instance_of(Moab::SignatureCatalog)
+    expect(@existing_storage_object_version.signature_catalog).to be_instance_of(Moab::SignatureCatalog)
   end
 
   specify '#ingest_bag_data' do
     temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
-    files = Array.new
+    files = []
     @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq [
       "ingests/jq937jp0017",
@@ -188,7 +188,7 @@ describe Moab::StorageObjectVersion do
     target_dir = temp_storage_object_version.version_pathname.join('data')
     use_links = true
     temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
-    files = Array.new
+    files = []
     @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq [
       "ingests/jq937jp0017",
@@ -206,7 +206,7 @@ describe Moab::StorageObjectVersion do
       "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
       "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
       "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+      "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml"
     ]
   end
 
@@ -219,7 +219,7 @@ describe Moab::StorageObjectVersion do
 
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
 
-      files = Array.new
+      files = []
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "ingests/jq937jp0017",
@@ -232,7 +232,7 @@ describe Moab::StorageObjectVersion do
       use_links = false
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname, use_links)
 
-      files = Array.new
+      files = []
       @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
       expect(files.sort).to eq [
         "ingests/jq937jp0017",
@@ -273,7 +273,7 @@ describe Moab::StorageObjectVersion do
     vers_add_file = @packages.join("v0002").join('versionAdditions.xml')
     temp_storage_object_version.ingest_file(vers_add_file, temp_version_pathname)
 
-    temp_storage_object_version.generate_manifest_inventory()
+    temp_storage_object_version.generate_manifest_inventory
     expect(Moab::FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'), 'manifests')).to eq true
   end
 
@@ -467,7 +467,7 @@ describe Moab::StorageObjectVersion do
                   "digital_object_id": "druid:jq937jp0017|",
                   "difference_count": 1,
                   "basis": "v1",
-                  "other": "#{File.expand_path("..", fixtures_directory)}/temp/jq937jp0017/v0001/data/content|#{File.expand_path("..", fixtures_directory)}/temp/jq937jp0017/v0001/data/metadata",
+                  "other": "#{File.expand_path('..', fixtures_directory)}/temp/jq937jp0017/v0001/data/content|#{File.expand_path('..', fixtures_directory)}/temp/jq937jp0017/v0001/data/metadata",
                   "group_differences": {
                     "content": {
                       "group_id": "content",

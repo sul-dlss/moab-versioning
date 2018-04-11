@@ -25,7 +25,7 @@ module Moab
       @version_inventory = version_inventory
       @signature_catalog = signature_catalog
       @bag_pathname = Pathname.new(bag_pathname)
-      create_bagit_txt()
+      create_bagit_txt
     end
 
     # @return [FileInventory] The complete inventory of the files comprising a digital object version
@@ -54,7 +54,7 @@ module Moab
 
     # @api internal
     # @return [void] Generate the bagit.txt tag file
-    def create_bagit_txt()
+    def create_bagit_txt
       bag_pathname.mkpath
       bag_pathname.join("bagit.txt").open('w') do |f|
         f.puts "Tag-File-Character-Encoding: UTF-8"
@@ -63,13 +63,13 @@ module Moab
     end
 
     # @return [NilClass] Delete the bagit files
-    def delete_bag()
+    def delete_bag
       # make sure this looks like a bag before deleting
       if bag_pathname.join('bagit.txt').exist?
         if bag_pathname.join('data').exist?
           bag_pathname.rmtree
         else
-          bag_pathname.children.each { |file| file.delete }
+          bag_pathname.children.each(&:delete)
           bag_pathname.rmdir
         end
       end
@@ -77,7 +77,7 @@ module Moab
     end
 
     # @param tar_pathname [Pathname] The location of the tar file (default is based on bag location)
-    def delete_tarfile()
+    def delete_tarfile
       bag_name = bag_pathname.basename
       bag_parent = bag_pathname.parent
       tar_pathname = bag_parent.join("#{bag_name}.tar")
@@ -140,7 +140,7 @@ module Moab
     #    Return true if successful or nil if the group was not found in the inventory
     def deposit_group(group_id, source_dir)
       group = bag_inventory.group(group_id)
-      return nil? if group.nil? or group.files.empty?
+      return nil? if group.nil? || group.files.empty?
       target_dir = bag_pathname.join('data', group_id)
       group.path_list.each do |relative_path|
         source = source_dir.join(relative_path)
@@ -157,7 +157,7 @@ module Moab
     #    Return true if successful or nil if the group was not found in the inventory
     def reconstuct_group(group_id, storage_object_dir)
       group = bag_inventory.group(group_id)
-      return nil? if group.nil? or group.files.empty?
+      return nil? if group.nil? || group.files.empty?
       target_dir = bag_pathname.join('data', group_id)
       group.files.each do |file|
         catalog_entry = signature_catalog.signature_hash[file.signature]
@@ -183,8 +183,8 @@ module Moab
     # @api internal
     # @return [void] Using the checksum information from the inventory, create BagIt manifest files for the payload
     def create_payload_manifests
-      manifest_pathname = Hash.new
-      manifest_file = Hash.new
+      manifest_pathname = {}
+      manifest_file = {}
       DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = bag_pathname.join("manifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
@@ -202,11 +202,10 @@ module Moab
       end
     ensure
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        if manifest_file[type]
-          manifest_file[type].close
-          manifest_pathname[type].delete if
-              manifest_pathname[type].exist? and manifest_pathname[type].size == 0
-        end
+        next unless manifest_file[type]
+        manifest_file[type].close
+        manifest_pathname[type].delete if
+            manifest_pathname[type].exist? && manifest_pathname[type].size == 0
       end
     end
 
@@ -222,29 +221,27 @@ module Moab
 
     # @api internal
     # @return [void] create BagIt tag manifest files containing checksums for all files in the bag's root directory
-    def create_tagfile_manifests()
-      manifest_pathname = Hash.new
-      manifest_file = Hash.new
+    def create_tagfile_manifests
+      manifest_pathname = {}
+      manifest_file = {}
       DEFAULT_CHECKSUM_TYPES.each do |type|
         manifest_pathname[type] = bag_pathname.join("tagmanifest-#{type}.txt")
         manifest_file[type] = manifest_pathname[type].open('w')
       end
       bag_pathname.children.each do |file|
-        unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
-          signature = FileSignature.new.signature_from_file(file)
-          fixity = signature.fixity
-          DEFAULT_CHECKSUM_TYPES.each do |type|
-            manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
-          end
+        next if file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
+        signature = FileSignature.new.signature_from_file(file)
+        fixity = signature.fixity
+        DEFAULT_CHECKSUM_TYPES.each do |type|
+          manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
         end
       end
     ensure
       DEFAULT_CHECKSUM_TYPES.each do |type|
-        if manifest_file[type]
-          manifest_file[type].close
-          manifest_pathname[type].delete if
-              manifest_pathname[type].exist? and manifest_pathname[type].size == 0
-        end
+        next unless manifest_file[type]
+        manifest_file[type].close
+        manifest_pathname[type].delete if
+            manifest_pathname[type].exist? && manifest_pathname[type].size == 0
       end
     end
 
@@ -260,7 +257,7 @@ module Moab
         shell_execute(tar_cmd.sub('--force-local', ''))
       end
       raise "Unable to create tarfile #{tar_pathname}" unless tar_pathname.exist?
-      return true
+      true
     end
 
     # Executes a system command in a subprocess

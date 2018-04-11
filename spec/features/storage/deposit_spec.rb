@@ -25,7 +25,7 @@ describe "Export a digital object version from DOR" do
       Moab::Bagger.new(inventory, catalog, bag_dir).fill_bag(:depositor, data_dir)
     end
 
-    files = Array.new
+    files = []
     @temp.join('packages').find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq([
                                "packages",

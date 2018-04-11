@@ -19,7 +19,7 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @versions = Array.new
+      @versions = []
       super(opts)
     end
 

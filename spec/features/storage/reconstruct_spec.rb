@@ -22,7 +22,7 @@ describe "Create reconstructed digital object for a version" do
       end
     end
 
-    files = Array.new
+    files = []
     reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
     expect(files.sort).to eq([
                                "reconstructs",

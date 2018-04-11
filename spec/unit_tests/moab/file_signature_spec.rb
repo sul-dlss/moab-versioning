@@ -25,7 +25,7 @@ describe Moab::FileSignature do
       expect(sig.sha256).to eq '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
     end
     it 'only computes requested checksum(s)' do
-      sig = described_class.from_file(title_v1_pathname, [:md5, :sha1])
+      sig = described_class.from_file(title_v1_pathname, %i[md5 sha1])
       expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
       expect(sig.sha1).to eq '583220e0572640abcd3ddd97393d224e8053a6ad'
       expect(sig.sha256).to be_nil
@@ -61,12 +61,10 @@ describe Moab::FileSignature do
       file_sig.set_checksum(:md5, '1a726cd7963bd6d3ceb10a8c353ec166')
       file_sig.set_checksum(:sha1, '583220e0572640abcd3ddd97393d224e8053a6ad')
       file_sig.set_checksum(:sha256, '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5')
-      expect(file_sig.checksums()).to eq(
-        {
-          md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-          sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-          sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
-        }
+      expect(file_sig.checksums).to eq(
+        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
+        sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
       )
     end
     it 'unknown checksum type' do
@@ -81,7 +79,7 @@ describe Moab::FileSignature do
       sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
       sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
     }
-    expect(title_v1_signature.fixity()).to eq expected_sig_fixity
+    expect(title_v1_signature.fixity).to eq expected_sig_fixity
   end
 
   specify '#checksums' do
@@ -90,7 +88,7 @@ describe Moab::FileSignature do
       sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
       sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
     }
-    expect(title_v1_signature.checksums()).to eq expected_checksums
+    expect(title_v1_signature.checksums).to eq expected_checksums
   end
 
   specify '#eql?' do
@@ -145,23 +143,19 @@ describe Moab::FileSignature do
 
   specify '.checksum_names_for_type' do
     expect(described_class.checksum_names_for_type).to eq(
-      {
-        md5: ["MD5"],
-        sha1: ["SHA-1", "SHA1"],
-        sha256: ["SHA-256", "SHA256"]
-      }
+      md5: ["MD5"],
+      sha1: ["SHA-1", "SHA1"],
+      sha256: ["SHA-256", "SHA256"]
     )
   end
 
   specify '.checksum_type_for_name' do
     expect(described_class.checksum_type_for_name).to eq(
-      {
-        "MD5" => :md5,
-        "SHA1" => :sha1,
-        "SHA-1" => :sha1,
-        "SHA256" => :sha256,
-        "SHA-256" => :sha256
-      }
+      "MD5" => :md5,
+      "SHA1" => :sha1,
+      "SHA-1" => :sha1,
+      "SHA256" => :sha256,
+      "SHA-256" => :sha256
     )
   end
 end

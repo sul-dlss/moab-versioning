@@ -31,7 +31,7 @@ module Moab
     }.freeze
 
     REQUIRED_MANIFEST_CHECKSUM_TYPE = 'sha256'.freeze
-    RECOGNIZED_CHECKSUM_ALGORITHMS = [:md5, :sha1, :sha256, :sha384, :sha512].freeze
+    RECOGNIZED_CHECKSUM_ALGORITHMS = %i[md5 sha1 sha256 sha384 sha512].freeze
 
     TAGMANIFEST = 'tagmanifest'.freeze
     MANIFEST = 'manifest'.freeze
@@ -158,23 +158,21 @@ module Moab
     def checksums_hash_from_manifest_files(manifest_type)
       checksums_hash = {}
       deposit_bag_pathname.children.each do |child_pathname|
-        if child_pathname.file?
-          child_fname = child_pathname.basename.to_s
-          match_result = child_fname.match("^#{manifest_type}-(.*).txt")
-          if match_result
-            checksum_type = match_result.captures.first.to_sym
-            if RECOGNIZED_CHECKSUM_ALGORITHMS.include?(checksum_type)
-              child_pathname.readlines.each do |line|
-                line.chomp!.strip!
-                checksum, file_name = line.split(/[\s*]+/, 2)
-                file_checksums = checksums_hash[file_name] || {}
-                file_checksums[checksum_type] = checksum
-                checksums_hash[file_name] = file_checksums
-              end
-            else
-              result_array << single_error_hash(CHECKSUM_TYPE_UNRECOGNIZED, checksum_type: checksum_type, filename: child_pathname)
-            end
+        next unless child_pathname.file?
+        child_fname = child_pathname.basename.to_s
+        match_result = child_fname.match("^#{manifest_type}-(.*).txt")
+        next unless match_result
+        checksum_type = match_result.captures.first.to_sym
+        if RECOGNIZED_CHECKSUM_ALGORITHMS.include?(checksum_type)
+          child_pathname.readlines.each do |line|
+            line.chomp!.strip!
+            checksum, file_name = line.split(/[\s*]+/, 2)
+            file_checksums = checksums_hash[file_name] || {}
+            file_checksums[checksum_type] = checksum
+            checksums_hash[file_name] = file_checksums
           end
+        else
+          result_array << single_error_hash(CHECKSUM_TYPE_UNRECOGNIZED, checksum_type: checksum_type, filename: child_pathname)
         end
       end
       checksums_hash

@@ -108,17 +108,16 @@ def fixture_setup
   # Generate packages from inventories and signature catalogs
   (1..3).each do |version|
     package_dir = @packages.join(@vname[version])
-    unless package_dir.join('data').exist?
-      data_dir = @data.join(@vname[version])
-      inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]), 'version')
-      catalog = case version
-                when 1
-                  Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
-                else
-                  Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
-                end
-      Moab::Bagger.new(inventory, catalog, package_dir).fill_bag(:depositor, data_dir)
-    end
+    next if package_dir.join('data').exist?
+    data_dir = @data.join(@vname[version])
+    inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]), 'version')
+    catalog = case version
+              when 1
+                Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+              else
+                Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
+              end
+    Moab::Bagger.new(inventory, catalog, package_dir).fill_bag(:depositor, data_dir)
   end
 
   # Store packages in a pseudo repository

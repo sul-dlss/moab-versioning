@@ -6,14 +6,14 @@ end
 
 describe Moab::FileGroup do
   it '#initialize' do
-    basic_expectations(described_class.new())
+    basic_expectations(described_class.new)
   end
   it '#initialize with empty hash argument' do
     basic_expectations(described_class.new({}))
   end
   it '#initialize with populated hash argument' do
     # test initialization with options hash
-    opts = Hash.new
+    opts = {}
     opts[:group_id]    = 'Test group_id'
     opts[:data_source] = 'Test data_source'
     file_group = described_class.new(opts)
@@ -51,7 +51,7 @@ describe Moab::FileGroup do
 
     it 'provides path_hash, path_list, path_hash_subset' do
       list = %w[intro-1.jpg intro-2.jpg page-1.jpg page-2.jpg page-3.jpg title.jpg]
-      expect(@v1_file_group.path_hash().keys).to eq(list)
+      expect(@v1_file_group.path_hash.keys).to eq(list)
       expect(@v1_file_group.path_list).to eq(list)
       sigs   = (0..2).map { |i| @v1_file_group.files[i].signature }
       subset = @v1_file_group.path_hash_subset(sigs)

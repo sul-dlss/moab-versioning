@@ -77,7 +77,7 @@ module Moab
         return root if root_trunk_branch.exist?
       end
       # Search for the object's directory in the deposit areas
-      if include_deposit and deposit_trunk
+      if include_deposit && deposit_trunk
         branch = deposit_branch(object_id)
         storage_roots.each do |root|
           root_trunk = root.join(deposit_trunk)
@@ -119,11 +119,8 @@ module Moab
     def storage_object(object_id, create = false)
       storage_object = find_storage_object(object_id)
       unless storage_object.object_pathname.exist?
-        if create
-          storage_object.object_pathname.mkpath
-        else
-          raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}"
-        end
+        raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}" unless create
+        storage_object.object_pathname.mkpath
       end
       storage_object
     end
@@ -132,9 +129,7 @@ module Moab
     # @param druid [String] The object identifier
     # @return [void] transfer the object to the preservation repository
     def store_new_object_version(druid, bag_pathname)
-      storage_object = self.storage_object(druid, create = true)
-      new_version = storage_object.ingest_bag(bag_pathname)
-      new_version
+      storage_object(druid, true).ingest_bag(bag_pathname)
     end
   end
 end

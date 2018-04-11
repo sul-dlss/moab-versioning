@@ -17,9 +17,9 @@ module Stanford
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, subset)
       begin
         # ObjectNotFoundException is raised if the object does not exist in storage
-        base_version ||= self.current_version(object_id)
+        base_version ||= current_version(object_id)
         # FileNotFoundException is raised if object exists but has no contentMetadata file
-        base_cm_pathname = self.retrieve_file('metadata', 'contentMetadata.xml', object_id, base_version)
+        base_cm_pathname = retrieve_file('metadata', 'contentMetadata.xml', object_id, base_version)
         base_inventory = Stanford::ContentInventory.new.inventory_from_cm(base_cm_pathname.read, object_id, subset, base_version)
       rescue Moab::ObjectNotFoundException, Moab::FileNotFoundException
         # Create a skeletal FileInventory object, containing no file entries
@@ -41,7 +41,7 @@ module Stanford
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, 'preserve')
       begin
         # ObjectNotFoundException is raised if the object does not exist in storage
-        version_id ||= self.current_version(object_id)
+        version_id ||= current_version(object_id)
         storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
         signature_catalog = storage_object_version.signature_catalog
       rescue Moab::ObjectNotFoundException
@@ -56,8 +56,8 @@ module Stanford
     # @param version_id [Integer] The ID of the version whose file data is to be used, if nil use latest version
     # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
     def self.cm_remediate(object_id, version_id = nil)
-      cm = self.retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)
-      group = self.retrieve_file_group('content', object_id, version_id)
+      cm = retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)
+      group = retrieve_file_group('content', object_id, version_id)
       Stanford::ContentInventory.new.remediate_content_metadata(cm, group)
     end
   end

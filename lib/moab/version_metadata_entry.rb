@@ -18,13 +18,13 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @events = Array.new
+      @events = []
       super(opts)
     end
 
     # @attribute
     # @return [Integer] The object version number (A sequential integer)
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => Proc.new { |n| n.to_s }
+    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => proc { |n| n.to_s }
 
     # @attribute
     # @return [String] "an external version label that increments the most significant digit for major revisions,

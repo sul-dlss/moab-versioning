@@ -122,27 +122,25 @@ module Moab
     # @param version_id [Integer] The version identifier of an object version
     # @return [String] The directory name of the version, relative to the digital object home directory (e.g v0002)
     def self.version_dirname(version_id)
-      ("v%04d" % version_id)
+      format("v%04d", version_id)
     end
 
     # @return [Array<Integer>] The list of all version ids for this object
     def version_id_list
-      list = Array.new
+      list = []
       return list unless @object_pathname.exist?
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
-        if vnum =~ /^v(\d+)$/
-          list << vnum[1..-1].to_i
-        end
+        list << vnum[1..-1].to_i if vnum =~ /^v(\d+)$/
       end
       list.sort
     end
 
     # @return [Array<StorageObjectVersion>] The list of all versions in this storage object
     def version_list
-      version_id_list.collect { |id| self.storage_object_version(id) }
+      version_id_list.collect { |id| storage_object_version(id) }
     end
-    alias :versions :version_list
+    alias versions version_list
 
     # @return [Boolean] true if there are no versions yet in this object
     def empty?
@@ -152,12 +150,12 @@ module Moab
     # @api external
     # @return [Integer] The identifier of the latest version of this object, or 0 if no versions exist
     def current_version_id
-      @current_version_id ||= self.version_id_list.last || 0
+      @current_version_id ||= version_id_list.last || 0
     end
 
     # @return [StorageObjectVersion] The most recent version in the storage object
     def current_version
-      self.storage_object_version(current_version_id)
+      storage_object_version(current_version_id)
     end
 
     # @api internal
@@ -191,21 +189,18 @@ module Moab
     # * Version 0 is a special case used to generate empty manifests
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
-      if version_id
-        StorageObjectVersion.new(self, version_id)
-      else
-        raise "Version ID not specified"
-      end
+      raise "Version ID not specified" unless version_id
+      StorageObjectVersion.new(self, version_id)
     end
 
     # @return [VerificationResult] Return result of storage verification
     def verify_object_storage
       result = VerificationResult.new(digital_object_id)
-      self.version_list.each do |version|
+      version_list.each do |version|
         result.subentities << version.verify_version_storage
       end
       result.subentities << current_version.verify_signature_catalog
-      result.verified = result.subentities.all? { |entity| entity.verified }
+      result.verified = result.subentities.all?(&:verified)
       result
     end
 
@@ -216,7 +211,7 @@ module Moab
       recovery_object = StorageObject.new(@digital_object_id, recovery_path, false)
       recovery_object.versions.each do |recovery_version|
         version_id = recovery_version.version_id
-        storage_version = self.storage_object_version(version_id)
+        storage_version = storage_object_version(version_id)
         # rename/save the original
         storage_version.deactivate(timestamp)
         # copy the recovered version into place
