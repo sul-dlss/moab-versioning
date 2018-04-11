@@ -181,13 +181,10 @@ module Moab
     # @return [FileSignature] The full signature derived from the file, unless the fixity is inconsistent with current values
     def normalized_signature(pathname)
       sig_from_file = FileSignature.new.signature_from_file(pathname)
-      if eql?(sig_from_file)
-        # The full signature from file is consistent with current values
-        return sig_from_file
-      else
-        # One or more of the fixity values is inconsistent, so raise an exception
-        raise "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}"
-      end
+      return sig_from_file if eql?(sig_from_file)
+      # The full signature from file is consistent with current values, or...
+      # One or more of the fixity values is inconsistent, so raise an exception
+      raise "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}"
     end
 
     # @return [Hash<Symbol,String>] Key is type (e.g. :sha1), value is checksum names (e.g. ['SHA-1', 'SHA1'])
