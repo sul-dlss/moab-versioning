@@ -106,12 +106,11 @@ module Moab
 
    # @return [Hash<Symbol,String>] A hash of the checksum data
     def checksums
-      checksum_hash = Hash.new
-      checksum_hash[:md5] = @md5
-      checksum_hash[:sha1] = @sha1
-      checksum_hash[:sha256] = @sha256
-      checksum_hash.delete_if { |_key, value| value.nil? or value.empty? }
-      checksum_hash
+      {
+        md5: md5,
+        sha1: sha1,
+        sha256: sha256
+      }.reject { |_key, value| value.nil? || value.empty? }
     end
 
     # @return [Boolean] The signature contains all of the 3 desired checksums
@@ -120,12 +119,9 @@ module Moab
     end
 
     # @api internal
-    # @return [Hash<Symbol,String>] A hash of fixity data from this signataure object
+    # @return [Hash<Symbol => String>] A hash of fixity data from this signataure object
     def fixity
-      fixity_hash = Hash.new
-      fixity_hash[:size] = @size.to_s
-      fixity_hash.merge!(checksums)
-      fixity_hash
+      { size: size.to_s }.merge(checksums)
     end
 
     # @api internal
@@ -181,31 +177,26 @@ module Moab
     # @return [FileSignature] The full signature derived from the file, unless the fixity is inconsistent with current values
     def normalized_signature(pathname)
       sig_from_file = FileSignature.new.signature_from_file(pathname)
-      if self.eql?(sig_from_file)
-        # The full signature from file is consistent with current values
-        return sig_from_file
-      else
-        # One or more of the fixity values is inconsistent, so raise an exception
-        raise "Signature inconsistent between inventory and file for #{pathname}: #{self.diff(sig_from_file).inspect}"
-      end
+      return sig_from_file if eql?(sig_from_file)
+      # The full signature from file is consistent with current values, or...
+      # One or more of the fixity values is inconsistent, so raise an exception
+      raise "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}"
     end
 
     # @return [Hash<Symbol,String>] Key is type (e.g. :sha1), value is checksum names (e.g. ['SHA-1', 'SHA1'])
-    def FileSignature.checksum_names_for_type
-      names_for_type = Hash.new
-      names_for_type[:md5] = ['MD5']
-      names_for_type[:sha1] = ['SHA-1', 'SHA1']
-      names_for_type[:sha256] = ['SHA-256', 'SHA256']
-      names_for_type
+    def self.checksum_names_for_type
+      {
+        md5: ['MD5'],
+        sha1: ['SHA-1', 'SHA1'],
+        sha256: ['SHA-256', 'SHA256']
+      }
     end
 
    # @return [Hash<String, Symbol>] Key is checksum name (e.g. MD5), value is checksum type (e.g. :md5)
-    def FileSignature.checksum_type_for_name
-      type_for_name = Hash.new
-      self.checksum_names_for_type.each do |type, names|
-        names.each do |name|
-          type_for_name[name] = type
-        end
+    def self.checksum_type_for_name
+      type_for_name = {}
+      checksum_names_for_type.each do |type, names|
+        names.each { |name| type_for_name[name] = type }
       end
       type_for_name
     end
