@@ -210,7 +210,7 @@ describe Moab::FileGroupDifference do
   specify '#compare_matching_signatures' do
     new_diff.compare_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 2
-    expect(new_diff.subsets.collect { |s| s.change }).to eq ["identical", "renamed"]
+    expect(new_diff.subsets.collect(&:change)).to eq %w[identical renamed]
     expect(new_diff.subsets.collect { |s| s.files.size }).to eq [1, 2]
     expect(new_diff.identical).to eq 1
     expect(new_diff.renamed).to eq 2
@@ -219,7 +219,7 @@ describe Moab::FileGroupDifference do
   specify '#compare_non_matching_signatures' do
     new_diff.compare_non_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 3
-    expect(new_diff.subsets.collect { |s| s.change }).to eq ["modified", "added", "deleted"]
+    expect(new_diff.subsets.collect(&:change)).to eq %w[modified added deleted]
     expect(new_diff.subsets.collect { |s| s.files.size }).to eq [1, 1, 2]
     expect(new_diff.modified).to eq 1
     expect(new_diff.deleted).to eq 2
@@ -384,28 +384,24 @@ describe Moab::FileGroupDifference do
   specify '#file_deltas' do
     deltas = new_diff.file_deltas
     expect(deltas).to eq(
-      {
-        identical: [],
-        modified: [],
-        deleted: [],
-        copydeleted: [],
-        copyadded: [],
-        renamed: [],
-        added: []
-      }
+      identical: [],
+      modified: [],
+      deleted: [],
+      copydeleted: [],
+      copyadded: [],
+      renamed: [],
+      added: []
     )
     new_diff.compare_file_groups(v1_content, v3_content)
     deltas = new_diff.file_deltas
     expect(deltas).to eq(
-      {
-        identical: ["title.jpg"],
-        modified: ["page-1.jpg"],
-        deleted: ["intro-1.jpg", "intro-2.jpg"],
-        copydeleted: [],
-        copyadded: [],
-        renamed: [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]],
-        added: ["page-2.jpg"]
-      }
+      identical: ["title.jpg"],
+      modified: ["page-1.jpg"],
+      deleted: ["intro-1.jpg", "intro-2.jpg"],
+      copydeleted: [],
+      copyadded: [],
+      renamed: [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]],
+      added: ["page-2.jpg"]
     )
   end
 

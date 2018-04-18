@@ -54,7 +54,7 @@ module Moab
     # @return [Boolean] Returns true if self and other have the same path.
     def eql?(other)
       return false unless other.respond_to?(:path) # Cannot equal an incomparable type!
-      self.path == other.path
+      path == other.path
     end
 
     # @api internal

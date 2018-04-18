@@ -90,34 +90,32 @@ describe Moab::FileInventoryDifference do
   specify '#summary_fields' do
     hash = diff_v1_v2.summary
     hash.delete('report_datetime')
-    expect(hash).to eq({
-                         'digital_object_id' => 'druid:jq937jp0017',
-                         'basis' => 'v1',
-                         'other' => 'v2',
-                         'difference_count' => 6,
-                         'group_differences' => {
-                           'metadata' => {
-                             'group_id' => 'metadata',
-                             'difference_count' => 3,
-                             'identical' => 2,
-                             'added' => 0,
-                             'modified' => 3,
-                             'deleted' => 0,
-                             'renamed' => 0,
-                             'copyadded' => 0,
-                             'copydeleted' => 0
-                           },
-                           'content' => {
-                             'group_id' => 'content',
-                             'difference_count' => 3,
-                             'identical' => 3,
-                             'added' => 0,
-                             'modified' => 1,
-                             'deleted' => 2,
-                             'renamed' => 0,
-                             'copyadded' => 0,
-                             'copydeleted' => 0
-                           }
+    expect(hash).to eq('digital_object_id' => 'druid:jq937jp0017',
+                       'basis' => 'v1',
+                       'other' => 'v2',
+                       'difference_count' => 6,
+                       'group_differences' => {
+                         'metadata' => {
+                           'group_id' => 'metadata',
+                           'difference_count' => 3,
+                           'identical' => 2,
+                           'added' => 0,
+                           'modified' => 3,
+                           'deleted' => 0,
+                           'renamed' => 0,
+                           'copyadded' => 0,
+                           'copydeleted' => 0
+                         },
+                         'content' => {
+                           'group_id' => 'content',
+                           'difference_count' => 3,
+                           'identical' => 3,
+                           'added' => 0,
+                           'modified' => 1,
+                           'deleted' => 2,
+                           'renamed' => 0,
+                           'copyadded' => 0,
+                           'copydeleted' => 0
                          }
                        })
   end

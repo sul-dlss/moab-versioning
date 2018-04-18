@@ -14,7 +14,7 @@ describe Stanford::ContentInventory do
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
-  before { @content_inventory = described_class.new() }
+  before { @content_inventory = described_class.new }
 
   context '#inventory_from_cm' do
     it 'version_id = 2' do
@@ -96,7 +96,7 @@ describe Stanford::ContentInventory do
 
   # testing boundary case where all subset attributes are no (e.g. shelve='no')
   specify '#inventory_from_cm with empty subset' do
-    %w(shelve publish preserve).each do |subset|
+    %w[shelve publish preserve].each do |subset|
       inventory = @content_inventory.inventory_from_cm(content_metadata_empty_subset, 'druid:ms205ty4764', subset, 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
@@ -162,10 +162,8 @@ describe Stanford::ContentInventory do
   end
 
   specify '#generate_instance' do
-    expect(@content_inventory.generate_instance(@node)).to hash_match({
-                                                                        "path" => "title.jpg",
-                                                                        "datetime" => "2012-03-26T14:15:11Z"
-                                                                      })
+    expect(@content_inventory.generate_instance(@node)).to hash_match("path" => "title.jpg",
+                                                                      "datetime" => "2012-03-26T14:15:11Z")
   end
 
   specify '#generate_content_metadata' do
@@ -229,7 +227,7 @@ describe Stanford::ContentInventory do
     end
     it 'empty hash raises exception' do
       exp_regex = /Content Metadata is in unrecognized format/
-      expect { @content_inventory.validate_content_metadata_details(Hash.new) }.to raise_exception(exp_regex)
+      expect { @content_inventory.validate_content_metadata_details({}) }.to raise_exception(exp_regex)
     end
   end
 

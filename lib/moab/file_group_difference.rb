@@ -64,7 +64,7 @@ module Moab
     # @attribute
     # @return [Integer] the total number of differences found between the two inventories that were
     #   compared  (dynamically calculated)
-    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => Proc.new { |i| i.to_s }
+    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => proc { |i| i.to_s }
 
     def difference_count
       count = 0
@@ -76,49 +76,49 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were unchanged
-    attribute :identical, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :identical, Integer, :on_save => proc { |n| n.to_s }
     def identical
       subset_hash[:identical].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were added
-    attribute :copyadded, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :copyadded, Integer, :on_save => proc { |n| n.to_s }
     def copyadded
       subset_hash[:copyadded].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were deleted
-    attribute :copydeleted, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :copydeleted, Integer, :on_save => proc { |n| n.to_s }
     def copydeleted
       subset_hash[:copydeleted].count
     end
 
     # @attribute
     # @return [Integer] How many files were renamed
-    attribute :renamed, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :renamed, Integer, :on_save => proc { |n| n.to_s }
     def renamed
       subset_hash[:renamed].count
     end
 
     # @attribute
     # @return [Integer] How many files were modified
-    attribute :modified, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :modified, Integer, :on_save => proc { |n| n.to_s }
     def modified
       subset_hash[:modified].count
     end
 
     # @attribute
     # @return [Integer] How many files were added
-    attribute :added, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :added, Integer, :on_save => proc { |n| n.to_s }
     def added
       subset_hash[:added].count
     end
 
     # @attribute
     # @return [Integer] How many files were deleted
-    attribute :deleted, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :deleted, Integer, :on_save => proc { |n| n.to_s }
     def deleted
       subset_hash[:deleted].count
     end
@@ -140,12 +140,12 @@ module Moab
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
-      %w{group_id difference_count identical copyadded copydeleted renamed modified deleted added}
+      %w[group_id difference_count identical copyadded copydeleted renamed modified deleted added]
     end
 
     # @api internal
     # @return [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
-    def summary()
+    def summary
       FileGroupDifference.new(
         :group_id => group_id,
         :identical => identical,
@@ -257,7 +257,7 @@ module Moab
         other_only_paths = other_paths - basis_paths
         maxsize = [basis_only_paths.size, other_only_paths.size].max
         (0..maxsize - 1).each do |n|
-          fid = FileInstanceDifference.new()
+          fid = FileInstanceDifference.new
           fid.basis_path = basis_only_paths[n]
           fid.other_path = other_only_paths[n]
           fid.signatures << signature
@@ -331,20 +331,20 @@ module Moab
     end
 
     # @return [Hash<Symbol,Array>] Sets of filenames grouped by change type for use in performing file or metadata operations
-    def file_deltas()
+    def file_deltas
       # The hash to be returned
       deltas = Hash.new { |hash, key| hash[key] = [] }
       # case where other_path is empty or 'same'.  (create array of strings)
-      [:identical, :modified, :deleted, :copydeleted].each do |change|
-        deltas[change].concat(subset_hash[change].files.collect { |file| file.basis_path })
+      %i[identical modified deleted copydeleted].each do |change|
+        deltas[change].concat(subset_hash[change].files.collect(&:basis_path))
       end
       # case where basis_path and other_path are both present.  (create array of arrays)
-      [:copyadded, :renamed].each do |change|
+      %i[copyadded renamed].each do |change|
         deltas[change].concat(subset_hash[change].files.collect { |file| [file.basis_path, file.other_path] })
       end
       # case where basis_path is empty.  (create array of strings)
       [:added].each do |change|
-        deltas[change].concat(subset_hash[change].files.collect { |file| file.other_path })
+        deltas[change].concat(subset_hash[change].files.collect(&:other_path))
       end
       deltas
     end

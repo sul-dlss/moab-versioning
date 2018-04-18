@@ -31,7 +31,7 @@ module Moab
     }.freeze
 
     REQUIRED_MANIFEST_CHECKSUM_TYPE = 'sha256'.freeze
-    RECOGNIZED_CHECKSUM_ALGORITHMS = [:md5, :sha1, :sha256, :sha384, :sha512].freeze
+    RECOGNIZED_CHECKSUM_ALGORITHMS = %i[md5 sha1 sha256 sha384 sha512].freeze
 
     TAGMANIFEST = 'tagmanifest'.freeze
     MANIFEST = 'manifest'.freeze

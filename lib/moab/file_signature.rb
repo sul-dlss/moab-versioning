@@ -46,19 +46,19 @@ module Moab
 
     # @attribute
     # @return [Integer] The size of the file in bytes
-    attribute :size, Integer, :on_save => Proc.new { |n| n.to_s }
+    attribute :size, Integer, :on_save => proc { |n| n.to_s }
 
     # @attribute
     # @return [String] The MD5 checksum value of the file
-    attribute :md5, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
+    attribute :md5, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
 
     # @attribute
     # @return [String] The SHA1 checksum value of the file
-    attribute :sha1, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
+    attribute :sha1, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
 
     # @attribute
     # @return [String] The SHA256 checksum value of the file
-    attribute :sha256, String, :on_save => Proc.new { |n| n.nil? ? "" : n.to_s }
+    attribute :sha256, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
 
     KNOWN_ALGOS = {
       md5: proc { Digest::MD5.new },
@@ -128,12 +128,12 @@ module Moab
     # @param other [FileSignature] The other file signature being compared to this signature
     # @return [Boolean] Returns true if self and other have comparable fixity data.
     def eql?(other)
-      return false unless (other.respond_to?(:size) && other.respond_to?(:checksums))
-      return false if self.size.to_i != other.size.to_i
-      self_checksums = self.checksums
+      return false unless other.respond_to?(:size) && other.respond_to?(:checksums)
+      return false if size.to_i != other.size.to_i
+      self_checksums = checksums
       other_checksums = other.checksums
       matching_keys = self_checksums.keys & other_checksums.keys
-      return false if matching_keys.size == 0
+      return false if matching_keys.empty?
       matching_keys.each do |key|
         return false if self_checksums[key] != other_checksums[key]
       end

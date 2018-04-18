@@ -79,7 +79,7 @@ module Moab
     # @param [String] object_id The digital object identifier of the object
     # @return [Pathname] Pathname object containing the full path for the specified file
     def self.version_metadata(object_id)
-      self.retrieve_file('metadata', 'versionMetadata.xml', object_id)
+      retrieve_file('metadata', 'versionMetadata.xml', object_id)
     end
 
     # @param [String] object_id The digital object identifier of the object
@@ -87,11 +87,11 @@ module Moab
     # @return [FileInventory] the file inventory for the specified object version
     def self.retrieve_file_group(file_category, object_id, version_id = nil)
       storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
-      if file_category =~ /manifest/
-        inventory_type = file_category = 'manifests'
-      else
-        inventory_type = 'version'
-      end
+      inventory_type = if file_category =~ /manifest/
+                         file_category = 'manifests'
+                       else
+                         'version'
+                       end
       inventory = storage_object_version.file_inventory(inventory_type)
       inventory.group(file_category)
     end

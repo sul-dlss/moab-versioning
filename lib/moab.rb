@@ -29,7 +29,7 @@
 # @note Copyright (c) 2012 by The Board of Trustees of the Leland Stanford Junior University.
 #   All rights reserved.  See {file:LICENSE.rdoc} for details.
 module Moab
-  DEFAULT_CHECKSUM_TYPES = [:md5, :sha1, :sha256].freeze
+  DEFAULT_CHECKSUM_TYPES = %i[md5 sha1 sha256].freeze
 end
 
 require 'serializer'
