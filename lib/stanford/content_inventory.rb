@@ -1,5 +1,3 @@
-require 'moab/stanford'
-
 module Stanford
   # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing comparisons
   #

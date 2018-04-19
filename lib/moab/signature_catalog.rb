@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A digital object's Signature Catalog is derived from an filtered aggregation of the file inventories
   # of a digital object's set of versions.  (see {#update})

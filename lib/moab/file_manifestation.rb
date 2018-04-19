@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A container for a file signature and all the physical file instances that have that signature
   # This element has one child {FileSignature} element, and one or more {FileInstance} elements

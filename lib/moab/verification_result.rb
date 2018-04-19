@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A recursive "Tree" type object for verifications
   class VerificationResult

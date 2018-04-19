@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # An interface class to support access to SDR storage via a RESTful server
   #

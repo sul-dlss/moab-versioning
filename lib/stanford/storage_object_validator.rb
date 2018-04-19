@@ -1,5 +1,3 @@
-require 'moab'
-
 module Stanford
   # druids are Stanford specific entities
   class StorageObjectValidator < Moab::StorageObjectValidator

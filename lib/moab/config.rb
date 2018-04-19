@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # @return [Confstruct::Configuration] the configuration data
   Config = Confstruct::Configuration.new do

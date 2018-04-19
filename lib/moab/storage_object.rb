@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A class to represent a digital object's repository storage location
   # and methods for

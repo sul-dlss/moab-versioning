@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A class to represent the SDR repository store
   #
