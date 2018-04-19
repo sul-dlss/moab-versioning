@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # Compares two {FileInventory} instances based primarily on file signatures and secondarily on file pathnames.
   # Although the usual use will be to compare the content of 2 different temporal versions of the same object,

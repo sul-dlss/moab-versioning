@@ -1,5 +1,3 @@
-require 'time'
-
 module Moab
   # Timestamp conversion methods.
   class UtcTime

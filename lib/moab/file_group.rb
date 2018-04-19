@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A container for a standard subset of a digital objects {FileManifestation} objects
   # Used to segregate depositor content from repository metadata files
@@ -24,6 +22,7 @@ module Moab
     def initialize(opts = {})
       @signature_hash = {}
       @data_source = ""
+      @signatures_from_bag = nil # prevents later warning: instance variable @signatures_from_bag not initialized
       super(opts)
     end
 

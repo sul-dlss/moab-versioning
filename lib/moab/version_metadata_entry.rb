@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # The descriptive attributes of a digital object version.
   #

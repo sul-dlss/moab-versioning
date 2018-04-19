@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # The file path and last modification date properties of a file
   #

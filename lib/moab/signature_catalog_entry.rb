@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A file-level entry in a digital object's {SignatureCatalog}.
   # It has a child {FileSignature} element that identifies the file's contents (the bytestream)

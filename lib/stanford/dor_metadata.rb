@@ -1,5 +1,3 @@
-require 'moab/stanford'
-
 module Stanford
   # Stanford-specific utility methods for interfacing with DOR metadata files
   #

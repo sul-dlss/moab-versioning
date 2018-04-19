@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # Performs analysis and reports the differences between two matching {FileGroup} objects.
   # The descending elements of the report hold a detailed breakdown of file-level differences, organized by change type.

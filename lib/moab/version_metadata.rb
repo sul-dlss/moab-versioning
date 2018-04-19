@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # The descriptive information about a digital object's collection of versions
   #

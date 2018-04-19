@@ -1,4 +1,3 @@
-require 'moab/stanford'
 require 'druid-tools'
 
 module Stanford

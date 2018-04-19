@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # The fixity properties of a file, used to determine file content equivalence regardless of filename.
   # Placing this data in a class by itself facilitates using file size together with the MD5 and SHA1 checksums

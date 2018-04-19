@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A class to represent a version subdirectory within an object's home directory in preservation storage
   # ====Data Model

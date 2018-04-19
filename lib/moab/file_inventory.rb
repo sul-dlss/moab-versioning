@@ -1,5 +1,3 @@
-require 'moab'
-
 module Moab
   # A structured container for recording information about a collection of related files.
   #

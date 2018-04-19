@@ -1,4 +1,3 @@
-require 'moab'
 require 'set'
 
 module Moab
