@@ -19,11 +19,8 @@ module Serializer
     #   The symbols should correspond to attributes declared using HappyMapper syntax
     def initialize(opts = {})
       opts.each do |key, value|
-        if variable_names.include?(key.to_s) || key == :test
-          instance_variable_set("@#{key}", value)
-        else
-          raise "#{key} is not a variable name in #{self.class.name}"
-        end
+        raise "#{key} is not a variable name in #{self.class.name}" unless variable_names.include?(key.to_s) || key == :test
+        instance_variable_set("@#{key}", value)
       end
     end
 
