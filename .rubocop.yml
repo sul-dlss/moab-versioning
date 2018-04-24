@@ -27,7 +27,6 @@ Lint/UselessAssignment:
     - 'spec/unit_tests/moab/file_group_difference_spec.rb' # TODO: determine if we want to keep this exclusion
     - 'spec/unit_tests/moab/file_group_spec.rb' # TODO: determine if we want to keep this exclusion
     - 'spec/unit_tests/moab/file_inventory_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # NOT a useless assignment - rubocop is confused
 
 Metrics/ClassLength:
   Exclude:
@@ -55,8 +54,9 @@ Naming/FileName:
 
 RSpec/NestedGroups:
   Exclude:
-    - 'spec/unit_tests/moab/storage_object_validator_spec.rb' # Tests are more readable, all the tests should be under 1 context block
     - spec/unit_tests/moab/deposit_bag_validator_spec.rb # tests are readable
+    - spec/unit_tests/moab/storage_object_validator_spec.rb # Tests are more readable, all the tests should be under 1 context block
+    - spec/unit_tests/stanford/storage_object_validator_spec.rb # tests are readable
 
 # Pointless change
 Style/FormatStringToken:
