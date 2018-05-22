@@ -58,11 +58,11 @@ module Moab
           NO_SIGNATURE_CATALOG => "Version %{addl}: Missing signatureCatalog.xml",
           NO_MANIFEST_INVENTORY => "Version %{addl}: Missing manifestInventory.xml",
           NO_FILES_IN_MANIFEST_DIR => "Version %{addl}: No files present in manifest dir",
-          METADATA_SUB_DIRS_DETECTED => "Version %{addl}: metadata directory should only contain files, not directories",
+          METADATA_SUB_DIRS_DETECTED => "Version %{version}: metadata directory should only contain files, not directories: %{dir} directory",
           VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
           NO_FILES_IN_METADATA_DIR => "Version %{addl}: No files present in metadata dir",
           NO_FILES_IN_CONTENT_DIR => "Version %{addl}: No files present in content dir",
-          CONTENT_SUB_DIRS_DETECTED => "Version %{addl}: content directory should only contain files, not directories",
+          CONTENT_SUB_DIRS_DETECTED => "Version %{version}: content directory should only contain files, not directories: %{dir} directory",
           BAD_SUB_DIR_IN_CONTENT_DIR => "Version %{addl}: content directory has forbidden sub-directory name: vnnnn or #{FORBIDDEN_CONTENT_SUB_DIRS}"
         }.freeze
     end
@@ -138,7 +138,8 @@ module Moab
       errors = []
       content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
       errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(content_dir_path) && !allow_content_subdirs
+      content_sub_dir = contains_sub_dir?(content_dir_path)
+      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, version: basename(version_path), dir: content_sub_dir) if content_sub_dir && !allow_content_subdirs
       if allow_content_subdirs && contains_sub_dir?(content_dir_path) && contains_forbidden_content_sub_dir?(content_dir_path)
         errors << result_hash(BAD_SUB_DIR_IN_CONTENT_DIR, basename(version_path))
       end
@@ -157,7 +158,8 @@ module Moab
       errors = []
       metadata_dir_path = File.join(version_path, DATA_DIR, METADATA_DIR)
       errors << result_hash(NO_FILES_IN_METADATA_DIR, basename(version_path)) if directory_entries(metadata_dir_path).empty?
-      errors << result_hash(METADATA_SUB_DIRS_DETECTED, basename(version_path)) if contains_sub_dir?(metadata_dir_path)
+      metadata_sub_dir = contains_sub_dir?(metadata_dir_path)
+      errors << result_hash(METADATA_SUB_DIRS_DETECTED, version: basename(version_path), dir: metadata_sub_dir) if metadata_sub_dir
       errors
     end
 
@@ -203,12 +205,18 @@ module Moab
       path.split(File::SEPARATOR)[-1]
     end
 
-    def result_hash(response_code, addl = nil)
-      { response_code => error_code_msg(response_code, addl) }
+    def result_hash(response_code, msg_args = nil)
+      { response_code => error_code_msg(response_code, msg_args) }
     end
 
     def error_code_msg(response_code, addl = nil)
-      format(self.class.error_code_to_messages[response_code], addl: addl)
+      arg_hash = {}
+      if addl.is_a?(Hash)
+        arg_hash.merge!(addl)
+      else
+        arg_hash[:addl] = addl
+      end
+      self.class.error_code_to_messages[response_code] % arg_hash
     end
 
     def check_required_manifest_files(dir, version)
