@@ -105,14 +105,14 @@ describe Moab::StorageObjectValidator do
                 expect(storage_obj_validator.validation_errors(true)).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
               end
               it 'explicitly set to false and errors' do
-                expect(storage_obj_validator.validation_errors(false)).to include(described_class::CONTENT_SUB_DIRS_DETECTED => "Version v0015: content directory should only contain files, not directories")
+                expect(storage_obj_validator.validation_errors(false)).to include(described_class::CONTENT_SUB_DIRS_DETECTED => "Version v0015: content directory should only contain files, not directories: metadata directory")
               end
             end
           end
         end
         context 'metadata directory' do
           it 'must only contain files' do
-            expect(error_list).to include(described_class::METADATA_SUB_DIRS_DETECTED => "Version v0008: metadata directory should only contain files, not directories")
+            expect(error_list).to include(described_class::METADATA_SUB_DIRS_DETECTED => "Version v0008: metadata directory should only contain files, not directories: test1 directory")
           end
           it 'must contain files' do
             expect(error_list).to include(described_class::NO_FILES_IN_METADATA_DIR => "Version v0010: No files present in metadata dir")
