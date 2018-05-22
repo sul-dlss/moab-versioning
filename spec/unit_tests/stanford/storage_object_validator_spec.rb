@@ -24,7 +24,7 @@ RSpec.describe Stanford::StorageObjectValidator do
     end
     context 'allow_content_subdirs arguments' do
       it 'passes to super' do
-        expect(storage_obj_validator.validation_errors(false)).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED => 'Version v0013: content directory should only contain files, not directories')
+        expect(storage_obj_validator.validation_errors(false)).to include(Moab::StorageObjectValidator::CONTENT_SUB_DIRS_DETECTED => 'Version v0013: content directory should only contain files, not directories: data directory')
       end
     end
   end
