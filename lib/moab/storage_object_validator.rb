@@ -58,11 +58,11 @@ module Moab
           NO_SIGNATURE_CATALOG => "Version %{addl}: Missing signatureCatalog.xml",
           NO_MANIFEST_INVENTORY => "Version %{addl}: Missing manifestInventory.xml",
           NO_FILES_IN_MANIFEST_DIR => "Version %{addl}: No files present in manifest dir",
-          METADATA_SUB_DIRS_DETECTED => "Version %{version}: metadata directory should only contain files, not directories: %{dir} directory",
+          METADATA_SUB_DIRS_DETECTED => "Version %{version}: metadata directory should only contain files, not directories. Found directory: %{dir}",
           VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
           NO_FILES_IN_METADATA_DIR => "Version %{addl}: No files present in metadata dir",
           NO_FILES_IN_CONTENT_DIR => "Version %{addl}: No files present in content dir",
-          CONTENT_SUB_DIRS_DETECTED => "Version %{version}: content directory should only contain files, not directories: %{dir} directory",
+          CONTENT_SUB_DIRS_DETECTED => "Version %{version}: content directory should only contain files, not directories. Found directory: %{dir}",
           BAD_SUB_DIR_IN_CONTENT_DIR => "Version %{addl}: content directory has forbidden sub-directory name: vnnnn or #{FORBIDDEN_CONTENT_SUB_DIRS}"
         }.freeze
     end
@@ -205,6 +205,13 @@ module Moab
       path.split(File::SEPARATOR)[-1]
     end
 
+    # @param [Integer] response_code one of the recognized values in error_code_to_messages
+    # @param [Hash<Symbol => String>, String] msg_args Value(s) folded into the error message
+    # @return [Hash<Integer => String>] single key/value Hash
+    # @example Usage
+    #  sov.result_hash(10, '/some/dir')
+    #  sov.result_hash(10, addl: '/some/dir') # equivalent
+    #  sov.result_hash(8, version: '3', dir: '/other/dir')
     def result_hash(response_code, msg_args = nil)
       { response_code => error_code_msg(response_code, msg_args) }
     end
