@@ -56,9 +56,9 @@ module Moab
     end
 
     # @param object_id [String] The identifier of the digital object
-    # @return [Pathname] The branch segment of the object deposit path
+    # @return [String] The branch segment of the object deposit path
+    # @note Override this method in a subclass
     def deposit_branch(object_id)
-       #todo This method should be customized, or overridden in a subclass
       object_id
     end
 
