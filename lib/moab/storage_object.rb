@@ -161,7 +161,7 @@ module Moab
     # @return [Boolean] Tests whether the new version number is one higher than the current version number
     def validate_new_inventory(version_inventory)
       if version_inventory.version_id != (current_version_id + 1)
-        raise "version mismatch - current: #{current_version_id} new: #{version_inventory.version_id}"
+        raise(MoabRuntimeError, "version mismatch - current: #{current_version_id} new: #{version_inventory.version_id}")
       end
       true
     end
@@ -177,7 +177,7 @@ module Moab
       when 1..current
         StorageObjectVersion.new(self, version_id)
       else
-        raise "Version ID #{version_id} does not exist"
+        raise(MoabRuntimeError, "Version ID #{version_id} does not exist")
       end
     end
 
@@ -187,7 +187,7 @@ module Moab
     # * Version 0 is a special case used to generate empty manifests
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
-      raise "Version ID not specified" unless version_id
+      raise(MoabRuntimeError, "Version ID not specified") unless version_id
       StorageObjectVersion.new(self, version_id)
     end
 

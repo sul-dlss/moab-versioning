@@ -259,7 +259,7 @@ module Moab
       rescue
         shell_execute(tar_cmd.sub('--force-local', ''))
       end
-      raise "Unable to create tarfile #{tar_pathname}" unless tar_pathname.exist?
+      raise(MoabRuntimeError, "Unable to create tarfile #{tar_pathname}") unless tar_pathname.exist?
       true
     end
 
@@ -274,11 +274,11 @@ module Moab
       else
         msg = "Shell command failed: [#{command}] caused by <STDERR = #{stderr}>"
         msg << " STDOUT = #{stdout}" if stdout && stdout.length.positive?
-        raise(StandardError, msg)
+        raise(MoabStandardError, msg)
       end
     rescue SystemCallError => e
       msg = "Shell command failed: [#{command}] caused by #{e.inspect}"
-      raise(StandardError, msg)
+      raise(MoabStandardError, msg)
     end
   end
 end

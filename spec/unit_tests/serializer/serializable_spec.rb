@@ -67,7 +67,7 @@ describe Serializer::Serializable do
     it 'options hash with bad variable raises exception' do
       opts = { dummy: 'dummy' }
       err_msg = 'dummy is not a variable name in Serializer::Serializable'
-      expect { described_class.new(opts) }.to raise_exception(RuntimeError, err_msg)
+      expect { described_class.new(opts) }.to raise_exception(Moab::MoabRuntimeError, err_msg)
     end
   end
 

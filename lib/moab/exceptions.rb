@@ -1,13 +1,9 @@
 module Moab
-  class ObjectNotFoundException < RuntimeError
-  end
+  class MoabRuntimeError < RuntimeError; end
+  class MoabStandardError < StandardError; end
 
-  class FileNotFoundException < RuntimeError
-  end
-
-  class InvalidMetadataException < RuntimeError
-  end
-
-  class ValidationException < RuntimeError
-  end
+  class FileNotFoundException < MoabRuntimeError; end
+  class InvalidMetadataException < MoabRuntimeError; end
+  class InvalidSuriSyntaxError < MoabRuntimeError; end
+  class ObjectNotFoundException < MoabRuntimeError; end
 end

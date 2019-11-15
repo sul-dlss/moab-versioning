@@ -128,7 +128,7 @@ module Moab
     def normalize_group_signatures(group, group_pathname = nil)
       unless group_pathname.nil?
         group_pathname = Pathname(group_pathname)
-        raise "Could not locate #{group_pathname}" unless group_pathname.exist?
+        raise(MoabRuntimeError, "Could not locate #{group_pathname}") unless group_pathname.exist?
       end
       group.files.each do |file|
         unless file.signature.complete?

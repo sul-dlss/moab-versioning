@@ -133,7 +133,7 @@ describe Stanford::ContentInventory do
     end
     it 'raises exception for unknown subset' do
       exp_regex = /Unknown disposition subset/
-      expect { described_class.new.group_from_cm(cm_with_subsets, "dummy") }.to raise_exception(exp_regex)
+      expect { described_class.new.group_from_cm(cm_with_subsets, "dummy") }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
     end
   end
 
@@ -227,7 +227,9 @@ describe Stanford::ContentInventory do
     end
     it 'empty hash raises exception' do
       exp_regex = /Content Metadata is in unrecognized format/
-      expect { @content_inventory.validate_content_metadata_details({}) }.to raise_exception(exp_regex)
+      expect do
+        @content_inventory.validate_content_metadata_details({})
+      end.to raise_exception(Moab::InvalidMetadataException, exp_regex)
     end
   end
 
@@ -278,13 +280,17 @@ describe Stanford::ContentInventory do
     it 'bad size raises exception' do
       cm_bad_size = cm.sub(/40873/, '37804')
       exp_regex = /Inconsistent size for title.jpg: 37804 != 40873/
-      expect { @content_inventory.remediate_content_metadata(cm_bad_size, group) }.to raise_exception(exp_regex)
+      expect do
+        @content_inventory.remediate_content_metadata(cm_bad_size, group)
+      end.to raise_exception(Moab::MoabRuntimeError, exp_regex)
     end
 
     it 'bad checksum raises exception' do
       cm_bad_checksum = cm.sub(/1a726cd7963bd6d3ceb10a8c353ec166/, '915c0305bf50c55143f1506295dc122c')
       exp_regex = /Inconsistent md5 for title.jpg: 915c0305bf50c55143f1506295dc122c != 1a726cd7963bd6d3ceb10a8c353ec166/
-      expect { @content_inventory.remediate_content_metadata(cm_bad_checksum, group) }.to raise_exception(exp_regex)
+      expect do
+        @content_inventory.remediate_content_metadata(cm_bad_checksum, group)
+      end.to raise_exception(Moab::MoabRuntimeError, exp_regex)
     end
   end
 end

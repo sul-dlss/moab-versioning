@@ -16,7 +16,8 @@ describe Moab::FileSignature do
 
   describe '.from_file' do
     it 'raises if unrecognized checksum requested' do
-      expect { described_class.from_file('whatever', [:rot13]) }.to raise_exception(/Unrecognized algorithm/)
+      exp_msg_regex = /Unrecognized algorithm/
+      expect { described_class.from_file('whatever', [:rot13]) }.to raise_exception(Moab::MoabRuntimeError, exp_msg_regex)
     end
     it 'computes all checksums by default' do
       sig = described_class.from_file(title_v1_pathname)
@@ -137,7 +138,7 @@ describe Moab::FileSignature do
     specify 'when given bad checksum' do
       fs = described_class.new(sha1: 'dummy')
       exp_err_regex = /Signature inconsistent between inventory and file/
-      expect { fs.normalized_signature(page2_v1_pathname) }.to raise_exception(exp_err_regex)
+      expect { fs.normalized_signature(page2_v1_pathname) }.to raise_exception(Moab::MoabRuntimeError, exp_err_regex)
     end
   end
 

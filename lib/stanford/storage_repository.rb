@@ -31,10 +31,10 @@ module Stanford
     def druid_tree(object_id)
       # Note: this seems an odd place to do druid validation, but leaving it here for now
       syntax_msg = "Identifier has invalid suri syntax: #{object_id}"
-      raise syntax_msg + " nil or empty" if object_id.to_s.empty?
+      raise(Moab::InvalidSuriSyntaxError, syntax_msg + " nil or empty") if object_id.to_s.empty?
       identifier = object_id.split(':')[-1]
-      raise syntax_msg if identifier.to_s.empty?
-      raise syntax_msg unless DruidTools::Druid.valid?(identifier, true)
+      raise(Moab::InvalidSuriSyntaxError, syntax_msg) if identifier.to_s.empty?
+      raise(Moab::InvalidSuriSyntaxError, syntax_msg) unless DruidTools::Druid.valid?(identifier, true)
       DruidTools::Druid.new(identifier, true).tree.join(File::SEPARATOR)
     end
   end

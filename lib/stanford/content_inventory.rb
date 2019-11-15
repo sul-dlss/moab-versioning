@@ -45,7 +45,7 @@ module Stanford
                 when 'all'
                   ng_doc.xpath("//file")
                 else
-                  raise "Unknown disposition subset (#{subset})"
+                  raise(Moab::MoabRuntimeError, "Unknown disposition subset (#{subset})")
                 end
       content_group = Moab::FileGroup.new(:group_id => 'content', :data_source => "contentMetadata-#{subset}")
       nodeset.each do |file_node|
@@ -198,7 +198,7 @@ module Stanford
       if file_size.nil? || file_size.empty?
         file_node['size'] = signature.size.to_s
       elsif file_size != signature.size.to_s
-        raise "Inconsistent size for #{file_node['id']}: #{file_size} != #{signature.size}"
+        raise(Moab::MoabRuntimeError, "Inconsistent size for #{file_node['id']}: #{file_size} != #{signature.size}")
       end
     end
 
@@ -228,7 +228,7 @@ module Stanford
         if cm_checksum.nil? || cm_checksum.empty?
           checksum_node.content = sig_checksum
         elsif cm_checksum != sig_checksum
-          raise "Inconsistent #{type} for #{file_node['id']}: #{cm_checksum} != #{sig_checksum}"
+          raise(Moab::MoabRuntimeError, "Inconsistent #{type} for #{file_node['id']}: #{cm_checksum} != #{sig_checksum}")
         end
       end
     end

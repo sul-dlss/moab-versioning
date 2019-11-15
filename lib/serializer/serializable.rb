@@ -19,7 +19,8 @@ module Serializer
     #   The symbols should correspond to attributes declared using HappyMapper syntax
     def initialize(opts = {})
       opts.each do |key, value|
-        raise "#{key} is not a variable name in #{self.class.name}" unless variable_names.include?(key.to_s) || key == :test
+        errmsg = "#{key} is not a variable name in #{self.class.name}"
+        raise(Moab::MoabRuntimeError, errmsg) unless variable_names.include?(key.to_s) || key == :test
         instance_variable_set("@#{key}", value)
       end
     end
@@ -115,7 +116,7 @@ module Serializer
     # @param other [Serializable] The other object being compared
     # @return [Hash] Generate a hash containing the differences between two objects of the same type
     def diff(other)
-      raise "Cannot compare different classes" if self.class != other.class
+      raise(Moab::MoabRuntimeError, "Cannot compare different classes") if self.class != other.class
       left = other.to_hash
       right = to_hash
       if key.nil? || other.key.nil?

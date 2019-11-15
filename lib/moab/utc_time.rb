@@ -14,7 +14,7 @@ module Moab
       when Time
         datetime
       else
-        raise "unknown time format #{datetime.inspect}"
+        raise(MoabRuntimeError, "unknown time format #{datetime.inspect}")
       end
     end
 
@@ -29,7 +29,7 @@ module Moab
       when Time
         datetime.utc.iso8601
       else
-        raise "unknown time format #{datetime.inspect}"
+        raise(MoabRuntimeError, "unknown time format #{datetime.inspect}")
       end
     end
   end
