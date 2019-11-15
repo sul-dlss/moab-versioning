@@ -160,10 +160,10 @@ module Moab
     # @param pathname [Pathname] The file path to be tested
     # @return [Boolean] Test whether the given path is contained within the {#base_directory}
     def is_descendent_of_base?(pathname)
-      raise("base_directory has not been set") if @base_directory.nil?
+      raise(MoabRuntimeError, "base_directory has not been set") if @base_directory.nil?
       is_descendent = false
       pathname.expand_path.ascend { |ancestor| is_descendent ||= (ancestor == @base_directory) }
-      raise("#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
+      raise(MoabRuntimeError, "#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
       is_descendent
     end
 

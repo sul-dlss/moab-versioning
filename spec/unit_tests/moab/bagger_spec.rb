@@ -298,6 +298,6 @@ describe Moab::Bagger do
     bagger = described_class.new(nil, nil, bag_dir)
     cmd = "cd '#{@packages}'; tar --dereference --force-local -cf  '#{@temp}/test.tar' 'v0001'"
     expect(bagger).to receive(:shell_execute).with(cmd)
-    expect { bagger.create_tarfile(tarfile) }.to raise_exception(/Unable to create tarfile/)
+    expect { bagger.create_tarfile(tarfile) }.to raise_exception(Moab::MoabRuntimeError, /^Unable to create tarfile/)
   end
 end

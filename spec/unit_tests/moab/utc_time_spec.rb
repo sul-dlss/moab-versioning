@@ -13,8 +13,8 @@ describe Moab::UtcTime do
     it 'bad string data raises ArgumentError' do
       expect { described_class.input("jgkerf") }.to raise_exception ArgumentError
     end
-    it 'bad non-string data raises RuntimeError of "unknown time format"' do
-      expect { described_class.input(4) }.to raise_exception(RuntimeError, 'unknown time format 4')
+    it 'bad non-string data raises MoabRuntimeError of "unknown time format"' do
+      expect { described_class.input(4) }.to raise_exception(Moab::MoabRuntimeError, 'unknown time format 4')
     end
   end
 
@@ -30,8 +30,8 @@ describe Moab::UtcTime do
     it 'bad string data raises ArgumentError' do
       expect { described_class.output("jgkerf") }.to raise_exception ArgumentError
     end
-    it 'bad non-string data raises RuntimeError of "unknown time format"' do
-      expect { described_class.output(4) }.to raise_exception(RuntimeError, 'unknown time format 4')
+    it 'bad non-string data raises MoabRuntimeError of "unknown time format"' do
+      expect { described_class.output(4) }.to raise_exception(Moab::MoabRuntimeError, 'unknown time format 4')
     end
   end
 end

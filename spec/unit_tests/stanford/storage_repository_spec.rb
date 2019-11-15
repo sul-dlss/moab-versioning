@@ -20,13 +20,13 @@ describe Stanford::StorageRepository do
     it 'has expected value for valid druid' do
       expect(storage_repository.druid_tree(@druid)).to eq("jq/937/jp/0017/jq937jp0017")
     end
-    it 'raises exception for invalid druid' do
-      exp_msg_regex = /Identifier has invalid suri syntax/
-      expect { storage_repository.druid_tree('123cd456nm') }.to raise_exception(RuntimeError, exp_msg_regex)
+    it 'raises InvalidSuriSyntaxError for invalid druid' do
+      exp_msg_regex = /Identifier has invalid suri syntax: 123cd456nm/
+      expect { storage_repository.druid_tree('123cd456nm') }.to raise_exception(Moab::InvalidSuriSyntaxError, exp_msg_regex)
     end
-    it 'has expected value for valid druid that uses forbidden chars (not strictly valid)' do
-      exp_msg_regex = /^Identifier has invalid suri syntax: druid:aa111bb2222$/
-      expect { storage_repository.druid_tree('druid:aa111bb2222') }.to raise_exception(RuntimeError, exp_msg_regex)
+    it 'raises InvalidSuriSyntaxError for druid that uses forbidden chars (not strictly valid)' do
+      exp_regex = /^Identifier has invalid suri syntax: druid:aa111bb2222$/
+      expect { storage_repository.druid_tree('druid:aa111bb2222') }.to raise_exception(Moab::InvalidSuriSyntaxError, exp_regex)
     end
   end
 end

@@ -18,10 +18,10 @@ module Moab
     # @return [Array<Pathname>] The list of filesystem root paths in which objects are stored
     def storage_roots
       unless defined?(@storage_roots)
-        raise "Moab::Config.storage_roots not found in config file" if Moab::Config.storage_roots.nil?
+        raise(MoabRuntimeError, "Moab::Config.storage_roots not found in config file") if Moab::Config.storage_roots.nil?
         @storage_roots = [Moab::Config.storage_roots].flatten.collect { |filesystem| Pathname(filesystem) }
-        raise "Moab::Config.storage_roots empty" if @storage_roots.empty?
-        @storage_roots.each { |root| raise "Storage root #{root} not found on system" unless root.exist? }
+        raise(MoabRuntimeError, "Moab::Config.storage_roots empty") if @storage_roots.empty?
+        @storage_roots.each { |root| raise(MoabRuntimeError, "Storage root #{root} not found on system") unless root.exist? }
       end
       @storage_roots
     end
@@ -29,7 +29,7 @@ module Moab
     # @return [String] The trunk segment of the object storage path
     def storage_trunk
       unless defined?(@storage_trunk)
-        raise "Moab::Config.storage_trunk not found in config file" if Moab::Config.storage_trunk.nil?
+        raise(MoabRuntimeError, "Moab::Config.storage_trunk not found in config file") if Moab::Config.storage_trunk.nil?
         @storage_trunk  = Moab::Config.storage_trunk
       end
       @storage_trunk
@@ -70,7 +70,7 @@ module Moab
       branch = storage_branch(object_id)
       storage_roots.each do |root|
         root_trunk = root.join(storage_trunk)
-        raise "Storage area not found at #{root_trunk}" unless root_trunk.exist?
+        raise(MoabRuntimeError, "Storage area not found at #{root_trunk}") unless root_trunk.exist?
         root_trunk_branch = root_trunk.join(branch)
         return root if root_trunk_branch.exist?
       end
@@ -79,7 +79,7 @@ module Moab
         branch = deposit_branch(object_id)
         storage_roots.each do |root|
           root_trunk = root.join(deposit_trunk)
-          raise "Deposit area not found at #{root_trunk}" unless root_trunk.exist?
+          raise(MoabRuntimeError, "Deposit area not found at #{root_trunk}") unless root_trunk.exist?
           root_trunk_branch = root_trunk.join(branch)
           return root if root_trunk_branch.exist?
         end
@@ -117,7 +117,7 @@ module Moab
     def storage_object(object_id, create = false)
       storage_object = find_storage_object(object_id)
       unless storage_object.object_pathname.exist?
-        raise Moab::ObjectNotFoundException, "No storage object found for #{object_id}" unless create
+        raise ObjectNotFoundException, "No storage object found for #{object_id}" unless create
         storage_object.object_pathname.mkpath
       end
       storage_object

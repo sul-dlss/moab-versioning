@@ -33,7 +33,7 @@ module Moab
       elsif version_id.is_a?(String) && version_id =~ /^v(\d+)$/
         @version_id = version_id.sub(/^v/, '').to_i
       else
-        raise "version_id (#{version_id}) is not in a recognized format"
+        raise(MoabRuntimeError, "version_id (#{version_id}) is not in a recognized format")
       end
       @version_name = StorageObject.version_dirname(@version_id)
       @version_pathname = storage_object.object_pathname.join(@version_name)
@@ -135,7 +135,7 @@ module Moab
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
     # @return [void] Create the version subdirectory and move files into it
     def ingest_bag_data(bag_dir)
-      raise "Version already exists: #{@version_pathname}" if @version_pathname.exist?
+      raise(MoabRuntimeError, "Version already exists: #{@version_pathname}") if @version_pathname.exist?
       @version_pathname.join('manifests').mkpath
       bag_dir = Pathname(bag_dir)
       ingest_dir(bag_dir.join('data'), @version_pathname.join('data'))
@@ -149,7 +149,7 @@ module Moab
     # @param use_links [Boolean] If true, use hard links; if false, make copies
     # @return [void] recursively link or copy the source directory contents to the target directory
     def ingest_dir(source_dir, target_dir, use_links = true)
-      raise "cannot copy - target already exists: #{target_dir.expand_path}" if target_dir.exist?
+      raise(MoabRuntimeError, "cannot copy - target already exists: #{target_dir.expand_path}") if target_dir.exist?
       target_dir.mkpath
       source_dir.children.each do |child|
         if child.directory?

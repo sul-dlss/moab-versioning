@@ -390,7 +390,8 @@ describe Moab::StorageObject do
   specify '#validate_new_inventory' do
     version_inventory_3 = double(Moab::FileInventory.name + "3")
     expect(version_inventory_3).to receive(:version_id).twice.and_return 3
-    expect { storage_object.validate_new_inventory(version_inventory_3) }.to raise_exception(/version mismatch/)
+    exp_regex = /version mismatch/
+    expect { storage_object.validate_new_inventory(version_inventory_3) }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
 
     version_inventory_4 = double(Moab::FileInventory.name + "4")
     expect(version_inventory_4).to receive(:version_id).and_return 4
@@ -414,8 +415,8 @@ describe Moab::StorageObject do
       expect(version_latest.version_pathname.to_s).to match(/ingests\/jq937jp0017\/v0003/)
     end
     it 'non-existent versions' do
-      expect { @storage_object.find_object_version(0) }.to raise_exception(/Version ID 0 does not exist/)
-      expect { @storage_object.find_object_version(4) }.to raise_exception(/Version ID 4 does not exist/)
+      expect { @storage_object.find_object_version(0) }.to raise_exception(Moab::MoabRuntimeError, /Version ID 0 does not exist/)
+      expect { @storage_object.find_object_version(4) }.to raise_exception(Moab::MoabRuntimeError, /Version ID 4 does not exist/)
     end
   end
 
@@ -433,7 +434,8 @@ describe Moab::StorageObject do
       expect { @storage_object.storage_object_version(4) }.not_to raise_exception
     end
     it 'nil version raises exception' do
-      expect { @storage_object.storage_object_version(nil) }.to raise_exception(/Version ID not specified/)
+      exp_msg_regex = /Version ID not specified/
+      expect { @storage_object.storage_object_version(nil) }.to raise_exception(Moab::MoabRuntimeError, exp_msg_regex)
     end
   end
 

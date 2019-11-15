@@ -93,7 +93,8 @@ describe Moab::FileGroup do
       it "raises exception if false (FIXME!)" do
         base = @fixtures.join('derivatives/manifests')
         # FIXME:  shouldn't it simply return false?
-        expect { @new_file_group.is_descendent_of_base?(base) }.to raise_exception(/is not a descendent of/)
+        exp_msg_regex = /is not a descendent of/
+        expect { @new_file_group.is_descendent_of_base?(base) }.to raise_exception(Moab::MoabRuntimeError, exp_msg_regex)
       end
     end
 

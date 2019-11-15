@@ -73,7 +73,7 @@ module Moab
     # @param [Array<Symbol>] one or more keys of KNOWN_ALGOS to be computed
     # @return [Moab::FileSignature] object populated with (requested) checksums
     def self.from_file(pathname, algos_to_use = active_algos)
-      raise 'Unrecognized algorithm requested' unless algos_to_use.all? { |a| KNOWN_ALGOS.include?(a) }
+      raise(MoabRuntimeError, 'Unrecognized algorithm requested') unless algos_to_use.all? { |a| KNOWN_ALGOS.include?(a) }
 
       signatures = algos_to_use.map { |k| [k, KNOWN_ALGOS[k].call] }.to_h
 
@@ -178,7 +178,7 @@ module Moab
       return sig_from_file if eql?(sig_from_file)
       # The full signature from file is consistent with current values, or...
       # One or more of the fixity values is inconsistent, so raise an exception
-      raise "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}"
+      raise(MoabRuntimeError, "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}")
     end
 
     # @return [Hash<Symbol,String>] Key is type (e.g. :sha1), value is checksum names (e.g. ['SHA-1', 'SHA1'])
