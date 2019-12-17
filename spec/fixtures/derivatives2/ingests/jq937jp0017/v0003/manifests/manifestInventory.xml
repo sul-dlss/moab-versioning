@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="manifests" objectId="druid:jq937jp0017" versionId="3" inventoryDatetime="2019-12-17T18:47:20Z" fileCount="4" byteCount="15500" blockCount="17">
+  <fileGroup groupId="manifests" dataSource="/Users/jlittman/data/sdr/moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0003/manifests" fileCount="4" byteCount="15500" blockCount="17">
+    <file>
+      <fileSignature size="4687" md5="d4f0786d5697aea9e4a60fbed8e95da7" sha1="d0fb0471bb765909dce051b9f72a41fb3a6e0b7a" sha256="18a094dd790729604c824b29f9ca8a66bf5f633e2ae8003f98bec23a3ab123e2"/>
+      <fileInstance path="fileInventoryDifference.xml" datetime="2019-12-17T18:47:20Z"/>
+    </file>
+    <file>
+      <fileSignature size="5613" md5="469f1236ff28d99d7eac45f40ca86769" sha1="5744e4708415bf4fa3e000c736caa694a436163e" sha256="422f7de25912def6f241031f705bf4128a40818c6c3efe53020eedc8024be4dc"/>
+      <fileInstance path="signatureCatalog.xml" datetime="2019-12-17T18:47:20Z"/>
+    </file>
+    <file>
+      <fileSignature size="1631" md5="b263576057edbe2558a5fb719c8919bf" sha1="710673d8a3928c213223605a14896e6dcacc9ec2" sha256="b5aed3fb40ee3fb89c8dea17b1ee94d4163e9856bc490c10708b51a0a421c6cd"/>
+      <fileInstance path="versionAdditions.xml" datetime="2019-12-17T18:47:20Z"/>
+    </file>
+    <file>
+      <fileSignature size="3569" md5="b6634654510c45b6b518960882268737" sha1="34fdb6701733ccc09a6818de3f6d72a0b962afa7" sha256="8a7f78214490c882ffb144830dae679d0a8970310a93df551366ac9bde8145db"/>
+      <fileInstance path="versionInventory.xml" datetime="2019-12-17T18:47:20Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>

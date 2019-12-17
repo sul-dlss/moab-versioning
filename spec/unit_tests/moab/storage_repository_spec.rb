@@ -1,10 +1,14 @@
 describe Moab::StorageRepository do
   let(:storage_repo) { described_class.new }
+  let(:derivatives_storage_root) { @fixtures.join('derivatives') }
+  let(:derivatives2_storage_root) { @fixtures.join('derivatives2') }
+  let(:newnode_storage_root) { @fixtures.join('newnode') }
 
   specify '#storage_roots' do
     # these are set in spec_config.rb
-    expect(storage_repo.storage_roots[0]).to eq @fixtures.join('derivatives')
-    expect(storage_repo.storage_roots[1]).to eq @fixtures.join('newnode')
+    expect(storage_repo.storage_roots[0]).to eq derivatives_storage_root
+    expect(storage_repo.storage_roots[1]).to eq derivatives2_storage_root
+    expect(storage_repo.storage_roots[2]).to eq newnode_storage_root
   end
 
   specify '#storage_trunk' do
@@ -26,12 +30,12 @@ describe Moab::StorageRepository do
   end
 
   context '#find_storage_root' do
-    it 'new objects will be stord in the newest (most empty) filesystem' do
-      expect(storage_repo.find_storage_root('abcdef')).to eq @fixtures.join('newnode')
+    it 'new objects will be stored in the newest (most empty) filesystem' do
+      expect(storage_repo.find_storage_root('abcdef')).to eq newnode_storage_root
     end
     it 'object with known storage branch' do
       allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
-      expect(storage_repo.find_storage_root('jq937jp0017')).to eq @derivatives
+      expect(storage_repo.find_storage_root('jq937jp0017')).to eq derivatives_storage_root
     end
     it 'exception raised when storage_trunk is bogus' do
       allow(storage_repo).to receive(:storage_trunk).and_return('junk')
@@ -39,11 +43,33 @@ describe Moab::StorageRepository do
     end
   end
 
+  describe '#search_storage_objects' do
+    context 'new storage objects' do
+      it 'returns an empty array' do
+        expect(storage_repo.search_storage_objects('abcdef')).to be_empty
+      end
+    end
+    context 'existing storage objects' do
+      it 'finds objects with known storage branches' do
+        allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
+        found_storage_objs = storage_repo.search_storage_objects('jq937jp0017')
+        expect(found_storage_objs.length).to eq 2
+        expect(found_storage_objs[0].object_pathname).to eq derivatives_storage_root.join('ingests/jq937jp0017')
+        expect(found_storage_objs[1].object_pathname).to eq derivatives2_storage_root.join('ingests/jq937jp0017')
+      end
+    end
+    it 'exception raised when storage_trunk is bogus' do
+      allow(storage_repo).to receive(:storage_trunk).and_return('junk')
+      expect { storage_repo.search_storage_objects('abcdef') }.to raise_exception(Moab::MoabRuntimeError,
+                                                                                  /Storage area not found/)
+    end
+  end
+
   specify '#find_storage_object' do
     allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
     found_storage_obj = storage_repo.find_storage_object('jq937jp0017')
-    expect(found_storage_obj.object_pathname).to eq @derivatives.join('ingests/jq937jp0017')
-    expect(found_storage_obj.deposit_bag_pathname).to eq @derivatives.join('packages/jq937jp0017')
+    expect(found_storage_obj.object_pathname).to eq derivatives_storage_root.join('ingests/jq937jp0017')
+    expect(found_storage_obj.deposit_bag_pathname).to eq derivatives_storage_root.join('packages/jq937jp0017')
   end
 
   context '#storage_object' do

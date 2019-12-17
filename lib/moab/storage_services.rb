@@ -41,6 +41,13 @@ module Moab
       @@repository.find_storage_object(object_id, include_deposit)
     end
 
+    # @param object_id [String] The identifier of the digital object
+    # @param [Object] include_deposit
+    # @return [Array<StorageObject>] Representations of a digitial object's storage directories, or an empty array if none found.
+    def self.search_storage_objects(object_id, include_deposit = false)
+      @@repository.search_storage_objects(object_id, include_deposit)
+    end
+
     # @param object_id [String] The identifier of the digital object whose size is desired
     # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
     # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).
