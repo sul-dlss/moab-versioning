@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '~> 2.3'
 
   # Runtime dependencies
-  s.add_dependency 'confstruct'
   s.add_dependency 'druid-tools', '>= 1.0.0 ' # druid validation, druid-tree, etc.; needs 1.0.0 for strict validation
   s.add_dependency 'json'
   s.add_dependency 'nokogiri' # XML parsing
