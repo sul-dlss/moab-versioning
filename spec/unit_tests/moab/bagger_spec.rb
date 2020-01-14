@@ -1,4 +1,24 @@
+# frozen_string_literal: true
+
 describe Moab::Bagger do
+  after(:all) do
+    @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
+    @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
+  end
+
+  before do
+    @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
+    @submit_bag_pathname.mkpath
+
+    @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
+    @disseminate_bag_pathname.mkpath
+  end
+
+  before(:all) do
+    @submit_bag_pathname = @temp.join('submit_bag_pathname')
+    @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
+  end
+
   specify '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
     signature_catalog = double(Moab::SignatureCatalog.name)
@@ -28,24 +48,6 @@ describe Moab::Bagger do
     db.package_mode = :reconstructor
     db.bag_inventory = disseminate_inventory
     db
-  end
-
-  before(:all) do
-    @submit_bag_pathname = @temp.join('submit_bag_pathname')
-    @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
-  end
-
-  before do
-    @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
-    @submit_bag_pathname.mkpath
-
-    @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
-    @disseminate_bag_pathname.mkpath
-  end
-
-  after(:all) do
-    @submit_bag_pathname.rmtree if @submit_bag_pathname.exist?
-    @disseminate_bag_pathname.rmtree if @disseminate_bag_pathname.exist?
   end
 
   specify '#delete_bag' do
@@ -201,6 +203,7 @@ describe Moab::Bagger do
         "submit_bag_pathname/data/metadata/versionMetadata.xml"
       ]
     end
+
     it 'disseminate_bag' do
       disseminate_bag.fill_payload(disseminate_base)
       files = []

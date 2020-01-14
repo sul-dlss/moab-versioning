@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Compare inventory against directory" do
   #  In order to: determine the difference between a file inventory and a directory
   #  The application needs to: generate a differences report

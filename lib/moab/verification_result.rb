@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A recursive "Tree" type object for verifications
   class VerificationResult
@@ -52,10 +54,9 @@ module Moab
     # @return [Hash] The verification result serialized to a hash
     def to_hash(verbose = false, level = 0)
       hash = { 'verified' => verified }
-      if verbose || !verified
-        hash['details'] = details || subentities_to_hash(verbose, level)
-      end
+      hash['details'] = details || subentities_to_hash(verbose, level) if verbose || !verified
       return hash if level > 0
+
       { entity => hash }
     end
 

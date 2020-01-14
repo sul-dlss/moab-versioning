@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Moab is a module that provides a distintive namespace for the collection of classes it contains.
 #
 # ====Data Model

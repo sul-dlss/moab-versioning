@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::VerificationResult do
   specify '.verify_value' do
     result = described_class.verify_value('greeting', "hello", "goodbye")
@@ -71,7 +73,7 @@ describe Moab::VerificationResult do
     }
   }
 }
-JSON
+    JSON
   end
 
   it '#to_json' do
@@ -96,6 +98,6 @@ JSON
     }
   }
 }
-JSON
+    JSON
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::FileSignature do
   let(:title_v1_pathname) { @fixtures.join('data/jq937jp0017/v0001/content/title.jpg') }
   let(:title_v1_signature) { described_class.new.signature_from_file(title_v1_pathname) }
@@ -19,12 +21,14 @@ describe Moab::FileSignature do
       exp_msg_regex = /Unrecognized algorithm/
       expect { described_class.from_file('whatever', [:rot13]) }.to raise_exception(Moab::MoabRuntimeError, exp_msg_regex)
     end
+
     it 'computes all checksums by default' do
       sig = described_class.from_file(title_v1_pathname)
       expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
       expect(sig.sha1).to eq '583220e0572640abcd3ddd97393d224e8053a6ad'
       expect(sig.sha256).to eq '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
     end
+
     it 'only computes requested checksum(s)' do
       sig = described_class.from_file(title_v1_pathname, [:md5, :sha1])
       expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
@@ -34,6 +38,7 @@ describe Moab::FileSignature do
 
     context 'when Moab::Config specifies checksums' do
       before { allow(Moab::Config).to receive(:checksum_algos).and_return([:md5]) }
+
       it 'only computes configured checksum(s)' do
         sig = described_class.from_file(title_v1_pathname)
         expect(sig.md5).to eq '1a726cd7963bd6d3ceb10a8c353ec166'
@@ -68,6 +73,7 @@ describe Moab::FileSignature do
         sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
       )
     end
+
     it 'unknown checksum type' do
       expect { file_sig.set_checksum('xyz', 'dummy') }.to raise_exception(ArgumentError, /Unknown checksum type 'xyz'/)
     end
@@ -130,11 +136,13 @@ describe Moab::FileSignature do
       signature = fs.normalized_signature(page2_v1_pathname)
       expect(signature.fixity).to eq(page2_fixity)
     end
+
     specify 'when given partial checksums' do
       fs = described_class.new(size: "39450", sha1: 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5')
       signature = fs.normalized_signature(page2_v1_pathname)
       expect(signature.fixity).to eq(page2_fixity)
     end
+
     specify 'when given bad checksum' do
       fs = described_class.new(sha1: 'dummy')
       exp_err_regex = /Signature inconsistent between inventory and file/
@@ -145,8 +153,8 @@ describe Moab::FileSignature do
   specify '.checksum_names_for_type' do
     expect(described_class.checksum_names_for_type).to eq(
       md5: ["MD5"],
-      sha1: ["SHA-1", "SHA1"],
-      sha256: ["SHA-256", "SHA256"]
+      sha1: %w[SHA-1 SHA1],
+      sha256: %w[SHA-256 SHA256]
     )
   end
 

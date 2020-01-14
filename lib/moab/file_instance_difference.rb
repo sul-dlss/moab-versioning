@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A container for recording difference information at the file level
   # * If there was no change, the change type is set to <i>identical</i>

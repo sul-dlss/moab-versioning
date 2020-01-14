@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Stanford::StorageObjectValidator do
   let(:druid) { 'xx000xx0000' }
   let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/xx/000/xx/0000/xx000xx0000' }
@@ -6,6 +8,7 @@ RSpec.describe Stanford::StorageObjectValidator do
   let(:error_list) { storage_obj_validator.validation_errors }
 
   before { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
+
   after { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..'].freeze }
 
   describe '#validation_errors' do
@@ -14,6 +17,7 @@ RSpec.describe Stanford::StorageObjectValidator do
         expect(error_list.count).to eq(14)
       end
     end
+
     context 'file path for druid to directory validation' do
       let(:druid) { 'dd000dd0000' }
       let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000' }
@@ -22,6 +26,7 @@ RSpec.describe Stanford::StorageObjectValidator do
         expect(error_list).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
       end
     end
+
     context 'allow_content_subdirs arguments' do
       it 'passes to super' do
         expect(storage_obj_validator.validation_errors(false))
@@ -29,6 +34,7 @@ RSpec.describe Stanford::StorageObjectValidator do
       end
     end
   end
+
   describe '#identify_druid' do
     let(:druid) { 'bz514sm9647' }
     let(:druid_path) { 'spec/fixtures/storage_root01/moab_storage_trunk/bz/514/sm/9647/bz514sm9647' }
@@ -40,6 +46,7 @@ RSpec.describe Stanford::StorageObjectValidator do
           expect(sov_id_druid).to be_empty
         end
       end
+
       context 'druid is not the same' do
         let(:druid) { 'jj925bx9565' }
         let(:druid_path) { 'spec/fixtures/storage_root01/moab_storage_trunk/jj/925/bx/9565/jj925bx9565' }
@@ -51,6 +58,7 @@ RSpec.describe Stanford::StorageObjectValidator do
         end
       end
     end
+
     context 'druid config' do
       context 'druid is the same' do
         let(:druid_path) { 'spec/fixtures/storage_root02/moab_storage_trunk/bz514sm9647' }
@@ -59,6 +67,7 @@ RSpec.describe Stanford::StorageObjectValidator do
           expect(sov_id_druid).to be_empty
         end
       end
+
       context 'duid is not the same' do
         let(:druid) { 'jj925bx9565' }
         let(:druid_path) { 'spec/fixtures/storage_root02/moab_storage_trunk/jj925bx9565' }

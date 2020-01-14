@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Serializer
   # Some utility methods to faciliate serialization of data fields to Hash, JSON, or YAML shared by all subclasses.
   # This class assumes that HappyMapper is used for declaration of fields to be serialized.
@@ -21,6 +23,7 @@ module Serializer
       opts.each do |key, value|
         errmsg = "#{key} is not a variable name in #{self.class.name}"
         raise(Moab::MoabRuntimeError, errmsg) unless variable_names.include?(key.to_s) || key == :test
+
         instance_variable_set("@#{key}", value)
       end
     end
@@ -68,6 +71,7 @@ module Serializer
     # @return [String] For the current object instance, return the string to use as a hash key
     def key
       return send(key_name) if key_name
+
       nil
     end
 
@@ -117,6 +121,7 @@ module Serializer
     # @return [Hash] Generate a hash containing the differences between two objects of the same type
     def diff(other)
       raise(Moab::MoabRuntimeError, "Cannot compare different classes") if self.class != other.class
+
       left = other.to_hash
       right = to_hash
       if key.nil? || other.key.nil?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A container for a file signature and all the physical file instances that have that signature
   # This element has one child {FileSignature} element, and one or more {FileInstance} elements
@@ -75,6 +77,7 @@ module Moab
     # @return [Boolean] True if {FileManifestation} objects have same content
     def ==(other)
       return false unless other.respond_to?(:signature) && other.respond_to?(:instances) # Cannot equal an incomparable type!
+
       (signature == other.signature) && (instances == other.instances)
     end
   end

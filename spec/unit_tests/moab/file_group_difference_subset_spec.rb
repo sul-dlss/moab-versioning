@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::FileGroupDifferenceSubset do
   let(:diff_subset) { described_class.new }
 
@@ -6,6 +8,7 @@ describe Moab::FileGroupDifferenceSubset do
       diff_subset = described_class.new({})
       expect(diff_subset.files).to eq []
     end
+
     specify 'options passed in' do
       opts = { change: 'Test change' }
       diff_subset = described_class.new(opts)

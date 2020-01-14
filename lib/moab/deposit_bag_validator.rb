@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # Given a deposit bag, ensures the contents valid for becoming a StorageObjectVersion
   # this is a Shameless Green implementation, combining code from:
@@ -30,23 +32,23 @@ module Moab
       VERSION_MISSING_FROM_FILE => "Version xml file %{version_file} missing data at %{xpath} containing version id"
     }.freeze
 
-    REQUIRED_MANIFEST_CHECKSUM_TYPE = 'sha256'.freeze
+    REQUIRED_MANIFEST_CHECKSUM_TYPE = 'sha256'
     RECOGNIZED_CHECKSUM_ALGORITHMS = %i[md5 sha1 sha256 sha384 sha512].freeze
 
-    TAGMANIFEST = 'tagmanifest'.freeze
-    MANIFEST = 'manifest'.freeze
-    DATA_DIR_BASENAME = 'data'.freeze
-    BAG_INFO_TXT_BASENAME = 'bag-info.txt'.freeze
-    VERSION_ADDITIONS_BASENAME = 'versionAdditions.xml'.freeze
-    VERSION_INVENTORY_BASENAME = 'versionInventory.xml'.freeze
-    VERSION_METADATA_PATH = "#{DATA_DIR_BASENAME}/metadata/versionMetadata.xml".freeze
+    TAGMANIFEST = 'tagmanifest'
+    MANIFEST = 'manifest'
+    DATA_DIR_BASENAME = 'data'
+    BAG_INFO_TXT_BASENAME = 'bag-info.txt'
+    VERSION_ADDITIONS_BASENAME = 'versionAdditions.xml'
+    VERSION_INVENTORY_BASENAME = 'versionInventory.xml'
+    VERSION_METADATA_PATH = "#{DATA_DIR_BASENAME}/metadata/versionMetadata.xml"
 
     REQUIRED_BAG_FILES = [
       DATA_DIR_BASENAME,
-      'bagit.txt'.freeze,
+      'bagit.txt',
       BAG_INFO_TXT_BASENAME,
-      "#{MANIFEST}-#{REQUIRED_MANIFEST_CHECKSUM_TYPE}.txt".freeze,
-      "#{TAGMANIFEST}-#{REQUIRED_MANIFEST_CHECKSUM_TYPE}.txt".freeze,
+      "#{MANIFEST}-#{REQUIRED_MANIFEST_CHECKSUM_TYPE}.txt",
+      "#{TAGMANIFEST}-#{REQUIRED_MANIFEST_CHECKSUM_TYPE}.txt",
       VERSION_ADDITIONS_BASENAME,
       VERSION_INVENTORY_BASENAME,
       VERSION_METADATA_PATH
@@ -64,6 +66,7 @@ module Moab
     def validation_errors
       return [single_error_hash(BAG_DIR_NOT_FOUND, bag_dir: deposit_bag_pathname)] unless deposit_bag_pathname.exist?
       return result_array unless required_bag_files_exist?
+
       verify_version
       verify_tagmanifests
       verify_payload_size
@@ -112,6 +115,7 @@ module Moab
       doc = Nokogiri::XML(File.open(pathname.to_s), &:strict)
       version_id = doc.xpath(xpath).last.text unless doc.xpath(xpath).empty?
       return version_id.to_i if version_id
+
       err_data = {
         version_file: pathname,
         xpath: xpath
@@ -129,6 +133,7 @@ module Moab
 
     def verify_version_from_xml_file(file_pathname, found)
       return if found == expected_new_version
+
       err_data = {
         file_pathname: file_pathname,
         new_version: expected_new_version,
@@ -251,6 +256,7 @@ module Moab
         end
       end
       return if diff_hash.empty?
+
       err_data = {
         manifest_type: manifest_type,
         diffs: diff_hash
@@ -266,9 +272,7 @@ module Moab
       checksum_types_to_compare.each do |type|
         left_checksum = left_checksums[type]
         right_checksum = right_checksums[type]
-        if left_checksum != right_checksum
-          diff_hash[type] = { left_label => left_checksum, right_label => right_checksum }
-        end
+        diff_hash[type] = { left_label => left_checksum, right_label => right_checksum } if left_checksum != right_checksum
       end
       diff_hash.empty? ? nil : diff_hash
     end
@@ -277,6 +281,7 @@ module Moab
       sizes_from_bag_info_file = bag_info_payload_size
       generated_sizes = generated_payload_size
       return if sizes_from_bag_info_file == generated_sizes
+
       err_data = {
         bag_info_sizes: sizes_from_bag_info_file,
         generated_sizes: generated_sizes

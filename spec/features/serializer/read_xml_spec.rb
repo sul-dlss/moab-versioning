@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Manifest file parsing" do
   # In order to: re-create an in-memory object representation of serialized version metadata
   # The application needs to: read in and parse a XML instance containing version metadata

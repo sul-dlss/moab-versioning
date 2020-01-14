@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Serializer is a module containing classes whose methods faciliate serialization
 # of data fields to various formats.  To obtain those benefits, a dependent class
 # should inherit from {Serializable} or {Manifest}

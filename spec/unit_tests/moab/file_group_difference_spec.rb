@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::FileGroupDifference do
   let(:group_diff) do
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
@@ -15,6 +17,7 @@ describe Moab::FileGroupDifference do
       expect(diff.subsets).to be_kind_of Array
       expect(diff.subsets.size).to eq 0
     end
+
     specify 'options passed in' do
       opts = { group_id: 'Test group_id' }
       diff = described_class.new(opts)
@@ -25,24 +28,31 @@ describe Moab::FileGroupDifference do
   specify '#group_id' do
     expect(group_diff.group_id).to eq "content"
   end
+
   specify '#difference_count' do
     expect(group_diff.difference_count).to eq 6
   end
+
   specify '#identical' do
     expect(group_diff.identical).to eq 1
   end
+
   specify '#renamed' do
     expect(group_diff.renamed).to eq 2
   end
+
   specify '#modified' do
     expect(group_diff.modified).to eq 1
   end
+
   specify '#deleted' do
     expect(group_diff.deleted).to eq 2
   end
+
   specify '#added' do
     expect(group_diff.added).to eq 1
   end
+
   specify '#subsets' do
     expect(group_diff.subsets.size).to be >= 5
   end
@@ -82,11 +92,13 @@ describe Moab::FileGroupDifference do
       expect(matching_keys.size).to eq 4
       expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
     end
+
     specify '#basis_only_keys' do
       basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
       expect(basis_only_keys.size).to eq 2
       expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
     end
+
     specify '#other_only_keys' do
       other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
       expect(other_only_keys.size).to eq 1
@@ -105,6 +117,7 @@ describe Moab::FileGroupDifference do
       expect(new_diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
       new_diff.compare_file_groups(basis_group, other_group)
     end
+
     specify 'returns itself, populated object' do
       return_value = new_diff.compare_file_groups(basis_group, other_group)
       expect(return_value).to eq new_diff

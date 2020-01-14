@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A container element to record object version lifecycle events with timestamps
   #

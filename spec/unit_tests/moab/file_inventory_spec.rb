@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::FileInventory do
   let(:v1_version_inventory) { @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
   let(:parsed_file_inventory) do
@@ -10,15 +12,19 @@ describe Moab::FileInventory do
     specify 'version' do
       expect(described_class.xml_filename('version')).to eq 'versionInventory.xml'
     end
+
     specify 'additions' do
       expect(described_class.xml_filename("additions")).to eq 'versionAdditions.xml'
     end
+
     specify 'manifests' do
       expect(described_class.xml_filename("manifests")).to eq 'manifestInventory.xml'
     end
+
     specify 'directory' do
       expect(described_class.xml_filename("directory")).to eq 'directoryInventory.xml'
     end
+
     specify 'unknown type raises ArgumentError' do
       expect { described_class.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
     end
@@ -30,6 +36,7 @@ describe Moab::FileInventory do
       expect(file_inventory.groups).to be_kind_of Array
       expect(file_inventory.groups.size).to eq 0
     end
+
     specify 'options passed in' do
       opts = {
         type: 'Test type',
@@ -49,33 +56,43 @@ describe Moab::FileInventory do
     specify '#type' do
       expect(parsed_file_inventory.type).to eq 'version'
     end
+
     specify '#digital_object_id' do
       expect(parsed_file_inventory.digital_object_id).to eq 'druid:jq937jp0017'
     end
+
     specify '#version_id' do
       expect(parsed_file_inventory.version_id).to eq 1
     end
+
     specify '#composite_key' do
       expect(parsed_file_inventory.composite_key).to eq "druid:jq937jp0017-v0001"
     end
+
     specify '#inventory_datetime' do
       expect(parsed_file_inventory.inventory_datetime).to eq "2012-04-13T13:16:54Z"
     end
+
     specify '#file_count' do
       expect(parsed_file_inventory.file_count).to eq 11
     end
+
     specify '#byte_count' do
       expect(parsed_file_inventory.byte_count).to eq 217820
     end
+
     specify '#block_count' do
       expect(parsed_file_inventory.block_count).to eq 216
     end
+
     specify '#groups' do
       expect(parsed_file_inventory.groups.size).to eq 2
     end
+
     specify '#human_size' do
       expect(parsed_file_inventory.human_size).to eq "212.71 KB"
     end
+
     specify '#package_id' do
       expect(parsed_file_inventory.package_id).to eq "druid:jq937jp0017-v1"
     end
@@ -198,6 +215,7 @@ describe Moab::FileInventory do
               }
           })
     end
+
     specify '#to_json summary' do
       json = parsed_file_inventory.to_json(summary = true)
       expect("#{json}\n").to eq <<-JSON

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Moab::Config.configure do
   root_path1 = File.join(File.dirname(__FILE__), "fixtures/derivatives")
   root_path2 = File.join(File.dirname(__FILE__), "fixtures/derivatives2")

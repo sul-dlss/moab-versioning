@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stanford
   # An interface class to support access to SDR storage via a RESTful server
   class StorageServices < Moab::StorageServices

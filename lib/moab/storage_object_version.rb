@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A class to represent a version subdirectory within an object's home directory in preservation storage
   # ====Data Model
@@ -68,6 +70,7 @@ module Moab
     def find_filepath(file_category, file_id)
       this_version_filepath = file_pathname(file_category, file_id)
       return this_version_filepath if this_version_filepath.exist?
+
       if file_category == 'manifest'
         msg = "manifest file #{file_id} not found for #{@storage_object.digital_object_id} - #{@version_id}"
         raise FileNotFoundException, msg
@@ -109,6 +112,7 @@ module Moab
     def file_inventory(type)
       if version_id > 0
         return @inventory_cache[type] if @inventory_cache.key?(type)
+
         @inventory_cache[type] = FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
       else
         groups = %w[content metadata].collect { |id| FileGroup.new(:group_id => id) }
@@ -136,6 +140,7 @@ module Moab
     # @return [void] Create the version subdirectory and move files into it
     def ingest_bag_data(bag_dir)
       raise(MoabRuntimeError, "Version already exists: #{@version_pathname}") if @version_pathname.exist?
+
       @version_pathname.join('manifests').mkpath
       bag_dir = Pathname(bag_dir)
       ingest_dir(bag_dir.join('data'), @version_pathname.join('data'))
@@ -150,6 +155,7 @@ module Moab
     # @return [void] recursively link or copy the source directory contents to the target directory
     def ingest_dir(source_dir, target_dir, use_links = true)
       raise(MoabRuntimeError, "cannot copy - target already exists: #{target_dir.expand_path}") if target_dir.exist?
+
       target_dir.mkpath
       source_dir.children.each do |child|
         if child.directory?
@@ -321,6 +327,7 @@ module Moab
     # @return [null] Deactivate this object version by moving it to another directory.  (Used by restore operation)
     def deactivate(timestamp)
       return unless @version_pathname.exist?
+
       timestamp_pathname = @version_pathname.parent.join(timestamp.utc.iso8601.gsub(/[-:]/, ''))
       timestamp_pathname.mkpath
       demote_pathame = timestamp_pathname.join(@version_pathname.basename)

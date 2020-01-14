@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 describe Moab::FileInstanceDifference do
   describe '#initialize' do
     specify 'empty options hash' do
       diff = described_class.new({})
       expect(diff.signatures).to eq []
     end
+
     specify 'options passed in' do
       opts = {
         change: 'Test change',

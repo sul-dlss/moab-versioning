@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::FileManifestation do
   let(:file_manifestation) do
     v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
@@ -20,6 +22,7 @@ describe Moab::FileManifestation do
       file_manifestation = described_class.new({})
       expect(file_manifestation.instances).to be_instance_of Array
     end
+
     specify 'options passed in' do
       opts = {
         signature: double(Moab::FileSignature.name),
@@ -38,6 +41,7 @@ describe Moab::FileManifestation do
       file_manifestation.signature = value
       expect(file_manifestation.signature).to eq value
     end
+
     specify 'becomes first value if set to Array of values' do
       file_manifestation.signature = [value]
       expect(file_manifestation.signature).to eq value

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A class used to create a BagIt package from a version inventory and a set of source files.
   # The {#fill_bag} method is called with a package_mode parameter that specifies
@@ -141,6 +143,7 @@ module Moab
     def deposit_group(group_id, source_dir)
       group = bag_inventory.group(group_id)
       return nil? if group.nil? || group.files.empty?
+
       target_dir = bag_pathname.join('data', group_id)
       group.path_list.each do |relative_path|
         source = source_dir.join(relative_path)
@@ -158,6 +161,7 @@ module Moab
     def reconstuct_group(group_id, storage_object_dir)
       group = bag_inventory.group(group_id)
       return nil? if group.nil? || group.files.empty?
+
       target_dir = bag_pathname.join('data', group_id)
       group.files.each do |file|
         catalog_entry = signature_catalog.signature_hash[file.signature]
@@ -260,6 +264,7 @@ module Moab
         shell_execute(tar_cmd.sub('--force-local', ''))
       end
       raise(MoabRuntimeError, "Unable to create tarfile #{tar_pathname}") unless tar_pathname.exist?
+
       true
     end
 
@@ -273,7 +278,7 @@ module Moab
         stdout
       else
         msg = "Shell command failed: [#{command}] caused by <STDERR = #{stderr}>"
-        msg << " STDOUT = #{stdout}" if stdout && stdout.length.positive?
+        msg << " STDOUT = #{stdout}" if stdout&.length&.positive?
         raise(MoabStandardError, msg)
       end
     rescue SystemCallError => e

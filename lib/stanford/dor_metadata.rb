@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stanford
   # Stanford-specific utility methods for interfacing with DOR metadata files
   #

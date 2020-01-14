@@ -1,19 +1,23 @@
+# frozen_string_literal: true
+
 describe Serializer::Manifest do
-  context '.xml_filename' do
+  describe '.xml_filename' do
     it 'unspecified name returns class name' do
       expect(Moab::SignatureCatalog.xml_filename).to eq("signatureCatalog.xml")
     end
+
     it 'specified name is returned' do
       expect(Moab::SignatureCatalog.xml_filename("dummy")).to eq("dummy")
     end
   end
 
-  context '.xml_pathname' do
+  describe '.xml_pathname' do
     let(:parent_dir) { Pathname.new("/test/parent_dir") }
 
     it 'parent_dir specified but no filename' do
       expect(Moab::SignatureCatalog.xml_pathname(parent_dir)).to eq(Pathname("#{parent_dir}/signatureCatalog.xml"))
     end
+
     it 'both parent_dir and filename specified' do
       expect(Moab::SignatureCatalog.xml_pathname(parent_dir, "dummy")).to eq(Pathname("#{parent_dir}/dummy"))
     end
@@ -44,7 +48,7 @@ describe Serializer::Manifest do
     Moab::SignatureCatalog.write_xml_file(xml_object, output_dir)
   end
 
-  context '#write_xml_file' do
+  describe '#write_xml_file' do
     let(:output_dir) { "/my/temp" }
 
     it 'FileInventory.write_xml_file' do
