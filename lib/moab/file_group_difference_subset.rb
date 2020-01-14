@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A container for reporting a set of file-level differences of the type specified by the change attribute
   #

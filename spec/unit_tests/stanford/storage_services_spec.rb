@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Stanford::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
   let(:content_metadata) { IO.read(@data.join('v0002/metadata/contentMetadata.xml')) }
@@ -45,7 +47,7 @@ describe Stanford::StorageServices do
     expect(EquivalentXml.equivalent?(remediated_cm_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
   end
 
-  context '.compare_cm_to_version_inventory' do
+  describe '.compare_cm_to_version_inventory' do
     it 'returns expected Moab::FileInventoryDifference (all subset)' do
       diff = described_class.compare_cm_to_version(content_metadata, @druid, 'all', 1)
       expect(diff).to be_instance_of(Moab::FileInventoryDifference)
@@ -239,7 +241,7 @@ describe Stanford::StorageServices do
     end
   end
 
-  context '.cm_version_additions' do
+  describe '.cm_version_additions' do
     it 'returns expected Moab::FileInventory' do
       adds = described_class.cm_version_additions(content_metadata, @druid, 1)
       expect(adds).to be_instance_of(Moab::FileInventory)

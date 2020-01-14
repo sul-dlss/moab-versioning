@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Stanford::MoabStorageDirectory do
   let(:storage_dir) { @fixtures.join('storage_root01/moab_storage_trunk') }
 
@@ -7,11 +9,13 @@ describe Stanford::MoabStorageDirectory do
         expect(druid).to match(/[[:lower:]]{2}\d{3}[[:lower:]]{2}\d{4}/)
       end
     end
+
     it 'passes a valid file path as the second parameter to the block it gets' do
       described_class.find_moab_paths(storage_dir) do |_druid, path, _path_match_data|
         expect(File.exist?(path)).to be true
       end
     end
+
     it 'passes a MatchData object as the third parameter to the block it gets' do
       described_class.find_moab_paths(storage_dir) do |_druid, _path, path_match_data|
         expect(path_match_data).to be_a_kind_of(MatchData)
@@ -25,6 +29,7 @@ describe Stanford::MoabStorageDirectory do
     it 'lists the expected druids in the fixture directory' do
       expect(druids.sort).to eq %w[bj102hs9687 bz514sm9647 jj925bx9565]
     end
+
     it 'returns only the expected druids in the fixture directory' do
       expect(druids.length).to eq 3
     end

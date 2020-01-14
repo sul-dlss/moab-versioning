@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stanford
   # Stanford-specific utility methods for transforming contentMetadata to versionInventory and doing comparisons
   #
@@ -127,6 +129,7 @@ module Stanford
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
       raise Moab::InvalidMetadataException, result[0] + " ..." unless result.empty?
+
       true
     end
 
@@ -176,6 +179,7 @@ module Stanford
     def remediate_content_metadata(content_metadata, content_group)
       return nil if content_metadata.nil?
       return content_metadata if content_group.nil? || content_group.files.empty?
+
       signature_for_path = content_group.path_hash
       @type_for_name = Moab::FileSignature.checksum_type_for_name
       @names_for_type = Moab::FileSignature.checksum_names_for_type

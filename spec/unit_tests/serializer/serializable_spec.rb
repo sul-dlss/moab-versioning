@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Serializer::Serializable do
   before(:all) do
     v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
@@ -9,7 +11,7 @@ describe Serializer::Serializable do
     @v3_content = v3_inventory.groups[0]
   end
 
-  context '.deep_diff' do
+  describe '.deep_diff' do
     let(:hash1) { @v1_content.files[0].to_hash }
     let(:hash3) { @v3_content.files[0].to_hash }
 
@@ -59,7 +61,7 @@ describe Serializer::Serializable do
     end
   end
 
-  context '#initialize' do
+  describe '#initialize' do
     it 'empty options Hash does not raise exception' do
       expect { described_class.new({}) }.not_to raise_exception
     end
@@ -71,16 +73,19 @@ describe Serializer::Serializable do
     end
   end
 
-  context '#variables' do
+  describe '#variables' do
     it 'FileInstance has 2' do
       expect(Moab::FileInstance.new.variables.size).to eq(2)
     end
+
     it 'SignatureCatalog has 7' do
       expect(Moab::SignatureCatalog.new.variables.size).to eq(7)
     end
+
     it 'FileSignature has 4' do
       expect(Moab::FileSignature.new.variables.size).to eq(4)
     end
+
     it 'subclass has attributes and elements' do
       class MyClass < Serializer::Serializable
         include HappyMapper
@@ -92,43 +97,49 @@ describe Serializer::Serializable do
     end
   end
 
-  context '#variable_names' do
+  describe '#variable_names' do
     it 'FileInstance' do
       expect(Moab::FileInstance.new.variable_names).to eq(%w[path datetime])
     end
+
     it 'SignatureCatalog' do
       expect(Moab::SignatureCatalog.new.variable_names).to eq(
         %w[digital_object_id version_id catalog_datetime file_count byte_count block_count entries]
       )
     end
+
     it 'FileSignature' do
       expect(Moab::FileSignature.new.variable_names).to eq(%w[size md5 sha1 sha256])
     end
   end
 
-  context '#key_name' do
+  describe '#key_name' do
     it 'path for FileInstance' do
       expect(Moab::FileInstance.new.key_name).to eq("path")
     end
+
     it 'version_id for SignatureCatalog' do
       expect(Moab::SignatureCatalog.new.key_name).to eq("version_id")
     end
+
     it 'nil for FileSignature' do
       expect(Moab::FileSignature.new.key_name).to eq(nil)
     end
   end
 
-  context '#key' do
+  describe '#key' do
     it 'FileInstance' do
       file_instance = Moab::FileInstance.new
       expect(file_instance).to receive(:path)
       file_instance.key
     end
+
     it 'SignatureCatalog' do
       signature_catalog = Moab::SignatureCatalog.new
       expect(signature_catalog).to receive(:version_id)
       signature_catalog.key
     end
+
     it 'FileSignature key is nil' do
       file_signature = Moab::FileSignature.new
       expect(file_signature.key).to eq(nil)
@@ -166,7 +177,7 @@ describe Serializer::Serializable do
                                })
   end
 
-  context '#diff' do
+  describe '#diff' do
     it 'file read from disk' do
       diff = @v1_content.files[0].diff(@v3_content.files[0])
       diff.delete('instances')
@@ -189,6 +200,7 @@ describe Serializer::Serializable do
                                    }
                                  })
     end
+
     it 'FileInstance diff' do
       opts = { path: @temp.join('path1').to_s, datetime: "Apr 18 21:51:31 UTC 2012" }
       file_instance1 = Moab::FileInstance.new(opts)

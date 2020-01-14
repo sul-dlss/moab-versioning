@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # An interface class to support access to SDR storage via a RESTful server
   #

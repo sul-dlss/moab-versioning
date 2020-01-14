@@ -1,10 +1,24 @@
+# frozen_string_literal: true
+
 describe Moab::SignatureCatalog do
+  before do
+    @signature_catalog = described_class.parse(@v1_catalog_pathname.read)
+    @original_entry_count = @signature_catalog.entries.count
+  end
+
+  before(:all) do
+    @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+    @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
+  end
+
   describe '#initialize' do
     it 'empty options hash' do
       signature_catalog = described_class.new({})
       expect(signature_catalog.entries).to be_kind_of(Array)
       expect(signature_catalog.signature_hash).to be_kind_of(Hash)
     end
+
     it 'options passed in' do
       opts = {
         digital_object_id: 'Test digital_object_id',
@@ -19,41 +33,39 @@ describe Moab::SignatureCatalog do
     end
   end
 
-  before(:all) do
-    @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
-    @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
-    @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
-  end
-  before do
-    @signature_catalog = described_class.parse(@v1_catalog_pathname.read)
-    @original_entry_count = @signature_catalog.entries.count
-  end
-
   describe '.parse sets attributes' do
     specify 'digital_object_id' do
       expect(@signature_catalog.digital_object_id).to eq('druid:jq937jp0017')
     end
+
     specify 'version_id' do
       expect(@signature_catalog.version_id).to eq(1)
     end
+
     specify 'catalog_datetime' do
       expect(Time.parse(@signature_catalog.catalog_datetime)).to be_instance_of(Time)
     end
+
     specify 'file_count' do
       expect(@signature_catalog.file_count).to eq(11)
     end
+
     specify 'byte_count' do
       expect(@signature_catalog.byte_count).to eq(217820)
     end
+
     specify 'block_count' do
       expect(@signature_catalog.block_count).to eq(216)
     end
+
     specify 'entries' do
       expect(@signature_catalog.entries.size).to eq(11)
     end
+
     specify 'signature_hash' do
       expect(@signature_catalog.signature_hash.size).to eq(11)
     end
+
     specify 'composite_key' do
       expect(@signature_catalog.composite_key).to eq("druid:jq937jp0017-v0001")
     end

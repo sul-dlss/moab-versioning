@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # The fixity properties of a file, used to determine file content equivalence regardless of filename.
   # Placing this data in a class by itself facilitates using file size together with the MD5 and SHA1 checksums
@@ -128,10 +130,12 @@ module Moab
     def eql?(other)
       return false unless other.respond_to?(:size) && other.respond_to?(:checksums)
       return false if size.to_i != other.size.to_i
+
       self_checksums = checksums
       other_checksums = other.checksums
       matching_keys = self_checksums.keys & other_checksums.keys
       return false if matching_keys.empty?
+
       matching_keys.each do |key|
         return false if self_checksums[key] != other_checksums[key]
       end
@@ -176,6 +180,7 @@ module Moab
     def normalized_signature(pathname)
       sig_from_file = FileSignature.new.signature_from_file(pathname)
       return sig_from_file if eql?(sig_from_file)
+
       # The full signature from file is consistent with current values, or...
       # One or more of the fixity values is inconsistent, so raise an exception
       raise(MoabRuntimeError, "Signature inconsistent between inventory and file for #{pathname}: #{diff(sig_from_file).inspect}")
@@ -185,8 +190,8 @@ module Moab
     def self.checksum_names_for_type
       {
         md5: ['MD5'],
-        sha1: ['SHA-1', 'SHA1'],
-        sha256: ['SHA-256', 'SHA256']
+        sha1: %w[SHA-1 SHA1],
+        sha256: %w[SHA-256 SHA256]
       }
     end
 

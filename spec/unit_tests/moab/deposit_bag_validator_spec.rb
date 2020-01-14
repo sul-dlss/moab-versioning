@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::DepositBagValidator do
   let(:deposit_dir_pathname) { Pathname(File.join(File.dirname(__FILE__), '../../fixtures/deposit')) }
 
@@ -9,18 +11,21 @@ describe Moab::DepositBagValidator do
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 0)
           expect(described_class.new(storage_obj).validation_errors).to eq []
         end
+
         it 'metadata and content' do
           bag_pathname = Pathname(File.join(deposit_dir_pathname, 'xm152jw3650-etd'))
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 0)
           expect(described_class.new(storage_obj).validation_errors).to eq []
         end
       end
+
       describe 'new version updates Moab' do
         it 'metadata only' do
           bag_pathname = Pathname(File.join(deposit_dir_pathname, 'cr123dt0367-kahn-md-only'))
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 5)
           expect(described_class.new(storage_obj).validation_errors).to eq []
         end
+
         it 'metadata and content' do
           bag_pathname = Pathname(File.join(deposit_dir_pathname, 'yx086st8953-md-and-content'))
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 2)
@@ -61,6 +66,7 @@ describe Moab::DepositBagValidator do
           expect(vdn_errors.size).to eq 3
           expect(vdn_errors).to include(code => a_string_matching(exp_msg_regexp))
         end
+
         it "when version in versionXXX.xml doesn't match what Moab expects, returns VERSION_MISMATCH_TO_MOAB result" do
           bag_pathname = Pathname(File.join(deposit_dir_pathname, 'metadata-only-v1'))
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 1)
@@ -70,6 +76,7 @@ describe Moab::DepositBagValidator do
           expect(vdn_errors.size).to eq 3
           expect(vdn_errors).to include(code => a_string_matching(exp_msg_regexp))
         end
+
         it "when #{file} does not parse, returns INVALID_VERSION_XXX_XML result" do
           bag_pathname = Pathname(File.join(deposit_dir_pathname, 'unparseable-version-xml'))
           storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 0)
@@ -87,6 +94,7 @@ describe Moab::DepositBagValidator do
         bag_pathname = Pathname(File.join(deposit_dir_pathname, 'unknown-checksum-alg'))
         @storage_obj = instance_double(Moab::StorageObject, deposit_bag_pathname: bag_pathname, current_version_id: 0)
       end
+
       let(:vdn_errors) { described_class.new(@storage_obj).validation_errors }
       let(:exp_code) { described_class::CHECKSUM_TYPE_UNRECOGNIZED }
       let(:err_msg_prefix) { Regexp.escape("Checksum type unrecognized: sha666; file: ") }
@@ -95,10 +103,12 @@ describe Moab::DepositBagValidator do
         expect(vdn_errors.size).to eq 2
         expect(vdn_errors).to include(exp_code => a_string_matching("#{err_msg_prefix}.*\/tagmanifest-sha666.txt"))
       end
+
       it 'manifest file of unrecognized checksum type' do
         expect(vdn_errors.size).to eq 2
         expect(vdn_errors).to include(exp_code => a_string_matching("#{err_msg_prefix}.*\/manifest-sha666.txt"))
       end
+
       it 'in version_xxx.xml file' do
         # NOTE:  bad checksum types within files that are NOT part of bag structure will NOT be flagged here
         expect(vdn_errors).not_to include(exp_code => "#{err_msg_prefix}.*\/versionAdditions.xml")

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Feature: Manifest Serialization" do
   # In order to: preserve the manifest metadata held by an in-memory object
   # The application needs to: generate a xml file rendition of the metadata for disk storage

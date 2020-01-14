@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Export a digital object version from DOR" do
   #  In order to: transfer files and metadata from DOR to SDR
   #  The application needs to: create a Bagit bag containing files and manifests

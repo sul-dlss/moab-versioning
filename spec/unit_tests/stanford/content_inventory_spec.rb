@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Stanford::ContentInventory do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
   let(:content_metadata_empty_subset) { IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
@@ -16,7 +18,7 @@ describe Stanford::ContentInventory do
 
   before { @content_inventory = described_class.new }
 
-  context '#inventory_from_cm' do
+  describe '#inventory_from_cm' do
     it 'version_id = 2' do
       inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', 2)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
@@ -46,6 +48,7 @@ describe Stanford::ContentInventory do
       exp_ng_xml = Nokogiri::XML(exp_xml)
       expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
     end
+
     it 'version_id = 1' do
       cm_with_subsets = IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       inventory = described_class.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
@@ -106,7 +109,7 @@ describe Stanford::ContentInventory do
     end
   end
 
-  context '#group_from_cm' do
+  describe '#group_from_cm' do
     let(:cm_with_subsets) { IO.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
 
     it 'returns expected Moab::FileGroup object' do
@@ -119,25 +122,29 @@ describe Stanford::ContentInventory do
       group = described_class.new.group_from_cm(cm_with_subsets, "all")
       expect(group.files.size).to eq(12)
     end
+
     it '"shelve" subset' do
       group = described_class.new.group_from_cm(cm_with_subsets, "shelve")
       expect(group.files.size).to eq(8)
     end
+
     it '"publish" subset' do
       group = described_class.new.group_from_cm(cm_with_subsets, "publish")
       expect(group.files.size).to eq(12)
     end
+
     it '"preserve" subset' do
       group = described_class.new.group_from_cm(cm_with_subsets, "preserve")
       expect(group.files.size).to eq(8)
     end
+
     it 'raises exception for unknown subset' do
       exp_regex = /Unknown disposition subset/
       expect { described_class.new.group_from_cm(cm_with_subsets, "dummy") }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
     end
   end
 
-  context '#generate_signature' do
+  describe '#generate_signature' do
     it 'returns expected fixity' do
       exp_fixity = {
         :size => "40873",
@@ -146,6 +153,7 @@ describe Stanford::ContentInventory do
       }
       expect(@content_inventory.generate_signature(@node).fixity).to eq(exp_fixity)
     end
+
     it 'returns expected fixity after adding a sha256 checksum' do
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
@@ -202,18 +210,19 @@ describe Stanford::ContentInventory do
     expect(EquivalentXml.equivalent?(generated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
   end
 
-  context '#validate_content_metadata' do
+  describe '#validate_content_metadata' do
     it 'returns true when valid data' do
       cm = @fixtures.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
       expect(@content_inventory.validate_content_metadata(cm)).to eq(true)
     end
+
     it 'raises Moab::InvalidMetadataException for bad data' do
       cm = @fixtures.join('bad_data', 'contentMetadata.xml')
       expect { @content_inventory.validate_content_metadata(cm) }.to raise_exception(Moab::InvalidMetadataException)
     end
   end
 
-  context '#validate_content_metadata_details' do
+  describe '#validate_content_metadata_details' do
     it 'expected_result when errors' do
       cm = @fixtures.join('bad_data', 'contentMetadata.xml').read
       content_metadata_doc = Nokogiri::XML(cm)
@@ -225,6 +234,7 @@ describe Stanford::ContentInventory do
                              "File node having id='page-3.jpg' is missing sha1"
                            ])
     end
+
     it 'empty hash raises exception' do
       exp_regex = /Content Metadata is in unrecognized format/
       expect do
@@ -233,7 +243,7 @@ describe Stanford::ContentInventory do
     end
   end
 
-  context '#remediate_content_metadata' do
+  describe '#remediate_content_metadata' do
     let(:cm) { @fixtures.join('bad_data', 'contentMetadata-missing-fixity.xml').read }
     let(:group) do
       directory = @data.join('v0001/content')

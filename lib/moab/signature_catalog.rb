@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A digital object's Signature Catalog is derived from an filtered aggregation of the file inventories
   # of a digital object's set of versions.  (see {#update})
@@ -181,9 +183,7 @@ module Moab
       version_inventory.groups.each do |group|
         group_addtions = FileGroup.new(:group_id => group.group_id)
         group.files.each do |file|
-          unless @signature_hash.key?(file.signature)
-            group_addtions.add_file_instance(file.signature, file.instances[0])
-          end
+          group_addtions.add_file_instance(file.signature, file.instances[0]) unless @signature_hash.key?(file.signature)
         end
         version_additions.groups << group_addtions unless group_addtions.files.empty?
       end

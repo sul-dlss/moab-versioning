@@ -5,8 +5,6 @@ require: rubocop-rspec
 
 AllCops:
   DisplayCopNames: true
-  Include:
-    - 'Rakefile'
   Exclude:
     - 'Gemfile.lock'
     - '**/*.md'
@@ -33,7 +31,7 @@ Metrics/ClassLength:
     - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse
 
 # because this isn't 1994
-Metrics/LineLength:
+Layout/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
     - lib/moab/deposit_bag_validator.rb # line 167

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
@@ -15,33 +17,36 @@ describe Moab::StorageServices do
     expect(described_class.deposit_branch(@obj)).to eq 'jq937jp0017'
   end
 
-  context '.find_storage_object' do
+  describe '.find_storage_object' do
     it 'include_deposit = false' do
       expect(described_class.repository).to receive(:find_storage_object).with(@obj, false)
       described_class.find_storage_object(@obj)
     end
+
     it 'include_deposit = true' do
       expect(described_class.repository).to receive(:find_storage_object).with(@obj, true)
       described_class.find_storage_object(@obj, true)
     end
   end
 
-  context '.search_storage_objects' do
+  describe '.search_storage_objects' do
     it 'include_deposit = false' do
       expect(described_class.repository).to receive(:search_storage_objects).with(@obj, false)
       described_class.search_storage_objects(@obj)
     end
+
     it 'include_deposit = true' do
       expect(described_class.repository).to receive(:search_storage_objects).with(@obj, true)
       described_class.search_storage_objects(@obj, true)
     end
   end
 
-  context '.storage_object' do
+  describe '.storage_object' do
     it 'create = false' do
       expect(described_class.repository).to receive(:storage_object).with(@obj, false)
       described_class.storage_object(@obj)
     end
+
     it 'create = true' do
       expect(described_class.repository).to receive(:storage_object).with(@obj, true)
       described_class.storage_object(@obj, true)
@@ -84,34 +89,38 @@ describe Moab::StorageServices do
     expect(EquivalentXml.equivalent?(vm_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
   end
 
-  context '.retrieve_file_group' do
+  describe '.retrieve_file_group' do
     it 'content' do
       group = described_class.retrieve_file_group('content', @obj, 2)
       expect(group.group_id).to eq 'content'
     end
+
     it 'metadata' do
       group = described_class.retrieve_file_group('metadata', @obj, 2)
       expect(group.group_id).to eq 'metadata'
     end
+
     it 'manifest' do
       group = described_class.retrieve_file_group('manifest', @obj, 2)
       expect(group.group_id).to eq 'manifests'
     end
   end
 
-  context '.retrieve_file' do
+  describe '.retrieve_file' do
     it 'content' do
       content_pathname = described_class.retrieve_file('content', 'page-1.jpg', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content/page-1.jpg}
       expect(content_pathname.to_s).to match(exp_regex)
       expect(content_pathname).to exist
     end
+
     it 'metadata' do
       metadata_pathname = described_class.retrieve_file('metadata', 'contentMetadata.xml', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml}
       expect(metadata_pathname.to_s).to match(exp_regex)
       expect(metadata_pathname).to exist
     end
+
     it 'manifest' do
       manifest_pathname = described_class.retrieve_file('manifest', 'versionAdditions.xml', @obj, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/manifests/versionAdditions.xml}
@@ -132,7 +141,7 @@ describe Moab::StorageServices do
     expect(filepath.to_s).to match(exp_regex)
   end
 
-  context '.retrieve_file_signature' do
+  describe '.retrieve_file_signature' do
     it 'content signature' do
       content_signature = described_class.retrieve_file_signature('content', 'page-1.jpg', @obj, 2)
       expected_sig_fixity = {
@@ -143,6 +152,7 @@ describe Moab::StorageServices do
       }
       expect(content_signature.fixity).to eq expected_sig_fixity
     end
+
     it 'metadata signature' do
       metadata_signature = described_class.retrieve_file_signature('metadata', 'contentMetadata.xml', @obj, 2)
       expected_sig_fixity = {
@@ -153,6 +163,7 @@ describe Moab::StorageServices do
       }
       expect(metadata_signature.fixity).to eq expected_sig_fixity
     end
+
     it 'manifest signature' do
       manifest_signature = described_class.retrieve_file_signature('manifest', 'versionAdditions.xml', @obj, 2)
       expect(manifest_signature.size).to eq 1631

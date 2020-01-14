@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def basic_expectations(file_group)
   expect(file_group).to be_instance_of(Moab::FileGroup)
   expect(file_group.files).to be_kind_of(Array)
@@ -5,12 +7,18 @@ def basic_expectations(file_group)
 end
 
 describe Moab::FileGroup do
+  before(:all) do
+    @file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'), true)
+  end
+
   it '#initialize' do
     basic_expectations(described_class.new)
   end
+
   it '#initialize with empty hash argument' do
     basic_expectations(described_class.new({}))
   end
+
   it '#initialize with populated hash argument' do
     # test initialization with options hash
     opts = {}
@@ -24,10 +32,6 @@ describe Moab::FileGroup do
     expect(file_group.byte_count).to eq(0)
     expect(file_group.block_count).to eq(0)
     expect(file_group.files).to eq([])
-  end
-
-  before(:all) do
-    @file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'), true)
   end
 
   it 'Provides instance attribute get/set' do
@@ -53,7 +57,7 @@ describe Moab::FileGroup do
       list = %w[intro-1.jpg intro-2.jpg page-1.jpg page-2.jpg page-3.jpg title.jpg]
       expect(@v1_file_group.path_hash.keys).to eq(list)
       expect(@v1_file_group.path_list).to eq(list)
-      sigs   = (0..2).map { |i| @v1_file_group.files[i].signature }
+      sigs = (0..2).map { |i| @v1_file_group.files[i].signature }
       subset = @v1_file_group.path_hash_subset(sigs)
       expect(subset.size).to eq(3)
     end
@@ -83,9 +87,10 @@ describe Moab::FileGroup do
       expect(file_group.file_count).to eq(before_file_count - 1)
     end
 
-    context "#is_descendent_of_base?" do
+    describe "#is_descendent_of_base?" do
       # FIXME:  shouldn't this method be named descendent_of_base?
       before { @new_file_group.base_directory = @fixtures.join('data') }
+
       it "true when condition met" do
         expect(@new_file_group).to be_is_descendent_of_base(@fixtures.join('data/jq937jp0017/v0001'))
       end

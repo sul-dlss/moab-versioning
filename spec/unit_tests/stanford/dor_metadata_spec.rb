@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Stanford::DorMetadata do
   specify '#initialize' do
     digital_object_id = 'Test digital_object_id'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::StorageObjectVersion do
   before(:all) do
     @temp_ingests = @temp.join("ingests")
@@ -24,7 +26,11 @@ describe Moab::StorageObjectVersion do
     @temp.join(@obj).rmtree if @temp.join(@obj).exist?
   end
 
-  context '#initialize' do
+  before do
+    @temp_object_dir.rmtree if @temp_object_dir.exist?
+  end
+
+  describe '#initialize' do
     let(:storage_object) { Moab::StorageObject.new(@druid, @temp_object_dir) }
 
     it 'numeric version' do
@@ -33,21 +39,18 @@ describe Moab::StorageObjectVersion do
       expect(storage_object_version.storage_object).to eq storage_object
       expect(storage_object_version.version_id).to eq version_id
     end
+
     it 'version as directory name' do
       v0003 = described_class.new(storage_object, 'v0003')
       expect(v0003.version_id).to eq 3
     end
   end
 
-  before do
-    @temp_object_dir.rmtree if @temp_object_dir.exist?
-  end
-
   specify '#composite_key' do
     expect(@existing_storage_object_version.composite_key).to eq("druid:jq937jp0017-v0002")
   end
 
-  context '#find_signature' do
+  describe '#find_signature' do
     it 'content' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
       expected_sig_fixity = {
@@ -58,6 +61,7 @@ describe Moab::StorageObjectVersion do
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
+
     it 'content with hyphen in file name' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       expected_sig_fixity = {
@@ -68,32 +72,37 @@ describe Moab::StorageObjectVersion do
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
+
     it 'manifest' do
       signature = @existing_storage_object_version.find_signature('manifest', 'versionInventory.xml')
       exp_result = File.size(@existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml'))
       expect(signature.size).to eq exp_result
     end
+
     it 'non-existent file raises Moab::FileNotFoundException' do
       expect { @existing_storage_object_version.find_signature('manifest', 'dummy.xml') }
         .to raise_exception Moab::FileNotFoundException
     end
   end
 
-  context '#find_filepath' do
+  describe '#find_filepath' do
     let(:exp_dir) { "ingests/jq937jp0017" }
 
     it 'content file' do
       pathname = @existing_storage_object_version.find_filepath('content', 'title.jpg')
       expect(pathname.to_s).to include "#{exp_dir}/v0001/data/content/title.jpg"
     end
+
     it 'content file with hyphen' do
       pathname = @existing_storage_object_version.find_filepath('content', 'page-1.jpg')
       expect(pathname.to_s).to include "#{exp_dir}/v0002/data/content/page-1.jpg"
     end
+
     it 'manifest file' do
       pathname = @existing_storage_object_version.find_filepath('manifest', 'versionInventory.xml')
       expect(pathname.to_s).to include "#{exp_dir}/v0002/manifests/versionInventory.xml"
     end
+
     it 'non-existent file raises Moab::FileNotFoundException' do
       expect { @existing_storage_object_version.find_filepath('manifest', 'dummy.xml') }
         .to raise_exception Moab::FileNotFoundException
@@ -111,34 +120,38 @@ describe Moab::StorageObjectVersion do
     expect(@existing_storage_object_version.find_filepath_using_signature('content', file_signature).to_s).to match exp_regex
   end
 
-  context '#file_pathname' do
+  describe '#file_pathname' do
     let(:exp_dir) { 'ingests/jq937jp0017/v0002' }
 
     it 'data file' do
       pathname = @existing_storage_object_version.file_pathname('content', 'title.jpg')
       expect(pathname.to_s).to include "#{exp_dir}/data/content/title.jpg"
     end
+
     it 'metadata file' do
       pathname = @existing_storage_object_version.file_pathname('metadata', 'descMetadata.xml')
       expect(pathname.to_s).to include "#{exp_dir}/data/metadata/descMetadata.xml"
     end
+
     it 'manifest file' do
       pathname = @existing_storage_object_version.file_pathname('manifest', 'signatureCatalog.xml')
       expect(pathname.to_s).to include "#{exp_dir}/manifests/signatureCatalog.xml"
     end
   end
 
-  context '#file_category_pathname' do
+  describe '#file_category_pathname' do
     let(:exp_dir) { 'moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002' }
 
     it 'content' do
       exp_regex = Regexp.new(exp_dir + '/data/content')
       expect(@existing_storage_object_version.file_category_pathname('content').to_s).to match(exp_regex)
     end
+
     it 'metadata' do
       exp_regex = Regexp.new(exp_dir + '/data/metadata')
       expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to match(exp_regex)
     end
+
     it 'manifests' do
       expect(@existing_storage_object_version.file_category_pathname('manifests').to_s).to match exp_dir
     end
@@ -210,7 +223,7 @@ describe Moab::StorageObjectVersion do
     ]
   end
 
-  context '#ingest_file' do
+  describe '#ingest_file' do
     it 'versionInventory.xml' do
       temp_storage_object_version = described_class.new(@temp_storage_object, 2)
       temp_version_pathname = temp_storage_object_version.version_pathname
@@ -282,18 +295,21 @@ describe Moab::StorageObjectVersion do
     expect(result.verified).to eq true
   end
 
-  context '#verify_manifest_inventory' do
+  describe '#verify_manifest_inventory' do
     it 'when files match, VerificationResult.verified is true' do
       result = @existing_storage_object_version.verify_manifest_inventory
       expect(result.verified).to eq true
     end
+
     context 'when files do not match' do
       before(:all) do
         @result = @version_with_manifest_errors.verify_manifest_inventory
       end
+
       it 'VerificationResult.verified is false' do
         expect(@result.verified).to eq false
       end
+
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash
         detail_hash['manifest_inventory']['details']['file_differences']['details'].delete('report_datetime')
@@ -355,13 +371,15 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  context '#verify_signature_catalog' do
+  describe '#verify_signature_catalog' do
     before(:all) do
       @result = @existing_storage_object_version.verify_signature_catalog
     end
+
     it 'VerificationResult.verified is true' do
       expect(@result.verified).to eq true
     end
+
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
       expect(detail_hash).to eq JSON.parse(<<-JSON
@@ -391,13 +409,15 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  context '#verify_version_inventory' do
+  describe '#verify_version_inventory' do
     before(:all) do
       @result = @existing_storage_object_version.verify_version_inventory
     end
+
     it 'VerificationResult.verified is true' do
       expect(@result.verified).to eq true
     end
+
     it 'VerificationResult.to_hash has expected content' do
       detail_hash = @result.to_hash(true)
       expect(detail_hash).to eq JSON.parse(<<-JSON
@@ -434,18 +454,21 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  context '#verify_version_additions' do
+  describe '#verify_version_additions' do
     it 'when files match, VerificationResult.verified is true' do
       result = @existing_storage_object_version.verify_version_additions
       expect(result.verified).to eq true
     end
+
     context 'when files do not match' do
       before(:all) do
         @result = @version_with_manifest_errors.verify_version_additions
       end
+
       it 'VerificationResult.verified is false' do
         expect(@result.verified).to eq false
       end
+
       it 'VerificationResult.to_hash has expected content' do
         detail_hash = @result.to_hash(true)
         detail_hash['version_additions']['details']['file_differences']['details'].delete('report_datetime')

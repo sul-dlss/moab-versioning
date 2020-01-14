@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
   class StorageObjectValidator
-    METADATA_DIR = "metadata".freeze
-    CONTENT_DIR = "content".freeze
+    METADATA_DIR = "metadata"
+    CONTENT_DIR = "content"
     EXPECTED_DATA_SUB_DIRS = [CONTENT_DIR, METADATA_DIR].freeze
     IMPLICIT_DIRS = ['.', '..'].freeze # unlike Find.find, Dir.entries returns the current/parent dirs
-    DATA_DIR = "data".freeze
-    MANIFESTS_DIR = 'manifests'.freeze
+    DATA_DIR = "data"
+    MANIFESTS_DIR = 'manifests'
     EXPECTED_VERSION_SUB_DIRS = [DATA_DIR, MANIFESTS_DIR].freeze
     MANIFEST_INVENTORY_PATH = File.join(MANIFESTS_DIR, "manifestInventory.xml").freeze
     SIGNATURE_CATALOG_PATH = File.join(MANIFESTS_DIR, "signatureCatalog.xml").freeze
@@ -90,6 +92,7 @@ module Moab
     def check_sequential_version_dirs
       version_directories.each_with_index do |dir_name, index|
         next if dir_name[1..-1].to_i == index + 1 # version numbering starts at 1, array indexing at 0
+
         return [result_hash(VERSIONS_NOT_IN_ORDER, version_directories)]
       end
       []
@@ -113,6 +116,7 @@ module Moab
       return expected_version_sub_dirs(version_path, version) if count == EXPECTED_VERSION_SUB_DIRS.size
       return found_unexpected(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS) if count > EXPECTED_VERSION_SUB_DIRS.size
       return missing_dir(version_sub_dirs, version, EXPECTED_VERSION_SUB_DIRS) if count < EXPECTED_VERSION_SUB_DIRS.size
+
       []
     end
 
@@ -122,15 +126,20 @@ module Moab
       data_sub_dirs = directory_entries(data_dir_path)
       errors.concat check_data_sub_dirs(version, data_sub_dirs)
       errors.concat check_metadata_dir_files_only(version_path) if errors.empty?
-      errors.concat check_optional_content_dir(version_path, allow_content_subdirs) if data_sub_dirs.include?('content') && errors.empty?
+      if data_sub_dirs.include?('content') && errors.empty?
+        errors.concat check_optional_content_dir(version_path, allow_content_subdirs)
+      end
       errors
     end
 
     def check_data_sub_dirs(version, data_sub_dirs)
       return found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) if data_sub_dirs.size > EXPECTED_DATA_SUB_DIRS.size
+
       errors = []
       errors.concat missing_dir(data_sub_dirs, version, [METADATA_DIR]) unless data_sub_dirs.include?(METADATA_DIR)
-      errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS) unless data_sub_dirs.to_set.subset?(EXPECTED_DATA_SUB_DIRS.to_set)
+      unless data_sub_dirs.to_set.subset?(EXPECTED_DATA_SUB_DIRS.to_set)
+        errors.concat found_unexpected(data_sub_dirs, version, EXPECTED_DATA_SUB_DIRS)
+      end
       errors
     end
 
@@ -139,7 +148,9 @@ module Moab
       content_dir_path = File.join(version_path, DATA_DIR, CONTENT_DIR)
       errors << result_hash(NO_FILES_IN_CONTENT_DIR, basename(version_path)) if directory_entries(content_dir_path).empty?
       content_sub_dir = contains_sub_dir?(content_dir_path)
-      errors << result_hash(CONTENT_SUB_DIRS_DETECTED, version: basename(version_path), dir: content_sub_dir) if content_sub_dir && !allow_content_subdirs
+      if content_sub_dir && !allow_content_subdirs
+        errors << result_hash(CONTENT_SUB_DIRS_DETECTED, version: basename(version_path), dir: content_sub_dir)
+      end
       if allow_content_subdirs && contains_sub_dir?(content_dir_path) && contains_forbidden_content_sub_dir?(content_dir_path)
         errors << result_hash(BAD_SUB_DIR_IN_CONTENT_DIR, basename(version_path))
       end
@@ -159,7 +170,9 @@ module Moab
       metadata_dir_path = File.join(version_path, DATA_DIR, METADATA_DIR)
       errors << result_hash(NO_FILES_IN_METADATA_DIR, basename(version_path)) if directory_entries(metadata_dir_path).empty?
       metadata_sub_dir = contains_sub_dir?(metadata_dir_path)
-      errors << result_hash(METADATA_SUB_DIRS_DETECTED, version: basename(version_path), dir: metadata_sub_dir) if metadata_sub_dir
+      if metadata_sub_dir
+        errors << result_hash(METADATA_SUB_DIRS_DETECTED, version: basename(version_path), dir: metadata_sub_dir)
+      end
       errors
     end
 
@@ -228,6 +241,7 @@ module Moab
 
     def check_required_manifest_files(dir, version)
       return [result_hash(NO_FILES_IN_MANIFEST_DIR, version)] unless contains_file?(File.join(dir, MANIFESTS_DIR))
+
       errors = []
       errors << result_hash(NO_MANIFEST_INVENTORY, version) unless File.exist?(File.join(dir, MANIFEST_INVENTORY_PATH))
       errors << result_hash(NO_SIGNATURE_CATALOG, version) unless File.exist?(File.join(dir, SIGNATURE_CATALOG_PATH))

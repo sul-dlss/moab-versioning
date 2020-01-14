@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'moab'
 require 'stanford/content_inventory'
 require 'stanford/dor_metadata'

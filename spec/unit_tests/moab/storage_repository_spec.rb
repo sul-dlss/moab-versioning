@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::StorageRepository do
   let(:storage_repo) { described_class.new }
   let(:derivatives_storage_root) { @fixtures.join('derivatives') }
@@ -29,14 +31,16 @@ describe Moab::StorageRepository do
     expect(storage_repo.deposit_branch('abcdef')).to eq 'abcdef'
   end
 
-  context '#find_storage_root' do
+  describe '#find_storage_root' do
     it 'new objects will be stored in the newest (most empty) filesystem' do
       expect(storage_repo.find_storage_root('abcdef')).to eq newnode_storage_root
     end
+
     it 'object with known storage branch' do
       allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
       expect(storage_repo.find_storage_root('jq937jp0017')).to eq derivatives_storage_root
     end
+
     it 'exception raised when storage_trunk is bogus' do
       allow(storage_repo).to receive(:storage_trunk).and_return('junk')
       expect { storage_repo.find_storage_root('abcdef') }.to raise_exception(Moab::MoabRuntimeError, /Storage area not found/)
@@ -49,6 +53,7 @@ describe Moab::StorageRepository do
         expect(storage_repo.search_storage_objects('abcdef')).to be_empty
       end
     end
+
     context 'existing storage objects' do
       it 'finds objects with known storage branches' do
         allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
@@ -58,6 +63,7 @@ describe Moab::StorageRepository do
         expect(found_storage_objs[1].object_pathname).to eq derivatives2_storage_root.join('ingests/jq937jp0017')
       end
     end
+
     it 'exception raised when storage_trunk is bogus' do
       allow(storage_repo).to receive(:storage_trunk).and_return('junk')
       expect { storage_repo.search_storage_objects('abcdef') }.to raise_exception(Moab::MoabRuntimeError,
@@ -72,7 +78,7 @@ describe Moab::StorageRepository do
     expect(found_storage_obj.deposit_bag_pathname).to eq derivatives_storage_root.join('packages/jq937jp0017')
   end
 
-  context '#storage_object' do
+  describe '#storage_object' do
     before do
       mock_storage_obj = double(Moab::StorageObject)
       allow(storage_repo).to receive(:find_storage_object).and_return(mock_storage_obj)

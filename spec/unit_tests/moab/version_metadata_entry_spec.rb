@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 describe Moab::VersionMetadataEntry do
-  context '#initialize' do
+  describe '#initialize' do
     it 'empty hash for options' do
       expect(described_class.new({}).events).to eq []
     end

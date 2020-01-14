@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'find'
 
 module Stanford
   ##
   # methods for dealing with a directory which stores Moab objects
   class MoabStorageDirectory
-    DRUID_TREE_REGEXP = '[[:lower:]]{2}/\\d{3}/[[:lower:]]{2}/\\d{4}'.freeze
-    DRUID_REGEXP = '[[:lower:]]{2}\\d{3}[[:lower:]]{2}\\d{4}'.freeze
+    DRUID_TREE_REGEXP = '[[:lower:]]{2}/\\d{3}/[[:lower:]]{2}/\\d{4}'
+    DRUID_REGEXP = '[[:lower:]]{2}\\d{3}[[:lower:]]{2}\\d{4}'
 
     def self.find_moab_paths(storage_dir)
       Find.find(storage_dir) do |path|

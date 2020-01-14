@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # The file path and last modification date properties of a file
   #
@@ -52,6 +54,7 @@ module Moab
     # @return [Boolean] Returns true if self and other have the same path.
     def eql?(other)
       return false unless other.respond_to?(:path) # Cannot equal an incomparable type!
+
       path == other.path
     end
 

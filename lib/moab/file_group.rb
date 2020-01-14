@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A container for a standard subset of a digital objects {FileManifestation} objects
   # Used to segregate depositor content from repository metadata files
@@ -161,9 +163,11 @@ module Moab
     # @return [Boolean] Test whether the given path is contained within the {#base_directory}
     def is_descendent_of_base?(pathname)
       raise(MoabRuntimeError, "base_directory has not been set") if @base_directory.nil?
+
       is_descendent = false
       pathname.expand_path.ascend { |ancestor| is_descendent ||= (ancestor == @base_directory) }
       raise(MoabRuntimeError, "#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
+
       is_descendent
     end
 
@@ -203,6 +207,7 @@ module Moab
       validated ||= is_descendent_of_base?(pathname)
       pathname.children.sort.each do |child|
         next if child.basename.to_s == '.DS_Store'
+
         if child.directory?
           harvest_directory(child, recursive, validated) if recursive
         else
@@ -222,9 +227,7 @@ module Moab
       instance = FileInstance.new.instance_from_file(pathname, @base_directory)
       if @signatures_from_bag && @signatures_from_bag[pathname]
         signature = @signatures_from_bag[pathname]
-        unless signature.complete?
-          signature = signature.normalized_signature(pathname)
-        end
+        signature = signature.normalized_signature(pathname) unless signature.complete?
       else
         signature = FileSignature.new.signature_from_file(pathname)
       end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 describe Moab::VersionMetadata do
   let(:version_metadata) { described_class.new({}) }
 
-  context '#initialize' do
+  describe '#initialize' do
     it 'empty options' do
       expect(version_metadata.versions).to eq []
     end
@@ -21,7 +23,7 @@ describe Moab::VersionMetadata do
     end
   end
 
-  context '#versions' do
+  describe '#versions' do
     it 'expected values when set' do
       value = [double(Moab::VersionMetadataEntry.name)]
       version_metadata.versions = value

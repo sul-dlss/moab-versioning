@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stanford
   # druids are Stanford specific entities
   class StorageObjectValidator < Moab::StorageObjectValidator

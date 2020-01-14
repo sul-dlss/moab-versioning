@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Create reconstructed digital object for a version" do
   #  In order to: disseminate a copy of a digital object version
   #  The application needs to: reconstruct the version's file structure from the storage location

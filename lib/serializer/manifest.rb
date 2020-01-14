@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Serializer
   # Subclass of {Serializable} that adds methods for marshalling/unmarshalling data
   # to a persistent XML file format.

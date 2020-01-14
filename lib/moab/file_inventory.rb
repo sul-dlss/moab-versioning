@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A structured container for recording information about a collection of related files.
   #
@@ -132,9 +134,11 @@ module Moab
       file_group = group(group_id)
       errmsg = "group #{group_id} not found for #{digital_object_id} - #{version_id}"
       raise FileNotFoundException, errmsg if file_group.nil?
+
       file_signature = file_group.path_hash[file_id]
       errmsg = "#{group_id} file #{file_id} not found for #{digital_object_id} - #{version_id}"
       raise FileNotFoundException, errmsg if file_signature.nil?
+
       file_signature
     end
 

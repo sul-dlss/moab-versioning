@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe "Build a version metadata datastream" do
   #  In order to:
   #  The application needs to:

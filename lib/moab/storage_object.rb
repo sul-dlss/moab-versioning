@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Moab
   # A class to represent a digital object's repository storage location
   # and methods for
@@ -113,6 +115,7 @@ module Moab
       storage_filepath = @object_pathname.join(catalog_filepath)
       errmsg = "#{catalog_filepath} missing from storage location #{storage_filepath}"
       raise FileNotFoundException, errmsg unless storage_filepath.exist?
+
       storage_filepath
     end
 
@@ -127,6 +130,7 @@ module Moab
     def version_id_list
       list = []
       return list unless @object_pathname.exist?
+
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
         list << vnum[1..-1].to_i if vnum =~ /^v(\d+)$/
@@ -163,6 +167,7 @@ module Moab
       if version_inventory.version_id != (current_version_id + 1)
         raise(MoabRuntimeError, "version mismatch - current: #{current_version_id} new: #{version_inventory.version_id}")
       end
+
       true
     end
 
@@ -188,6 +193,7 @@ module Moab
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
       raise(MoabRuntimeError, "Version ID not specified") unless version_id
+
       StorageObjectVersion.new(self, version_id)
     end
 

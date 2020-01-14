@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Moab::SignatureCatalogEntry do
   let(:sce) { described_class.new }
 
