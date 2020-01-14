@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileInventory type="version" objectId="druid:jq937jp0017" versionId="3" inventoryDatetime="2019-12-17T18:50:17Z" fileCount="10" byteCount="178628" blockCount="178">
+  <fileGroup groupId="content" dataSource="/Users/jlittman/data/sdr/moab-versioning/spec/fixtures/data/jq937jp0017/v0003/content" fileCount="5" byteCount="171902" blockCount="170">
+    <file>
+      <fileSignature size="32915" md5="c1c34634e2f18a354cd3e3e1574c3194" sha1="0616a0bd7927328c364b2ea0b4a79c507ce915ed" sha256="b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"/>
+      <fileInstance path="page-1.jpg" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="39539" md5="fe6e3ffa1b02ced189db640f68da0cc2" sha1="43ced73681687bc8e6f483618f0dcff7665e0ba7" sha256="42c0cd1fe06615d8fdb8c2e3400d6fe38461310b4ecc252e1774e0c9e3981afa"/>
+      <fileInstance path="page-2.jpg" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="39450" md5="82fc107c88446a3119a51a8663d1e955" sha1="d0857baa307a2e9efff42467b5abd4e1cf40fcd5" sha256="235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"/>
+      <fileInstance path="page-3.jpg" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="19125" md5="a5099878de7e2e064432d6df44ca8827" sha1="c0ccac433cf02a6cee89c14f9ba6072a184447a2" sha256="7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"/>
+      <fileInstance path="page-4.jpg" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="40873" md5="1a726cd7963bd6d3ceb10a8c353ec166" sha1="583220e0572640abcd3ddd97393d224e8053a6ad" sha256="8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"/>
+      <fileInstance path="title.jpg" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+  </fileGroup>
+  <fileGroup groupId="metadata" dataSource="/Users/jlittman/data/sdr/moab-versioning/spec/fixtures/data/jq937jp0017/v0003/metadata" fileCount="5" byteCount="6726" blockCount="8">
+    <file>
+      <fileSignature size="1586" md5="7e551285744fbe06d25c525fe1b6fd3c" sha1="c88408b79cb0fcf4c06ae4e0bd21662e21eee741" sha256="0cbf6ace137ad69607b3bb14a488bb5501e2c9e3279cd147840fe6c6a5fa70ca"/>
+      <fileInstance path="contentMetadata.xml" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="3055" md5="19c96e98dd25dd68c493faa6a0fde4d0" sha1="541d5845cc866d7676fa43c337b3f7a59f597487" sha256="a575d9058a56d77a4e65e2b1bedb619686a03d5f717374bd0df98d422432e1fe"/>
+      <fileInstance path="descMetadata.xml" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="932" md5="f0815d7b45530491931d5897ccbe2dd1" sha1="4065ff5523e227c1914098372a3dc587f739030e" sha256="f48727374e73776d00517dcdc8af62ec8b18a24cff46c66a5c5f85515144628e"/>
+      <fileInstance path="identityMetadata.xml" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="564" md5="17071e4607de4b272f3f06ec76be4c4a" sha1="b796a0b569bde53953ba0835bb47f4009f654349" sha256="452cd9fa6c3b8f4bd5dfda1b7f3752b4058a82b94c6f4583e4e5fe1e51317d80"/>
+      <fileInstance path="provenanceMetadata.xml" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+    <file>
+      <fileSignature size="589" md5="ab28cda36767a2ca0ca7aa8322ee6516" sha1="6fc850a1b106a1b039a597d319e821845150d85a" sha256="db9a480e829d17aa26b19ce2d52f5cc12c3cc99b4f30e6c0a217d41bd38a6298"/>
+      <fileInstance path="versionMetadata.xml" datetime="2019-12-17T15:18:11Z"/>
+    </file>
+  </fileGroup>
+</fileInventory>

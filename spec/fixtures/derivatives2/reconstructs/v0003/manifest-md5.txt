@@ -1,0 +1,10 @@
+c1c34634e2f18a354cd3e3e1574c3194 data/content/page-1.jpg
+fe6e3ffa1b02ced189db640f68da0cc2 data/content/page-2.jpg
+82fc107c88446a3119a51a8663d1e955 data/content/page-3.jpg
+a5099878de7e2e064432d6df44ca8827 data/content/page-4.jpg
+1a726cd7963bd6d3ceb10a8c353ec166 data/content/title.jpg
+7e551285744fbe06d25c525fe1b6fd3c data/metadata/contentMetadata.xml
+19c96e98dd25dd68c493faa6a0fde4d0 data/metadata/descMetadata.xml
+f0815d7b45530491931d5897ccbe2dd1 data/metadata/identityMetadata.xml
+17071e4607de4b272f3f06ec76be4c4a data/metadata/provenanceMetadata.xml
+ab28cda36767a2ca0ca7aa8322ee6516 data/metadata/versionMetadata.xml

@@ -2,7 +2,9 @@ describe Moab::StorageServices do
   let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
 
   specify '.storage_roots' do
-    expect(described_class.storage_roots).to eq([@derivatives, @fixtures.join('newnode')])
+    expect(described_class.storage_roots).to eq([@fixtures.join('derivatives'),
+                                                 @fixtures.join('derivatives2'),
+                                                 @fixtures.join('newnode')])
   end
 
   specify '.deposit_trunk' do
@@ -21,6 +23,17 @@ describe Moab::StorageServices do
     it 'include_deposit = true' do
       expect(described_class.repository).to receive(:find_storage_object).with(@obj, true)
       described_class.find_storage_object(@obj, true)
+    end
+  end
+
+  context '.search_storage_objects' do
+    it 'include_deposit = false' do
+      expect(described_class.repository).to receive(:search_storage_objects).with(@obj, false)
+      described_class.search_storage_objects(@obj)
+    end
+    it 'include_deposit = true' do
+      expect(described_class.repository).to receive(:search_storage_objects).with(@obj, true)
+      described_class.search_storage_objects(@obj, true)
     end
   end
 
