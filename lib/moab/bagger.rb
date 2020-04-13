@@ -169,7 +169,7 @@ module Moab
         file.instances.each do |instance|
           target = target_dir.join(instance.path)
           target.parent.mkpath
-          FileUtils.symlink source, target
+          FileUtils.symlink source, target unless target.exist?
         end
       end
       true
