@@ -269,89 +269,100 @@ describe Moab::StorageObject do
     bag_dir.rmtree if bag_dir.exist?
   end
 
-  specify '#reconstruct_version' do
-    reconstructs_dir = @temp.join('reconstructs')
-    reconstructs_dir.rmtree if reconstructs_dir.exist?
-    (1..3).each do |version|
-      bag_dir = reconstructs_dir.join(@vname[version])
-      described_class.new(@druid, @ingest_object_dir).reconstruct_version(version, bag_dir) unless bag_dir.exist?
+  describe '#reconstruct_version' do
+    it 'bags a particular version' do
+      reconstructs_dir = @temp.join('reconstructs')
+      reconstructs_dir.rmtree if reconstructs_dir.exist?
+      (1..3).each do |version|
+        bag_dir = reconstructs_dir.join(@vname[version])
+        described_class.new(@druid, @ingest_object_dir).reconstruct_version(version, bag_dir) unless bag_dir.exist?
+      end
+
+      files = []
+      reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+      expect(files.sort).to eq [
+        "reconstructs",
+        "reconstructs/v0001",
+        "reconstructs/v0001/bag-info.txt",
+        "reconstructs/v0001/bagit.txt",
+        "reconstructs/v0001/data",
+        "reconstructs/v0001/data/content",
+        "reconstructs/v0001/data/content/intro-1.jpg",
+        "reconstructs/v0001/data/content/intro-2.jpg",
+        "reconstructs/v0001/data/content/page-1.jpg",
+        "reconstructs/v0001/data/content/page-2.jpg",
+        "reconstructs/v0001/data/content/page-3.jpg",
+        "reconstructs/v0001/data/content/title.jpg",
+        "reconstructs/v0001/data/metadata",
+        "reconstructs/v0001/data/metadata/contentMetadata.xml",
+        "reconstructs/v0001/data/metadata/descMetadata.xml",
+        "reconstructs/v0001/data/metadata/identityMetadata.xml",
+        "reconstructs/v0001/data/metadata/provenanceMetadata.xml",
+        "reconstructs/v0001/data/metadata/versionMetadata.xml",
+        "reconstructs/v0001/manifest-md5.txt",
+        "reconstructs/v0001/manifest-sha1.txt",
+        "reconstructs/v0001/manifest-sha256.txt",
+        "reconstructs/v0001/tagmanifest-md5.txt",
+        "reconstructs/v0001/tagmanifest-sha1.txt",
+        "reconstructs/v0001/tagmanifest-sha256.txt",
+        "reconstructs/v0001/versionInventory.xml",
+        "reconstructs/v0002",
+        "reconstructs/v0002/bag-info.txt",
+        "reconstructs/v0002/bagit.txt",
+        "reconstructs/v0002/data",
+        "reconstructs/v0002/data/content",
+        "reconstructs/v0002/data/content/page-1.jpg",
+        "reconstructs/v0002/data/content/page-2.jpg",
+        "reconstructs/v0002/data/content/page-3.jpg",
+        "reconstructs/v0002/data/content/title.jpg",
+        "reconstructs/v0002/data/metadata",
+        "reconstructs/v0002/data/metadata/contentMetadata.xml",
+        "reconstructs/v0002/data/metadata/descMetadata.xml",
+        "reconstructs/v0002/data/metadata/identityMetadata.xml",
+        "reconstructs/v0002/data/metadata/provenanceMetadata.xml",
+        "reconstructs/v0002/data/metadata/versionMetadata.xml",
+        "reconstructs/v0002/manifest-md5.txt",
+        "reconstructs/v0002/manifest-sha1.txt",
+        "reconstructs/v0002/manifest-sha256.txt",
+        "reconstructs/v0002/tagmanifest-md5.txt",
+        "reconstructs/v0002/tagmanifest-sha1.txt",
+        "reconstructs/v0002/tagmanifest-sha256.txt",
+        "reconstructs/v0002/versionInventory.xml",
+        "reconstructs/v0003",
+        "reconstructs/v0003/bag-info.txt",
+        "reconstructs/v0003/bagit.txt",
+        "reconstructs/v0003/data",
+        "reconstructs/v0003/data/content",
+        "reconstructs/v0003/data/content/page-1.jpg",
+        "reconstructs/v0003/data/content/page-2.jpg",
+        "reconstructs/v0003/data/content/page-3.jpg",
+        "reconstructs/v0003/data/content/page-4.jpg",
+        "reconstructs/v0003/data/content/title.jpg",
+        "reconstructs/v0003/data/metadata",
+        "reconstructs/v0003/data/metadata/contentMetadata.xml",
+        "reconstructs/v0003/data/metadata/descMetadata.xml",
+        "reconstructs/v0003/data/metadata/identityMetadata.xml",
+        "reconstructs/v0003/data/metadata/provenanceMetadata.xml",
+        "reconstructs/v0003/data/metadata/versionMetadata.xml",
+        "reconstructs/v0003/manifest-md5.txt",
+        "reconstructs/v0003/manifest-sha1.txt",
+        "reconstructs/v0003/manifest-sha256.txt",
+        "reconstructs/v0003/tagmanifest-md5.txt",
+        "reconstructs/v0003/tagmanifest-sha1.txt",
+        "reconstructs/v0003/tagmanifest-sha256.txt",
+        "reconstructs/v0003/versionInventory.xml"
+      ]
+      reconstructs_dir.rmtree if reconstructs_dir.exist?
     end
 
-    files = []
-    reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-    expect(files.sort).to eq [
-      "reconstructs",
-      "reconstructs/v0001",
-      "reconstructs/v0001/bag-info.txt",
-      "reconstructs/v0001/bagit.txt",
-      "reconstructs/v0001/data",
-      "reconstructs/v0001/data/content",
-      "reconstructs/v0001/data/content/intro-1.jpg",
-      "reconstructs/v0001/data/content/intro-2.jpg",
-      "reconstructs/v0001/data/content/page-1.jpg",
-      "reconstructs/v0001/data/content/page-2.jpg",
-      "reconstructs/v0001/data/content/page-3.jpg",
-      "reconstructs/v0001/data/content/title.jpg",
-      "reconstructs/v0001/data/metadata",
-      "reconstructs/v0001/data/metadata/contentMetadata.xml",
-      "reconstructs/v0001/data/metadata/descMetadata.xml",
-      "reconstructs/v0001/data/metadata/identityMetadata.xml",
-      "reconstructs/v0001/data/metadata/provenanceMetadata.xml",
-      "reconstructs/v0001/data/metadata/versionMetadata.xml",
-      "reconstructs/v0001/manifest-md5.txt",
-      "reconstructs/v0001/manifest-sha1.txt",
-      "reconstructs/v0001/manifest-sha256.txt",
-      "reconstructs/v0001/tagmanifest-md5.txt",
-      "reconstructs/v0001/tagmanifest-sha1.txt",
-      "reconstructs/v0001/tagmanifest-sha256.txt",
-      "reconstructs/v0001/versionInventory.xml",
-      "reconstructs/v0002",
-      "reconstructs/v0002/bag-info.txt",
-      "reconstructs/v0002/bagit.txt",
-      "reconstructs/v0002/data",
-      "reconstructs/v0002/data/content",
-      "reconstructs/v0002/data/content/page-1.jpg",
-      "reconstructs/v0002/data/content/page-2.jpg",
-      "reconstructs/v0002/data/content/page-3.jpg",
-      "reconstructs/v0002/data/content/title.jpg",
-      "reconstructs/v0002/data/metadata",
-      "reconstructs/v0002/data/metadata/contentMetadata.xml",
-      "reconstructs/v0002/data/metadata/descMetadata.xml",
-      "reconstructs/v0002/data/metadata/identityMetadata.xml",
-      "reconstructs/v0002/data/metadata/provenanceMetadata.xml",
-      "reconstructs/v0002/data/metadata/versionMetadata.xml",
-      "reconstructs/v0002/manifest-md5.txt",
-      "reconstructs/v0002/manifest-sha1.txt",
-      "reconstructs/v0002/manifest-sha256.txt",
-      "reconstructs/v0002/tagmanifest-md5.txt",
-      "reconstructs/v0002/tagmanifest-sha1.txt",
-      "reconstructs/v0002/tagmanifest-sha256.txt",
-      "reconstructs/v0002/versionInventory.xml",
-      "reconstructs/v0003",
-      "reconstructs/v0003/bag-info.txt",
-      "reconstructs/v0003/bagit.txt",
-      "reconstructs/v0003/data",
-      "reconstructs/v0003/data/content",
-      "reconstructs/v0003/data/content/page-1.jpg",
-      "reconstructs/v0003/data/content/page-2.jpg",
-      "reconstructs/v0003/data/content/page-3.jpg",
-      "reconstructs/v0003/data/content/page-4.jpg",
-      "reconstructs/v0003/data/content/title.jpg",
-      "reconstructs/v0003/data/metadata",
-      "reconstructs/v0003/data/metadata/contentMetadata.xml",
-      "reconstructs/v0003/data/metadata/descMetadata.xml",
-      "reconstructs/v0003/data/metadata/identityMetadata.xml",
-      "reconstructs/v0003/data/metadata/provenanceMetadata.xml",
-      "reconstructs/v0003/data/metadata/versionMetadata.xml",
-      "reconstructs/v0003/manifest-md5.txt",
-      "reconstructs/v0003/manifest-sha1.txt",
-      "reconstructs/v0003/manifest-sha256.txt",
-      "reconstructs/v0003/tagmanifest-md5.txt",
-      "reconstructs/v0003/tagmanifest-sha1.txt",
-      "reconstructs/v0003/tagmanifest-sha256.txt",
-      "reconstructs/v0003/versionInventory.xml"
-    ]
-    reconstructs_dir.rmtree if reconstructs_dir.exist?
+    it 'bags a druid with a duplicate resource' do
+      object_id = 'bb077xv1376'
+      object_dir = File.join(fixtures_directory, "/storage_root03/moab_storage_trunk/bb/077/xv/1376/#{object_id}")
+      bag_dir = File.join(fixtures_directory, "/storage_root03/deposit_trunk/#{object_id}")
+      storage_object = described_class.new(object_id, object_dir)
+      expect { storage_object.reconstruct_version(1, bag_dir) }.not_to raise_error(Errno::EEXIST)
+      FileUtils.rmtree(bag_dir) if File.exist?(bag_dir)
+    end
   end
 
   describe '#storage_filepath' do
