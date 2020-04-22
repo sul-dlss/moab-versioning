@@ -1,0 +1,30 @@
+<workflows objectId="druid:bb077xv1376">
+  <workflow repository="dor" objectId="druid:bb077xv1376" id="accessionWF">
+    <process version="1" note="" lifecycle="submitted" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="completed" name="start-accession"/>
+    <process version="1" note="common-accessioning-prod-a.stanford.edu" lifecycle="described" laneId="default" elapsed="0.268" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="completed" name="descriptive-metadata"/>
+    <process version="1" note="common-accessioning-prod-a.stanford.edu" lifecycle="" laneId="default" elapsed="0.265" attempts="0" datetime="2019-07-04T10:25:10+00:00" status="completed" name="rights-metadata"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="" laneId="default" elapsed="0.27" attempts="0" datetime="2019-07-04T10:25:10+00:00" status="completed" name="content-metadata"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="" laneId="default" elapsed="3.108" attempts="0" datetime="2019-07-04T10:25:13+00:00" status="completed" name="technical-metadata"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="" laneId="default" elapsed="0.133" attempts="0" datetime="2019-07-04T10:25:14+00:00" status="completed" name="remediate-object"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="" laneId="default" elapsed="0.311" attempts="0" datetime="2019-07-04T10:25:14+00:00" status="completed" name="shelve"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="published" laneId="default" elapsed="1.259" attempts="0" datetime="2019-07-04T10:25:15+00:00" status="completed" name="publish"/>
+    <process version="1" note="common-accessioning-prod-e.stanford.edu" lifecycle="" laneId="default" elapsed="0.233" attempts="0" datetime="2019-07-04T10:25:16+00:00" status="completed" name="provenance-metadata"/>
+    <process version="1" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:16+00:00" status="queued" name="sdr-ingest-transfer"/>
+    <process version="1" note="" lifecycle="deposited" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="waiting" name="sdr-ingest-received"/>
+    <process version="1" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="waiting" name="reset-workspace"/>
+    <process version="1" note="" lifecycle="accessioned" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="waiting" name="end-accession"/>
+  </workflow>
+  <workflow repository="dor" objectId="druid:bb077xv1376" id="assemblyWF">
+    <process version="1" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-07-04T10:25:06+00:00" status="completed" name="start-assembly"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.66" attempts="0" datetime="2019-07-04T10:25:07+00:00" status="completed" name="content-metadata-create"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.674" attempts="0" datetime="2019-07-04T10:25:08+00:00" status="completed" name="jp2-create"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.158" attempts="0" datetime="2019-07-04T10:25:08+00:00" status="completed" name="checksum-compute"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.723" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="completed" name="exif-collect"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.376" attempts="0" datetime="2019-07-04T10:25:09+00:00" status="completed" name="accessioning-initiate"/>
+  </workflow>
+  <workflow repository="dor" objectId="druid:bb077xv1376" id="goobiWF">
+    <process version="1" note="" lifecycle="registered" laneId="default" elapsed="" attempts="0" datetime="2019-05-21T17:37:59+00:00" status="completed" name="register"/>
+    <process version="1" note="" lifecycle="" laneId="default" elapsed="" attempts="0" datetime="2019-05-21T17:37:59+00:00" status="completed" name="start"/>
+    <process version="1" note="common-accessioning-prod-d.stanford.edu" lifecycle="" laneId="default" elapsed="0.633" attempts="0" datetime="2019-05-21T17:38:00+00:00" status="completed" name="goobi-notify"/>
+  </workflow>
+</workflows>

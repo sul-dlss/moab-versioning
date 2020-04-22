@@ -1,0 +1,14 @@
+<identityMetadata>
+  <sourceId source="sul">SC1248_smith-760326-mon_test-761020_2</sourceId>
+  <objectId>druid:bb077xv1376</objectId>
+  <objectCreator>DOR</objectCreator>
+  <objectLabel>smith 760326 mon test 761020 2</objectLabel>
+  <objectType>item</objectType>
+  <otherId name="label"/>
+  <otherId name="uuid">2c584f3a-7bef-11e9-abcb-005056a7edb9</otherId>
+  <tag>Process : Content Type : Book (ltr)</tag>
+  <tag>Project : University Archives Scanning</tag>
+  <tag>DPG : Workflow : UARCH_Accession_Content_Expedited</tag>
+  <tag>sul : SC1248</tag>
+  <tag>Registered By : dhartwig</tag>
+</identityMetadata>
