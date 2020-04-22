@@ -2,9 +2,7 @@
 <content type="Book (ltr)">
   <resource>
     <label>Page 1</label>
-    <file name="bb077xv1376.tif" />
     <file name="bb077xv1376.pdf" />
-    <file name="bb077xv1376.xml" role="transcription" publish="yes" preserve="yes" shelve="yes" />
   </resource>
   <resource>
     <file name="bb077xv1376.pdf" />

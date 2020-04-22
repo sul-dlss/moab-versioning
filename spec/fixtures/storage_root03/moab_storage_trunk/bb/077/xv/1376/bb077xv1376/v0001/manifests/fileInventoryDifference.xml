@@ -8,9 +8,6 @@
       <file change="added" basisPath="" otherPath="bb077xv1376.pdf">
         <fileSignature size="14572" md5="5c0855e4c3b4ab0224cd027c4f44ab4a" sha1="23cabf0c0c042ecd5277c0232e7640eb1d378789" sha256="4b607be1e6df8be199aa3f4340eb3142fe6d01ae873447d7f82e198b33e18355"/>
       </file>
-      <file change="added" basisPath="" otherPath="bb077xv1376.xml">
-        <fileSignature size="62066" md5="ce311e955ea0b57e998c62246bed825e" sha1="3fcb89c9c6b5432262b3cabca8ca4defbd4b9b07" sha256="d5abee58e4147420e6d7a8c8f7506f8bceba7d3e82256022eb9ada727148680a"/>
-      </file>
     </subset>
     <subset change="identical" count="0"/>
     <subset change="copyadded" count="0"/>
@@ -42,14 +39,8 @@
       <file change="added" basisPath="" otherPath="stubContentMetadata.xml">
         <fileSignature size="377" md5="947a70ce8d11fa94a0831914287c410c" sha1="ade9177ec8eec1853b7000c26c4813e292e9b29b" sha256="7ba9a4b6b06f1a4266ddf2c58b2740d7410623ce09f9dab4e2047e05683f376e"/>
       </file>
-      <file change="added" basisPath="" otherPath="technicalMetadata.xml">
-        <fileSignature size="6752" md5="46fec05894e728fa161f2c8d8f17c3f7" sha1="d347af725299a5fd86f423d19cc54187605c4100" sha256="df73be731a491dc2dea7aae448d86af83f63dba1cb223ed4cf537a57517e6c59"/>
-      </file>
       <file change="added" basisPath="" otherPath="versionMetadata.xml">
         <fileSignature size="134" md5="4748af432b1a1131216bbc64fb6eeea7" sha1="1a0c31ae15e477ee4ff135a3691c25c753c31753" sha256="fb206337b553dbc2cf5da35ef08388661aadda52b1cbf6667fad260a0e90c915"/>
-      </file>
-      <file change="added" basisPath="" otherPath="workflows.xml">
-        <fileSignature size="4666" md5="1229303dc8bacb315cf74e7145fb1ac5" sha1="9f2fec1de6f611745ed310b5728ad8279646a477" sha256="ce121b26b254cf1e9305bce3fbd4086ca44a5435364ff8ed034526b667e8351e"/>
       </file>
     </subset>
     <subset change="identical" count="0"/>

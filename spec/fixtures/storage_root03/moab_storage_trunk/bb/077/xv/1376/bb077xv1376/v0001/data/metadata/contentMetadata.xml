@@ -2,23 +2,9 @@
 <contentMetadata objectId="druid:bb077xv1376" type="book">
   <resource id="bb077xv1376_1" sequence="1" type="page">
     <label>Page 1</label>
-    <file id="bb077xv1376.tif" preserve="yes" publish="no" shelve="no" mimetype="image/tiff" size="477252">
-      <checksum type="md5">9af718b3741f0b915a9e937e8b812350</checksum>
-      <checksum type="sha1">da21ea00d3716e39aa8ffd901e015a0eab0a3d66</checksum>
-      <imageData width="1700" height="2164"/>
-    </file>
     <file id="bb077xv1376.pdf" preserve="yes" publish="yes" shelve="yes" mimetype="application/pdf" size="14572">
       <checksum type="md5">5c0855e4c3b4ab0224cd027c4f44ab4a</checksum>
       <checksum type="sha1">23cabf0c0c042ecd5277c0232e7640eb1d378789</checksum>
-    </file>
-    <file id="bb077xv1376.xml" preserve="yes" publish="yes" shelve="yes" role="transcription" mimetype="application/xml" size="62066">
-      <checksum type="md5">ce311e955ea0b57e998c62246bed825e</checksum>
-      <checksum type="sha1">3fcb89c9c6b5432262b3cabca8ca4defbd4b9b07</checksum>
-    </file>
-    <file id="bb077xv1376.jp2" mimetype="image/jp2" size="703554" preserve="no" publish="yes" shelve="yes">
-      <checksum type="md5">54dad93b9ae1e86c1a0a5b8511dbbb22</checksum>
-      <checksum type="sha1">35ac66d781b0e5bf034d8c1021daedb22f522297</checksum>
-      <imageData width="1700" height="2164"/>
     </file>
   </resource>
   <resource id="bb077xv1376_2" sequence="2" type="object">
