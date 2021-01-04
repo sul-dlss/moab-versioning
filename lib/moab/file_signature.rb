@@ -85,7 +85,7 @@ module Moab
         end
       end
 
-      new(signatures.map { |k, digest| [k, digest.hexdigest] }.to_h.merge(size: pathname.size))
+      new(signatures.transform_values(&:hexdigest).merge(size: pathname.size))
     end
 
     # @param type [Symbol,String] The type of checksum

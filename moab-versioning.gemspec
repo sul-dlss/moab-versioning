@@ -27,8 +27,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-byebug' unless ENV['CI']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rubocop', '~> 0.79.0' # avoid code churn due to rubocop changes
-  s.add_development_dependency 'rubocop-rspec', '~> 1.37.1' # avoid code churn due to rubocop-rspec changes
+  s.add_development_dependency 'rubocop', '~> 1.7'
+  s.add_development_dependency 'rubocop-rspec', '~> 2.1'
 
   s.files        = Dir.glob('lib/**/*')
   s.require_path = 'lib'

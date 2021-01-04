@@ -31,9 +31,9 @@ module Stanford
     # @param object_id [String] The identifier of the digital object whose path is requested
     # @return [String] the druid tree directory path based on the given object identifier.
     def druid_tree(object_id)
-      # Note: this seems an odd place to do druid validation, but leaving it here for now
+      # NOTE: this seems an odd place to do druid validation, but leaving it here for now
       syntax_msg = "Identifier has invalid suri syntax: #{object_id}"
-      raise(Moab::InvalidSuriSyntaxError, syntax_msg + " nil or empty") if object_id.to_s.empty?
+      raise(Moab::InvalidSuriSyntaxError, "#{syntax_msg} nil or empty") if object_id.to_s.empty?
 
       identifier = object_id.split(':')[-1]
       raise(Moab::InvalidSuriSyntaxError, syntax_msg) if identifier.to_s.empty?

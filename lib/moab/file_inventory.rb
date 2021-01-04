@@ -54,7 +54,7 @@ module Moab
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
-      digital_object_id + '-' + StorageObject.version_dirname(version_id)
+      "#{digital_object_id}-#{StorageObject.version_dirname(version_id)}"
     end
 
     # @attribute
