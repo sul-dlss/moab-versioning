@@ -301,12 +301,12 @@ describe Moab::FileGroupDifference do
   let(:basis_path_hash) do
     basis_only_signatures = new_diff.basis_only_keys(v1_content.signature_hash, v3_content.signature_hash)
     v1_content.path_hash_subset(basis_only_signatures)
-    # note: basis_path_hash.keys: intro-1.jpg, intro-2.jpg
+    # NOTE: basis_path_hash.keys: intro-1.jpg, intro-2.jpg
   end
   let(:other_path_hash) do
     other_only_signatures = new_diff.other_only_keys(v1_content.signature_hash, v3_content.signature_hash)
     v3_content.path_hash_subset(other_only_signatures)
-    # note: other_path_hash.keys: page-1.jpg, page-2.jpg, page-3.jpg, page-4.jpg, title.jpg
+    # NOTE: other_path_hash.keys: page-1.jpg, page-2.jpg, page-3.jpg, page-4.jpg, title.jpg
   end
   specify '#tabulate_modified_files' do
     new_diff.tabulate_modified_files(basis_path_hash, other_path_hash)

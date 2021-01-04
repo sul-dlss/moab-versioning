@@ -85,10 +85,10 @@ module Stanford
       instance = Moab::FileInstance.new
       instance.path = node.attributes['id'].content
       instance.datetime = begin
-                            node.attributes['datetime'].content
-                          rescue
-                            nil
-                          end
+        node.attributes['datetime'].content
+      rescue
+        nil
+      end
       instance
     end
 
@@ -128,7 +128,7 @@ module Stanford
     # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
-      raise Moab::InvalidMetadataException, result[0] + " ..." unless result.empty?
+      raise Moab::InvalidMetadataException, "#{result[0]} ..." unless result.empty?
 
       true
     end

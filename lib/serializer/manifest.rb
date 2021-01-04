@@ -22,7 +22,7 @@ module Serializer
         filename
       else
         cname = name.split(/::/).last
-        cname[0, 1].downcase + cname[1..-1] + '.xml'
+        "#{cname[0, 1].downcase}#{cname[1..-1]}.xml"
       end
     end
 

@@ -143,12 +143,12 @@ describe Moab::StorageObjectVersion do
     let(:exp_dir) { 'moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002' }
 
     it 'content' do
-      exp_regex = Regexp.new(exp_dir + '/data/content')
+      exp_regex = Regexp.new("#{exp_dir}/data/content")
       expect(@existing_storage_object_version.file_category_pathname('content').to_s).to match(exp_regex)
     end
 
     it 'metadata' do
-      exp_regex = Regexp.new(exp_dir + '/data/metadata')
+      exp_regex = Regexp.new("#{exp_dir}/data/metadata")
       expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to match(exp_regex)
     end
 

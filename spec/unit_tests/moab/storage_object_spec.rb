@@ -11,9 +11,7 @@ describe Moab::StorageObject do
   end
 
   after(:all) do
-    unless @temp_ingests.nil?
-      @temp_ingests.rmtree if @temp_ingests.exist?
-    end
+    @temp_ingests.rmtree if !@temp_ingests.nil? && @temp_ingests.exist?
   end
 
   before(:all) do
@@ -401,12 +399,12 @@ describe Moab::StorageObject do
   end
 
   specify '#validate_new_inventory' do
-    version_inventory_3 = double(Moab::FileInventory.name + "3")
+    version_inventory_3 = double("#{Moab::FileInventory.name}3")
     expect(version_inventory_3).to receive(:version_id).twice.and_return 3
     exp_regex = /version mismatch/
     expect { storage_object.validate_new_inventory(version_inventory_3) }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
 
-    version_inventory_4 = double(Moab::FileInventory.name + "4")
+    version_inventory_4 = double("#{Moab::FileInventory.name}4")
     expect(version_inventory_4).to receive(:version_id).and_return 4
     expect(storage_object.validate_new_inventory(version_inventory_4)).to eq true
   end

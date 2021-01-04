@@ -85,7 +85,7 @@ module Moab
     end
 
     def version_dir_format?(dirname)
-      dirname =~ /^[v]\d{4}$/
+      dirname =~ /^v\d{4}$/
     end
 
     # call only if the version directories are "correctly named" vdddd
