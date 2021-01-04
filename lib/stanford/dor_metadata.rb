@@ -31,11 +31,12 @@ module Stanford
     # @return [FileInventory]  Inventory of the files under the specified directory
     def inventory_from_directory(directory, version_id = nil)
       version_id ||= @version_id
-      version_inventory = Moab::FileInventory.new(type: 'version', digital_object_id: @digital_object_id, version_id: version_id)
+      version_inventory = Moab::FileInventory.new(type: 'version', digital_object_id: @digital_object_id,
+                                                  version_id: version_id)
       content_metadata = IO.read(File.join(directory, 'contentMetadata.xml'))
       content_group = Stanford::ContentInventory.new.group_from_cm(content_metadata, 'preserve')
       version_inventory.groups << content_group
-      metadata_group = Moab::FileGroup.new(:group_id => 'metadata').group_from_directory(directory)
+      metadata_group = Moab::FileGroup.new(group_id: 'metadata').group_from_directory(directory)
       version_inventory.groups << metadata_group
       version_inventory
     end

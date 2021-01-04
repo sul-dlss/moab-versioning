@@ -25,19 +25,19 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'originalVersion', :key => true, :on_save => proc { |n| n.to_s }
+    attribute :version_id, Integer, tag: 'originalVersion', key: true, on_save: proc { |n| n.to_s }
 
     # @attribute
     # @return [String] The name of the file group
-    attribute :group_id, String, :tag => 'groupId', :key => true
+    attribute :group_id, String, tag: 'groupId', key: true
 
     # @attribute
     # @return [String] The id is the filename path, relative to the file group's base directory
-    attribute :path, String, :key => true, :tag => 'storagePath'
+    attribute :path, String, key: true, tag: 'storagePath'
 
     # @attribute
     # @return [FileSignature] The fixity data of the file instance
-    element :signature, FileSignature, :tag => 'fileSignature'
+    element :signature, FileSignature, tag: 'fileSignature'
 
     def signature
       # HappyMapper's parser tries to put an array of signatures in the signature field

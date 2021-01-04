@@ -191,7 +191,7 @@ module Moab
       home_dir_pathnames = deposit_bag_pathname.children.reject { |file| file.basename.to_s.start_with?(TAGMANIFEST) }
       hash_with_full_pathnames = generate_checksums_hash(home_dir_pathnames, types_to_generate)
       # return hash keys as basenames only
-      hash_with_full_pathnames.map { |k, v| [Pathname.new(k).basename.to_s, v] }.to_h
+      hash_with_full_pathnames.transform_keys { |k| Pathname.new(k).basename.to_s }
     end
 
     # generate hash of checksums by file name for bag data dir files
@@ -199,7 +199,7 @@ module Moab
       data_pathnames = deposit_bag_pathname.join(DATA_DIR_BASENAME).find
       hash_with_full_pathnames = generate_checksums_hash(data_pathnames, types_to_generate)
       # return hash keys beginning with 'data/'
-      hash_with_full_pathnames.map { |k, v| [Pathname.new(k).relative_path_from(deposit_bag_pathname).to_s, v] }.to_h
+      hash_with_full_pathnames.transform_keys { |k| Pathname.new(k).relative_path_from(deposit_bag_pathname).to_s }
     end
 
     def generate_checksums_hash(pathnames, types_to_generate)

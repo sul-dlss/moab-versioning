@@ -39,11 +39,11 @@ module Moab
 
     # @attribute
     # @return [String] The object ID (druid)
-    attribute :digital_object_id, String, :tag => 'objectId'
+    attribute :digital_object_id, String, tag: 'objectId'
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => proc { |n| n.to_s }
+    attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc { |n| n.to_s }
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
@@ -52,7 +52,7 @@ module Moab
 
     # @attribute
     # @return [String] The datetime at which the catalog was updated
-    attribute :catalog_datetime, Time, :tag => 'catalogDatetime'
+    attribute :catalog_datetime, Time, tag: 'catalogDatetime'
 
     def catalog_datetime=(datetime)
       @catalog_datetime = Moab::UtcTime.input(datetime)
@@ -64,7 +64,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => proc { |t| t.to_s }
+    attribute :file_count, Integer, tag: 'fileCount', on_save: proc { |t| t.to_s }
 
     def file_count
       entries.size
@@ -72,7 +72,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => proc { |t| t.to_s }
+    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc { |t| t.to_s }
 
     def byte_count
       entries.inject(0) { |sum, entry| sum + entry.signature.size.to_i }
@@ -80,7 +80,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => proc { |t| t.to_s }
+    attribute :block_count, Integer, tag: 'blockCount', on_save: proc { |t| t.to_s }
 
     def block_count
       block_size = 1024
@@ -94,7 +94,7 @@ module Moab
 
     # @attribute
     # @return [Array<SignatureCatalogEntry>] The set of data groups comprising the version
-    has_many :entries, SignatureCatalogEntry, :tag => 'entry'
+    has_many :entries, SignatureCatalogEntry, tag: 'entry'
 
     def entries=(entry_array)
       entry_array.each do |entry|
@@ -178,10 +178,10 @@ module Moab
     #   containing only those files that were added in this version
     # @example {include:file:spec/features/catalog/version_additions_spec.rb}
     def version_additions(version_inventory)
-      version_additions = FileInventory.new(:type => 'additions')
+      version_additions = FileInventory.new(type: 'additions')
       version_additions.copy_ids(version_inventory)
       version_inventory.groups.each do |group|
-        group_addtions = FileGroup.new(:group_id => group.group_id)
+        group_addtions = FileGroup.new(group_id: group.group_id)
         group.files.each do |file|
           group_addtions.add_file_instance(file.signature, file.instances[0]) unless @signature_hash.key?(file.signature)
         end

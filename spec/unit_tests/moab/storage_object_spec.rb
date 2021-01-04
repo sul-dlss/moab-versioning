@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Moab::StorageObject do
-  let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
   let(:storage_object) { described_class.new(@druid, @ingest_object_dir) }
 
   before do

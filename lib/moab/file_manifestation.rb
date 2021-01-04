@@ -30,7 +30,7 @@ module Moab
 
     # @attribute
     # @return [FileSignature] The fixity data of the file instance
-    element :signature, FileSignature, :tag => 'fileSignature'
+    element :signature, FileSignature, tag: 'fileSignature'
 
     def signature
       @signature.is_a?(Array) ? @signature[0] : @signature
@@ -42,7 +42,7 @@ module Moab
 
     # @attribute
     # @return [Array<FileInstance>] The location(s) of the file manifestation's file instances
-    has_many :instances, FileInstance, :tag => 'fileInstance'
+    has_many :instances, FileInstance, tag: 'fileInstance'
 
     # @api internal
     # @return [Array<String>] Create an array from all the file paths of the child {FileInstance} objects

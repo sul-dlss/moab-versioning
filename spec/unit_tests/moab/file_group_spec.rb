@@ -76,7 +76,7 @@ describe Moab::FileGroup do
       expect(@new_file_group.files[0]).to eq(manifestation)
 
       # add a second file instance to an existing manifestation
-      @new_file_group.add_file_instance(manifestation.signature, Moab::FileInstance.new(:path => "/my/path"))
+      @new_file_group.add_file_instance(manifestation.signature, Moab::FileInstance.new(path: "/my/path"))
       expect(@new_file_group.files[0].instances.size).to eq(2)
     end
 
@@ -139,7 +139,7 @@ describe Moab::FileGroup do
       group.add_physical_file(pathname)
       expect(group.files.size).to eq(1)
       expect(group.files[0].signature).to eq Moab::FileSignature.new(
-        :size => 40873, :md5 => "1a726cd7963bd6d3ceb10a8c353ec166", :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
+        size: 40873, md5: "1a726cd7963bd6d3ceb10a8c353ec166", sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
       )
       expect(group.files[0].instances[0].path).to eq('title.jpg')
 

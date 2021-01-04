@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Stanford::ContentInventory do
-  let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
   let(:content_metadata_empty_subset) { IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
   let(:empty_inventory) do
     <<-XML
@@ -147,9 +147,9 @@ describe Stanford::ContentInventory do
   describe '#generate_signature' do
     it 'returns expected fixity' do
       exp_fixity = {
-        :size => "40873",
-        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
+        size: "40873",
+        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
       }
       expect(@content_inventory.generate_signature(@node).fixity).to eq(exp_fixity)
     end
@@ -157,13 +157,13 @@ describe Stanford::ContentInventory do
     it 'returns expected fixity after adding a sha256 checksum' do
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
-        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', :type => "SHA-256"
+        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', type: "SHA-256"
       end
       exp_fixity = {
-        :size => "40873",
-        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad",
-        :sha256 => "291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
+        size: "40873",
+        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
+        sha256: "291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
       }
       expect(@content_inventory.generate_signature(node2).fixity).to eq(exp_fixity)
     end

@@ -73,7 +73,7 @@ def fixture_setup
     inventory = Moab::FileInventory.read_xml_file(manifest_dir, 'version')
     catalog = case version
               when 1
-                Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                Moab::SignatureCatalog.new(digital_object_id: inventory.digital_object_id)
               else
                 Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
               end
@@ -115,7 +115,7 @@ def fixture_setup
       inventory = Moab::FileInventory.read_xml_file(@manifests.join(@vname[version]), 'version')
       catalog = case version
                 when 1
-                  Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
+                  Moab::SignatureCatalog.new(digital_object_id: inventory.digital_object_id)
                 else
                   Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
                 end

@@ -25,10 +25,10 @@ module Moab
 
     # @attribute
     # @return [String] The digital object identifier
-    attribute :digital_object_id, String, :tag => 'objectId'
+    attribute :digital_object_id, String, tag: 'objectId'
 
     # @attribute
     # @return [Array<VersionMetadataEntry>] An array of version metadata entries, one per version
-    has_many :versions, VersionMetadataEntry, :tag => 'version'
+    has_many :versions, VersionMetadataEntry, tag: 'version'
   end
 end

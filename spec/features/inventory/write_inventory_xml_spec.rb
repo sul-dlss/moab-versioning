@@ -72,7 +72,7 @@ describe "Feature: File Inventory Serialization" do
       </fileInventory>
     XML
     xmlObj2 = Nokogiri::XML(xmlTest)
-    opts = { :element_order => false, :normalize_whitespace => true }
+    opts = { element_order: false, normalize_whitespace: true }
     expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
   end
 end

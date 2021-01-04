@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Moab::StorageServices do
-  let(:eq_xml_opts) { { :element_order => false, :normalize_whitespace => true } }
+  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
 
   specify '.storage_roots' do
     expect(described_class.storage_roots).to eq([@fixtures.join('derivatives'),
@@ -131,9 +131,9 @@ describe Moab::StorageServices do
 
   specify '.retrieve_file_using_signature' do
     fixity_hash = {
-      :size => "40873",
-      :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
-      :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
+      size: "40873",
+      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
     filepath = described_class.retrieve_file_using_signature('content', file_signature, @obj, 2)
@@ -145,10 +145,10 @@ describe Moab::StorageServices do
     it 'content signature' do
       content_signature = described_class.retrieve_file_signature('content', 'page-1.jpg', @obj, 2)
       expected_sig_fixity = {
-        :size => "32915",
-        :md5 => "c1c34634e2f18a354cd3e3e1574c3194",
-        :sha1 => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-        :sha256 => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+        size: "32915",
+        md5: "c1c34634e2f18a354cd3e3e1574c3194",
+        sha1: "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+        sha256: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
       }
       expect(content_signature.fixity).to eq expected_sig_fixity
     end
@@ -156,10 +156,10 @@ describe Moab::StorageServices do
     it 'metadata signature' do
       metadata_signature = described_class.retrieve_file_signature('metadata', 'contentMetadata.xml', @obj, 2)
       expected_sig_fixity = {
-        :size => "1303",
-        :md5 => "8672613ac1757cda4e44cc464559cd04",
-        :sha1 => "c3961c0f619a81eaf8779a122219b1f860dbc2f9",
-        :sha256 => "02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"
+        size: "1303",
+        md5: "8672613ac1757cda4e44cc464559cd04",
+        sha1: "c3961c0f619a81eaf8779a122219b1f860dbc2f9",
+        sha256: "02b3bb1d059a705cb693bb2fe2550a8090b47cd3c32e823891b2071156485b73"
       }
       expect(metadata_signature.fixity).to eq expected_sig_fixity
     end

@@ -84,10 +84,10 @@ module Moab
     # @return [FileInventory] The file inventory of the specified type for this version
     def versionize_bag(bag_dir, current_version, new_version)
       new_inventory = FileInventory.new(
-        :type => 'version',
-        :digital_object_id => @digital_object_id,
-        :version_id => new_version.version_id,
-        :inventory_datetime => Time.now
+        type: 'version',
+        digital_object_id: @digital_object_id,
+        version_id: new_version.version_id,
+        inventory_datetime: Time.now
       )
       new_inventory.inventory_from_bagit_bag(bag_dir)
       new_inventory.write_xml_file(bag_dir)
@@ -133,7 +133,7 @@ module Moab
 
       @object_pathname.children.each do |dirname|
         vnum = dirname.basename.to_s
-        list << vnum[1..-1].to_i if vnum =~ /^v(\d+)$/
+        list << vnum[1..].to_i if vnum =~ /^v(\d+)$/
       end
       list.sort
     end
