@@ -22,7 +22,7 @@ module Serializer
         filename
       else
         cname = name.split(/::/).last
-        "#{cname[0, 1].downcase}#{cname[1..-1]}.xml"
+        "#{cname[0, 1].downcase}#{cname[1..]}.xml"
       end
     end
 
@@ -59,7 +59,7 @@ module Serializer
     def self.write_xml_file(xml_object, parent_dir, filename = nil)
       parent_dir.mkpath
       xml_pathname(parent_dir, filename).open('w') do |f|
-        xmlBuilder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8')
+        xmlBuilder = Nokogiri::XML::Builder.new(encoding: 'UTF-8')
         xmlBuilder = xml_object.to_xml(xmlBuilder)
         f << xmlBuilder.to_xml
       end

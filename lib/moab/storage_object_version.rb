@@ -115,12 +115,12 @@ module Moab
 
         @inventory_cache[type] = FileInventory.read_xml_file(@version_pathname.join('manifests'), type)
       else
-        groups = %w[content metadata].collect { |id| FileGroup.new(:group_id => id) }
+        groups = %w[content metadata].collect { |id| FileGroup.new(group_id: id) }
         FileInventory.new(
-          :type => 'version',
-          :digital_object_id => @storage_object.digital_object_id,
-          :version_id => @version_id,
-          :groups => groups
+          type: 'version',
+          digital_object_id: @storage_object.digital_object_id,
+          version_id: @version_id,
+          groups: groups
         )
       end
     end
@@ -131,7 +131,7 @@ module Moab
       if version_id > 0
         SignatureCatalog.read_xml_file(@version_pathname.join('manifests'))
       else
-        SignatureCatalog.new(:digital_object_id => @storage_object.digital_object_id)
+        SignatureCatalog.new(digital_object_id: @storage_object.digital_object_id)
       end
     end
 
@@ -202,12 +202,12 @@ module Moab
     # @return [void] examine the version's directory and create/serialize a {FileInventory} containing the manifest files
     def generate_manifest_inventory
       manifest_inventory = FileInventory.new(
-        :type => 'manifests',
-        :digital_object_id => @storage_object.digital_object_id,
-        :version_id => @version_id
+        type: 'manifests',
+        digital_object_id: @storage_object.digital_object_id,
+        version_id: @version_id
       )
       pathname = @version_pathname.join('manifests')
-      manifest_inventory.groups << FileGroup.new(:group_id => 'manifests').group_from_directory(pathname, false)
+      manifest_inventory.groups << FileGroup.new(group_id: 'manifests').group_from_directory(pathname, false)
       manifest_inventory.write_xml_file(pathname)
     end
 
@@ -312,7 +312,7 @@ module Moab
       version_additions = file_inventory('additions')
       result.subentities << VerificationResult.verify_value('composite_key', composite_key, version_additions.composite_key)
       data_directory = @version_pathname.join('data')
-      directory_inventory = FileInventory.new(:type => 'directory').inventory_from_directory(data_directory)
+      directory_inventory = FileInventory.new(type: 'directory').inventory_from_directory(data_directory)
       diff = FileInventoryDifference.new
       diff.compare(version_additions, directory_inventory)
       compare_result = VerificationResult.new('file_differences')

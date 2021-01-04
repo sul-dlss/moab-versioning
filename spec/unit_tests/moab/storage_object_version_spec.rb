@@ -54,10 +54,10 @@ describe Moab::StorageObjectVersion do
     it 'content' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
       expected_sig_fixity = {
-        :size => "40873",
-        :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
-        :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad",
-        :sha256 => "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+        size: "40873",
+        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
+        sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
@@ -65,10 +65,10 @@ describe Moab::StorageObjectVersion do
     it 'content with hyphen in file name' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       expected_sig_fixity = {
-        :size => "32915",
-        :md5 => "c1c34634e2f18a354cd3e3e1574c3194",
-        :sha1 => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-        :sha256 => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+        size: "32915",
+        md5: "c1c34634e2f18a354cd3e3e1574c3194",
+        sha1: "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+        sha256: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
@@ -111,9 +111,9 @@ describe Moab::StorageObjectVersion do
 
   specify '#find_filepath_using_signature' do
     fixity_hash = {
-      :size => 40873,
-      :md5 => "1a726cd7963bd6d3ceb10a8c353ec166",
-      :sha1 => "583220e0572640abcd3ddd97393d224e8053a6ad"
+      size: 40873,
+      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
+      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
     exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}

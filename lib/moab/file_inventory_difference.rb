@@ -30,11 +30,11 @@ module Moab
 
     # @attribute
     # @return [String] The digital object ID (druid)
-    attribute :digital_object_id, String, :tag => 'objectId'
+    attribute :digital_object_id, String, tag: 'objectId'
 
     # @attribute
     # @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
-    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => proc { |i| i.to_s }
+    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc { |i| i.to_s }
 
     def difference_count
       @group_differences.inject(0) { |sum, group| sum + group.difference_count }
@@ -50,7 +50,7 @@ module Moab
 
     # @attribute
     # @return [String] The datetime at which the report was run
-    attribute :report_datetime, String, :tag => 'reportDatetime'
+    attribute :report_datetime, String, tag: 'reportDatetime'
 
     def report_datetime=(datetime)
       @report_datetime = Moab::UtcTime.input(datetime)
@@ -62,7 +62,7 @@ module Moab
 
     # @attribute
     # @return [Array<FileGroupDifference>] The set of data groups comprising the version
-    has_many :group_differences, FileGroupDifference, :tag => 'fileGroupDifference'
+    has_many :group_differences, FileGroupDifference, tag: 'fileGroupDifference'
 
     # @return [Array<String>] The data fields to include in summary reports
     def summary_fields
@@ -89,8 +89,8 @@ module Moab
       group_ids = basis_inventory.group_ids | other_inventory.group_ids
       group_ids.each do |group_id|
         # get a pair of groups to compare, creating a empty group if not present in the inventory
-        basis_group = basis_inventory.group(group_id) || FileGroup.new(:group_id => group_id)
-        other_group = other_inventory.group(group_id) || FileGroup.new(:group_id => group_id)
+        basis_group = basis_inventory.group(group_id) || FileGroup.new(group_id: group_id)
+        other_group = other_inventory.group(group_id) || FileGroup.new(group_id: group_id)
         @group_differences << FileGroupDifference.new.compare_file_groups(basis_group, other_group)
       end
       self

@@ -91,7 +91,7 @@ module Moab
     # call only if the version directories are "correctly named" vdddd
     def check_sequential_version_dirs
       version_directories.each_with_index do |dir_name, index|
-        next if dir_name[1..-1].to_i == index + 1 # version numbering starts at 1, array indexing at 0
+        next if dir_name[1..].to_i == index + 1 # version numbering starts at 1, array indexing at 0
 
         return [result_hash(VERSIONS_NOT_IN_ORDER, version_directories)]
       end

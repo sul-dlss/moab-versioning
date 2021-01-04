@@ -43,7 +43,7 @@ Layout/LineLength:
 
 # Code was readable with allowing higher perceived complexity
 Metrics/PerceivedComplexity:
-  Max: 9
+  Max: 13
 
 Naming/FileName:
   Exclude:

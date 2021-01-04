@@ -46,19 +46,19 @@ module Moab
 
     # @attribute
     # @return [Integer] The size of the file in bytes
-    attribute :size, Integer, :on_save => proc { |n| n.to_s }
+    attribute :size, Integer, on_save: proc { |n| n.to_s }
 
     # @attribute
     # @return [String] The MD5 checksum value of the file
-    attribute :md5, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
+    attribute :md5, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
 
     # @attribute
     # @return [String] The SHA1 checksum value of the file
-    attribute :sha1, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
+    attribute :sha1, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
 
     # @attribute
     # @return [String] The SHA256 checksum value of the file
-    attribute :sha256, String, :on_save => proc { |n| n.nil? ? "" : n.to_s }
+    attribute :sha256, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
 
     KNOWN_ALGOS = {
       md5: proc { Digest::MD5.new },

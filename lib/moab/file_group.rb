@@ -30,15 +30,15 @@ module Moab
 
     # @attribute
     # @return [String] The name of the file group
-    attribute :group_id, String, :tag => 'groupId', :key => true
+    attribute :group_id, String, tag: 'groupId', key: true
 
     # @attribute
     # @return [String] The directory location or other source of this groups file data
-    attribute :data_source, String, :tag => 'dataSource'
+    attribute :data_source, String, tag: 'dataSource'
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, :tag => 'fileCount', :on_save => proc { |i| i.to_s }
+    attribute :file_count, Integer, tag: 'fileCount', on_save: proc { |i| i.to_s }
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
@@ -46,7 +46,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, :tag => 'byteCount', :on_save => proc { |i| i.to_s }
+    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc { |i| i.to_s }
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
@@ -54,7 +54,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, :tag => 'blockCount', :on_save => proc { |i| i.to_s }
+    attribute :block_count, Integer, tag: 'blockCount', on_save: proc { |i| i.to_s }
 
     def block_count
       files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
@@ -67,7 +67,7 @@ module Moab
 
     # @attribute
     # @return [Array<FileManifestation>] The set of files comprising the group
-    has_many :files, FileManifestation, :tag => 'file'
+    has_many :files, FileManifestation, tag: 'file'
 
     def files
       signature_hash.values

@@ -25,7 +25,7 @@ module Moab
 
     # @attribute
     # @return [String] The id is the filename path, relative to the file group's base directory
-    attribute :path, String, :key => true
+    attribute :path, String, key: true
 
     # @attribute
     # @return [String] gsub(/\n/,' ')

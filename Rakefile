@@ -30,4 +30,4 @@ task :clean do
   FileUtils.rm_r('spec/fixtures/derivatives') if File.exist?('spec/fixtures/derivatives')
 end
 
-task :default => %i[spec rubocop]
+task default: %i[spec rubocop]

@@ -39,20 +39,20 @@ describe Serializer::Serializable do
     it 'no versions specified' do
       diff = described_class.deep_diff(hash1, hash3)
       expect(diff["signature"]).to hash_match("size" => {
-                                                :left => 41981,
-                                                :right => 32915
+                                                left: 41981,
+                                                right: 32915
                                               },
                                               "md5" => {
-                                                :left => "915c0305bf50c55143f1506295dc122c",
-                                                :right => "c1c34634e2f18a354cd3e3e1574c3194"
+                                                left: "915c0305bf50c55143f1506295dc122c",
+                                                right: "c1c34634e2f18a354cd3e3e1574c3194"
                                               },
                                               "sha1" => {
-                                                :left => "60448956fbe069979fce6a6e55dba4ce1f915178",
-                                                :right => "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
+                                                left: "60448956fbe069979fce6a6e55dba4ce1f915178",
+                                                right: "0616a0bd7927328c364b2ea0b4a79c507ce915ed"
                                               },
                                               "sha256" => {
-                                                :left => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
-                                                :right => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+                                                left: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a",
+                                                right: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
                                               })
     end
 
@@ -183,20 +183,20 @@ describe Serializer::Serializable do
       diff.delete('instances')
       expect(diff).to hash_match("signature" => {
                                    "size" => {
-                                     :old => 32915,
-                                     :new => 41981
+                                     old: 32915,
+                                     new: 41981
                                    },
                                    "md5" => {
-                                     :old => "c1c34634e2f18a354cd3e3e1574c3194",
-                                     :new => "915c0305bf50c55143f1506295dc122c"
+                                     old: "c1c34634e2f18a354cd3e3e1574c3194",
+                                     new: "915c0305bf50c55143f1506295dc122c"
                                    },
                                    "sha1" => {
-                                     :old => "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-                                     :new => "60448956fbe069979fce6a6e55dba4ce1f915178"
+                                     old: "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
+                                     new: "60448956fbe069979fce6a6e55dba4ce1f915178"
                                    },
                                    "sha256" => {
-                                     :old => "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
-                                     :new => "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
+                                     old: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0",
+                                     new: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
                                    }
                                  })
     end

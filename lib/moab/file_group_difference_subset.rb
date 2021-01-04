@@ -26,11 +26,11 @@ module Moab
 
     # @attribute
     # @return [String] The type of change (identical|renamed|modified|deleted|added)
-    attribute :change, String, :key => true
+    attribute :change, String, key: true
 
     # @attribute
     # @return [Integer] How many files were changed
-    attribute :count, Integer, :on_save => proc { |n| n.to_s }
+    attribute :count, Integer, on_save: proc { |n| n.to_s }
 
     def count
       files.size
@@ -38,6 +38,6 @@ module Moab
 
     # @attribute
     # @return [Array<FileInstanceDifference>] The set of file instances having this type of change
-    has_many :files, FileInstanceDifference, :tag => 'file'
+    has_many :files, FileInstanceDifference, tag: 'file'
   end
 end

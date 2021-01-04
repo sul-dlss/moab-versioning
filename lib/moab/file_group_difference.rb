@@ -53,18 +53,18 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
-      @subset_hash = Hash.new { |hash, key| hash[key] = FileGroupDifferenceSubset.new(:change => key.to_s) }
+      @subset_hash = Hash.new { |hash, key| hash[key] = FileGroupDifferenceSubset.new(change: key.to_s) }
       super(opts)
     end
 
     # @attribute
     # @return [String] The name of the file group
-    attribute :group_id, String, :tag => 'groupId', :key => true
+    attribute :group_id, String, tag: 'groupId', key: true
 
     # @attribute
     # @return [Integer] the total number of differences found between the two inventories that were
     #   compared  (dynamically calculated)
-    attribute :difference_count, Integer, :tag => 'differenceCount', :on_save => proc { |i| i.to_s }
+    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc { |i| i.to_s }
 
     def difference_count
       count = 0
@@ -76,49 +76,49 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were unchanged
-    attribute :identical, Integer, :on_save => proc { |n| n.to_s }
+    attribute :identical, Integer, on_save: proc { |n| n.to_s }
     def identical
       subset_hash[:identical].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were added
-    attribute :copyadded, Integer, :on_save => proc { |n| n.to_s }
+    attribute :copyadded, Integer, on_save: proc { |n| n.to_s }
     def copyadded
       subset_hash[:copyadded].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were deleted
-    attribute :copydeleted, Integer, :on_save => proc { |n| n.to_s }
+    attribute :copydeleted, Integer, on_save: proc { |n| n.to_s }
     def copydeleted
       subset_hash[:copydeleted].count
     end
 
     # @attribute
     # @return [Integer] How many files were renamed
-    attribute :renamed, Integer, :on_save => proc { |n| n.to_s }
+    attribute :renamed, Integer, on_save: proc { |n| n.to_s }
     def renamed
       subset_hash[:renamed].count
     end
 
     # @attribute
     # @return [Integer] How many files were modified
-    attribute :modified, Integer, :on_save => proc { |n| n.to_s }
+    attribute :modified, Integer, on_save: proc { |n| n.to_s }
     def modified
       subset_hash[:modified].count
     end
 
     # @attribute
     # @return [Integer] How many files were added
-    attribute :added, Integer, :on_save => proc { |n| n.to_s }
+    attribute :added, Integer, on_save: proc { |n| n.to_s }
     def added
       subset_hash[:added].count
     end
 
     # @attribute
     # @return [Integer] How many files were deleted
-    attribute :deleted, Integer, :on_save => proc { |n| n.to_s }
+    attribute :deleted, Integer, on_save: proc { |n| n.to_s }
     def deleted
       subset_hash[:deleted].count
     end
@@ -126,7 +126,7 @@ module Moab
     # @attribute
     # @return [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type),
     #    each of which contains an collection of file-level differences having that change type.
-    has_many :subsets, FileGroupDifferenceSubset, :tag => 'subset'
+    has_many :subsets, FileGroupDifferenceSubset, tag: 'subset'
 
     def subsets
       subset_hash.values
@@ -147,14 +147,14 @@ module Moab
     # @return [FileGroupDifference] Clone just this element for inclusion in a versionMetadata structure
     def summary
       FileGroupDifference.new(
-        :group_id => group_id,
-        :identical => identical,
-        :copyadded => copyadded,
-        :copydeleted => copydeleted,
-        :renamed => renamed,
-        :modified => modified,
-        :added => added,
-        :deleted => deleted
+        group_id: group_id,
+        identical: identical,
+        copyadded: copyadded,
+        copydeleted: copydeleted,
+        renamed: renamed,
+        modified: modified,
+        added: added,
+        deleted: deleted
       )
     end
 
@@ -231,7 +231,7 @@ module Moab
         other_paths = other_signature_hash[signature].paths
         matching_paths = basis_paths & other_paths
         matching_paths.each do |path|
-          fid = FileInstanceDifference.new(:change => 'identical')
+          fid = FileInstanceDifference.new(change: 'identical')
           fid.basis_path = path
           fid.other_path = "same"
           fid.signatures << signature
@@ -284,7 +284,7 @@ module Moab
     #   Container for reporting the set of file-level differences of type 'modified'
     def tabulate_modified_files(basis_path_hash, other_path_hash)
       matching_keys(basis_path_hash, other_path_hash).each do |path|
-        fid = FileInstanceDifference.new(:change => 'modified')
+        fid = FileInstanceDifference.new(change: 'modified')
         fid.basis_path = path
         fid.other_path = "same"
         fid.signatures << basis_path_hash[path]
@@ -303,7 +303,7 @@ module Moab
     #   Container for reporting the set of file-level differences of type 'added'
     def tabulate_added_files(basis_path_hash, other_path_hash)
       other_only_keys(basis_path_hash, other_path_hash).each do |path|
-        fid = FileInstanceDifference.new(:change => 'added')
+        fid = FileInstanceDifference.new(change: 'added')
         fid.basis_path = ""
         fid.other_path = path
         fid.signatures << other_path_hash[path]
@@ -321,7 +321,7 @@ module Moab
     #   Container for reporting the set of file-level differences of type 'deleted'
     def tabulate_deleted_files(basis_path_hash, other_path_hash)
       basis_only_keys(basis_path_hash, other_path_hash).each do |path|
-        fid = FileInstanceDifference.new(:change => 'deleted')
+        fid = FileInstanceDifference.new(change: 'deleted')
         fid.basis_path = path
         fid.other_path = ""
         fid.signatures << basis_path_hash[path]

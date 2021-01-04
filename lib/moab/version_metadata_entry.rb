@@ -24,7 +24,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The object version number (A sequential integer)
-    attribute :version_id, Integer, :tag => 'versionId', :key => true, :on_save => proc { |n| n.to_s }
+    attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc { |n| n.to_s }
 
     # @attribute
     # @return [String] "an external version label that increments the most significant digit for major revisions,
@@ -46,14 +46,14 @@ module Moab
 
     # @attribute
     # @return [FileGroupDifference] Summary of content file differences since previous version
-    element :content_changes, FileGroupDifference, :tag => 'fileGroupDifference'
+    element :content_changes, FileGroupDifference, tag: 'fileGroupDifference'
 
     # @attribute
     # @return [FileGroupDifference]   Summary of metadata file differences since previous version
-    element :metadata_changes, FileGroupDifference, :tag => 'fileGroupDifference'
+    element :metadata_changes, FileGroupDifference, tag: 'fileGroupDifference'
 
     # @attribute
     # @return [Array<VersionMetadataEvent>] Array of events with timestamps that track lifecycle stages
-    has_many :events, VersionMetadataEvent, :tag => 'event'
+    has_many :events, VersionMetadataEvent, tag: 'event'
   end
 end

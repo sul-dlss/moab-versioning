@@ -23,7 +23,7 @@ module Stanford
       # Many of these objects have contentMetadata with no child elements, such as this:
       #    <contentMetadata objectId="bd608mj3166" type="file"/>
       # but there are also objects that have no datasteam of this name at all
-      cm_inventory = Moab::FileInventory.new(:type => "version", :digital_object_id => object_id, :version_id => version_id)
+      cm_inventory = Moab::FileInventory.new(type: "version", digital_object_id: object_id, version_id: version_id)
       content_group = group_from_cm(content_metadata, subset)
       cm_inventory.groups << content_group
       cm_inventory
@@ -49,7 +49,7 @@ module Stanford
                 else
                   raise(Moab::MoabRuntimeError, "Unknown disposition subset (#{subset})")
                 end
-      content_group = Moab::FileGroup.new(:group_id => 'content', :data_source => "contentMetadata-#{subset}")
+      content_group = Moab::FileGroup.new(group_id: 'content', data_source: "contentMetadata-#{subset}")
       nodeset.each do |file_node|
         signature = generate_signature(file_node)
         instance = generate_instance(file_node)
@@ -98,23 +98,23 @@ module Stanford
     # @example {include:file:spec/features/stanford/content_metadata_write_spec.rb}
     def generate_content_metadata(file_group, object_id, version_id)
       cm = Nokogiri::XML::Builder.new do |xml|
-        xml.contentMetadata(:type => "sample", :objectId => object_id) do
-          xml.resource(:type => "version", :sequence => "1", :id => "version-#{version_id}") do
+        xml.contentMetadata(type: "sample", objectId: object_id) do
+          xml.resource(type: "version", sequence: "1", id: "version-#{version_id}") do
             file_group.files.each do |file_manifestation|
               signature = file_manifestation.signature
               file_manifestation.instances.each do |instance|
                 xml.file(
-                  :id => instance.path,
-                  :size => signature.size,
-                  :datetime => instance.datetime,
-                  :shelve => 'yes',
-                  :publish => 'yes',
-                  :preserve => 'yes'
+                  id: instance.path,
+                  size: signature.size,
+                  datetime: instance.datetime,
+                  shelve: 'yes',
+                  publish: 'yes',
+                  preserve: 'yes'
                 ) do
                   fixity = signature.fixity
-                  xml.checksum(:type => "MD5") { xml.text signature.md5 } if fixity[:md5]
-                  xml.checksum(:type => "SHA-1") { xml.text signature.sha1 } if fixity[:sha1]
-                  xml.checksum(:type => "SHA-256") { xml.text signature.sha256 } if fixity[:sha256]
+                  xml.checksum(type: "MD5") { xml.text signature.md5 } if fixity[:md5]
+                  xml.checksum(type: "SHA-1") { xml.text signature.sha1 } if fixity[:sha1]
+                  xml.checksum(type: "SHA-256") { xml.text signature.sha256 } if fixity[:sha256]
                 end
               end
             end
@@ -191,7 +191,7 @@ module Stanford
         remediate_file_size(file_node, signature)
         remediate_checksum_nodes(file_node, signature)
       end
-      ng_doc.to_xml(:indent => 2)
+      ng_doc.to_xml(indent: 2)
     end
 
     # @param [Nokogiri::XML::Element] file_node the File stanza being remediated
