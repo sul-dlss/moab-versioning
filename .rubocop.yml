@@ -12,20 +12,6 @@ AllCops:
     - 'lib/**/*.rake'
     - 'vendor/**/*' # avoid running rubocop on travis cached bundler
 
-# --- Layout ---
-
-# --- Lint ---
-
-Lint/UselessAssignment:
-  Exclude:
-    - 'lib/moab/storage_repository.rb' # TODO: determine if we want to keep this exclusion
-    - 'lib/moab/storage_services.rb' # TODO: determine if we want to keep this exclusion
-    - 'lib/serializer/serializable.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/features/stanford/content_metadata_read_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_group_spec.rb' # TODO: determine if we want to keep this exclusion
-    - 'spec/unit_tests/moab/file_inventory_spec.rb' # TODO: determine if we want to keep this exclusion
-
 Metrics/ClassLength:
   Exclude:
     - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse

@@ -113,7 +113,7 @@ module Serializer
 
     # @return [Hash] Calls to_hash(summary=true)
     def summary
-      to_hash(summary = true)
+      to_hash(true)
     end
 
     # @api internal
