@@ -1,7 +1,7 @@
 # moab-versioning
 
-[![Build Status](https://travis-ci.org/sul-dlss/moab-versioning.svg?branch=master)](https://travis-ci.org/sul-dlss/moab-versioning)
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/moab-versioning/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/moab-versioning?branch=master)
+![CI](https://github.com/sul-dlss/moab-versioning/workflows/CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/moab-versioning/badge.svg?branch=main)](https://coveralls.io/github/sul-dlss/moab-versioning?branch=main)
 [![Gem Version](https://badge.fury.io/rb/moab-versioning.svg)](https://badge.fury.io/rb/moab-versioning)
 
 ## Usage
@@ -163,7 +163,7 @@ end
 
 ## API Documentation
 
-http://rubydoc.info/github/sul-dlss/moab-versioning/master/frames
+http://rubydoc.info/github/sul-dlss/moab-versioning/main/frames
 
 ## Design Documentation
 
