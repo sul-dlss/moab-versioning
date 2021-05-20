@@ -189,9 +189,6 @@ end
 druid = "druid:#{ARGV[0]}"
 # druid = 'cq580gn5234'
 
-storage_repository = Stanford::StorageRepository.new()
-storage_object = storage_repository.find_storage_object(druid)
-
 path = Moab::StorageServices.object_path(druid)
 puts "#{druid} found at #{path}"
 
