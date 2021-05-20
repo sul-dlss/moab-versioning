@@ -250,5 +250,3 @@ depending on whether XML serialization is required.
 
 * **Stanford::DorMetadata** = utility methods for interfacing with Stanford metadata files (esp contentMetadata)
   * **Stanford::ActiveFedoraObject** [1..*] = utility for extracting content or other information from a Fedora Instance
-
-
