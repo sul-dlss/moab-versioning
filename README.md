@@ -161,6 +161,59 @@ else
 end
 ```
 
+#### Soup to Nuts Example of validating a Druid at Stanford
+
+Usage:
+Copy the script below to a box with Ruby installed. Call the script with a single argument: the druid that you wish to check. E.g.:
+
+```
+[~/ruby ]$ ruby moab_check.rb bb294sf0065
+```
+
+Script:
+
+```Ruby
+# moab_check.rb
+require 'moab'
+require 'moab/stanford'
+require 'druid-tools'
+
+Moab::Config.configure do
+  storage_roots ['/pres-01', '/pres-02', '/pres-03' ]
+  storage_trunk 'sdr2objects'
+  deposit_trunk 'deposit'
+  path_method :druid_tree
+end
+
+# Read druid from command line arg.
+druid = "druid:#{ARGV[0]}"
+# druid = 'cq580gn5234'
+
+path = Moab::StorageServices.object_path(druid)
+puts "#{druid} found at #{path}"
+
+moab = Moab::StorageObject.new( druid,  Moab::StorageServices.object_path(druid) )
+
+# Validation checks for file existence, but not content, of a well-formed Moab.
+# It does not read files or perform checksum validation.
+object_validator = Stanford::StorageObjectValidator.new(moab)
+validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
+if validation_errors.empty?
+  p "Yay! #{moab.digital_object_id} passed validation"
+else
+  p validation_errors
+end
+
+# Iterate thru each moab version and perform verification. This includes discovery and checksum verification of files.
+moab.version_list.each do |ver|
+# add to_hash(verbose: true) for more details on each
+  puts ver.verify_version_storage.to_hash
+  puts ver.verify_manifest_inventory.to_hash
+  puts ver.verify_version_inventory.to_hash
+  puts ver.verify_signature_catalog.to_hash
+end
+```
+
 ## API Documentation
 
 http://rubydoc.info/github/sul-dlss/moab-versioning/main/frames
