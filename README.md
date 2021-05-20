@@ -214,8 +214,6 @@ moab.version_list.each do |ver|
 end
 ```
 
-
-
 ## API Documentation
 
 http://rubydoc.info/github/sul-dlss/moab-versioning/main/frames
