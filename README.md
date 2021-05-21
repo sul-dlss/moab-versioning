@@ -204,10 +204,15 @@ else
   p validation_errors
 end
 
-# Iterate thru each moab version and perform verification. This includes discovery and checksum verification of files.
 moab.version_list.each do |ver|
-# add to_hash(verbose: true) for more details on each
-  puts ver.verify_version_storage.to_hash
+# add to_hash(verbose: true) or to_json(verbose: true) for more details on each
+# verify_version_storage includes:
+#   verify_manifest_inventory,
+#   verify_version_inventory,
+#   verify_version_additions (which computes and compares file checksums)
+# puts ver.verify_version_storage.to_hash
+# Comment out verify_version_additions if you don't want checksum validation
+  puts ver.verify_version_additions.to_hash
   puts ver.verify_manifest_inventory.to_hash
   puts ver.verify_version_inventory.to_hash
   puts ver.verify_signature_catalog.to_hash
