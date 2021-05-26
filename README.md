@@ -204,7 +204,7 @@ object_validator = Stanford::StorageObjectValidator.new(moab)
 validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
 puts "\nChecking stuctural validition of #{druid}\n"
 if validation_errors.empty?
-  puts "\nYay! Latest version of #{moab.digital_object_id} passed structural validation.\n"  
+  puts "\nYay! Moab #{moab.digital_object_id} passed structural validation.\n"  
 else
   p validation_errors
 end
