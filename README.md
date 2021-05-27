@@ -193,10 +193,10 @@ end
 druid = "druid:#{ARGV[0]}"
 # druid = 'cq580gn5234'
 
-path = Moab::StorageServices.object_path(druid)
-puts "#{druid} found at #{path}"
+moab_path = Moab::StorageServices.object_path(druid)
+puts "#{druid} found at #{moab_path}"
 
-moab = Moab::StorageObject.new(druid,  Moab::StorageServices.object_path(druid))
+moab = Moab::StorageObject.new(druid, moab_path)
 
 # Validation checks for file existence, but not content, of a well-formed Moab.
 # It does not read files or perform checksum validation.
