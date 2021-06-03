@@ -221,7 +221,7 @@ moab.version_list.each do |ver|
   # verify_version_storage includes:
   #   verify_manifest_inventory, (which computes and compares v000x/manifest file checksums)
   #   verify_version_inventory,
-  #   verify_version_additions (which computes and compares v000x/data/metadata file checksums)
+  #   verify_version_additions (which computes v000x/data file checksums and compares them with values in signatureCatalog.xml)
   puts "\nVerify version storage (includes checksum validation of v000x/data and v000x/manifest files)\n"
   puts ver.verify_version_storage.to_hash
 end
