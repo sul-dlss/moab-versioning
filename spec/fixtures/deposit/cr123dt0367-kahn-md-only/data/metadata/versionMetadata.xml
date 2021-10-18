@@ -1,5 +1,0 @@
-<versionMetadata objectId="druid:cr123dt0367">
-  <version versionId="1" tag="1.0.0">
-    <description>Initial Version</description>
-  </version>
-<version versionId="2" tag="1.1.0"><description>Prepare to combine - Legacy-3134</description></version><version versionId="3" tag="1.2.0"><description>Descriptive metadata upload from SC1094_modsulator_revised_08.xlsx</description></version><version versionId="4" tag="1.3.0"><description>Descriptive metadata upload from matt_kahn_remediated_02_jc.xml</description></version><version versionId="5" tag="2.0.0"><description>rights</description></version><version versionId="6" tag="3.0.0"><description>APO change</description></version></versionMetadata>

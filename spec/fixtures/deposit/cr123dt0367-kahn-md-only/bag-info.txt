@@ -1,3 +1,0 @@
-External-Identifier: druid:cr123dt0367-v6
-Payload-Oxum: 38138.5
-Bag-Size: 37.24 KB
