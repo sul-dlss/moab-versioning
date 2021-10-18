@@ -84,12 +84,6 @@ module Moab
     end
 
     # @param [String] object_id The digital object identifier of the object
-    # @return [Pathname] Pathname object containing the full path for the specified file
-    def self.version_metadata(object_id)
-      retrieve_file('metadata', 'versionMetadata.xml', object_id)
-    end
-
-    # @param [String] object_id The digital object identifier of the object
     # @param [Integer] version_id The ID of the version, if nil use latest version
     # @return [FileInventory] the file inventory for the specified object version
     def self.retrieve_file_group(file_category, object_id, version_id = nil)
