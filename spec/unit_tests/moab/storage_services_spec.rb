@@ -69,26 +69,6 @@ describe Moab::StorageServices do
     expect(described_class.object_size(@obj)).to be_between(340000, 350000)
   end
 
-  specify '.version_metadata' do
-    vm_ng_xml = Nokogiri::XML(described_class.version_metadata(@obj).read)
-    exp_xml = <<-XML
-      <versionMetadata objectId="druid:jq937jp0017">
-        <version versionId="1" label="1.0" significance="major">
-          <description>Initial version</description>
-        </version>
-        <version versionId="2" label="2.0" significance="minor">
-          <description>Editing page-1 and removing intro files</description>
-          <note>content change</note>
-        </version>
-        <version versionId="3" label="2.1" significance="minor">
-          <description>Inserting new page-2, with renames of pages 2-3 to 3-4</description>
-          <note>page insertion</note>
-        </version>
-      </versionMetadata>
-    XML
-    expect(EquivalentXml.equivalent?(vm_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
-  end
-
   describe '.retrieve_file_group' do
     it 'content' do
       group = described_class.retrieve_file_group('content', @obj, 2)
