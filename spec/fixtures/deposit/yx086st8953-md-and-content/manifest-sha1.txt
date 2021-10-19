@@ -1,8 +1,0 @@
-8d8303873a228c06fea65705e9bbbfb1d2e178f7 data/content/data.zip
-a5d0bb532a554c3deae3192e3fca8f6e8fc97790 data/metadata/contentMetadata.xml
-b0adf908c0963ad56a000e4df01cff8dcbd1abf8 data/metadata/events.xml
-ae200b216fc62f1a24ad9bf343666f18df184a2f data/metadata/geoMetadata.xml
-06faf5b3f9c4b15d968d1331ec905e996e8db3fa data/metadata/provenanceMetadata.xml
-0122529e18d4e90bd24c3207eb3996b221a096e5 data/metadata/technicalMetadata.xml
-5951f9fcd1449cbd65d981b1e276dc80e9c8bdec data/metadata/versionMetadata.xml
-ba5431e60a38740bbd0d942ac175f848a1ad69ea data/metadata/workflows.xml
