@@ -20,10 +20,6 @@
 #       * {FileInstanceDifference} [1..*] = contains difference information at the file level
 #         * {FileSignature} [1..2] = contains the file signature(s) of two file instances being compared
 #
-# * <b>{VersionMetadata} = descriptive information about a digital object's versions</b>
-#   * {VersionMetadataEntry} [1..*] = attributes of a digital object version
-#     * {VersionMetadataEvent} [1..*] = object version lifecycle events with timestamps
-#
 # * <b>{StorageObject} = represents a digital object's repository storage location and ingest/dissemination methods</b>
 #   * {StorageObjectVersion} [1..*] = represents a version subdirectory within an object's home directory
 #     * {Bagger} [1] = utility for creating bagit packages for ingest or dissemination
@@ -48,9 +44,6 @@ require 'moab/file_instance_difference'
 require 'moab/file_group_difference_subset'
 require 'moab/file_group_difference'
 require 'moab/file_inventory_difference'
-require 'moab/version_metadata_event'
-require 'moab/version_metadata_entry'
-require 'moab/version_metadata'
 require 'moab/bagger'
 require 'moab/storage_object'
 require 'moab/storage_object_version'
