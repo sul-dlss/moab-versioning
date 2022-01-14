@@ -84,7 +84,7 @@ module Moab
 
     def block_count
       block_size = 1024
-      entries.inject(0) { |sum, entry| sum + (entry.signature.size.to_i + block_size - 1) / block_size }
+      entries.inject(0) { |sum, entry| sum + ((entry.signature.size.to_i + block_size - 1) / block_size) }
     end
 
     # @return [Array<String>] The data fields to include in summary reports

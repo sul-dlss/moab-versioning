@@ -157,7 +157,7 @@ module Serializer
           diff[k] = if left[k].is_a?(Hash) && right[k].is_a?(Hash)
                       deep_diff(ltag, left[k], rtag, right[k])
                     else
-                      Hash.[](ltag, left[k], rtag, right[k])
+                      { ltag => left[k], rtag => right[k] }
                     end
         end
       end

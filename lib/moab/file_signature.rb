@@ -77,7 +77,7 @@ module Moab
     def self.from_file(pathname, algos_to_use = active_algos)
       raise(MoabRuntimeError, 'Unrecognized algorithm requested') unless algos_to_use.all? { |a| KNOWN_ALGOS.include?(a) }
 
-      signatures = algos_to_use.map { |k| [k, KNOWN_ALGOS[k].call] }.to_h
+      signatures = algos_to_use.to_h { |k| [k, KNOWN_ALGOS[k].call] }
 
       pathname.open("r") do |stream|
         while (buffer = stream.read(8192))

@@ -2,7 +2,7 @@
 
 describe Stanford::StorageServices do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
-  let(:content_metadata) { IO.read(@data.join('v0002/metadata/contentMetadata.xml')) }
+  let(:content_metadata) { File.read(@data.join('v0002/metadata/contentMetadata.xml')) }
 
   specify '.cm_remediate' do
     remediated_cm = described_class.cm_remediate(@obj, 1)
@@ -95,7 +95,7 @@ describe Stanford::StorageServices do
     it 'shelve subset' do
       druid = "druid:dd116zh0343"
       base_cm = @fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
-      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
+      new_cm = File.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       expect(described_class)
         .to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', 1)
@@ -165,7 +165,7 @@ describe Stanford::StorageServices do
 
     it 'shelve subset without specified version' do
       druid = "druid:no000non0000"
-      new_cm = IO.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
+      new_cm = File.read(@fixtures.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
       diff_ng_xml.xpath('//@reportDatetime').remove
@@ -228,7 +228,7 @@ describe Stanford::StorageServices do
       druid = 'druid:ms205ty4764'
       version_id = 1
       subsets = %w[shelve publish preserve]
-      content_metadata_empty_subset = IO.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
+      content_metadata_empty_subset = File.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml'))
       subsets.each do |subset|
         diff = described_class.compare_cm_to_version(content_metadata_empty_subset, druid, subset, version_id)
         expect(diff).to be_instance_of(Moab::FileInventoryDifference)

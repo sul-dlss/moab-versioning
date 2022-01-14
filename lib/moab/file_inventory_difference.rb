@@ -100,10 +100,10 @@ module Moab
     # @param (see #compare)
     # @return [String] Returns either the common digitial object ID, or a concatenation of both inventory's IDs
     def common_object_id(basis_inventory, other_inventory)
-      if basis_inventory.digital_object_id != other_inventory.digital_object_id
-        "#{basis_inventory.digital_object_id}|#{other_inventory.digital_object_id}"
-      else
+      if basis_inventory.digital_object_id == other_inventory.digital_object_id
         basis_inventory.digital_object_id.to_s
+      else
+        "#{basis_inventory.digital_object_id}|#{other_inventory.digital_object_id}"
       end
     end
 
