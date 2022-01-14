@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 describe Moab::VerificationResult do
+  let(:result) do
+    result = described_class.new('my_entity')
+    result.verified = false
+    result.subentities << described_class.new('subentity_1')
+    result.subentities << described_class.new('subentity_2')
+    result.subentities << described_class.new('subentity_3')
+    result.subentities.each do |s|
+      if s.entity == 'subentity_2'
+        s.verified = false
+        s.details = { "its a" => "shame" }
+      else
+        s.verified = true
+        s.details = { "all is" => "good" }
+      end
+    end
+    result
+  end
+
   specify '.verify_value' do
     result = described_class.verify_value('greeting', "hello", "goodbye")
     expect(result.entity).to eq 'greeting'
@@ -25,24 +43,6 @@ describe Moab::VerificationResult do
     expect(result.verified).to eq false
     expect(result.details).to eq nil
     expect(result.subentities).to be_an_instance_of Array
-  end
-
-  let(:result) do
-    result = described_class.new('my_entity')
-    result.verified = false
-    result.subentities << described_class.new('subentity_1')
-    result.subentities << described_class.new('subentity_2')
-    result.subentities << described_class.new('subentity_3')
-    result.subentities.each do |s|
-      if s.entity == 'subentity_2'
-        s.verified = false
-        s.details = { "its a" => "shame" }
-      else
-        s.verified = true
-        s.details = { "all is" => "good" }
-      end
-    end
-    result
   end
 
   specify '#to_hash' do

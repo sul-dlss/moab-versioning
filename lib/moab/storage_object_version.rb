@@ -286,10 +286,10 @@ module Moab
           file.instances.each do |instance|
             relative_path = File.join(group.group_id, instance.path)
             catalog_entry = signature_catalog.signature_hash[file.signature]
-            if !catalog_entry.nil?
-              found += 1
-            else
+            if catalog_entry.nil?
               missing << relative_path.to_s
+            else
+              found += 1
             end
           end
         end

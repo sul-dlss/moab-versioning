@@ -66,7 +66,7 @@ module Moab
     # @param level [Integer] Used to increment the depth of recursion
     # @return [Hash] The verification result of subentities serialized to a hash
     def subentities_to_hash(verbose, level)
-      subentities.map { |s| [s.entity, s.to_hash(verbose, level + 1)] }.to_h
+      subentities.to_h { |s| [s.entity, s.to_hash(verbose, level + 1)] }
     end
   end
 end

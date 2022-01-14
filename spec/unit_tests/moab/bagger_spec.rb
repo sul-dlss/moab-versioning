@@ -19,6 +19,26 @@ describe Moab::Bagger do
     @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
   end
 
+  let(:disseminate_bag) do
+    db = described_class.new(disseminate_inventory, disseminate_catalog, @disseminate_bag_pathname)
+    db.package_mode = :reconstructor
+    db.bag_inventory = disseminate_inventory
+    db
+  end
+  let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002', 'manifests'), 'version') }
+  let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002', 'manifests')) }
+  let(:disseminate_base) { @ingests.join(@obj) }
+  let(:submit_bag) do
+    sb = described_class.new(submit_inventory, submit_catalog, @submit_bag_pathname)
+    sb.package_mode = :depositor
+    sb.bag_inventory = submit_bag_inventory
+    sb
+  end
+  let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
+  let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001')) }
+  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'), 'version') }
+  let(:submit_source_base) { @data.join('v0002') }
+
   specify '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
     signature_catalog = double(Moab::SignatureCatalog.name)
@@ -27,27 +47,6 @@ describe Moab::Bagger do
     expect(bagger.version_inventory).to eq version_inventory
     expect(bagger.signature_catalog).to eq signature_catalog
     expect(bagger.bag_pathname).to eq bag_pathname
-  end
-
-  let(:submit_source_base) { @data.join('v0002') }
-  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'), 'version') }
-  let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001')) }
-  let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
-  let(:submit_bag) do
-    sb = described_class.new(submit_inventory, submit_catalog, @submit_bag_pathname)
-    sb.package_mode = :depositor
-    sb.bag_inventory = submit_bag_inventory
-    sb
-  end
-
-  let(:disseminate_base) { @ingests.join(@obj) }
-  let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002', 'manifests')) }
-  let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002', 'manifests'), 'version') }
-  let(:disseminate_bag) do
-    db = described_class.new(disseminate_inventory, disseminate_catalog, @disseminate_bag_pathname)
-    db.package_mode = :reconstructor
-    db.bag_inventory = disseminate_inventory
-    db
   end
 
   specify '#delete_bag' do
