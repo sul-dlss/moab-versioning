@@ -1,9 +1,8 @@
 language: ruby
 
 rvm:
-  - 2.3.1
-  - 2.4.2
-  - 2.5.3
+  - 2.7.5
+  - 3.1.1
 
 # script, expressed as an array, is necessary for 'bundle exec coveralls push' to work locally
 script:
