@@ -1,7 +1,8 @@
 # moab-versioning
 
-![CI](https://github.com/sul-dlss/moab-versioning/workflows/CI/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/moab-versioning/badge.svg?branch=main)](https://coveralls.io/github/sul-dlss/moab-versioning?branch=main)
+[![CircleCI](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main.svg?style=svg)](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3d76361a6463c70bed30/test_coverage)](https://codeclimate.com/github/sul-dlss/moab-versioning/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3d76361a6463c70bed30/maintainability)](https://codeclimate.com/github/sul-dlss/moab-versioning/maintainability)
 [![Gem Version](https://badge.fury.io/rb/moab-versioning.svg)](https://badge.fury.io/rb/moab-versioning)
 
 ## Usage
