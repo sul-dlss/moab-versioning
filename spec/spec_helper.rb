@@ -5,9 +5,9 @@ Coveralls.wear_merged! # because we run travis on multiple rubies
 
 require 'simplecov'
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-SimpleCov.start do
-  add_filter 'spec'
-end
+SimpleCov.add_filter 'spec'
+
+SimpleCov.start 'rails' unless SimpleCov.running
 
 require 'equivalent-xml'
 require 'moab/stanford'
