@@ -22,13 +22,13 @@ Gem::Specification.new do |s|
   s.add_dependency 'nokogiri' # XML parsing
   s.add_dependency 'nokogiri-happymapper' # Object to XML Mapping Library, using Nokogiri
 
-  s.add_development_dependency 'coveralls'
   s.add_development_dependency 'equivalent-xml'
   s.add_development_dependency 'pry-byebug' unless ENV['CI']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop', '~> 1.7'
   s.add_development_dependency 'rubocop-rspec', '~> 2.1'
+  s.add_development_dependency 'simplecov'
 
   s.files        = Dir.glob('lib/**/*')
   s.require_path = 'lib'
