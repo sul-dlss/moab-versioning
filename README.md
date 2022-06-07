@@ -1,6 +1,6 @@
 # moab-versioning
 
-![CI](https://github.com/sul-dlss/moab-versioning/workflows/CI/badge.svg)
+[![CircleCI](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main.svg?style=svg)](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main)
 [![Coverage Status](https://coveralls.io/repos/github/sul-dlss/moab-versioning/badge.svg?branch=main)](https://coveralls.io/github/sul-dlss/moab-versioning?branch=main)
 [![Gem Version](https://badge.fury.io/rb/moab-versioning.svg)](https://badge.fury.io/rb/moab-versioning)
 
