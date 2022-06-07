@@ -116,8 +116,9 @@ describe Moab::StorageObjectVersion do
       sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
-    exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
-    expect(@existing_storage_object_version.find_filepath_using_signature('content', file_signature).to_s).to match exp_regex
+    title_image = File.join('ingests', 'jq937jp0017', 'v0001', 'data', 'content', 'title.jpg')
+    storage_object_path = @existing_storage_object_version.find_filepath_using_signature('content', file_signature).to_s
+    expect(storage_object_path).to include title_image
   end
 
   describe '#file_pathname' do
@@ -140,20 +141,15 @@ describe Moab::StorageObjectVersion do
   end
 
   describe '#file_category_pathname' do
-    let(:exp_dir) { 'moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0002' }
+    let(:data_path) { File.join('derivatives', 'ingests', 'jq937jp0017', 'v0002') }
+    let(:content_path) { File.join(data_path, 'data', 'content') }
+    let(:metadata_path) { File.join(data_path, 'data', 'metadata') }
+    let(:manifests_path) { File.join(data_path, 'manifests') }
 
-    it 'content' do
-      exp_regex = Regexp.new("#{exp_dir}/data/content")
-      expect(@existing_storage_object_version.file_category_pathname('content').to_s).to match(exp_regex)
-    end
-
-    it 'metadata' do
-      exp_regex = Regexp.new("#{exp_dir}/data/metadata")
-      expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to match(exp_regex)
-    end
-
-    it 'manifests' do
-      expect(@existing_storage_object_version.file_category_pathname('manifests').to_s).to match exp_dir
+    it 'creates the data file paths' do
+      expect(@existing_storage_object_version.file_category_pathname('content').to_s).to include content_path
+      expect(@existing_storage_object_version.file_category_pathname('metadata').to_s).to include metadata_path
+      expect(@existing_storage_object_version.file_category_pathname('manifests').to_s).to include manifests_path
     end
   end
 

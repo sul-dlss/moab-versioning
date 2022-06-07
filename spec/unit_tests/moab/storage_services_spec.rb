@@ -117,7 +117,7 @@ describe Moab::StorageServices do
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
     filepath = described_class.retrieve_file_using_signature('content', file_signature, @obj, 2)
-    exp_regex = %r{moab-versioning/spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
+    exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
     expect(filepath.to_s).to match(exp_regex)
   end
 

@@ -215,7 +215,8 @@ describe Serializer::Serializable do
   specify '#to_json' do
     adj_v1_content = @v1_content.to_json
                                 .gsub(/"datetime": ".*?"/, '"datetime": ""')
-                                .gsub(/: ".*moab-versioning/, ': "moab-versioning') + "\n"
+                                .gsub(/: ".*moab-versioning/, ': "moab-versioning')
+                                .gsub('/home/circleci/project', 'moab-versioning') + "\n"
     expect(adj_v1_content).to eq <<JSON
 {
   "group_id": "content",
