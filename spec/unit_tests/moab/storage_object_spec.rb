@@ -152,7 +152,10 @@ describe Moab::StorageObject do
 
     new_inventory_ng_xml = Nokogiri::XML(new_inventory.to_xml)
     new_inventory_ng_xml.xpath('//@datetime').each { |d| d.value = '' }
-    new_inventory_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub('/home/circleci/project', 'moab-versioning') }
+    new_inventory_ng_xml.xpath('//@dataSource').each do |d|
+      d.value = d.value.gsub(/.*moab-versioning/, 'moab-versioning')
+      d.value = d.value.gsub('/home/circleci/project', 'moab-versioning')
+    end
     new_inventory_ng_xml.xpath('//@inventoryDatetime').remove
     exp_xml = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">

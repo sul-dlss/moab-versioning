@@ -60,6 +60,10 @@ Style/ZeroLengthPredicate:
   Exclude:
     - 'lib/moab/bagger.rb' # is calling `x.size == 0` on Pathname objects, which don't have `.empty?` on old Rubies
 
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/**/*' # Spec exampels may have many lines of test data, ignore ExmapleLength for tests.
+
 Gemspec/DateAssignment: # new in 1.10
   Enabled: true
 Gemspec/RequireMFA: # new in 1.23
