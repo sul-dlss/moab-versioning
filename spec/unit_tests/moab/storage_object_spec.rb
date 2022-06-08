@@ -36,11 +36,11 @@ describe Moab::StorageObject do
 
   specify '#initialize_storage' do
     @temp_object_dir.rmtree if @temp_object_dir.exist?
-    expect(@temp_object_dir.exist?).to eq false
-    expect(@storage_object.exist?).to eq false
+    expect(@temp_object_dir.exist?).to be false
+    expect(@storage_object.exist?).to be false
     @storage_object.initialize_storage
-    expect(@temp_object_dir.exist?).to eq true
-    expect(@storage_object.exist?).to eq true
+    expect(@temp_object_dir.exist?).to be true
+    expect(@storage_object.exist?).to be true
   end
 
   specify '#deposit_home' do
@@ -131,11 +131,11 @@ describe Moab::StorageObject do
 
       bag_dir.join('versionInventory.xml').delete
       bag_dir.join('versionAdditions.xml').delete
-      expect(bag_dir.join('versionInventory.xml').exist?).to eq false
-      expect(bag_dir.join('versionAdditions.xml').exist?).to eq false
+      expect(bag_dir.join('versionInventory.xml').exist?).to be false
+      expect(bag_dir.join('versionAdditions.xml').exist?).to be false
       described_class.new(@druid, object_dir).ingest_bag(bag_dir)
-      expect(bag_dir.join('versionInventory.xml').exist?).to eq true
-      expect(bag_dir.join('versionAdditions.xml').exist?).to eq true
+      expect(bag_dir.join('versionInventory.xml').exist?).to be true
+      expect(bag_dir.join('versionAdditions.xml').exist?).to be true
       ingests_dir.rmtree if ingests_dir.exist? # cleanup
     end
   end
@@ -406,7 +406,7 @@ describe Moab::StorageObject do
 
     version_inventory_4 = double("#{Moab::FileInventory.name}4")
     expect(version_inventory_4).to receive(:version_id).and_return 4
-    expect(storage_object.validate_new_inventory(version_inventory_4)).to eq true
+    expect(storage_object.validate_new_inventory(version_inventory_4)).to be true
   end
 
   describe '#find_object_version' do
@@ -457,7 +457,7 @@ describe Moab::StorageObject do
   end
 
   specify '#verify_object_storage' do
-    expect(storage_object.verify_object_storage.verified).to eq true
+    expect(storage_object.verify_object_storage.verified).to be true
   end
 
   specify '#restore_object' do

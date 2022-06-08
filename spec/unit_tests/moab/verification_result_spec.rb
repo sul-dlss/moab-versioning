@@ -22,7 +22,7 @@ describe Moab::VerificationResult do
   specify '.verify_value' do
     result = described_class.verify_value('greeting', "hello", "goodbye")
     expect(result.entity).to eq 'greeting'
-    expect(result.verified).to eq false
+    expect(result.verified).to be false
     expect(result.details).to eq("expected" => "hello", "found" => "goodbye")
     expect(result.subentities).to be_an_instance_of Array
     expect(result.subentities.size).to eq 0
@@ -31,8 +31,8 @@ describe Moab::VerificationResult do
   specify '.verify_truth' do
     result = described_class.verify_truth('truth', "true")
     expect(result.entity).to eq 'truth'
-    expect(result.verified).to eq true
-    expect(result.details).to eq nil
+    expect(result.verified).to be true
+    expect(result.details).to be_nil
     expect(result.subentities).to be_an_instance_of Array
     expect(result.subentities.size).to eq 0
   end
@@ -40,8 +40,8 @@ describe Moab::VerificationResult do
   specify '#initialize' do
     result = described_class.new('my_entity')
     expect(result.entity).to eq 'my_entity'
-    expect(result.verified).to eq false
-    expect(result.details).to eq nil
+    expect(result.verified).to be false
+    expect(result.details).to be_nil
     expect(result.subentities).to be_an_instance_of Array
   end
 

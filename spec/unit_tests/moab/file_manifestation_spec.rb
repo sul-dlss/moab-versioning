@@ -66,6 +66,6 @@ describe Moab::FileManifestation do
 
   specify '#==' do
     other = file_manifestation
-    expect(file_manifestation == other).to eq true
+    expect(file_manifestation == other).to be true
   end
 end

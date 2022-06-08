@@ -99,19 +99,19 @@ describe Moab::FileSignature do
   end
 
   specify '#eql?' do
-    expect(title_v1_signature.eql?(title_v2_signature)).to eq true
-    expect(page1_v1_signature.eql?(page1_v2_signature)).to eq false
+    expect(title_v1_signature.eql?(title_v2_signature)).to be true
+    expect(page1_v1_signature.eql?(page1_v2_signature)).to be false
   end
 
   specify '#==' do
-    expect(title_v1_signature == title_v2_signature).to eq true
-    expect(page1_v1_signature == page1_v2_signature).to eq false
+    expect(title_v1_signature == title_v2_signature).to be true
+    expect(page1_v1_signature == page1_v2_signature).to be false
   end
 
   specify '#hash' do
     expect(title_v1_signature.hash).to be_kind_of Numeric
-    expect(title_v1_signature.hash == title_v2_signature.hash).to eq true
-    expect(page1_v1_signature.hash == page1_v2_signature.hash).to eq false
+    expect(title_v1_signature.hash == title_v2_signature.hash).to be true
+    expect(page1_v1_signature.hash == page1_v2_signature.hash).to be false
   end
 
   specify '#signature_from_file' do

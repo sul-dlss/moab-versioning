@@ -81,7 +81,7 @@ describe Moab::FileInventoryDifference do
     end
 
     specify 'unknown type returns nil' do
-      expect(diff_v1_v2.group_difference('dummy')).to eq nil
+      expect(diff_v1_v2.group_difference('dummy')).to be_nil
     end
   end
 

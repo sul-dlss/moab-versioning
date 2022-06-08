@@ -420,9 +420,9 @@ describe Moab::FileGroupDifference do
 
   specify '#rename_require_temp_files' do
     renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
-    expect(new_diff.rename_require_temp_files(renamed)).to eq true
+    expect(new_diff.rename_require_temp_files(renamed)).to be true
     renamed = [["page-1.jpg", "page-1b.jpg"], ["page-2.jpg", "page-2b.jpg"]]
-    expect(new_diff.rename_require_temp_files(renamed)).to eq false
+    expect(new_diff.rename_require_temp_files(renamed)).to be false
   end
 
   specify '#rename_tempfile_triplets' do

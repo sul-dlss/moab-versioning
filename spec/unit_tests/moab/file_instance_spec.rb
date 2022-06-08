@@ -42,20 +42,20 @@ describe Moab::FileInstance do
   end
 
   specify '#eql?' do
-    expect(title_v1_instance.eql?(title_v2_instance)).to eq true
-    expect(page1_v1_instance.eql?(page1_v2_instance)).to eq true
-    expect(title_v1_instance.eql?(page1_v2_instance)).to eq false
+    expect(title_v1_instance.eql?(title_v2_instance)).to be true
+    expect(page1_v1_instance.eql?(page1_v2_instance)).to be true
+    expect(title_v1_instance.eql?(page1_v2_instance)).to be false
   end
 
   specify '#==' do
-    expect(title_v1_instance == title_v2_instance).to eq true
-    expect(page1_v1_instance == page1_v2_instance).to eq true
-    expect(title_v1_instance == page1_v2_instance).to eq false
+    expect(title_v1_instance == title_v2_instance).to be true
+    expect(page1_v1_instance == page1_v2_instance).to be true
+    expect(title_v1_instance == page1_v2_instance).to be false
   end
 
   specify '#hash' do
-    expect(title_v1_instance.hash == title_v2_instance.hash).to eq true
-    expect(page1_v1_instance.hash == page1_v2_instance.hash).to eq true
-    expect(title_v1_instance.hash == page1_v2_instance.hash).to eq false
+    expect(title_v1_instance.hash == title_v2_instance.hash).to be true
+    expect(page1_v1_instance.hash == page1_v2_instance.hash).to be true
+    expect(title_v1_instance.hash == page1_v2_instance.hash).to be false
   end
 end

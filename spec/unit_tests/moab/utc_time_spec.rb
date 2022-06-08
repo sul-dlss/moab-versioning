@@ -6,7 +6,7 @@ describe Moab::UtcTime do
 
   describe '.input' do
     it 'nil returns nil' do
-      expect(described_class.input(nil)).to eq nil
+      expect(described_class.input(nil)).to be_nil
     end
 
     it 'returns Time.parse() of string value' do
