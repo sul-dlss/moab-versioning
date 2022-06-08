@@ -283,18 +283,18 @@ describe Moab::StorageObjectVersion do
     temp_storage_object_version.ingest_file(vers_add_file, temp_version_pathname)
 
     temp_storage_object_version.generate_manifest_inventory
-    expect(Moab::FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'), 'manifests')).to eq true
+    expect(Moab::FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'), 'manifests')).to be true
   end
 
   specify '#verify_version_storage' do
     result = @existing_storage_object_version.verify_version_storage
-    expect(result.verified).to eq true
+    expect(result.verified).to be true
   end
 
   describe '#verify_manifest_inventory' do
     it 'when files match, VerificationResult.verified is true' do
       result = @existing_storage_object_version.verify_manifest_inventory
-      expect(result.verified).to eq true
+      expect(result.verified).to be true
     end
 
     context 'when files do not match' do
@@ -303,7 +303,7 @@ describe Moab::StorageObjectVersion do
       end
 
       it 'VerificationResult.verified is false' do
-        expect(@result.verified).to eq false
+        expect(@result.verified).to be false
       end
 
       it 'VerificationResult.to_hash has expected content' do
@@ -373,7 +373,7 @@ describe Moab::StorageObjectVersion do
     end
 
     it 'VerificationResult.verified is true' do
-      expect(@result.verified).to eq true
+      expect(@result.verified).to be true
     end
 
     it 'VerificationResult.to_hash has expected content' do
@@ -411,7 +411,7 @@ describe Moab::StorageObjectVersion do
     end
 
     it 'VerificationResult.verified is true' do
-      expect(@result.verified).to eq true
+      expect(@result.verified).to be true
     end
 
     it 'VerificationResult.to_hash has expected content' do
@@ -453,7 +453,7 @@ describe Moab::StorageObjectVersion do
   describe '#verify_version_additions' do
     it 'when files match, VerificationResult.verified is true' do
       result = @existing_storage_object_version.verify_version_additions
-      expect(result.verified).to eq true
+      expect(result.verified).to be true
     end
 
     context 'when files do not match' do
@@ -462,7 +462,7 @@ describe Moab::StorageObjectVersion do
       end
 
       it 'VerificationResult.verified is false' do
-        expect(@result.verified).to eq false
+        expect(@result.verified).to be false
       end
 
       it 'VerificationResult.to_hash has expected content' do
@@ -540,9 +540,9 @@ describe Moab::StorageObjectVersion do
     so = Moab::StorageObject.new(@druid, @temp_object_dir)
     version = so.storage_object_version(version_id)
     timestamp = Time.now
-    expect(version.exist?).to eq true
+    expect(version.exist?).to be true
     version.deactivate(timestamp)
-    expect(version.exist?).to eq false
+    expect(version.exist?).to be false
     inactive_location = @temp_object_dir.join(timestamp.utc.iso8601.gsub(/[-:]/, ''))
     expect(inactive_location.children.size).to eq 1
   end

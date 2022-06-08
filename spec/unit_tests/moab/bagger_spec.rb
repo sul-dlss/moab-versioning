@@ -54,21 +54,21 @@ describe Moab::Bagger do
     bag_dir = packages.join('deleteme')
     data_dir = bag_dir.join('data')
     data_dir.mkpath
-    expect(data_dir.exist?).to eq true
+    expect(data_dir.exist?).to be true
     bagger = described_class.new(nil, nil, bag_dir)
     bagger.delete_bag
-    expect(bag_dir.exist?).to eq false
+    expect(bag_dir.exist?).to be false
   end
 
   specify '#delete_tarfile' do
     packages = @temp.join('packages')
     tar_file = packages.join('deleteme.tar')
     tar_file.open('w') { |f| f.puts "delete me please" }
-    expect(tar_file.exist?).to eq true
+    expect(tar_file.exist?).to be true
     bag_dir = packages.join('deleteme')
     bagger = described_class.new(nil, nil, bag_dir)
     bagger.delete_tarfile
-    expect(tar_file.exist?).to eq false
+    expect(tar_file.exist?).to be false
   end
 
   describe '#fill_bag' do
@@ -228,7 +228,7 @@ describe Moab::Bagger do
     submit_bag.fill_payload(submit_source_base)
     submit_bag.create_payload_manifests
     md5 = submit_bag.bag_pathname.join('manifest-md5.txt')
-    expect(md5.exist?).to eq true
+    expect(md5.exist?).to be true
     expect(md5.readlines.sort).to eq [
       "351e4c872148e0bc9dc24874c7ef6c08 data/metadata/provenanceMetadata.xml\n",
       "8672613ac1757cda4e44cc464559cd04 data/metadata/contentMetadata.xml\n",
@@ -236,7 +236,7 @@ describe Moab::Bagger do
       "c1c34634e2f18a354cd3e3e1574c3194 data/content/page-1.jpg\n"
     ]
     sha1 = submit_bag.bag_pathname.join('manifest-sha1.txt')
-    expect(sha1.exist?).to eq true
+    expect(sha1.exist?).to be true
     expect(sha1.readlines.sort).to eq [
       "0616a0bd7927328c364b2ea0b4a79c507ce915ed data/content/page-1.jpg\n",
       "565473bbc865b1c6f88efc99b6b5b73fd5cadbc8 data/metadata/provenanceMetadata.xml\n",
@@ -248,7 +248,7 @@ describe Moab::Bagger do
   specify '#create_bag_info_txt' do
     submit_bag.create_bag_info_txt
     bag_info = submit_bag.bag_pathname.join('bag-info.txt')
-    expect(bag_info.exist?).to eq true
+    expect(bag_info.exist?).to be true
     expect(bag_info.readlines).to eq [
       "External-Identifier: druid:jq937jp0017-v2\n",
       "Payload-Oxum: 35181.4\n",
@@ -259,7 +259,7 @@ describe Moab::Bagger do
   specify '#create_bagit_txt' do
     submit_bag.create_bagit_txt
     bagit = submit_bag.bag_pathname.join('bagit.txt')
-    expect(bagit.exist?).to eq true
+    expect(bagit.exist?).to be true
     expect(bagit.readlines).to eq [
       "Tag-File-Character-Encoding: UTF-8\n",
       "BagIt-Version: 0.97\n"
@@ -270,7 +270,7 @@ describe Moab::Bagger do
     expect(submit_bag).to receive(:create_tagfile_manifests).and_call_original
     submit_bag.fill_bag(:depositor, submit_source_base)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')
-    expect(md5.exist?).to eq true
+    expect(md5.exist?).to be true
     expect(md5.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
       "bag-info.txt\n",
       "bagit.txt\n",
@@ -282,7 +282,7 @@ describe Moab::Bagger do
     ]
 
     sha1 = submit_bag.bag_pathname.join('tagmanifest-sha1.txt')
-    expect(sha1.exist?).to eq true
+    expect(sha1.exist?).to be true
     expect(sha1.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
       "bag-info.txt\n",
       "bagit.txt\n",

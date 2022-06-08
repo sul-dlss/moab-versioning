@@ -226,7 +226,7 @@ describe Moab::StorageObjectValidator do
       let(:druid_path) { 'spec/fixtures/good_root01/moab_storage_trunk/bj/103/hs/9687/bj103hs9687' }
 
       it "returns true when moab is in correct format" do
-        expect(error_list.empty?).to eq true
+        expect(error_list.empty?).to be true
       end
 
       context 'manifest directory' do

@@ -123,7 +123,7 @@ describe Serializer::Serializable do
     end
 
     it 'nil for FileSignature' do
-      expect(Moab::FileSignature.new.key_name).to eq(nil)
+      expect(Moab::FileSignature.new.key_name).to be_nil
     end
   end
 
@@ -142,7 +142,7 @@ describe Serializer::Serializable do
 
     it 'FileSignature key is nil' do
       file_signature = Moab::FileSignature.new
-      expect(file_signature.key).to eq(nil)
+      expect(file_signature.key).to be_nil
     end
   end
 

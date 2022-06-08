@@ -213,7 +213,7 @@ describe Stanford::ContentInventory do
   describe '#validate_content_metadata' do
     it 'returns true when valid data' do
       cm = @fixtures.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
-      expect(@content_inventory.validate_content_metadata(cm)).to eq(true)
+      expect(@content_inventory.validate_content_metadata(cm)).to be(true)
     end
 
     it 'raises Moab::InvalidMetadataException for bad data' do

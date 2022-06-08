@@ -24,8 +24,8 @@ describe Serializer::Manifest do
   end
 
   specify '.xml_pathname_exist?' do
-    expect(described_class.xml_pathname_exist?("/test/parent_dir", "dummy")).to eq(false)
-    expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to eq(true)
+    expect(described_class.xml_pathname_exist?("/test/parent_dir", "dummy")).to be(false)
+    expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to be(true)
   end
 
   specify '.read_xml_file' do

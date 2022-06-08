@@ -112,12 +112,12 @@ describe Moab::FileInventory do
     group_id = 'content'
     group = parsed_file_inventory.group(group_id)
     expect(group.group_id).to eq group_id
-    expect(parsed_file_inventory.group('dummy')).to eq nil
+    expect(parsed_file_inventory.group('dummy')).to be_nil
   end
 
   specify '#group_empty?' do
-    expect(parsed_file_inventory.group_empty?('content')).to eq false
-    expect(parsed_file_inventory.group_empty?('dummy')).to eq true
+    expect(parsed_file_inventory.group_empty?('content')).to be false
+    expect(parsed_file_inventory.group_empty?('dummy')).to be true
   end
 
   specify '#file_signature' do
