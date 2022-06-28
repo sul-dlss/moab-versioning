@@ -64,8 +64,6 @@ RSpec/ExampleLength:
   Exclude:
     - 'spec/**/*' # Spec exampels may have many lines of test data, ignore ExmapleLength for tests.
 
-Gemspec/DateAssignment: # new in 1.10
-  Enabled: true
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
 Layout/LineEndStringConcatenationIndentation: # new in 1.18
@@ -202,4 +200,12 @@ RSpec/BeNil: # new in 2.9.0
 RSpec/ChangeByZero: # new in 2.11.0
   Enabled: true
 RSpec/VerifiedDoubleReference: # new in 2.10.0
+  Enabled: true
+Layout/LineContinuationLeadingSpace: # new in 1.31
+  Enabled: true
+Layout/LineContinuationSpacing: # new in 1.31
+  Enabled: true
+Lint/ConstantOverwrittenInRescue: # new in 1.31
+  Enabled: true
+Lint/NonAtomicFileOperation: # new in 1.31
   Enabled: true
