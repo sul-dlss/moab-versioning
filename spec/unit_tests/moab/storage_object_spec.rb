@@ -52,91 +52,164 @@ describe Moab::StorageObject do
   end
 
   describe '#ingest_bag' do
-    it 'by the version folder' do
-      ingests_dir = @temp.join('ingests')
-      (1..3).each do |version|
-        object_dir = ingests_dir.join(@obj)
-        object_dir.mkpath
-        unless object_dir.join("v000#{version}").exist?
-          bag_dir = @packages.join(@vname[version])
-          described_class.new(@druid, object_dir).ingest_bag(bag_dir)
+    context 'with use_links' do
+      it 'by the version folder' do
+        ingests_dir = @temp.join('ingests')
+        (1..3).each do |version|
+          object_dir = ingests_dir.join(@obj)
+          object_dir.mkpath
+          unless object_dir.join("v000#{version}").exist?
+            bag_dir = @packages.join(@vname[version])
+            described_class.new(@druid, object_dir).ingest_bag(bag_dir)
+          end
         end
+
+        files = []
+        ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        expect(files.sort).to eq [
+          "ingests",
+          "ingests/jq937jp0017",
+          "ingests/jq937jp0017/v0001",
+          "ingests/jq937jp0017/v0001/data",
+          "ingests/jq937jp0017/v0001/data/content",
+          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+          "ingests/jq937jp0017/v0001/data/content/title.jpg",
+          "ingests/jq937jp0017/v0001/data/metadata",
+          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0001/manifests",
+          "ingests/jq937jp0017/v0001/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0001/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml",
+          "ingests/jq937jp0017/v0002",
+          "ingests/jq937jp0017/v0002/data",
+          "ingests/jq937jp0017/v0002/data/content",
+          "ingests/jq937jp0017/v0002/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0002/data/metadata",
+          "ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0002/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0002/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0002/manifests",
+          "ingests/jq937jp0017/v0002/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0002/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0002/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0002/manifests/versionInventory.xml",
+          "ingests/jq937jp0017/v0003",
+          "ingests/jq937jp0017/v0003/data",
+          "ingests/jq937jp0017/v0003/data/content",
+          "ingests/jq937jp0017/v0003/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0003/data/metadata",
+          "ingests/jq937jp0017/v0003/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0003/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0003/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0003/manifests",
+          "ingests/jq937jp0017/v0003/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0003/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
+        ]
+        ingests_dir.rmtree if ingests_dir.exist? # cleanup
       end
 
-      files = []
-      ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-      expect(files.sort).to eq [
-        "ingests",
-        "ingests/jq937jp0017",
-        "ingests/jq937jp0017/v0001",
-        "ingests/jq937jp0017/v0001/data",
-        "ingests/jq937jp0017/v0001/data/content",
-        "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-        "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-        "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-        "ingests/jq937jp0017/v0001/data/content/title.jpg",
-        "ingests/jq937jp0017/v0001/data/metadata",
-        "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-        "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-        "ingests/jq937jp0017/v0001/manifests",
-        "ingests/jq937jp0017/v0001/manifests/fileInventoryDifference.xml",
-        "ingests/jq937jp0017/v0001/manifests/manifestInventory.xml",
-        "ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml",
-        "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-        "ingests/jq937jp0017/v0001/manifests/versionInventory.xml",
-        "ingests/jq937jp0017/v0002",
-        "ingests/jq937jp0017/v0002/data",
-        "ingests/jq937jp0017/v0002/data/content",
-        "ingests/jq937jp0017/v0002/data/content/page-1.jpg",
-        "ingests/jq937jp0017/v0002/data/metadata",
-        "ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml",
-        "ingests/jq937jp0017/v0002/data/metadata/provenanceMetadata.xml",
-        "ingests/jq937jp0017/v0002/data/metadata/versionMetadata.xml",
-        "ingests/jq937jp0017/v0002/manifests",
-        "ingests/jq937jp0017/v0002/manifests/fileInventoryDifference.xml",
-        "ingests/jq937jp0017/v0002/manifests/manifestInventory.xml",
-        "ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml",
-        "ingests/jq937jp0017/v0002/manifests/versionAdditions.xml",
-        "ingests/jq937jp0017/v0002/manifests/versionInventory.xml",
-        "ingests/jq937jp0017/v0003",
-        "ingests/jq937jp0017/v0003/data",
-        "ingests/jq937jp0017/v0003/data/content",
-        "ingests/jq937jp0017/v0003/data/content/page-2.jpg",
-        "ingests/jq937jp0017/v0003/data/metadata",
-        "ingests/jq937jp0017/v0003/data/metadata/contentMetadata.xml",
-        "ingests/jq937jp0017/v0003/data/metadata/provenanceMetadata.xml",
-        "ingests/jq937jp0017/v0003/data/metadata/versionMetadata.xml",
-        "ingests/jq937jp0017/v0003/manifests",
-        "ingests/jq937jp0017/v0003/manifests/fileInventoryDifference.xml",
-        "ingests/jq937jp0017/v0003/manifests/manifestInventory.xml",
-        "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
-        "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
-        "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
-      ]
-      ingests_dir.rmtree if ingests_dir.exist? # cleanup
+      it 'creates versionInventory and versionAdditions' do
+        ingests_dir = @temp.join('ingests')
+        object_dir = ingests_dir.join(@obj)
+        object_dir.mkpath
+        bag_dir = @temp.join('plain_bag')
+        bag_dir.rmtree if bag_dir.exist?
+        FileUtils.cp_r(@packages.join(@vname[1]).to_s, bag_dir.to_s, preserve: true)
+
+        bag_dir.join('versionInventory.xml').delete
+        bag_dir.join('versionAdditions.xml').delete
+        expect(bag_dir.join('versionInventory.xml').exist?).to be false
+        expect(bag_dir.join('versionAdditions.xml').exist?).to be false
+        described_class.new(@druid, object_dir).ingest_bag(bag_dir)
+        expect(bag_dir.join('versionInventory.xml').exist?).to be true
+        expect(bag_dir.join('versionAdditions.xml').exist?).to be true
+        ingests_dir.rmtree if ingests_dir.exist? # cleanup
+      end
     end
 
-    it 'creates versionInventory and versionAdditions' do
-      ingests_dir = @temp.join('ingests')
-      object_dir = ingests_dir.join(@obj)
-      object_dir.mkpath
-      bag_dir = @temp.join('plain_bag')
-      bag_dir.rmtree if bag_dir.exist?
-      FileUtils.cp_r(@packages.join(@vname[1]).to_s, bag_dir.to_s, preserve: true)
+    context 'without use_links' do
+      it 'makes the versions folder' do
+        ingests_dir = @temp.join('ingests')
+        (1..3).each do |version|
+          object_dir = ingests_dir.join(@obj)
+          object_dir.mkpath
+          unless object_dir.join("v000#{version}").exist?
+            bag_dir = @packages.join(@vname[version])
+            described_class.new(@druid, object_dir).ingest_bag(bag_dir, use_links: false)
+          end
+        end
 
-      bag_dir.join('versionInventory.xml').delete
-      bag_dir.join('versionAdditions.xml').delete
-      expect(bag_dir.join('versionInventory.xml').exist?).to be false
-      expect(bag_dir.join('versionAdditions.xml').exist?).to be false
-      described_class.new(@druid, object_dir).ingest_bag(bag_dir)
-      expect(bag_dir.join('versionInventory.xml').exist?).to be true
-      expect(bag_dir.join('versionAdditions.xml').exist?).to be true
-      ingests_dir.rmtree if ingests_dir.exist? # cleanup
+        files = []
+        ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        expect(files.sort).to eq [
+          "ingests",
+          "ingests/jq937jp0017",
+          "ingests/jq937jp0017/v0001",
+          "ingests/jq937jp0017/v0001/data",
+          "ingests/jq937jp0017/v0001/data/content",
+          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+          "ingests/jq937jp0017/v0001/data/content/title.jpg",
+          "ingests/jq937jp0017/v0001/data/metadata",
+          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0001/manifests",
+          "ingests/jq937jp0017/v0001/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0001/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml",
+          "ingests/jq937jp0017/v0002",
+          "ingests/jq937jp0017/v0002/data",
+          "ingests/jq937jp0017/v0002/data/content",
+          "ingests/jq937jp0017/v0002/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0002/data/metadata",
+          "ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0002/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0002/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0002/manifests",
+          "ingests/jq937jp0017/v0002/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0002/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0002/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0002/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0002/manifests/versionInventory.xml",
+          "ingests/jq937jp0017/v0003",
+          "ingests/jq937jp0017/v0003/data",
+          "ingests/jq937jp0017/v0003/data/content",
+          "ingests/jq937jp0017/v0003/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0003/data/metadata",
+          "ingests/jq937jp0017/v0003/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0003/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0003/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0003/manifests",
+          "ingests/jq937jp0017/v0003/manifests/fileInventoryDifference.xml",
+          "ingests/jq937jp0017/v0003/manifests/manifestInventory.xml",
+          "ingests/jq937jp0017/v0003/manifests/signatureCatalog.xml",
+          "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
+        ]
+        ingests_dir.rmtree if ingests_dir.exist? # cleanup
+      end
     end
   end
 

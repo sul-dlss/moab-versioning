@@ -137,15 +137,16 @@ module Moab
 
     # @api internal
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
+    # @param use_links [Boolean] If true, use hard links; if false, make copies
     # @return [void] Create the version subdirectory and move files into it
-    def ingest_bag_data(bag_dir)
+    def ingest_bag_data(bag_dir, use_links: true)
       raise(MoabRuntimeError, "Version already exists: #{@version_pathname}") if @version_pathname.exist?
 
       @version_pathname.join('manifests').mkpath
       bag_dir = Pathname(bag_dir)
-      ingest_dir(bag_dir.join('data'), @version_pathname.join('data'))
-      ingest_file(bag_dir.join(FileInventory.xml_filename('version')), @version_pathname.join('manifests'))
-      ingest_file(bag_dir.join(FileInventory.xml_filename('additions')), @version_pathname.join('manifests'))
+      ingest_dir(bag_dir.join('data'), @version_pathname.join('data'), use_links)
+      ingest_file(bag_dir.join(FileInventory.xml_filename('version')), @version_pathname.join('manifests'), use_links)
+      ingest_file(bag_dir.join(FileInventory.xml_filename('additions')), @version_pathname.join('manifests'), use_links)
     end
 
     # @api internal

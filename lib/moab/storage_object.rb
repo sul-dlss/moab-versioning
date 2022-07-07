@@ -57,9 +57,10 @@ module Moab
 
     # @api external
     # @param bag_dir [Pathname,String] The location of the bag to be ingested
+    # @param use_links [Boolean] If true, use hard links; if false, make copies
     # @return [void] Ingest a new object version contained in a bag into this objects storage area
     # @example {include:file:spec/features/storage/ingest_spec.rb}
-    def ingest_bag(bag_dir = deposit_bag_pathname)
+    def ingest_bag(bag_dir = deposit_bag_pathname, use_links: true)
       bag_dir = Pathname(bag_dir)
       current_version = StorageObjectVersion.new(self, current_version_id)
       current_inventory = current_version.file_inventory('version')
@@ -70,7 +71,7 @@ module Moab
         new_inventory = versionize_bag(bag_dir, current_version, new_version)
       end
       validate_new_inventory(new_inventory)
-      new_version.ingest_bag_data(bag_dir)
+      new_version.ingest_bag_data(bag_dir, use_links: use_links)
       new_version.update_catalog(current_version.signature_catalog, new_inventory)
       new_version.generate_differences_report(current_inventory, new_inventory)
       new_version.generate_manifest_inventory

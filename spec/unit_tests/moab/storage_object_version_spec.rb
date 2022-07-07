@@ -163,32 +163,72 @@ describe Moab::StorageObjectVersion do
     expect(@existing_storage_object_version.signature_catalog).to be_instance_of(Moab::SignatureCatalog)
   end
 
-  specify '#ingest_bag_data' do
-    temp_storage_object_version = described_class.new(@temp_storage_object, 1)
-    temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
-    files = []
-    @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
-    expect(files.sort).to eq [
-      "ingests/jq937jp0017",
-      "ingests/jq937jp0017/v0001",
-      "ingests/jq937jp0017/v0001/data",
-      "ingests/jq937jp0017/v0001/data/content",
-      "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-      "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-      "ingests/jq937jp0017/v0001/data/content/title.jpg",
-      "ingests/jq937jp0017/v0001/data/metadata",
-      "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-      "ingests/jq937jp0017/v0001/manifests",
-      "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-      "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
-    ]
+  describe '#ingest_bag_data' do
+    context 'with links (default)' do
+      before do
+        temp_storage_object_version = described_class.new(@temp_storage_object, 1)
+        temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
+      end
+
+      it 'puts the files in the ingest dir' do
+        files = []
+        @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        expect(files.sort).to eq [
+          "ingests/jq937jp0017",
+          "ingests/jq937jp0017/v0001",
+          "ingests/jq937jp0017/v0001/data",
+          "ingests/jq937jp0017/v0001/data/content",
+          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+          "ingests/jq937jp0017/v0001/data/content/title.jpg",
+          "ingests/jq937jp0017/v0001/data/metadata",
+          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0001/manifests",
+          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
+        ]
+      end
+    end
+
+    context 'without links' do
+      before do
+        temp_storage_object_version = described_class.new(@temp_storage_object, 1)
+        temp_storage_object_version.ingest_bag_data(@packages.join("v0001"), use_links: false)
+      end
+
+      it 'puts the files in the ingest dir' do
+        files = []
+        @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        expect(files.sort).to eq [
+          "ingests/jq937jp0017",
+          "ingests/jq937jp0017/v0001",
+          "ingests/jq937jp0017/v0001/data",
+          "ingests/jq937jp0017/v0001/data/content",
+          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
+          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
+          "ingests/jq937jp0017/v0001/data/content/title.jpg",
+          "ingests/jq937jp0017/v0001/data/metadata",
+          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
+          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
+          "ingests/jq937jp0017/v0001/manifests",
+          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
+          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
+        ]
+      end
+    end
   end
 
   specify '#ingest_dir' do
