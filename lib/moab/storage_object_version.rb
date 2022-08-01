@@ -128,11 +128,11 @@ module Moab
     # @api external
     # @return [SignatureCatalog] The signature catalog of the digital object as of this version
     def signature_catalog
-      if version_id > 0
-        SignatureCatalog.read_xml_file(@version_pathname.join('manifests'))
-      else
-        SignatureCatalog.new(digital_object_id: @storage_object.digital_object_id)
-      end
+      @signature_catalog ||= if version_id > 0
+                               SignatureCatalog.read_xml_file(@version_pathname.join('manifests'))
+                             else
+                               SignatureCatalog.new(digital_object_id: @storage_object.digital_object_id)
+                             end
     end
 
     # @api internal
