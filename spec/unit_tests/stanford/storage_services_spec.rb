@@ -4,6 +4,16 @@ describe Stanford::StorageServices do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
   let(:content_metadata) { File.read(@data.join('v0002/metadata/contentMetadata.xml')) }
 
+  it 'only instantiates StorageRepository once for the class, even if multiple threads try to access it' do
+    # Object#object_id Returns an integer identifier for obj.  The same number will be returned
+    # on all calls to object_id for a given object, and no two active objects will share an id.
+    # https://ruby-doc.org/core-3.0.1/Object.html#method-i-object_id
+    threads = []
+    100.times { threads << Thread.new { described_class.repository.object_id } }
+    threads.each(&:join)
+    expect(threads.map(&:value).uniq.size).to eq(1)
+  end
+
   specify '.cm_remediate' do
     remediated_cm = described_class.cm_remediate(@obj, 1)
     remediated_cm_ng_xml = Nokogiri::XML(remediated_cm)

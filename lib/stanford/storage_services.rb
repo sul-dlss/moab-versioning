@@ -3,8 +3,21 @@
 module Stanford
   # An interface class to support access to SDR storage via a RESTful server
   class StorageServices < Moab::StorageServices
-    # @return [StorageRepository] an instance of the interface to SDR storage
+    # @note After some discussion, consensus was that this is a thread safe use of a
+    # class variable, as 1) it's never mutated after the class is initialized, and 2) the
+    # value of the StorageRepository instance is determined from configuration that
+    # rarely changes and is loaded once at app start time (at least in Stanford's
+    # consumers; see Moab::Config.configure calls in preservation_robots, preservation_catalog,
+    # and technical-metadata-service).
+    # Sidekiq requires thread safe code, so please preserve thread safety for multiple
+    # concurrent callers of this service if refactoring, so Sidekiq remains an option for
+    # ActiveJob backend for moab-versioning consumers.
     @@repository = Stanford::StorageRepository.new
+
+    # @return [StorageRepository] an instance of the interface to SDR storage
+    def self.repository
+      @@repository
+    end
 
     # @param new_content_metadata [String] The content metadata to be compared to the base
     # @param object_id [String] The digital object identifier of the object whose version inventory is the basis of the
@@ -42,7 +55,7 @@ module Stanford
       begin
         # ObjectNotFoundException is raised if the object does not exist in storage
         version_id ||= current_version(object_id)
-        storage_object_version = @@repository.storage_object(object_id).find_object_version(version_id)
+        storage_object_version = repository.storage_object(object_id).find_object_version(version_id)
         signature_catalog = storage_object_version.signature_catalog
       rescue Moab::ObjectNotFoundException
         storage_object = Moab::StorageObject.new(object_id, 'dummy')
