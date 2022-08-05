@@ -25,11 +25,11 @@ describe Serializer::Manifest do
 
   specify '.xml_pathname_exist?' do
     expect(described_class.xml_pathname_exist?("/test/parent_dir", "dummy")).to be(false)
-    expect(Moab::SignatureCatalog.xml_pathname_exist?(@manifests.join("v0001"))).to be(true)
+    expect(Moab::SignatureCatalog.xml_pathname_exist?(manifests_dir.join("v0001"))).to be(true)
   end
 
   specify '.read_xml_file' do
-    parent_dir = @manifests.join("v1")
+    parent_dir = manifests_dir.join("v1")
     mock_pathname = double(Pathname.name)
     mock_xml = double("xml")
     expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
@@ -39,9 +39,9 @@ describe Serializer::Manifest do
   end
 
   specify '.write_xml_file' do
-    xml_object = Moab::SignatureCatalog.read_xml_file(@manifests.join("v0001"))
+    xml_object = Moab::SignatureCatalog.read_xml_file(manifests_dir.join("v0001"))
     #xml_object.should_receive(:to_xml)
-    output_dir = @temp
+    output_dir = temp_dir
     mock_pathname = double(Pathname.name)
     expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
     expect(mock_pathname).to receive(:open).with('w').and_return(an_instance_of(IO))
@@ -52,7 +52,7 @@ describe Serializer::Manifest do
     let(:output_dir) { "/my/temp" }
 
     it 'FileInventory.write_xml_file' do
-      pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+      pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
       file_inventory = Moab::FileInventory.parse(pathname.read)
       expect(Moab::FileInventory).to receive(:write_xml_file).with(file_inventory, output_dir, "version")
       file_inventory.write_xml_file(output_dir)

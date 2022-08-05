@@ -14,20 +14,20 @@ describe "Import digital object version to SDR" do
     #       : and generate an inventory of all the manifest files
     # outcome: version storage folder
 
-    ingests_dir = @temp.join('ingests')
+    ingests_dir = temp_dir.join('ingests')
     ingests_dir.rmtree if ingests_dir.exist?
     (1..3).each do |version|
       vname = [nil, 'v0001', 'v0002', 'v0003'][version]
-      object_dir = ingests_dir.join(@obj)
+      object_dir = ingests_dir.join(BARE_TEST_DRUID)
       object_dir.mkpath
       unless object_dir.join("v000#{version}").exist?
-        bag_dir = @packages.join(vname)
-        Moab::StorageObject.new(@druid, object_dir).ingest_bag(bag_dir)
+        bag_dir = packages_dir.join(vname)
+        Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
       end
     end
 
     files = []
-    ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+    ingests_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq([
                                "ingests",
                                "ingests/jq937jp0017",

@@ -9,12 +9,11 @@ describe "Write contentMetadata datastream" do
     # action: extract the file-level metadata
     # outcome: a fully populated contentMetadata datastream
 
-    directory = @data.join('v0002/content')
+    directory = data_dir.join('v0002/content')
     recursive = true
     group = Moab::FileGroup.new.group_from_directory(directory, recursive)
-    digital_object_id = @obj
     version_id = 2
-    cm = Stanford::ContentInventory.new.generate_content_metadata(group, digital_object_id, version_id)
+    cm = Stanford::ContentInventory.new.generate_content_metadata(group, BARE_TEST_DRUID, version_id)
     xmlObj1 = Nokogiri::XML(cm)
     xmlObj1.xpath('//@datetime').remove
 

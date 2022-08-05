@@ -26,7 +26,7 @@ module Moab
     NO_SIGNATURE_CATALOG = 4
     NO_MANIFEST_INVENTORY = 5
     NO_FILES_IN_MANIFEST_DIR = 6
-    VERSIONS_NOT_IN_ORDER = 7
+    TEST_OBJECT_VERSIONS_NOT_IN_ORDER = 7
     METADATA_SUB_DIRS_DETECTED = 8
     FILES_IN_VERSION_DIR = 9
     NO_FILES_IN_METADATA_DIR = 10
@@ -61,7 +61,7 @@ module Moab
           NO_MANIFEST_INVENTORY => "Version %{addl}: Missing manifestInventory.xml",
           NO_FILES_IN_MANIFEST_DIR => "Version %{addl}: No files present in manifest dir",
           METADATA_SUB_DIRS_DETECTED => "Version %{version}: metadata directory should only contain files, not directories. Found directory: %{dir}",
-          VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
+          TEST_OBJECT_VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: %{addl}",
           NO_FILES_IN_METADATA_DIR => "Version %{addl}: No files present in metadata dir",
           NO_FILES_IN_CONTENT_DIR => "Version %{addl}: No files present in content dir",
           CONTENT_SUB_DIRS_DETECTED => "Version %{version}: content directory should only contain files, not directories. Found directory: %{dir}",
@@ -93,7 +93,7 @@ module Moab
       version_directories.each_with_index do |dir_name, index|
         next if dir_name[1..].to_i == index + 1 # version numbering starts at 1, array indexing at 0
 
-        return [result_hash(VERSIONS_NOT_IN_ORDER, version_directories)]
+        return [result_hash(TEST_OBJECT_VERSIONS_NOT_IN_ORDER, version_directories)]
       end
       []
     end

@@ -2,18 +2,18 @@
 
 describe Moab::StorageObjectVersion do
   before(:all) do
-    @temp_ingests = @temp.join("ingests")
-    @temp_object_dir = @temp_ingests.join(@obj)
-    @existing_object_pathname = @ingests.join(@obj)
-    @existing_storage_object = Moab::StorageObject.new(@druid, @existing_object_pathname)
+    @temp_dir_ingests = temp_dir.join("ingests")
+    @temp_object_dir = @temp_dir_ingests.join(BARE_TEST_DRUID)
+    @existing_object_pathname = ingests_dir.join(BARE_TEST_DRUID)
+    @existing_storage_object = Moab::StorageObject.new(FULL_TEST_DRUID, @existing_object_pathname)
     @existing_storage_object_version = described_class.new(@existing_storage_object, 2)
-    @temp_storage_object = Moab::StorageObject.new(@druid, @temp_object_dir)
-    @temp_package_pathname = @temp.join("packages")
-    bad_object_pathname = @temp.join(@obj)
+    @temp_storage_object = Moab::StorageObject.new(FULL_TEST_DRUID, @temp_object_dir)
+    @temp_package_pathname = temp_dir.join("packages")
+    bad_object_pathname = temp_dir.join(BARE_TEST_DRUID)
     bad_object_pathname.rmtree if bad_object_pathname.exist?
     bad_object_pathname.mkpath
     FileUtils.cp_r(@existing_object_pathname.join('v0001').to_s, bad_object_pathname.join('v0001').to_s)
-    @object_with_manifest_errors = Moab::StorageObject.new(@druid, bad_object_pathname)
+    @object_with_manifest_errors = Moab::StorageObject.new(FULL_TEST_DRUID, bad_object_pathname)
     @version_with_manifest_errors = @object_with_manifest_errors.storage_object_version(1)
     new_manifest_file = @version_with_manifest_errors.version_pathname.join('manifests', 'dummy1.xml')
     new_manifest_file.open('w') { |f| f.puts "dummy" }
@@ -22,8 +22,8 @@ describe Moab::StorageObjectVersion do
   end
 
   after(:all) do
-    @temp_ingests.rmtree if @temp_ingests.exist?
-    @temp.join(@obj).rmtree if @temp.join(@obj).exist?
+    @temp_dir_ingests.rmtree if @temp_dir_ingests.exist?
+    temp_dir.join(BARE_TEST_DRUID).rmtree if temp_dir.join(BARE_TEST_DRUID).exist?
   end
 
   before do
@@ -31,7 +31,7 @@ describe Moab::StorageObjectVersion do
   end
 
   describe '#initialize' do
-    let(:storage_object) { Moab::StorageObject.new(@druid, @temp_object_dir) }
+    let(:storage_object) { Moab::StorageObject.new(FULL_TEST_DRUID, @temp_object_dir) }
 
     it 'numeric version' do
       version_id = 2
@@ -167,12 +167,12 @@ describe Moab::StorageObjectVersion do
     context 'with links (default)' do
       before do
         temp_storage_object_version = described_class.new(@temp_storage_object, 1)
-        temp_storage_object_version.ingest_bag_data(@packages.join("v0001"))
+        temp_storage_object_version.ingest_bag_data(packages_dir.join("v0001"))
       end
 
       it 'puts the files in the ingest dir' do
         files = []
-        @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0001",
@@ -200,12 +200,12 @@ describe Moab::StorageObjectVersion do
     context 'without links' do
       before do
         temp_storage_object_version = described_class.new(@temp_storage_object, 1)
-        temp_storage_object_version.ingest_bag_data(@packages.join("v0001"), use_links: false)
+        temp_storage_object_version.ingest_bag_data(packages_dir.join("v0001"), use_links: false)
       end
 
       it 'puts the files in the ingest dir' do
         files = []
-        @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
           "ingests/jq937jp0017",
           "ingests/jq937jp0017/v0001",
@@ -232,13 +232,13 @@ describe Moab::StorageObjectVersion do
   end
 
   specify '#ingest_dir' do
-    source_dir = @packages.join("v0001/data")
+    source_dir = packages_dir.join("v0001/data")
     temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     target_dir = temp_storage_object_version.version_pathname.join('data')
     use_links = true
     temp_storage_object_version.ingest_dir(source_dir, target_dir, use_links)
     files = []
-    @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+    @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq [
       "ingests/jq937jp0017",
       "ingests/jq937jp0017/v0001",
@@ -264,12 +264,12 @@ describe Moab::StorageObjectVersion do
       temp_storage_object_version = described_class.new(@temp_storage_object, 2)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
-      source_file = @packages.join("v0002").join('versionInventory.xml')
+      source_file = packages_dir.join("v0002").join('versionInventory.xml')
 
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
 
       files = []
-      @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+      @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "ingests/jq937jp0017",
         "ingests/jq937jp0017/v0002",
@@ -277,12 +277,12 @@ describe Moab::StorageObjectVersion do
       ]
 
       # now ingest versionAdditions file
-      source_file = @packages.join("v0002").join('versionAdditions.xml')
+      source_file = packages_dir.join("v0002").join('versionAdditions.xml')
       use_links = false
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname, use_links)
 
       files = []
-      @temp_object_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+      @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "ingests/jq937jp0017",
         "ingests/jq937jp0017/v0002",
@@ -317,9 +317,9 @@ describe Moab::StorageObjectVersion do
     temp_storage_object_version = described_class.new(@temp_storage_object, 2)
     temp_version_pathname = temp_storage_object_version.version_pathname
     temp_version_pathname.mkpath
-    vers_inv_file = @packages.join("v0002").join('versionInventory.xml')
+    vers_inv_file = packages_dir.join("v0002").join('versionInventory.xml')
     temp_storage_object_version.ingest_file(vers_inv_file, temp_version_pathname)
-    vers_add_file = @packages.join("v0002").join('versionAdditions.xml')
+    vers_add_file = packages_dir.join("v0002").join('versionAdditions.xml')
     temp_storage_object_version.ingest_file(vers_add_file, temp_version_pathname)
 
     temp_storage_object_version.generate_manifest_inventory
@@ -577,7 +577,7 @@ describe Moab::StorageObjectVersion do
     @temp_object_dir.mkpath
     version_id = @existing_storage_object_version.version_id
     FileUtils.cp_r @existing_storage_object_version.version_pathname, @temp_object_dir
-    so = Moab::StorageObject.new(@druid, @temp_object_dir)
+    so = Moab::StorageObject.new(FULL_TEST_DRUID, @temp_object_dir)
     version = so.storage_object_version(version_id)
     timestamp = Time.now
     expect(version.exist?).to be true

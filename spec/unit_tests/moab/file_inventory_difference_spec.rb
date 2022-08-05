@@ -3,11 +3,11 @@
 describe Moab::FileInventoryDifference do
   let(:new_diff) { described_class.new }
   let(:v1_inventory) do
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     Moab::FileInventory.parse(v1_inventory_pathname.read)
   end
   let(:v2_inventory) do
-    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    v2_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     Moab::FileInventory.parse(v2_inventory_pathname.read)
   end
   let(:diff_v1_v2) { new_diff.compare(v1_inventory, v2_inventory) }

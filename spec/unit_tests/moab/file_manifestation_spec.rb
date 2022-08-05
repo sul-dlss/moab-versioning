@@ -2,9 +2,9 @@
 
 describe Moab::FileManifestation do
   let(:file_manifestation) do
-    v1_base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
-    title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
-    page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
+    v1_base_directory = fixtures_dir.join('data/jq937jp0017/v0001/content')
+    title_v1_pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/title.jpg')
+    page1_v1_pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/page-1.jpg')
 
     title_v1_signature = Moab::FileSignature.new.signature_from_file(title_v1_pathname)
     title_v1_instance = Moab::FileInstance.new.instance_from_file(title_v1_pathname, v1_base_directory)

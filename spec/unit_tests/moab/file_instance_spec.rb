@@ -1,28 +1,28 @@
 # frozen_string_literal: true
 
 describe Moab::FileInstance do
-  let(:v1_base_directory) { @fixtures.join('data/jq937jp0017/v0001/content') }
-  let(:v2_base_directory) { @fixtures.join('data/jq937jp0017/v0002/content') }
+  let(:v1_base_directory) { fixtures_dir.join('data/jq937jp0017/v0001/content') }
+  let(:v2_base_directory) { fixtures_dir.join('data/jq937jp0017/v0002/content') }
   let(:title_v1_instance) do
-    title_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
+    title_v1_pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/title.jpg')
     described_class.new.instance_from_file(title_v1_pathname, v1_base_directory)
   end
   let(:title_v2_instance) do
-    title_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/title.jpg')
+    title_v2_pathname = fixtures_dir.join('data/jq937jp0017/v0002/content/title.jpg')
     described_class.new.instance_from_file(title_v2_pathname, v2_base_directory)
   end
   let(:page1_v1_instance) do
-    page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
+    page1_v1_pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/page-1.jpg')
     described_class.new.instance_from_file(page1_v1_pathname, v1_base_directory)
   end
   let(:page1_v2_instance) do
-    page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
+    page1_v2_pathname = fixtures_dir.join('data/jq937jp0017/v0002/content/page-1.jpg')
     described_class.new.instance_from_file(page1_v2_pathname, v2_base_directory)
   end
 
   specify '#initialize' do
     opts = {
-      path: @temp.join('path').to_s,
+      path: temp_dir.join('path').to_s,
       datetime: "Apr 18 21:51:31 UTC 2012"
     }
     file_instance = described_class.new(opts)

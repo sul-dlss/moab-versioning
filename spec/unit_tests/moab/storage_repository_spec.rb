@@ -2,9 +2,9 @@
 
 describe Moab::StorageRepository do
   let(:storage_repo) { described_class.new }
-  let(:derivatives_storage_root) { @fixtures.join('derivatives') }
-  let(:derivatives2_storage_root) { @fixtures.join('derivatives2') }
-  let(:newnode_storage_root) { @fixtures.join('newnode') }
+  let(:derivatives_storage_root) { fixtures_dir.join('derivatives') }
+  let(:derivatives2_storage_root) { fixtures_dir.join('derivatives2') }
+  let(:newnode_storage_root) { fixtures_dir.join('newnode') }
 
   specify '#storage_roots' do
     # these are set in spec_config.rb
@@ -109,9 +109,9 @@ describe Moab::StorageRepository do
     bag_pathname = double("bag_pathname")
     object_pathname = double("object_pathname")
     storage_object = double(Moab::StorageObject)
-    expect(storage_repo).to receive(:storage_object).with(@druid, true).and_return(storage_object)
+    expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
     allow(storage_object).to receive(:object_pathname).and_return(object_pathname)
     expect(storage_object).to receive(:ingest_bag).with(bag_pathname)
-    storage_repo.store_new_object_version(@druid, bag_pathname)
+    storage_repo.store_new_object_version(FULL_TEST_DRUID, bag_pathname)
   end
 end

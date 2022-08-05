@@ -13,19 +13,19 @@ describe "Create reconstructed digital object for a version" do
     #       : and the version's file inventory to provide original filenames
     # outcome: a temp folder containing the version's files
 
-    reconstructs_dir = @temp.join('reconstructs')
+    reconstructs_dir = temp_dir.join('reconstructs')
     reconstructs_dir.rmtree if reconstructs_dir.exist?
     (1..3).each do |version|
       vname = [nil, 'v0001', 'v0002', 'v0003'][version]
       bag_dir = reconstructs_dir.join(vname)
       unless bag_dir.exist?
-        object_dir = @ingests.join(@obj)
-        Moab::StorageObject.new(@druid, object_dir).reconstruct_version(version, bag_dir)
+        object_dir = ingests_dir.join(BARE_TEST_DRUID)
+        Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).reconstruct_version(version, bag_dir)
       end
     end
 
     files = []
-    reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+    reconstructs_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq([
                                "reconstructs",
                                "reconstructs/v0001",
