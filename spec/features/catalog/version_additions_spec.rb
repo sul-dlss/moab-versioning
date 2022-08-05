@@ -10,9 +10,9 @@ describe "Determine version's file additions" do
     # action: filter the new inventory against the catalog
     # outcome: version additions report
 
-    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+    v1_catalog_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
     signature_catalog = Moab::SignatureCatalog.parse(v1_catalog_pathname.read)
-    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    v2_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     v2_inventory = Moab::FileInventory.parse(v2_inventory_pathname.read)
     version_additions = signature_catalog.version_additions(v2_inventory)
     expect(version_additions.groups.count).to eq(2)

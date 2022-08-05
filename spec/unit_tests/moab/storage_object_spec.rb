@@ -2,22 +2,22 @@
 
 describe Moab::StorageObject do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
-  let(:storage_object) { described_class.new(@druid, @ingest_object_dir) }
+  let(:storage_object) { described_class.new(FULL_TEST_DRUID, @ingest_object_dir) }
 
   before do
-    @storage_object = described_class.new(@druid, @temp_object_dir)
+    @storage_object = described_class.new(FULL_TEST_DRUID, @temp_object_dir)
     @storage_object.initialize_storage
-    @storage_object.storage_root = @fixtures.join('derivatives')
+    @storage_object.storage_root = fixtures_dir.join('derivatives')
   end
 
   after(:all) do
-    @temp_ingests.rmtree if !@temp_ingests.nil? && @temp_ingests.exist?
+    @temp_dir_ingests.rmtree if !@temp_dir_ingests.nil? && @temp_dir_ingests.exist?
   end
 
   before(:all) do
-    @temp_ingests = @temp.join("ingests")
-    @temp_object_dir = @temp_ingests.join(@obj)
-    @ingest_object_dir = @ingests.join(@obj)
+    @temp_dir_ingests = temp_dir.join("ingests")
+    @temp_object_dir = @temp_dir_ingests.join(BARE_TEST_DRUID)
+    @ingest_object_dir = ingests_dir.join(BARE_TEST_DRUID)
   end
 
   specify '.version_dirname' do
@@ -29,8 +29,8 @@ describe Moab::StorageObject do
   end
 
   specify '#initialize' do
-    storage_object = described_class.new(@druid, @temp_object_dir)
-    expect(storage_object.digital_object_id).to eq @druid
+    storage_object = described_class.new(FULL_TEST_DRUID, @temp_object_dir)
+    expect(storage_object.digital_object_id).to eq FULL_TEST_DRUID
     expect(storage_object.object_pathname.to_s).to include('temp/ingests/jq937jp0017')
   end
 
@@ -44,28 +44,28 @@ describe Moab::StorageObject do
   end
 
   specify '#deposit_home' do
-    expect(@storage_object.deposit_home).to eq(@packages)
+    expect(@storage_object.deposit_home).to eq(packages_dir)
   end
 
   specify '#deposit_bag_pathname' do
-    expect(@storage_object.deposit_bag_pathname).to eq(@packages.join('jq937jp0017'))
+    expect(@storage_object.deposit_bag_pathname).to eq(packages_dir.join('jq937jp0017'))
   end
 
   describe '#ingest_bag' do
     context 'with use_links' do
       it 'by the version folder' do
-        ingests_dir = @temp.join('ingests')
+        ingests_dir = temp_dir.join('ingests')
         (1..3).each do |version|
-          object_dir = ingests_dir.join(@obj)
+          object_dir = ingests_dir.join(BARE_TEST_DRUID)
           object_dir.mkpath
           unless object_dir.join("v000#{version}").exist?
-            bag_dir = @packages.join(@vname[version])
-            described_class.new(@druid, object_dir).ingest_bag(bag_dir)
+            bag_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
+            described_class.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
           end
         end
 
         files = []
-        ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        ingests_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
           "ingests",
           "ingests/jq937jp0017",
@@ -123,18 +123,18 @@ describe Moab::StorageObject do
       end
 
       it 'creates versionInventory and versionAdditions' do
-        ingests_dir = @temp.join('ingests')
-        object_dir = ingests_dir.join(@obj)
+        ingests_dir = temp_dir.join('ingests')
+        object_dir = ingests_dir.join(BARE_TEST_DRUID)
         object_dir.mkpath
-        bag_dir = @temp.join('plain_bag')
+        bag_dir = temp_dir.join('plain_bag')
         bag_dir.rmtree if bag_dir.exist?
-        FileUtils.cp_r(@packages.join(@vname[1]).to_s, bag_dir.to_s, preserve: true)
+        FileUtils.cp_r(packages_dir.join(TEST_OBJECT_VERSIONS[1]).to_s, bag_dir.to_s, preserve: true)
 
         bag_dir.join('versionInventory.xml').delete
         bag_dir.join('versionAdditions.xml').delete
         expect(bag_dir.join('versionInventory.xml').exist?).to be false
         expect(bag_dir.join('versionAdditions.xml').exist?).to be false
-        described_class.new(@druid, object_dir).ingest_bag(bag_dir)
+        described_class.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
         expect(bag_dir.join('versionInventory.xml').exist?).to be true
         expect(bag_dir.join('versionAdditions.xml').exist?).to be true
         ingests_dir.rmtree if ingests_dir.exist? # cleanup
@@ -143,18 +143,18 @@ describe Moab::StorageObject do
 
     context 'without use_links' do
       it 'makes the versions folder' do
-        ingests_dir = @temp.join('ingests')
+        ingests_dir = temp_dir.join('ingests')
         (1..3).each do |version|
-          object_dir = ingests_dir.join(@obj)
+          object_dir = ingests_dir.join(BARE_TEST_DRUID)
           object_dir.mkpath
           unless object_dir.join("v000#{version}").exist?
-            bag_dir = @packages.join(@vname[version])
-            described_class.new(@druid, object_dir).ingest_bag(bag_dir, use_links: false)
+            bag_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
+            described_class.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir, use_links: false)
           end
         end
 
         files = []
-        ingests_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+        ingests_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
           "ingests",
           "ingests/jq937jp0017",
@@ -214,9 +214,9 @@ describe Moab::StorageObject do
   end
 
   specify '#versionize_bag' do
-    bag_dir = @temp.join('plain_bag')
+    bag_dir = temp_dir.join('plain_bag')
     bag_dir.rmtree if bag_dir.exist?
-    FileUtils.cp_r(@packages.join(@vname[1]).to_s, bag_dir.to_s, preserve: true)
+    FileUtils.cp_r(packages_dir.join(TEST_OBJECT_VERSIONS[1]).to_s, bag_dir.to_s, preserve: true)
     bag_dir.join('versionInventory.xml').rename(bag_dir.join('vi.save'))
     bag_dir.join('versionAdditions.xml').rename(bag_dir.join('va.save'))
     current_version = @storage_object.storage_object_version(0)
@@ -345,15 +345,15 @@ describe Moab::StorageObject do
 
   describe '#reconstruct_version' do
     it 'bags a particular version' do
-      reconstructs_dir = @temp.join('reconstructs')
+      reconstructs_dir = temp_dir.join('reconstructs')
       reconstructs_dir.rmtree if reconstructs_dir.exist?
       (1..3).each do |version|
-        bag_dir = reconstructs_dir.join(@vname[version])
-        described_class.new(@druid, @ingest_object_dir).reconstruct_version(version, bag_dir) unless bag_dir.exist?
+        bag_dir = reconstructs_dir.join(TEST_OBJECT_VERSIONS[version])
+        described_class.new(FULL_TEST_DRUID, @ingest_object_dir).reconstruct_version(version, bag_dir) unless bag_dir.exist?
       end
 
       files = []
-      reconstructs_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+      reconstructs_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "reconstructs",
         "reconstructs/v0001",
@@ -486,7 +486,7 @@ describe Moab::StorageObject do
   end
 
   describe '#find_object_version' do
-    before { @storage_object = described_class.new(@druid, @ingest_object_dir) }
+    before { @storage_object = described_class.new(FULL_TEST_DRUID, @ingest_object_dir) }
 
     it 'existing version' do
       version_2 = @storage_object.find_object_version(2)
@@ -511,7 +511,7 @@ describe Moab::StorageObject do
   end
 
   describe '#storage_object_version' do
-    before { @storage_object = described_class.new(@druid, @ingest_object_dir) }
+    before { @storage_object = described_class.new(FULL_TEST_DRUID, @ingest_object_dir) }
 
     it 'existing version' do
       version_2 = @storage_object.storage_object_version(2)

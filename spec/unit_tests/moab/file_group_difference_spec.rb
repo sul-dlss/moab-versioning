@@ -2,9 +2,9 @@
 
 describe Moab::FileGroupDifference do
   let(:group_diff) do
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
-    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
     v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
     file_inventory_diff = Moab::FileInventoryDifference.new
     file_inventory_diff.compare(v1_inventory, v3_inventory)
@@ -58,12 +58,12 @@ describe Moab::FileGroupDifference do
   end
 
   let(:v1_content) do
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
     v1_inventory.groups[0]
   end
   let(:v3_content) do
-    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
     v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
     v3_inventory.groups[0]
   end
@@ -380,7 +380,7 @@ describe Moab::FileGroupDifference do
   end
 
   specify '.parse' do
-    fixture = @ingests.join('jq937jp0017', 'v0003', 'manifests', 'fileInventoryDifference.xml')
+    fixture = ingests_dir.join('jq937jp0017', 'v0003', 'manifests', 'fileInventoryDifference.xml')
     fid = Moab::FileInventoryDifference.parse(File.read(fixture))
     fgd = fid.group_difference('content')
     expect(fgd.subsets.count).to be >= 5

@@ -8,7 +8,7 @@ end
 
 describe Moab::FileGroup do
   before(:all) do
-    @file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001'), true)
+    @file_group = described_class.new.group_from_directory(fixtures_dir.join('data/jq937jp0017/v0001'), true)
   end
 
   it '#initialize' do
@@ -49,7 +49,7 @@ describe Moab::FileGroup do
 
   describe 'INSTANCE METHODS' do
     before do
-      @v1_file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'), true)
+      @v1_file_group = described_class.new.group_from_directory(fixtures_dir.join('data/jq937jp0017/v0001/content'), true)
       @new_file_group = described_class.new
     end
 
@@ -81,7 +81,7 @@ describe Moab::FileGroup do
     end
 
     it '#remove_file_having_path affects file_count' do
-      file_group = described_class.new.group_from_directory(@fixtures.join('data/jq937jp0017/v0001/content'), true)
+      file_group = described_class.new.group_from_directory(fixtures_dir.join('data/jq937jp0017/v0001/content'), true)
       before_file_count = file_group.file_count
       file_group.remove_file_having_path("page-1.jpg")
       expect(file_group.file_count).to eq(before_file_count - 1)
@@ -89,14 +89,14 @@ describe Moab::FileGroup do
 
     describe "#is_descendent_of_base?" do
       # FIXME:  shouldn't this method be named descendent_of_base?
-      before { @new_file_group.base_directory = @fixtures.join('data') }
+      before { @new_file_group.base_directory = fixtures_dir.join('data') }
 
       it "true when condition met" do
-        expect(@new_file_group).to be_is_descendent_of_base(@fixtures.join('data/jq937jp0017/v0001'))
+        expect(@new_file_group).to be_is_descendent_of_base(fixtures_dir.join('data/jq937jp0017/v0001'))
       end
 
       it "raises exception if false (FIXME!)" do
-        base = @fixtures.join('derivatives/manifests')
+        base = fixtures_dir.join('derivatives/manifests')
         # FIXME:  shouldn't it simply return false?
         exp_msg_regex = /is not a descendent of/
         expect { @new_file_group.is_descendent_of_base?(base) }.to raise_exception(Moab::MoabRuntimeError, exp_msg_regex)
@@ -110,7 +110,7 @@ describe Moab::FileGroup do
     end
 
     it '#group_from_directory' do
-      directory = @fixtures.join('data/jq937jp0017/v0001/content')
+      directory = fixtures_dir.join('data/jq937jp0017/v0001/content')
       expect(@new_file_group).to receive(:harvest_directory).with(directory, true)
       group = @new_file_group.group_from_directory(directory, true)
       basic_expectations(group)
@@ -119,13 +119,13 @@ describe Moab::FileGroup do
     end
 
     it '#harvest_directory does something?!?' do ## TODO: NO EXPECTATIONS DEFINED
-      path = @fixtures.join('derivatives/manifests')
+      path = fixtures_dir.join('derivatives/manifests')
       file_group = described_class.new
       file_group.base_directory = path
       file_group.harvest_directory(path, true)
       file_group.file_count = 0
 
-      path = @fixtures.join('derivatives/packages/v0001')
+      path = fixtures_dir.join('derivatives/packages/v0001')
       second_group = described_class.new
       second_group.base_directory = path
       second_group.harvest_directory(path, false)
@@ -133,9 +133,9 @@ describe Moab::FileGroup do
     end
 
     it '#add_physical_file adds data for a physical file to array of files in group' do
-      pathname = @fixtures.join('data/jq937jp0017/v0001/content/title.jpg')
+      pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/title.jpg')
       group = described_class.new
-      group.base_directory = @fixtures.join('data/jq937jp0017/v0001/content')
+      group.base_directory = fixtures_dir.join('data/jq937jp0017/v0001/content')
       group.add_physical_file(pathname)
       expect(group.files.size).to eq(1)
       expect(group.files[0].signature).to eq Moab::FileSignature.new(

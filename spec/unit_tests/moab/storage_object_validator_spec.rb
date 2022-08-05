@@ -171,7 +171,7 @@ describe Moab::StorageObjectValidator do
         let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000' }
 
         it 'non contiguous' do
-          expect(error_list).to include(described_class::VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]")
+          expect(error_list).to include(described_class::TEST_OBJECT_VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]")
         end
       end
 

@@ -4,9 +4,9 @@ describe Moab::StorageServices do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
 
   specify '.storage_roots' do
-    expect(described_class.storage_roots).to eq([@fixtures.join('derivatives'),
-                                                 @fixtures.join('derivatives2'),
-                                                 @fixtures.join('newnode')])
+    expect(described_class.storage_roots).to eq([fixtures_dir.join('derivatives'),
+                                                 fixtures_dir.join('derivatives2'),
+                                                 fixtures_dir.join('newnode')])
   end
 
   specify '.deposit_trunk' do
@@ -14,95 +14,97 @@ describe Moab::StorageServices do
   end
 
   specify '.deposit_branch' do
-    expect(described_class.deposit_branch(@obj)).to eq 'jq937jp0017'
+    expect(described_class.deposit_branch(BARE_TEST_DRUID)).to eq 'jq937jp0017'
   end
 
   describe '.find_storage_object' do
     it 'include_deposit = false' do
-      expect(described_class.repository).to receive(:find_storage_object).with(@obj, false)
-      described_class.find_storage_object(@obj)
+      expect(described_class.repository).to receive(:find_storage_object).with(BARE_TEST_DRUID, false)
+      described_class.find_storage_object(BARE_TEST_DRUID)
     end
 
     it 'include_deposit = true' do
-      expect(described_class.repository).to receive(:find_storage_object).with(@obj, true)
-      described_class.find_storage_object(@obj, true)
+      expect(described_class.repository).to receive(:find_storage_object).with(BARE_TEST_DRUID, true)
+      described_class.find_storage_object(BARE_TEST_DRUID, true)
     end
   end
 
   describe '.search_storage_objects' do
     it 'include_deposit = false' do
-      expect(described_class.repository).to receive(:search_storage_objects).with(@obj, false)
-      described_class.search_storage_objects(@obj)
+      expect(described_class.repository).to receive(:search_storage_objects).with(BARE_TEST_DRUID, false)
+      described_class.search_storage_objects(BARE_TEST_DRUID)
     end
 
     it 'include_deposit = true' do
-      expect(described_class.repository).to receive(:search_storage_objects).with(@obj, true)
-      described_class.search_storage_objects(@obj, true)
+      expect(described_class.repository).to receive(:search_storage_objects).with(BARE_TEST_DRUID, true)
+      described_class.search_storage_objects(BARE_TEST_DRUID, true)
     end
   end
 
   describe '.storage_object' do
     it 'create = false' do
-      expect(described_class.repository).to receive(:storage_object).with(@obj, false)
-      described_class.storage_object(@obj)
+      expect(described_class.repository).to receive(:storage_object).with(BARE_TEST_DRUID, false)
+      described_class.storage_object(BARE_TEST_DRUID)
     end
 
     it 'create = true' do
-      expect(described_class.repository).to receive(:storage_object).with(@obj, true)
-      described_class.storage_object(@obj, true)
+      expect(described_class.repository).to receive(:storage_object).with(BARE_TEST_DRUID, true)
+      described_class.storage_object(BARE_TEST_DRUID, true)
     end
   end
 
   specify '.object_path' do
-    expect(described_class.object_path(@obj)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
+    expect(described_class.object_path(BARE_TEST_DRUID)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
   end
 
   specify '.object_version_path' do
-    expect(described_class.object_version_path(@obj, 1)).to match('spec/fixtures/derivatives/ingests/jq937jp0017/v0001')
+    expect(described_class.object_version_path(BARE_TEST_DRUID, 1)).to match(
+      'spec/fixtures/derivatives/ingests/jq937jp0017/v0001'
+    )
   end
 
   specify '.current_version' do
-    expect(described_class.current_version(@obj)).to eq 3
+    expect(described_class.current_version(BARE_TEST_DRUID)).to eq 3
   end
 
   specify '.object_size' do
-    expect(described_class.object_size(@obj)).to be_between(340000, 350000)
+    expect(described_class.object_size(BARE_TEST_DRUID)).to be_between(340000, 350000)
   end
 
   describe '.retrieve_file_group' do
     it 'content' do
-      group = described_class.retrieve_file_group('content', @obj, 2)
+      group = described_class.retrieve_file_group('content', BARE_TEST_DRUID, 2)
       expect(group.group_id).to eq 'content'
     end
 
     it 'metadata' do
-      group = described_class.retrieve_file_group('metadata', @obj, 2)
+      group = described_class.retrieve_file_group('metadata', BARE_TEST_DRUID, 2)
       expect(group.group_id).to eq 'metadata'
     end
 
     it 'manifest' do
-      group = described_class.retrieve_file_group('manifest', @obj, 2)
+      group = described_class.retrieve_file_group('manifest', BARE_TEST_DRUID, 2)
       expect(group.group_id).to eq 'manifests'
     end
   end
 
   describe '.retrieve_file' do
     it 'content' do
-      content_pathname = described_class.retrieve_file('content', 'page-1.jpg', @obj, 2)
+      content_pathname = described_class.retrieve_file('content', 'page-1.jpg', BARE_TEST_DRUID, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/content/page-1.jpg}
       expect(content_pathname.to_s).to match(exp_regex)
       expect(content_pathname).to exist
     end
 
     it 'metadata' do
-      metadata_pathname = described_class.retrieve_file('metadata', 'contentMetadata.xml', @obj, 2)
+      metadata_pathname = described_class.retrieve_file('metadata', 'contentMetadata.xml', BARE_TEST_DRUID, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/data/metadata/contentMetadata.xml}
       expect(metadata_pathname.to_s).to match(exp_regex)
       expect(metadata_pathname).to exist
     end
 
     it 'manifest' do
-      manifest_pathname = described_class.retrieve_file('manifest', 'versionAdditions.xml', @obj, 2)
+      manifest_pathname = described_class.retrieve_file('manifest', 'versionAdditions.xml', BARE_TEST_DRUID, 2)
       exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0002/manifests/versionAdditions.xml}
       expect(manifest_pathname.to_s).to match(exp_regex)
       expect(manifest_pathname).to exist
@@ -116,14 +118,14 @@ describe Moab::StorageServices do
       sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
-    filepath = described_class.retrieve_file_using_signature('content', file_signature, @obj, 2)
+    filepath = described_class.retrieve_file_using_signature('content', file_signature, BARE_TEST_DRUID, 2)
     exp_regex = %r{spec/fixtures/derivatives/ingests/jq937jp0017/v0001/data/content/title.jpg}
     expect(filepath.to_s).to match(exp_regex)
   end
 
   describe '.retrieve_file_signature' do
     it 'content signature' do
-      content_signature = described_class.retrieve_file_signature('content', 'page-1.jpg', @obj, 2)
+      content_signature = described_class.retrieve_file_signature('content', 'page-1.jpg', BARE_TEST_DRUID, 2)
       expected_sig_fixity = {
         size: "32915",
         md5: "c1c34634e2f18a354cd3e3e1574c3194",
@@ -134,7 +136,7 @@ describe Moab::StorageServices do
     end
 
     it 'metadata signature' do
-      metadata_signature = described_class.retrieve_file_signature('metadata', 'contentMetadata.xml', @obj, 2)
+      metadata_signature = described_class.retrieve_file_signature('metadata', 'contentMetadata.xml', BARE_TEST_DRUID, 2)
       expected_sig_fixity = {
         size: "1303",
         md5: "8672613ac1757cda4e44cc464559cd04",
@@ -145,13 +147,13 @@ describe Moab::StorageServices do
     end
 
     it 'manifest signature' do
-      manifest_signature = described_class.retrieve_file_signature('manifest', 'versionAdditions.xml', @obj, 2)
+      manifest_signature = described_class.retrieve_file_signature('manifest', 'versionAdditions.xml', BARE_TEST_DRUID, 2)
       expect(manifest_signature.size).to eq 1631
     end
   end
 
   specify '.version_differences' do
-    differences = described_class.version_differences(@obj, 2, 3)
+    differences = described_class.version_differences(BARE_TEST_DRUID, 2, 3)
     diff_ng_xml = Nokogiri::XML(differences.to_xml)
     diff_ng_xml.xpath('//@reportDatetime').remove
     exp_xml = <<-XML

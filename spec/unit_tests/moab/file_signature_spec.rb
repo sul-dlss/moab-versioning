@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 describe Moab::FileSignature do
-  let(:title_v1_pathname) { @fixtures.join('data/jq937jp0017/v0001/content/title.jpg') }
+  let(:title_v1_pathname) { fixtures_dir.join('data/jq937jp0017/v0001/content/title.jpg') }
   let(:title_v1_signature) { described_class.new.signature_from_file(title_v1_pathname) }
   let(:title_v2_signature) do
-    title_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/title.jpg')
+    title_v2_pathname = fixtures_dir.join('data/jq937jp0017/v0002/content/title.jpg')
     described_class.new.signature_from_file(title_v2_pathname)
   end
   let(:page1_v1_signature) do
-    page1_v1_pathname = @fixtures.join('data/jq937jp0017/v0001/content/page-1.jpg')
+    page1_v1_pathname = fixtures_dir.join('data/jq937jp0017/v0001/content/page-1.jpg')
     described_class.new.signature_from_file(page1_v1_pathname)
   end
   let(:page1_v2_signature) do
-    page1_v2_pathname = @fixtures.join('data/jq937jp0017/v0002/content/page-1.jpg')
+    page1_v2_pathname = fixtures_dir.join('data/jq937jp0017/v0002/content/page-1.jpg')
     described_class.new.signature_from_file(page1_v2_pathname)
   end
 
@@ -121,7 +121,7 @@ describe Moab::FileSignature do
   end
 
   describe '#normalized_signature' do
-    let(:page2_v1_pathname) { @packages.join('v0001/data/content/page-2.jpg') }
+    let(:page2_v1_pathname) { packages_dir.join('v0001/data/content/page-2.jpg') }
     let(:page2_fixity) do
       {
         size: "39450",

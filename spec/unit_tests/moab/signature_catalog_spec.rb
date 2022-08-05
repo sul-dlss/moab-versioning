@@ -7,8 +7,8 @@ describe Moab::SignatureCatalog do
   end
 
   before(:all) do
-    @v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
-    @v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    @v1_catalog_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+    @v2_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     @v2_inventory = Moab::FileInventory.parse(@v2_inventory_pathname.read)
   end
 

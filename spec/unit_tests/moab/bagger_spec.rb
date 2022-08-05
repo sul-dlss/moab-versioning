@@ -15,8 +15,8 @@ describe Moab::Bagger do
   end
 
   before(:all) do
-    @submit_bag_pathname = @temp.join('submit_bag_pathname')
-    @disseminate_bag_pathname = @temp.join('disseminate_bag_pathname')
+    @submit_bag_pathname = temp_dir.join('submit_bag_pathname')
+    @disseminate_bag_pathname = temp_dir.join('disseminate_bag_pathname')
   end
 
   let(:disseminate_bag) do
@@ -27,7 +27,7 @@ describe Moab::Bagger do
   end
   let(:disseminate_inventory) { Moab::FileInventory.read_xml_file(disseminate_base.join('v0002', 'manifests'), 'version') }
   let(:disseminate_catalog) { Moab::SignatureCatalog.read_xml_file(disseminate_base.join('v0002', 'manifests')) }
-  let(:disseminate_base) { @ingests.join(@obj) }
+  let(:disseminate_base) { ingests_dir.join(BARE_TEST_DRUID) }
   let(:submit_bag) do
     sb = described_class.new(submit_inventory, submit_catalog, @submit_bag_pathname)
     sb.package_mode = :depositor
@@ -35,14 +35,14 @@ describe Moab::Bagger do
     sb
   end
   let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
-  let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(@manifests.join('v0001')) }
-  let(:submit_inventory) { Moab::FileInventory.read_xml_file(@manifests.join('v0002'), 'version') }
-  let(:submit_source_base) { @data.join('v0002') }
+  let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001')) }
+  let(:submit_inventory) { Moab::FileInventory.read_xml_file(manifests_dir.join('v0002'), 'version') }
+  let(:submit_source_base) { data_dir.join('v0002') }
 
   specify '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
     signature_catalog = double(Moab::SignatureCatalog.name)
-    bag_pathname = @temp.join('bag_pathname')
+    bag_pathname = temp_dir.join('bag_pathname')
     bagger = described_class.new(version_inventory, signature_catalog, bag_pathname)
     expect(bagger.version_inventory).to eq version_inventory
     expect(bagger.signature_catalog).to eq signature_catalog
@@ -50,18 +50,18 @@ describe Moab::Bagger do
   end
 
   specify '#delete_bag' do
-    packages = @temp.join('packages')
+    packages = temp_dir.join('packages')
     bag_dir = packages.join('deleteme')
-    data_dir = bag_dir.join('data')
-    data_dir.mkpath
-    expect(data_dir.exist?).to be true
+    bag_data_dir = bag_dir.join('data')
+    bag_data_dir.mkpath
+    expect(bag_data_dir.exist?).to be true
     bagger = described_class.new(nil, nil, bag_dir)
     bagger.delete_bag
     expect(bag_dir.exist?).to be false
   end
 
   specify '#delete_tarfile' do
-    packages = @temp.join('packages')
+    packages = temp_dir.join('packages')
     tar_file = packages.join('deleteme.tar')
     tar_file.open('w') { |f| f.puts "delete me please" }
     expect(tar_file.exist?).to be true
@@ -73,26 +73,26 @@ describe Moab::Bagger do
 
   describe '#fill_bag' do
     it 'new Bagger made for each of 3 versions' do
-      packages_dir = @temp.join('packages')
+      packages_dir = temp_dir.join('packages')
       packages_dir.rmtree if packages_dir.exist?
       (1..3).each do |version|
-        vname = @vname[version]
+        vname = TEST_OBJECT_VERSIONS[version]
         package = packages_dir.join(vname)
         unless package.join('data').exist?
-          data_dir = @data.join(vname)
-          inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
+          bag_data_dir = data_dir.join(vname)
+          inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(vname), 'version')
           catalog = case version
                     when 1
                       Moab::SignatureCatalog.new(digital_object_id: inventory.digital_object_id)
                     else
-                      Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
+                      Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
                     end
-          described_class.new(inventory, catalog, package).fill_bag(:depositor, data_dir)
+          described_class.new(inventory, catalog, package).fill_bag(:depositor, bag_data_dir)
         end
       end
 
       files = []
-      packages_dir.find { |f| files << f.relative_path_from(@temp).to_s }
+      packages_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "packages",
         "packages/v0001",
@@ -191,7 +191,7 @@ describe Moab::Bagger do
     it 'submit_bag' do
       submit_bag.fill_payload(submit_source_base)
       files = []
-      submit_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(@temp).to_s }
+      submit_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "submit_bag_pathname/data",
         "submit_bag_pathname/data/content",
@@ -206,7 +206,7 @@ describe Moab::Bagger do
     it 'disseminate_bag' do
       disseminate_bag.fill_payload(disseminate_base)
       files = []
-      disseminate_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(@temp).to_s }
+      disseminate_bag.bag_pathname.join('data').find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
         "disseminate_bag_pathname/data",
         "disseminate_bag_pathname/data/content",
@@ -295,10 +295,10 @@ describe Moab::Bagger do
   end
 
   specify '#create_tarfile' do
-    bag_dir = @packages.join('v0001')
-    tarfile = @temp.join('test.tar')
+    bag_dir = packages_dir.join('v0001')
+    tarfile = temp_dir.join('test.tar')
     bagger = described_class.new(nil, nil, bag_dir)
-    cmd = "cd '#{@packages}'; tar --dereference --force-local -cf  '#{@temp}/test.tar' 'v0001'"
+    cmd = "cd '#{packages_dir}'; tar --dereference --force-local -cf  '#{temp_dir}/test.tar' 'v0001'"
     expect(bagger).to receive(:shell_execute).with(cmd)
     expect { bagger.create_tarfile(tarfile) }.to raise_exception(Moab::MoabRuntimeError, /^Unable to create tarfile/)
   end

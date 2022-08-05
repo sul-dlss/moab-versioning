@@ -14,21 +14,21 @@ describe "Export a digital object version from DOR" do
 
     (1..3).each do |version|
       vname = [nil, 'v0001', 'v0002', 'v0003'][version]
-      data_dir = @data.join(vname)
-      inventory = Moab::FileInventory.read_xml_file(@manifests.join(vname), 'version')
+      data_version_dir = data_dir.join(vname)
+      inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(vname), 'version')
       catalog = case version
                 when 1
                   Moab::SignatureCatalog.new(digital_object_id: inventory.digital_object_id)
                 else
-                  Moab::SignatureCatalog.read_xml_file(@manifests.join(@vname[version - 1]))
+                  Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
                 end
-      bag_dir = @temp.join('packages', vname)
+      bag_dir = temp_dir.join('packages', vname)
       bag_dir.rmtree if bag_dir.exist?
-      Moab::Bagger.new(inventory, catalog, bag_dir).fill_bag(:depositor, data_dir)
+      Moab::Bagger.new(inventory, catalog, bag_dir).fill_bag(:depositor, data_version_dir)
     end
 
     files = []
-    @temp.join('packages').find { |f| files << f.relative_path_from(@temp).to_s }
+    temp_dir.join('packages').find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq([
                                "packages",
                                "packages/v0001",
@@ -93,6 +93,6 @@ describe "Export a digital object version from DOR" do
                                "packages/v0003/versionAdditions.xml",
                                "packages/v0003/versionInventory.xml"
                              ])
-    @temp.join('packages').rmtree
+    temp_dir.join('packages').rmtree
   end
 end

@@ -9,14 +9,14 @@ describe "Harvest file properties from a file directory" do
     # action: traverse the directory and capture file metadata
     # outcome: generate inventory containing two file groups
 
-    data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
+    data_dir_1 = fixtures_dir.join('data/jq937jp0017/v0001/metadata')
     group_id = 'metadata'
     inventory_1 = Moab::FileInventory.new.inventory_from_directory(data_dir_1, group_id)
     expect(inventory_1.groups.size).to eq(1)
     expect(inventory_1.groups[0].group_id).to eq(group_id)
     expect(inventory_1.file_count).to eq(5)
 
-    data_dir_2 = @fixtures.join('data/jq937jp0017/v0001')
+    data_dir_2 = fixtures_dir.join('data/jq937jp0017/v0001')
     inventory_2 = Moab::FileInventory.new.inventory_from_directory(data_dir_2)
     expect(inventory_2.groups.size).to eq(2)
     expect(inventory_2.groups[0].group_id).to eq('content')

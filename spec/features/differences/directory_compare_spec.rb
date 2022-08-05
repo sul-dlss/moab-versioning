@@ -9,8 +9,8 @@ describe "Compare inventory against directory" do
     # action: generate an inventory for the directory and compare inventories
     # outcome: differences report
 
-    v1_data_directory = @fixtures.join('data/jq937jp0017/v0001')
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_data_directory = fixtures_dir.join('data/jq937jp0017/v0001')
+    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
     opts = {}
     directory_inventory = Moab::FileInventory.new(type: 'directory').inventory_from_directory(v1_data_directory)

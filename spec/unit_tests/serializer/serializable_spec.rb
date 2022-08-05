@@ -2,11 +2,11 @@
 
 describe Serializer::Serializable do
   before(:all) do
-    v1_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
     @v1_content = v1_inventory.groups[0]
 
-    v3_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+    v3_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
     v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
     @v3_content = v3_inventory.groups[0]
   end
@@ -157,7 +157,7 @@ describe Serializer::Serializable do
   end
 
   specify '#to_hash' do
-    additions = Moab::FileInventory.read_xml_file(@manifests.join("v0002"), 'additions')
+    additions = Moab::FileInventory.read_xml_file(manifests_dir.join("v0002"), 'additions')
     hash = additions.groups[0].to_hash
     hash['files'][0].delete('instances')
     expect(hash).to hash_match("group_id" => "content",
@@ -202,9 +202,9 @@ describe Serializer::Serializable do
     end
 
     it 'FileInstance diff' do
-      opts = { path: @temp.join('path1').to_s, datetime: "Apr 18 21:51:31 UTC 2012" }
+      opts = { path: temp_dir.join('path1').to_s, datetime: "Apr 18 21:51:31 UTC 2012" }
       file_instance1 = Moab::FileInstance.new(opts)
-      opts[:path] = @temp.join('path2').to_s
+      opts[:path] = temp_dir.join('path2').to_s
       file_instance2 = Moab::FileInstance.new(opts)
       diff = file_instance1.diff(file_instance2)
       expect(diff.keys[0]).to eq('path')

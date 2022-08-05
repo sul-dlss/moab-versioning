@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Moab::FileInventory do
-  let(:v1_version_inventory) { @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
+  let(:v1_version_inventory) { fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
   let(:parsed_file_inventory) do
     fi = described_class.parse(v1_version_inventory.read)
     fi.inventory_datetime = "2012-04-13T13:16:54Z"
@@ -143,20 +143,20 @@ describe Moab::FileInventory do
 
   specify '#data_source' do
     expect(parsed_file_inventory.data_source).to eq "v1"
-    directory = @fixtures.join('derivatives/manifests/all')
+    directory = fixtures_dir.join('derivatives/manifests/all')
     directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, "mygroup")
     expect(directory_inventory.data_source).to include "derivatives/manifests/all"
   end
 
   specify '#inventory_from_directory' do
-    data_dir_1 = @fixtures.join('data/jq937jp0017/v0001/metadata')
+    data_dir_1 = fixtures_dir.join('data/jq937jp0017/v0001/metadata')
     group_id = 'Test group_id'
     inventory_1 = described_class.new.inventory_from_directory(data_dir_1, group_id)
     expect(inventory_1.groups.size).to eq 1
     expect(inventory_1.groups[0].group_id).to eq group_id
     expect(inventory_1.file_count).to eq 5
 
-    data_dir_2 = @fixtures.join('data/jq937jp0017/v0001')
+    data_dir_2 = fixtures_dir.join('data/jq937jp0017/v0001')
     inventory_2 = described_class.new.inventory_from_directory(data_dir_2)
     expect(inventory_2.groups.size).to eq 2
     expect(inventory_2.groups[0].group_id).to eq 'content'
@@ -165,7 +165,7 @@ describe Moab::FileInventory do
   end
 
   specify '#inventory_from_bagit_bag' do
-    bag_dir = @packages.join('v0001')
+    bag_dir = packages_dir.join('v0001')
     inventory = described_class.new.inventory_from_bagit_bag(bag_dir)
     expect(inventory.groups.size).to eq 2
     expect(inventory.groups.collect(&:group_id).sort).to eq %w[content metadata]
@@ -173,15 +173,15 @@ describe Moab::FileInventory do
   end
 
   specify '#signatures_from_bagit_manifests' do
-    bag_pathname = @packages.join('v0001')
+    bag_pathname = packages_dir.join('v0001')
     signature_for_path = described_class.new.signatures_from_bagit_manifests(bag_pathname)
     expect(signature_for_path.size).to eq 11
-    expect(signature_for_path.keys[0]).to eq @packages.join('v0001/data/content/intro-1.jpg')
-    expect(signature_for_path[@packages.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
+    expect(signature_for_path.keys[0]).to eq packages_dir.join('v0001/data/content/intro-1.jpg')
+    expect(signature_for_path[packages_dir.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
   end
 
   specify '#write_xml_file' do
-    parent_dir = @temp.join('parent_dir')
+    parent_dir = temp_dir.join('parent_dir')
     type = 'Test type'
     expect(described_class).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
     parsed_file_inventory.write_xml_file(parent_dir, type)

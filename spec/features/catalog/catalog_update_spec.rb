@@ -10,9 +10,9 @@ describe "Update the signature catalog" do
     # action: filter the new inventory against the catalog
     # outcome: updated signature catalog
 
-    v1_catalog_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
+    v1_catalog_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/signatureCatalog.xml')
     signature_catalog = Moab::SignatureCatalog.parse(v1_catalog_pathname.read)
-    v2_inventory_pathname = @fixtures.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
+    v2_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
     v2_inventory = Moab::FileInventory.parse(v2_inventory_pathname.read)
     original_entry_count = signature_catalog.entries.count
     signature_catalog.update(v2_inventory, v1_catalog_pathname.parent.parent.join('data'))

@@ -2,7 +2,7 @@
 
 describe Stanford::ContentInventory do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
-  let(:content_metadata_empty_subset) { File.read(@fixtures.join('bad_data/contentMetadata-empty-subsets.xml')) }
+  let(:content_metadata_empty_subset) { File.read(fixtures_dir.join('bad_data/contentMetadata-empty-subsets.xml')) }
   let(:empty_inventory) do
     <<-XML
       <fileInventory type="version" objectId="druid:ms205ty4764" versionId="1"  fileCount="0" byteCount="0" blockCount="0">
@@ -12,7 +12,7 @@ describe Stanford::ContentInventory do
   end
 
   before(:all) do # rubocop:disable RSpec/BeforeAfterAll
-    @content_metadata = File.read(@data.join('v0002/metadata/contentMetadata.xml'))
+    @content_metadata = File.read(data_dir.join('v0002/metadata/contentMetadata.xml'))
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
@@ -20,7 +20,7 @@ describe Stanford::ContentInventory do
 
   describe '#inventory_from_cm' do
     it 'version_id = 2' do
-      inventory = @content_inventory.inventory_from_cm(@content_metadata, @druid, 'all', 2)
+      inventory = @content_inventory.inventory_from_cm(@content_metadata, FULL_TEST_DRUID, 'all', 2)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_xml = <<-XML
@@ -50,7 +50,7 @@ describe Stanford::ContentInventory do
     end
 
     it 'version_id = 1' do
-      cm_with_subsets = File.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
+      cm_with_subsets = File.read(fixtures_dir.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
       inventory = described_class.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
@@ -110,7 +110,7 @@ describe Stanford::ContentInventory do
   end
 
   describe '#group_from_cm' do
-    let(:cm_with_subsets) { File.read(@fixtures.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
+    let(:cm_with_subsets) { File.read(fixtures_dir.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')) }
 
     it 'returns expected Moab::FileGroup object' do
       group = @content_inventory.group_from_cm(@content_metadata, 'all')
@@ -175,9 +175,9 @@ describe Stanford::ContentInventory do
   end
 
   specify '#generate_content_metadata' do
-    directory = @data.join('v0002/content')
+    directory = data_dir.join('v0002/content')
     group = Moab::FileGroup.new.group_from_directory(directory, true)
-    cm = @content_inventory.generate_content_metadata(group, @obj, 2)
+    cm = @content_inventory.generate_content_metadata(group, BARE_TEST_DRUID, 2)
     generated_ng_xml = Nokogiri::XML(cm)
     generated_ng_xml.xpath('//@datetime').remove
     exp_xml = <<-XML
@@ -212,19 +212,19 @@ describe Stanford::ContentInventory do
 
   describe '#validate_content_metadata' do
     it 'returns true when valid data' do
-      cm = @fixtures.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
+      cm = fixtures_dir.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
       expect(@content_inventory.validate_content_metadata(cm)).to be(true)
     end
 
     it 'raises Moab::InvalidMetadataException for bad data' do
-      cm = @fixtures.join('bad_data', 'contentMetadata.xml')
+      cm = fixtures_dir.join('bad_data', 'contentMetadata.xml')
       expect { @content_inventory.validate_content_metadata(cm) }.to raise_exception(Moab::InvalidMetadataException)
     end
   end
 
   describe '#validate_content_metadata_details' do
     it 'expected_result when errors' do
-      cm = @fixtures.join('bad_data', 'contentMetadata.xml').read
+      cm = fixtures_dir.join('bad_data', 'contentMetadata.xml').read
       content_metadata_doc = Nokogiri::XML(cm)
       result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
       expect(result).to eq([
@@ -244,9 +244,9 @@ describe Stanford::ContentInventory do
   end
 
   describe '#remediate_content_metadata' do
-    let(:cm) { @fixtures.join('bad_data', 'contentMetadata-missing-fixity.xml').read }
+    let(:cm) { fixtures_dir.join('bad_data', 'contentMetadata-missing-fixity.xml').read }
     let(:group) do
-      directory = @data.join('v0001/content')
+      directory = data_dir.join('v0001/content')
       Moab::FileGroup.new.group_from_directory(directory, true)
     end
 
