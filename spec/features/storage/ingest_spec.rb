@@ -4,7 +4,19 @@ describe "Import digital object version to SDR" do
   #  In order to: ingest a new version of a digital object into SDR
   #  The application needs to: process a Bagit bag containing either a full set or subset of object files
 
-  it "Create a new version storage folder" do
+  let(:temp_ingests_dir) { temp_dir.join('ingests') }
+  let(:object_temp_dir) { temp_ingests_dir.join(BARE_TEST_DRUID) }
+
+  before do
+    temp_ingests_dir.rmtree if temp_ingests_dir.exist?
+    object_temp_dir.mkpath
+  end
+
+  after do
+    temp_ingests_dir.rmtree if temp_ingests_dir.exist?
+  end
+
+  it "Creates a new version storage folder" do
     # given: A Bagit bag containing a version of a digital object
     # action: Parse the file inventory for the version,
     #       : create the new version's storage folder,
@@ -14,20 +26,15 @@ describe "Import digital object version to SDR" do
     #       : and generate an inventory of all the manifest files
     # outcome: version storage folder
 
-    ingests_dir = temp_dir.join('ingests')
-    ingests_dir.rmtree if ingests_dir.exist?
-    (1..3).each do |version|
-      vname = [nil, 'v0001', 'v0002', 'v0003'][version]
-      object_dir = ingests_dir.join(BARE_TEST_DRUID)
-      object_dir.mkpath
-      unless object_dir.join("v000#{version}").exist?
-        bag_dir = packages_dir.join(vname)
-        Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
+    %w[v0001 v0002 v0003].each do |version_name|
+      unless object_temp_dir.join(version_name).exist?
+        bag_version_dir = packages_dir.join(version_name)
+        Moab::StorageObject.new(FULL_TEST_DRUID, object_temp_dir).ingest_bag(bag_version_dir)
       end
     end
 
     files = []
-    ingests_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
+    temp_ingests_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq([
                                "ingests",
                                "ingests/jq937jp0017",
@@ -81,6 +88,5 @@ describe "Import digital object version to SDR" do
                                "ingests/jq937jp0017/v0003/manifests/versionAdditions.xml",
                                "ingests/jq937jp0017/v0003/manifests/versionInventory.xml"
                              ])
-    ingests_dir.rmtree if ingests_dir.exist?
   end
 end
