@@ -51,7 +51,7 @@ describe Stanford::ContentInventory do
 
     it 'version_id = 1' do
       cm_with_subsets = File.read(fixtures_dir.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml'))
-      inventory = described_class.new.inventory_from_cm(cm_with_subsets, "druid:dd116zh0343", 'preserve', 1)
+      inventory = described_class.new.inventory_from_cm(cm_with_subsets, 'druid:dd116zh0343', 'preserve', 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_xml = <<-XML
@@ -115,41 +115,41 @@ describe Stanford::ContentInventory do
     it 'returns expected Moab::FileGroup object' do
       group = @content_inventory.group_from_cm(@content_metadata, 'all')
       expect(group).to be_instance_of(Moab::FileGroup)
-      expect(group.data_source).to eq("contentMetadata-all")
+      expect(group.data_source).to eq('contentMetadata-all')
     end
 
     it '"all" subset' do
-      group = described_class.new.group_from_cm(cm_with_subsets, "all")
+      group = described_class.new.group_from_cm(cm_with_subsets, 'all')
       expect(group.files.size).to eq(12)
     end
 
     it '"shelve" subset' do
-      group = described_class.new.group_from_cm(cm_with_subsets, "shelve")
+      group = described_class.new.group_from_cm(cm_with_subsets, 'shelve')
       expect(group.files.size).to eq(8)
     end
 
     it '"publish" subset' do
-      group = described_class.new.group_from_cm(cm_with_subsets, "publish")
+      group = described_class.new.group_from_cm(cm_with_subsets, 'publish')
       expect(group.files.size).to eq(12)
     end
 
     it '"preserve" subset' do
-      group = described_class.new.group_from_cm(cm_with_subsets, "preserve")
+      group = described_class.new.group_from_cm(cm_with_subsets, 'preserve')
       expect(group.files.size).to eq(8)
     end
 
     it 'raises exception for unknown subset' do
       exp_regex = /Unknown disposition subset/
-      expect { described_class.new.group_from_cm(cm_with_subsets, "dummy") }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
+      expect { described_class.new.group_from_cm(cm_with_subsets, 'dummy') }.to raise_exception(Moab::MoabRuntimeError, exp_regex)
     end
   end
 
   describe '#generate_signature' do
     it 'returns expected fixity' do
       exp_fixity = {
-        size: "40873",
-        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
+        size: '40873',
+        md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+        sha1: '583220e0572640abcd3ddd97393d224e8053a6ad'
       }
       expect(@content_inventory.generate_signature(@node).fixity).to eq(exp_fixity)
     end
@@ -157,21 +157,21 @@ describe Stanford::ContentInventory do
     it 'returns expected fixity after adding a sha256 checksum' do
       node2 = @node.clone
       Nokogiri::XML::Builder.with(node2) do |xml|
-        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', type: "SHA-256"
+        xml.checksum '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b', type: 'SHA-256'
       end
       exp_fixity = {
-        size: "40873",
-        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-        sha256: "291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b"
+        size: '40873',
+        md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+        sha1: '583220e0572640abcd3ddd97393d224e8053a6ad',
+        sha256: '291208b41c557a5fb15cc836ab7235dadbd0881096385cc830bb446b00d2eb6b'
       }
       expect(@content_inventory.generate_signature(node2).fixity).to eq(exp_fixity)
     end
   end
 
   it '#generate_instance' do
-    expect(@content_inventory.generate_instance(@node)).to hash_match("path" => "title.jpg",
-                                                                      "datetime" => "2012-03-26T14:15:11Z")
+    expect(@content_inventory.generate_instance(@node)).to hash_match('path' => 'title.jpg',
+                                                                      'datetime' => '2012-03-26T14:15:11Z')
   end
 
   it '#generate_content_metadata' do
@@ -228,7 +228,7 @@ describe Stanford::ContentInventory do
       content_metadata_doc = Nokogiri::XML(cm)
       result = @content_inventory.validate_content_metadata_details(content_metadata_doc)
       expect(result).to eq([
-                             "File node 0 is missing id",
+                             'File node 0 is missing id',
                              "File node having id='page-1.jpg' is missing size",
                              "File node having id='page-2.jpg' is missing md5",
                              "File node having id='page-3.jpg' is missing sha1"

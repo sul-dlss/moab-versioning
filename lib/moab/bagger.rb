@@ -58,9 +58,9 @@ module Moab
     # @return [void] Generate the bagit.txt tag file
     def create_bagit_txt
       bag_pathname.mkpath
-      bag_pathname.join("bagit.txt").open('w') do |f|
-        f.puts "Tag-File-Character-Encoding: UTF-8"
-        f.puts "BagIt-Version: 0.97"
+      bag_pathname.join('bagit.txt').open('w') do |f|
+        f.puts 'Tag-File-Character-Encoding: UTF-8'
+        f.puts 'BagIt-Version: 0.97'
       end
     end
 
@@ -217,7 +217,7 @@ module Moab
     # @api internal
     # @return [void] Generate the bag-info.txt tag file
     def create_bag_info_txt
-      bag_pathname.join("bag-info.txt").open('w') do |f|
+      bag_pathname.join('bag-info.txt').open('w') do |f|
         f.puts "External-Identifier: #{bag_inventory.package_id}"
         f.puts "Payload-Oxum: #{bag_inventory.byte_count}.#{bag_inventory.file_count}"
         f.puts "Bag-Size: #{bag_inventory.human_size}"

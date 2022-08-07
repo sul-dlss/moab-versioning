@@ -23,7 +23,7 @@ module Stanford
       # Many of these objects have contentMetadata with no child elements, such as this:
       #    <contentMetadata objectId="bd608mj3166" type="file"/>
       # but there are also objects that have no datasteam of this name at all
-      cm_inventory = Moab::FileInventory.new(type: "version", digital_object_id: object_id, version_id: version_id)
+      cm_inventory = Moab::FileInventory.new(type: 'version', digital_object_id: object_id, version_id: version_id)
       content_group = group_from_cm(content_metadata, subset)
       cm_inventory.groups << content_group
       cm_inventory
@@ -45,7 +45,7 @@ module Stanford
                 when 'shelve'
                   ng_doc.xpath("//file[@shelve='yes']")
                 when 'all'
-                  ng_doc.xpath("//file")
+                  ng_doc.xpath('//file')
                 else
                   raise(Moab::MoabRuntimeError, "Unknown disposition subset (#{subset})")
                 end
@@ -98,8 +98,8 @@ module Stanford
     # @example {include:file:spec/features/stanford/content_metadata_write_spec.rb}
     def generate_content_metadata(file_group, object_id, version_id)
       cm = Nokogiri::XML::Builder.new do |xml|
-        xml.contentMetadata(type: "sample", objectId: object_id) do
-          xml.resource(type: "version", sequence: "1", id: "version-#{version_id}") do
+        xml.contentMetadata(type: 'sample', objectId: object_id) do
+          xml.resource(type: 'version', sequence: '1', id: "version-#{version_id}") do
             file_group.files.each do |file_manifestation|
               signature = file_manifestation.signature
               file_manifestation.instances.each do |instance|
@@ -112,9 +112,9 @@ module Stanford
                   preserve: 'yes'
                 ) do
                   fixity = signature.fixity
-                  xml.checksum(type: "MD5") { xml.text signature.md5 } if fixity[:md5]
-                  xml.checksum(type: "SHA-1") { xml.text signature.sha1 } if fixity[:sha1]
-                  xml.checksum(type: "SHA-256") { xml.text signature.sha256 } if fixity[:sha256]
+                  xml.checksum(type: 'MD5') { xml.text signature.md5 } if fixity[:md5]
+                  xml.checksum(type: 'SHA-1') { xml.text signature.sha1 } if fixity[:sha1]
+                  xml.checksum(type: 'SHA-256') { xml.text signature.sha256 } if fixity[:sha256]
                 end
               end
             end
@@ -139,16 +139,16 @@ module Stanford
       result = []
       content_metadata_doc =
         case content_metadata.class.name
-        when "String"
+        when 'String'
           Nokogiri::XML(content_metadata)
-        when "Pathname"
+        when 'Pathname'
           Nokogiri::XML(content_metadata.read)
-        when "Nokogiri::XML::Document"
+        when 'Nokogiri::XML::Document'
           content_metadata
         else
-          raise Moab::InvalidMetadataException, "Content Metadata is in unrecognized format"
+          raise Moab::InvalidMetadataException, 'Content Metadata is in unrecognized format'
         end
-      nodeset = content_metadata_doc.xpath("//file")
+      nodeset = content_metadata_doc.xpath('//file')
       nodeset.each do |file_node|
         missing = %w[id size md5 sha1]
         missing.delete('id') if file_node.has_attribute?('id')
@@ -184,7 +184,7 @@ module Stanford
       @type_for_name = Moab::FileSignature.checksum_type_for_name
       @names_for_type = Moab::FileSignature.checksum_names_for_type
       ng_doc = Nokogiri::XML(content_metadata, &:noblanks)
-      nodeset = ng_doc.xpath("//file")
+      nodeset = ng_doc.xpath('//file')
       nodeset.each do |file_node|
         filepath = file_node['id']
         signature = signature_for_path[filepath]

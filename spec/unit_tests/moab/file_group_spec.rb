@@ -76,26 +76,26 @@ describe Moab::FileGroup do
       expect(@new_file_group.files[0]).to eq(manifestation)
 
       # add a second file instance to an existing manifestation
-      @new_file_group.add_file_instance(manifestation.signature, Moab::FileInstance.new(path: "/my/path"))
+      @new_file_group.add_file_instance(manifestation.signature, Moab::FileInstance.new(path: '/my/path'))
       expect(@new_file_group.files[0].instances.size).to eq(2)
     end
 
     it '#remove_file_having_path affects file_count' do
       file_group = described_class.new.group_from_directory(fixtures_dir.join('data/jq937jp0017/v0001/content'), true)
       before_file_count = file_group.file_count
-      file_group.remove_file_having_path("page-1.jpg")
+      file_group.remove_file_having_path('page-1.jpg')
       expect(file_group.file_count).to eq(before_file_count - 1)
     end
 
-    describe "#is_descendent_of_base?" do
+    describe '#is_descendent_of_base?' do
       # FIXME:  shouldn't this method be named descendent_of_base?
       before { @new_file_group.base_directory = fixtures_dir.join('data') }
 
-      it "true when condition met" do
+      it 'true when condition met' do
         expect(@new_file_group).to be_is_descendent_of_base(fixtures_dir.join('data/jq937jp0017/v0001'))
       end
 
-      it "raises exception if false (FIXME!)" do
+      it 'raises exception if false (FIXME!)' do
         base = fixtures_dir.join('derivatives/manifests')
         # FIXME:  shouldn't it simply return false?
         exp_msg_regex = /is not a descendent of/
@@ -139,7 +139,7 @@ describe Moab::FileGroup do
       group.add_physical_file(pathname)
       expect(group.files.size).to eq(1)
       expect(group.files[0].signature).to eq Moab::FileSignature.new(
-        size: 40873, md5: "1a726cd7963bd6d3ceb10a8c353ec166", sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
+        size: 40873, md5: '1a726cd7963bd6d3ceb10a8c353ec166', sha1: '583220e0572640abcd3ddd97393d224e8053a6ad'
       )
       expect(group.files[0].instances[0].path).to eq('title.jpg')
 

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe "Write contentMetadata datastream" do
+describe 'Write contentMetadata datastream' do
   #  In order to: generate a contentMetadata datastream
   #  The application needs to: transform data from a file inventory's 'content' file group
 
-  it "Generate contentMetadata datastream from a Moab::FileGroup object" do
+  it 'Generate contentMetadata datastream from a Moab::FileGroup object' do
     # given: a Moab::FileGroup instance
     # action: extract the file-level metadata
     # outcome: a fully populated contentMetadata datastream

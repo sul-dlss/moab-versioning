@@ -107,8 +107,8 @@ describe Moab::StorageRepository do
 
   describe '#store_new_object_version' do
     it 'calls storage_object and ingest_bag' do
-      bag_pathname = double("bag_pathname")
-      object_pathname = double("object_pathname")
+      bag_pathname = double('bag_pathname')
+      object_pathname = double('object_pathname')
       storage_object = double(Moab::StorageObject)
       expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
       allow(storage_object).to receive(:object_pathname).and_return(object_pathname)

@@ -26,47 +26,47 @@ describe Moab::StorageObjectValidator do
     describe 'invalid_moab' do
       context 'under version directory' do
         it 'has missing items' do
-          expect(error_list).to include(described_class::MISSING_DIR => "Missing directory: [\"data\", \"manifests\"] Version: v0001")
+          expect(error_list).to include(described_class::MISSING_DIR => 'Missing directory: ["data", "manifests"] Version: v0001')
         end
 
         it 'has unexpected directory' do
-          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => "Unexpected item in path: [\"extra_dir\"] Version: v0002")
+          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => 'Unexpected item in path: ["extra_dir"] Version: v0002')
         end
 
         it 'has unexpected file' do
-          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => "Unexpected item in path: [\"extra_file.txt\"] Version: v0003")
+          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => 'Unexpected item in path: ["extra_file.txt"] Version: v0003')
         end
 
         it 'has missing data directory' do
-          expect(error_list).to include(described_class::MISSING_DIR => "Missing directory: [\"data\"] Version: v0004")
+          expect(error_list).to include(described_class::MISSING_DIR => 'Missing directory: ["data"] Version: v0004')
         end
       end
 
       context 'under data directory' do
         it 'has unexpected file' do
-          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => "Unexpected item in path: [\"extra_file.txt\"] Version: v0005")
+          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => 'Unexpected item in path: ["extra_file.txt"] Version: v0005')
         end
 
         it 'has missing metadata directory' do
-          expect(error_list).to include(described_class::MISSING_DIR => "Missing directory: [\"metadata\"] Version: v0006")
+          expect(error_list).to include(described_class::MISSING_DIR => 'Missing directory: ["metadata"] Version: v0006')
         end
 
         context 'content directory' do
           it 'must contain files' do
-            expect(error_list).to include(described_class::NO_FILES_IN_CONTENT_DIR => "Version v0009: No files present in content dir")
+            expect(error_list).to include(described_class::NO_FILES_IN_CONTENT_DIR => 'Version v0009: No files present in content dir')
           end
 
           it 'contains directories with disallowed names' do
             # vnnnn
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
             # manifests
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0012: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0012: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
             # data
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0013: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0013: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
             # content
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0014: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0014: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
             # metadata
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0015: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0015: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
           end
 
           context 'allows multiple level sub directories' do
@@ -115,15 +115,15 @@ describe Moab::StorageObjectValidator do
 
             context 'forbidden subdirectories' do
               it 'defaults to true and errors' do
-                expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+                expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
               end
 
               it 'explicitly set to true and errors' do
-                expect(storage_obj_validator.validation_errors(true)).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => "Version v0011: content directory has forbidden sub-directory name: vnnnn or [\"data\", \"manifests\", \"content\", \"metadata\"]")
+                expect(storage_obj_validator.validation_errors(true)).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
               end
 
               it 'explicitly set to false and errors' do
-                expect(storage_obj_validator.validation_errors(false)).to include(described_class::CONTENT_SUB_DIRS_DETECTED => "Version v0015: content directory should only contain files, not directories. Found directory: metadata")
+                expect(storage_obj_validator.validation_errors(false)).to include(described_class::CONTENT_SUB_DIRS_DETECTED => 'Version v0015: content directory should only contain files, not directories. Found directory: metadata')
               end
             end
           end
@@ -131,11 +131,11 @@ describe Moab::StorageObjectValidator do
 
         context 'metadata directory' do
           it 'must only contain files' do
-            expect(error_list).to include(described_class::METADATA_SUB_DIRS_DETECTED => "Version v0008: metadata directory should only contain files, not directories. Found directory: test1")
+            expect(error_list).to include(described_class::METADATA_SUB_DIRS_DETECTED => 'Version v0008: metadata directory should only contain files, not directories. Found directory: test1')
           end
 
           it 'must contain files' do
-            expect(error_list).to include(described_class::NO_FILES_IN_METADATA_DIR => "Version v0010: No files present in metadata dir")
+            expect(error_list).to include(described_class::NO_FILES_IN_METADATA_DIR => 'Version v0010: No files present in metadata dir')
           end
         end
       end
@@ -145,24 +145,24 @@ describe Moab::StorageObjectValidator do
         let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/cc/000/cc/0000/cc000cc0000' }
 
         it 'does not have signatureCatalog.xml' do
-          expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => "Version v0001: Missing signatureCatalog.xml")
+          expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => 'Version v0001: Missing signatureCatalog.xml')
         end
 
         it 'does not have manifestInventory.xml' do
-          expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => "Version v0002: Missing manifestInventory.xml")
+          expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => 'Version v0002: Missing manifestInventory.xml')
         end
 
         it 'does not have signatureCatalog.xml or manifestInventory.xml' do
-          expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => "Version v0003: Missing manifestInventory.xml")
-          expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => "Version v0003: Missing signatureCatalog.xml")
+          expect(error_list).to include(described_class::NO_MANIFEST_INVENTORY => 'Version v0003: Missing manifestInventory.xml')
+          expect(error_list).to include(described_class::NO_SIGNATURE_CATALOG => 'Version v0003: Missing signatureCatalog.xml')
         end
 
         it 'has no files' do
-          expect(error_list).to include(described_class::NO_FILES_IN_MANIFEST_DIR => "Version v0004: No files present in manifest dir")
+          expect(error_list).to include(described_class::NO_FILES_IN_MANIFEST_DIR => 'Version v0004: No files present in manifest dir')
         end
 
         it 'has a folder' do
-          expect(error_list).to include(described_class::NO_FILES_IN_MANIFEST_DIR => "Version v0005: No files present in manifest dir")
+          expect(error_list).to include(described_class::NO_FILES_IN_MANIFEST_DIR => 'Version v0005: No files present in manifest dir')
         end
       end
 
@@ -171,7 +171,7 @@ describe Moab::StorageObjectValidator do
         let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/yy/000/yy/0000/yy000yy0000' }
 
         it 'non contiguous' do
-          expect(error_list).to include(described_class::TEST_OBJECT_VERSIONS_NOT_IN_ORDER => "Should contain only sequential version directories. Current directories: [\"v0001\", \"v0003\", \"v0004\", \"v0006\"]")
+          expect(error_list).to include(described_class::TEST_OBJECT_VERSIONS_NOT_IN_ORDER => 'Should contain only sequential version directories. Current directories: ["v0001", "v0003", "v0004", "v0006"]')
         end
       end
 
@@ -191,12 +191,12 @@ describe Moab::StorageObjectValidator do
         it 'has incorrect items' do
           files_present_err_msg = 'should not contain files; only the manifests and data directories'
           expect(error_list.size).to eq 7
-          expect(error_list).to include(described_class::INCORRECT_DIR_CONTENTS => "Incorrect items under v0001 directory")
+          expect(error_list).to include(described_class::INCORRECT_DIR_CONTENTS => 'Incorrect items under v0001 directory')
           expect(error_list).to include(described_class::FILES_IN_VERSION_DIR => "Version directory v0001 #{files_present_err_msg}")
           expect(error_list).to include(described_class::FILES_IN_VERSION_DIR => "Version directory v0002 #{files_present_err_msg}")
           expect(error_list).to include(described_class::FILES_IN_VERSION_DIR => "Version directory v0003 #{files_present_err_msg}")
-          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => "Unexpected item in path: [\"test2.txt\"] Version: v0004")
-          expect(error_list).to include(described_class::INCORRECT_DIR_CONTENTS => "Incorrect items under v0005 directory")
+          expect(error_list).to include(described_class::EXTRA_CHILD_DETECTED => 'Unexpected item in path: ["test2.txt"] Version: v0004')
+          expect(error_list).to include(described_class::INCORRECT_DIR_CONTENTS => 'Incorrect items under v0005 directory')
           expect(error_list).to include(described_class::FILES_IN_VERSION_DIR => "Version directory v0005 #{files_present_err_msg}")
         end
       end
@@ -225,7 +225,7 @@ describe Moab::StorageObjectValidator do
       let(:druid) { 'bj103hs9687' }
       let(:druid_path) { 'spec/fixtures/good_root01/moab_storage_trunk/bj/103/hs/9687/bj103hs9687' }
 
-      it "returns true when moab is in correct format" do
+      it 'returns true when moab is in correct format' do
         expect(error_list.empty?).to be true
       end
 

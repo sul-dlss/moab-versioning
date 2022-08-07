@@ -26,7 +26,7 @@ describe Moab::FileGroupDifference do
   end
 
   it '#group_id' do
-    expect(group_diff.group_id).to eq "content"
+    expect(group_diff.group_id).to eq 'content'
   end
 
   it '#difference_count' do
@@ -90,19 +90,19 @@ describe Moab::FileGroupDifference do
     it '#matching_keys' do
       matching_keys = new_diff.matching_keys(basis_hash, other_hash)
       expect(matching_keys.size).to eq 4
-      expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
+      expect(matching_keys).to eq ['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'title.jpg']
     end
 
     it '#basis_only_keys' do
       basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
       expect(basis_only_keys.size).to eq 2
-      expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
+      expect(basis_only_keys).to eq ['intro-1.jpg', 'intro-2.jpg']
     end
 
     it '#other_only_keys' do
       other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
       expect(other_only_keys.size).to eq 1
-      expect(other_only_keys).to eq ["page-4.jpg"]
+      expect(other_only_keys).to eq ['page-4.jpg']
     end
   end
 
@@ -125,7 +125,7 @@ describe Moab::FileGroupDifference do
     end
 
     it 'with empty group' do
-      empty_group = Moab::FileGroup.new(group_id: "content")
+      empty_group = Moab::FileGroup.new(group_id: 'content')
       diff = new_diff.compare_file_groups(v1_content, empty_group)
       expect(diff.difference_count).to eq 6
       expect(diff.deleted).to eq 6
@@ -259,10 +259,10 @@ describe Moab::FileGroupDifference do
     expect(unchanged_file.basis_path).to eq 'title.jpg'
     expect(unchanged_file.other_path).to eq 'same'
     title_jpg_fixity = {
-      size: "40873",
-      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-      sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+      size: '40873',
+      md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+      sha1: '583220e0572640abcd3ddd97393d224e8053a6ad',
+      sha256: '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
     }
     expect(unchanged_file.signatures[0].fixity).to eq title_jpg_fixity
   end
@@ -279,10 +279,10 @@ describe Moab::FileGroupDifference do
     expect(renamed_file1.basis_path).to eq 'page-2.jpg'
     expect(renamed_file1.other_path).to eq 'page-3.jpg'
     page_2_jpg_fixity = {
-      size: "39450",
-      md5: "82fc107c88446a3119a51a8663d1e955",
-      sha1: "d0857baa307a2e9efff42467b5abd4e1cf40fcd5",
-      sha256: "235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0"
+      size: '39450',
+      md5: '82fc107c88446a3119a51a8663d1e955',
+      sha1: 'd0857baa307a2e9efff42467b5abd4e1cf40fcd5',
+      sha256: '235de16df4804858aefb7690baf593fb572d64bb6875ec522a4eea1f4189b5f0'
     }
     expect(renamed_file1.signatures[0].fixity).to eq page_2_jpg_fixity
     renamed_file2 = renamed_subset.files[1]
@@ -290,10 +290,10 @@ describe Moab::FileGroupDifference do
     expect(renamed_file2.basis_path).to eq 'page-3.jpg'
     expect(renamed_file2.other_path).to eq 'page-4.jpg'
     page_3_jpg_fixity = {
-      size: "19125",
-      md5: "a5099878de7e2e064432d6df44ca8827",
-      sha1: "c0ccac433cf02a6cee89c14f9ba6072a184447a2",
-      sha256: "7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271"
+      size: '19125',
+      md5: 'a5099878de7e2e064432d6df44ca8827',
+      sha1: 'c0ccac433cf02a6cee89c14f9ba6072a184447a2',
+      sha256: '7bd120459eff0ecd21df94271e5c14771bfca5137d1dd74117b6a37123dfe271'
     }
     expect(renamed_file2.signatures[0].fixity).to eq page_3_jpg_fixity
   end
@@ -320,10 +320,10 @@ describe Moab::FileGroupDifference do
     expect(modified_file.basis_path).to eq 'page-1.jpg'
     expect(modified_file.other_path).to eq 'same'
     page_1_jpg_fixity = {
-      size: "25153",
-      md5: "3dee12fb4f1c28351c7482b76ff76ae4",
-      sha1: "906c1314f3ab344563acbbbe2c7930f08429e35b",
-      sha256: "41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad"
+      size: '25153',
+      md5: '3dee12fb4f1c28351c7482b76ff76ae4',
+      sha1: '906c1314f3ab344563acbbbe2c7930f08429e35b',
+      sha256: '41aaf8598c9d8e3ee5d55efb9be11c542099d9f994b5935995d0abea231b8bad'
     }
     expect(modified_file.signatures[0].fixity).to eq page_1_jpg_fixity
   end
@@ -340,10 +340,10 @@ describe Moab::FileGroupDifference do
     expect(deleted_file1.basis_path).to eq 'intro-1.jpg'
     expect(deleted_file1.other_path).to eq ''
     intro_1_jpg_fixity = {
-      size: "41981",
-      md5: "915c0305bf50c55143f1506295dc122c",
-      sha1: "60448956fbe069979fce6a6e55dba4ce1f915178",
-      sha256: "4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"
+      size: '41981',
+      md5: '915c0305bf50c55143f1506295dc122c',
+      sha1: '60448956fbe069979fce6a6e55dba4ce1f915178',
+      sha256: '4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a'
     }
     expect(deleted_file1.signatures[0].fixity).to eq intro_1_jpg_fixity
     deleted_file2 = deleted_subset.files[1]
@@ -351,10 +351,10 @@ describe Moab::FileGroupDifference do
     expect(deleted_file2.basis_path).to eq 'intro-2.jpg'
     expect(deleted_file2.other_path).to eq ''
     intro_2_jpg_fixity = {
-      size: "39850",
-      md5: "77f1a4efdcea6a476505df9b9fba82a7",
-      sha1: "a49ae3f3771d99ceea13ec825c9c2b73fc1a9915",
-      sha256: "3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7"
+      size: '39850',
+      md5: '77f1a4efdcea6a476505df9b9fba82a7',
+      sha1: 'a49ae3f3771d99ceea13ec825c9c2b73fc1a9915',
+      sha256: '3a28718a8867e4329cd0363a84aee1c614d0f11229a82e87c6c5072a6e1b15e7'
     }
     expect(deleted_file2.signatures[0].fixity).to eq intro_2_jpg_fixity
   end
@@ -371,10 +371,10 @@ describe Moab::FileGroupDifference do
     expect(added_file.basis_path).to eq ''
     expect(added_file.other_path).to eq 'page-2.jpg'
     page_2_jpg_fixity = {
-      size: "39539",
-      md5: "fe6e3ffa1b02ced189db640f68da0cc2",
-      sha1: "43ced73681687bc8e6f483618f0dcff7665e0ba7",
-      sha256: "42c0cd1fe06615d8fdb8c2e3400d6fe38461310b4ecc252e1774e0c9e3981afa"
+      size: '39539',
+      md5: 'fe6e3ffa1b02ced189db640f68da0cc2',
+      sha1: '43ced73681687bc8e6f483618f0dcff7665e0ba7',
+      sha256: '42c0cd1fe06615d8fdb8c2e3400d6fe38461310b4ecc252e1774e0c9e3981afa'
     }
     expect(added_file.signatures[0].fixity).to eq page_2_jpg_fixity
   end
@@ -386,12 +386,12 @@ describe Moab::FileGroupDifference do
     expect(fgd.subsets.count).to be >= 5
     expect(fgd.subset('identical').files.count).to eq 2
     expect(fgd.subset('renamed').files.count).to eq 2
-    expect(fgd.subset('renamed').files[0].basis_path).to eq "page-2.jpg"
-    expect(fgd.subset('renamed').files[0].other_path).to eq "page-3.jpg"
+    expect(fgd.subset('renamed').files[0].basis_path).to eq 'page-2.jpg'
+    expect(fgd.subset('renamed').files[0].other_path).to eq 'page-3.jpg'
     expect(fgd.subset('modified').files.count).to eq 0
     expect(fgd.subset('deleted').files.count).to eq 0
     expect(fgd.subset('added').files.count).to eq 1
-    expect(fgd.subset('added').files[0].other_path).to eq "page-2.jpg"
+    expect(fgd.subset('added').files[0].other_path).to eq 'page-2.jpg'
   end
 
   it '#file_deltas' do
@@ -408,31 +408,31 @@ describe Moab::FileGroupDifference do
     new_diff.compare_file_groups(v1_content, v3_content)
     deltas = new_diff.file_deltas
     expect(deltas).to eq(
-      identical: ["title.jpg"],
-      modified: ["page-1.jpg"],
-      deleted: ["intro-1.jpg", "intro-2.jpg"],
+      identical: ['title.jpg'],
+      modified: ['page-1.jpg'],
+      deleted: ['intro-1.jpg', 'intro-2.jpg'],
       copydeleted: [],
       copyadded: [],
-      renamed: [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]],
-      added: ["page-2.jpg"]
+      renamed: [['page-2.jpg', 'page-3.jpg'], ['page-3.jpg', 'page-4.jpg']],
+      added: ['page-2.jpg']
     )
   end
 
   it '#rename_require_temp_files' do
-    renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
+    renamed = [['page-2.jpg', 'page-3.jpg'], ['page-3.jpg', 'page-4.jpg']]
     expect(new_diff.rename_require_temp_files(renamed)).to be true
-    renamed = [["page-1.jpg", "page-1b.jpg"], ["page-2.jpg", "page-2b.jpg"]]
+    renamed = [['page-1.jpg', 'page-1b.jpg'], ['page-2.jpg', 'page-2b.jpg']]
     expect(new_diff.rename_require_temp_files(renamed)).to be false
   end
 
   it '#rename_tempfile_triplets' do
-    renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
+    renamed = [['page-2.jpg', 'page-3.jpg'], ['page-3.jpg', 'page-4.jpg']]
     triplets = new_diff.rename_tempfile_triplets(renamed)
-    expect(triplets[0][0]).to eq "page-2.jpg"
-    expect(triplets[0][1]).to eq "page-3.jpg"
+    expect(triplets[0][0]).to eq 'page-2.jpg'
+    expect(triplets[0][1]).to eq 'page-3.jpg'
     expect(triplets[0][2]).to match(/^page-3.jpg.*-tmp$/)
-    expect(triplets[1][0]).to eq "page-3.jpg"
-    expect(triplets[1][1]).to eq "page-4.jpg"
+    expect(triplets[1][0]).to eq 'page-3.jpg'
+    expect(triplets[1][1]).to eq 'page-4.jpg'
     expect(triplets[1][2]).to match(/^page-4.jpg.*-tmp$/)
   end
 end

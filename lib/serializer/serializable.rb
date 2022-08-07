@@ -120,7 +120,7 @@ module Serializer
     # @param other [Serializable] The other object being compared
     # @return [Hash] Generate a hash containing the differences between two objects of the same type
     def diff(other)
-      raise(Moab::MoabRuntimeError, "Cannot compare different classes") if self.class != other.class
+      raise(Moab::MoabRuntimeError, 'Cannot compare different classes') if self.class != other.class
 
       left = other.to_hash
       right = to_hash

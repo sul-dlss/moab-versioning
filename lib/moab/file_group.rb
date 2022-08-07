@@ -23,7 +23,7 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @signature_hash = {}
-      @data_source = ""
+      @data_source = ''
       @signatures_from_bag = nil # prevents later warning: instance variable @signatures_from_bag not initialized
       super(opts)
     end
@@ -162,7 +162,7 @@ module Moab
     # @param pathname [Pathname] The file path to be tested
     # @return [Boolean] Test whether the given path is contained within the {#base_directory}
     def is_descendent_of_base?(pathname)
-      raise(MoabRuntimeError, "base_directory has not been set") if @base_directory.nil?
+      raise(MoabRuntimeError, 'base_directory has not been set') if @base_directory.nil?
 
       is_descendent = false
       pathname.expand_path.ascend { |ancestor| is_descendent ||= (ancestor == @base_directory) }

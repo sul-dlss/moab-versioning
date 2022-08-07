@@ -23,7 +23,7 @@ RSpec.describe Stanford::StorageObjectValidator do
       let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/dd/000/dd/0000/dd000dd0000' }
 
       it 'returns errors' do
-        expect(error_list).to include(Moab::StorageObjectValidator::MISSING_DIR => "Missing directory: no versions exist")
+        expect(error_list).to include(Moab::StorageObjectValidator::MISSING_DIR => 'Missing directory: no versions exist')
       end
     end
 

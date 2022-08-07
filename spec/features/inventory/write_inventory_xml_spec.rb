@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-describe "Feature: File Inventory Serialization" do
+describe 'Feature: File Inventory Serialization' do
   # In order to: preserve the file inventory data held by an in-memory object
   # The application needs to: generate a xml file rendition of the metadata for disk storage
 
-  it "serializes file inventory data to XML" do
+  it 'serializes file inventory data to XML' do
     # action: a call the object's write_xml_file method
     # outcome: produces a XML document containing all the inventory metadata
 
-    inventory_object = Moab::FileInventory.read_xml_file(manifests_dir.join("v0001"), 'version')
+    inventory_object = Moab::FileInventory.read_xml_file(manifests_dir.join('v0001'), 'version')
     output_dir = temp_dir.join('inventory')
     output_dir.mkpath
     inventory_object.write_xml_file(output_dir, 'version')

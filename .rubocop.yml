@@ -52,10 +52,6 @@ Style/FormatStringToken:
 Style/Next:
   Enabled: false
 
-# because ' vs " isn't a big deal for readability or maintainability or execution time
-Style/StringLiterals:
-  Enabled: false
-
 Style/ZeroLengthPredicate:
   Exclude:
     - 'lib/moab/bagger.rb' # is calling `x.size == 0` on Pathname objects, which don't have `.empty?` on old Rubies

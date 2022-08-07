@@ -2,13 +2,13 @@
 
 describe Moab::StorageObjectVersion do
   before(:all) do
-    @temp_dir_ingests = temp_dir.join("ingests")
+    @temp_dir_ingests = temp_dir.join('ingests')
     @temp_object_dir = @temp_dir_ingests.join(BARE_TEST_DRUID)
     @existing_object_pathname = ingests_dir.join(BARE_TEST_DRUID)
     @existing_storage_object = Moab::StorageObject.new(FULL_TEST_DRUID, @existing_object_pathname)
     @existing_storage_object_version = described_class.new(@existing_storage_object, 2)
     @temp_storage_object = Moab::StorageObject.new(FULL_TEST_DRUID, @temp_object_dir)
-    @temp_package_pathname = temp_dir.join("packages")
+    @temp_package_pathname = temp_dir.join('packages')
     bad_object_pathname = temp_dir.join(BARE_TEST_DRUID)
     bad_object_pathname.rmtree if bad_object_pathname.exist?
     bad_object_pathname.mkpath
@@ -16,9 +16,9 @@ describe Moab::StorageObjectVersion do
     @object_with_manifest_errors = Moab::StorageObject.new(FULL_TEST_DRUID, bad_object_pathname)
     @version_with_manifest_errors = @object_with_manifest_errors.storage_object_version(1)
     new_manifest_file = @version_with_manifest_errors.version_pathname.join('manifests', 'dummy1.xml')
-    new_manifest_file.open('w') { |f| f.puts "dummy" }
+    new_manifest_file.open('w') { |f| f.puts 'dummy' }
     new_metadata_file = @version_with_manifest_errors.version_pathname.join('data', 'metadata', 'dummy2.xml')
-    new_metadata_file.open('w') { |f| f.puts "dummy" }
+    new_metadata_file.open('w') { |f| f.puts 'dummy' }
   end
 
   after(:all) do
@@ -47,17 +47,17 @@ describe Moab::StorageObjectVersion do
   end
 
   it '#composite_key' do
-    expect(@existing_storage_object_version.composite_key).to eq("druid:jq937jp0017-v0002")
+    expect(@existing_storage_object_version.composite_key).to eq('druid:jq937jp0017-v0002')
   end
 
   describe '#find_signature' do
     it 'content' do
       signature = @existing_storage_object_version.find_signature('content', 'title.jpg')
       expected_sig_fixity = {
-        size: "40873",
-        md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-        sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-        sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+        size: '40873',
+        md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+        sha1: '583220e0572640abcd3ddd97393d224e8053a6ad',
+        sha256: '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
@@ -65,10 +65,10 @@ describe Moab::StorageObjectVersion do
     it 'content with hyphen in file name' do
       signature = @existing_storage_object_version.find_signature('content', 'page-1.jpg')
       expected_sig_fixity = {
-        size: "32915",
-        md5: "c1c34634e2f18a354cd3e3e1574c3194",
-        sha1: "0616a0bd7927328c364b2ea0b4a79c507ce915ed",
-        sha256: "b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0"
+        size: '32915',
+        md5: 'c1c34634e2f18a354cd3e3e1574c3194',
+        sha1: '0616a0bd7927328c364b2ea0b4a79c507ce915ed',
+        sha256: 'b78cc53b7b8d9ed86d5e3bab3b699c7ed0db958d4a111e56b6936c8397137de0'
       }
       expect(signature.fixity).to eq expected_sig_fixity
     end
@@ -86,7 +86,7 @@ describe Moab::StorageObjectVersion do
   end
 
   describe '#find_filepath' do
-    let(:exp_dir) { "ingests/jq937jp0017" }
+    let(:exp_dir) { 'ingests/jq937jp0017' }
 
     it 'content file' do
       pathname = @existing_storage_object_version.find_filepath('content', 'title.jpg')
@@ -112,8 +112,8 @@ describe Moab::StorageObjectVersion do
   it '#find_filepath_using_signature' do
     fixity_hash = {
       size: 40873,
-      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad"
+      md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+      sha1: '583220e0572640abcd3ddd97393d224e8053a6ad'
     }
     file_signature = Moab::FileSignature.new(fixity_hash)
     title_image = File.join('ingests', 'jq937jp0017', 'v0001', 'data', 'content', 'title.jpg')
@@ -167,32 +167,32 @@ describe Moab::StorageObjectVersion do
     context 'with links (default)' do
       before do
         temp_storage_object_version = described_class.new(@temp_storage_object, 1)
-        temp_storage_object_version.ingest_bag_data(packages_dir.join("v0001"))
+        temp_storage_object_version.ingest_bag_data(packages_dir.join('v0001'))
       end
 
       it 'puts the files in the ingest dir' do
         files = []
         @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
-          "ingests/jq937jp0017",
-          "ingests/jq937jp0017/v0001",
-          "ingests/jq937jp0017/v0001/data",
-          "ingests/jq937jp0017/v0001/data/content",
-          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-          "ingests/jq937jp0017/v0001/data/content/title.jpg",
-          "ingests/jq937jp0017/v0001/data/metadata",
-          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0001/manifests",
-          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
+          'ingests/jq937jp0017',
+          'ingests/jq937jp0017/v0001',
+          'ingests/jq937jp0017/v0001/data',
+          'ingests/jq937jp0017/v0001/data/content',
+          'ingests/jq937jp0017/v0001/data/content/intro-1.jpg',
+          'ingests/jq937jp0017/v0001/data/content/intro-2.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-1.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-2.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-3.jpg',
+          'ingests/jq937jp0017/v0001/data/content/title.jpg',
+          'ingests/jq937jp0017/v0001/data/metadata',
+          'ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml',
+          'ingests/jq937jp0017/v0001/manifests',
+          'ingests/jq937jp0017/v0001/manifests/versionAdditions.xml',
+          'ingests/jq937jp0017/v0001/manifests/versionInventory.xml'
         ]
       end
     end
@@ -200,39 +200,39 @@ describe Moab::StorageObjectVersion do
     context 'without links' do
       before do
         temp_storage_object_version = described_class.new(@temp_storage_object, 1)
-        temp_storage_object_version.ingest_bag_data(packages_dir.join("v0001"), use_links: false)
+        temp_storage_object_version.ingest_bag_data(packages_dir.join('v0001'), use_links: false)
       end
 
       it 'puts the files in the ingest dir' do
         files = []
         @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
         expect(files.sort).to eq [
-          "ingests/jq937jp0017",
-          "ingests/jq937jp0017/v0001",
-          "ingests/jq937jp0017/v0001/data",
-          "ingests/jq937jp0017/v0001/data/content",
-          "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-          "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-          "ingests/jq937jp0017/v0001/data/content/title.jpg",
-          "ingests/jq937jp0017/v0001/data/metadata",
-          "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-          "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml",
-          "ingests/jq937jp0017/v0001/manifests",
-          "ingests/jq937jp0017/v0001/manifests/versionAdditions.xml",
-          "ingests/jq937jp0017/v0001/manifests/versionInventory.xml"
+          'ingests/jq937jp0017',
+          'ingests/jq937jp0017/v0001',
+          'ingests/jq937jp0017/v0001/data',
+          'ingests/jq937jp0017/v0001/data/content',
+          'ingests/jq937jp0017/v0001/data/content/intro-1.jpg',
+          'ingests/jq937jp0017/v0001/data/content/intro-2.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-1.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-2.jpg',
+          'ingests/jq937jp0017/v0001/data/content/page-3.jpg',
+          'ingests/jq937jp0017/v0001/data/content/title.jpg',
+          'ingests/jq937jp0017/v0001/data/metadata',
+          'ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml',
+          'ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml',
+          'ingests/jq937jp0017/v0001/manifests',
+          'ingests/jq937jp0017/v0001/manifests/versionAdditions.xml',
+          'ingests/jq937jp0017/v0001/manifests/versionInventory.xml'
         ]
       end
     end
   end
 
   it '#ingest_dir' do
-    source_dir = packages_dir.join("v0001/data")
+    source_dir = packages_dir.join('v0001/data')
     temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     target_dir = temp_storage_object_version.version_pathname.join('data')
     use_links = true
@@ -240,22 +240,22 @@ describe Moab::StorageObjectVersion do
     files = []
     @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
     expect(files.sort).to eq [
-      "ingests/jq937jp0017",
-      "ingests/jq937jp0017/v0001",
-      "ingests/jq937jp0017/v0001/data",
-      "ingests/jq937jp0017/v0001/data/content",
-      "ingests/jq937jp0017/v0001/data/content/intro-1.jpg",
-      "ingests/jq937jp0017/v0001/data/content/intro-2.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-1.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-2.jpg",
-      "ingests/jq937jp0017/v0001/data/content/page-3.jpg",
-      "ingests/jq937jp0017/v0001/data/content/title.jpg",
-      "ingests/jq937jp0017/v0001/data/metadata",
-      "ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml",
-      "ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml"
+      'ingests/jq937jp0017',
+      'ingests/jq937jp0017/v0001',
+      'ingests/jq937jp0017/v0001/data',
+      'ingests/jq937jp0017/v0001/data/content',
+      'ingests/jq937jp0017/v0001/data/content/intro-1.jpg',
+      'ingests/jq937jp0017/v0001/data/content/intro-2.jpg',
+      'ingests/jq937jp0017/v0001/data/content/page-1.jpg',
+      'ingests/jq937jp0017/v0001/data/content/page-2.jpg',
+      'ingests/jq937jp0017/v0001/data/content/page-3.jpg',
+      'ingests/jq937jp0017/v0001/data/content/title.jpg',
+      'ingests/jq937jp0017/v0001/data/metadata',
+      'ingests/jq937jp0017/v0001/data/metadata/contentMetadata.xml',
+      'ingests/jq937jp0017/v0001/data/metadata/descMetadata.xml',
+      'ingests/jq937jp0017/v0001/data/metadata/identityMetadata.xml',
+      'ingests/jq937jp0017/v0001/data/metadata/provenanceMetadata.xml',
+      'ingests/jq937jp0017/v0001/data/metadata/versionMetadata.xml'
     ]
   end
 
@@ -264,30 +264,30 @@ describe Moab::StorageObjectVersion do
       temp_storage_object_version = described_class.new(@temp_storage_object, 2)
       temp_version_pathname = temp_storage_object_version.version_pathname
       temp_version_pathname.mkpath
-      source_file = packages_dir.join("v0002").join('versionInventory.xml')
+      source_file = packages_dir.join('v0002').join('versionInventory.xml')
 
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname)
 
       files = []
       @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
-        "ingests/jq937jp0017",
-        "ingests/jq937jp0017/v0002",
-        "ingests/jq937jp0017/v0002/versionInventory.xml"
+        'ingests/jq937jp0017',
+        'ingests/jq937jp0017/v0002',
+        'ingests/jq937jp0017/v0002/versionInventory.xml'
       ]
 
       # now ingest versionAdditions file
-      source_file = packages_dir.join("v0002").join('versionAdditions.xml')
+      source_file = packages_dir.join('v0002').join('versionAdditions.xml')
       use_links = false
       temp_storage_object_version.ingest_file(source_file, temp_version_pathname, use_links)
 
       files = []
       @temp_object_dir.find { |f| files << f.relative_path_from(temp_dir).to_s }
       expect(files.sort).to eq [
-        "ingests/jq937jp0017",
-        "ingests/jq937jp0017/v0002",
-        "ingests/jq937jp0017/v0002/versionAdditions.xml",
-        "ingests/jq937jp0017/v0002/versionInventory.xml"
+        'ingests/jq937jp0017',
+        'ingests/jq937jp0017/v0002',
+        'ingests/jq937jp0017/v0002/versionAdditions.xml',
+        'ingests/jq937jp0017/v0002/versionInventory.xml'
       ]
     end
   end
@@ -317,9 +317,9 @@ describe Moab::StorageObjectVersion do
     temp_storage_object_version = described_class.new(@temp_storage_object, 2)
     temp_version_pathname = temp_storage_object_version.version_pathname
     temp_version_pathname.mkpath
-    vers_inv_file = packages_dir.join("v0002").join('versionInventory.xml')
+    vers_inv_file = packages_dir.join('v0002').join('versionInventory.xml')
     temp_storage_object_version.ingest_file(vers_inv_file, temp_version_pathname)
-    vers_add_file = packages_dir.join("v0002").join('versionAdditions.xml')
+    vers_add_file = packages_dir.join('v0002').join('versionAdditions.xml')
     temp_storage_object_version.ingest_file(vers_add_file, temp_version_pathname)
 
     temp_storage_object_version.generate_manifest_inventory

@@ -111,16 +111,16 @@ module Moab
     def differences_detail
       #return self.summary if difference_count == 0
       inv_diff = to_hash
-      inv_diff["group_differences"].each_value do |group_diff|
+      inv_diff['group_differences'].each_value do |group_diff|
         delete_subsets = []
-        group_diff["subsets"].each do |change_type, subset|
-          delete_subsets << change_type if (change_type == "identical") || (subset["count"] == 0)
+        group_diff['subsets'].each do |change_type, subset|
+          delete_subsets << change_type if (change_type == 'identical') || (subset['count'] == 0)
         end
         delete_subsets.each do |change_type|
-          group_diff["subsets"].delete(change_type)
-          group_diff.delete(change_type) if change_type != "identical"
+          group_diff['subsets'].delete(change_type)
+          group_diff.delete(change_type) if change_type != 'identical'
         end
-        group_diff.delete("subsets") if group_diff["subsets"].empty?
+        group_diff.delete('subsets') if group_diff['subsets'].empty?
       end
       inv_diff
     end

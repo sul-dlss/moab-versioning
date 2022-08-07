@@ -124,7 +124,7 @@ module Moab
     # @param version_id [Integer] The version identifier of an object version
     # @return [String] The directory name of the version, relative to the digital object home directory (e.g v0002)
     def self.version_dirname(version_id)
-      format("v%04d", version_id)
+      format('v%04d', version_id)
     end
 
     # @return [Array<Integer>] The list of all version ids for this object
@@ -193,7 +193,7 @@ module Moab
     # * Version 0 is a special case used to generate empty manifests
     # * Current version + 1 is used for creation of a new version
     def storage_object_version(version_id)
-      raise(MoabRuntimeError, "Version ID not specified") unless version_id
+      raise(MoabRuntimeError, 'Version ID not specified') unless version_id
 
       StorageObjectVersion.new(self, version_id)
     end

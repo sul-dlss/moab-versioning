@@ -21,7 +21,7 @@ describe Stanford::StorageRepository do
 
   describe '#druid_tree' do
     it 'has expected value for valid druid' do
-      expect(storage_repository.druid_tree(FULL_TEST_DRUID)).to eq("jq/937/jp/0017/jq937jp0017")
+      expect(storage_repository.druid_tree(FULL_TEST_DRUID)).to eq('jq/937/jp/0017/jq937jp0017')
     end
 
     it 'raises InvalidSuriSyntaxError for invalid druid' do

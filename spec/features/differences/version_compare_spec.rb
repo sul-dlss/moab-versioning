@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe "Compare versions" do
+describe 'Compare versions' do
   #  In order to: determine what changes are present in a new version
   #  The application needs to: compare file inventories
 
-  it "Compare fileInventory objects of 2 versions" do
+  it 'Compare fileInventory objects of 2 versions' do
     # given: two fileInventory instances
     # action: parse the XML to create in-memory objects
     #       : compare the inventories
@@ -22,9 +22,9 @@ describe "Compare versions" do
     diff = file_inventory_difference.compare(basis_inventory, other_inventory)
     expect(diff).to be_instance_of(Moab::FileInventoryDifference)
     expect(diff.group_differences.size).to eq(2)
-    expect(diff.basis).to eq("v1")
-    expect(diff.other).to eq("v2")
+    expect(diff.basis).to eq('v1')
+    expect(diff.other).to eq('v2')
     expect(diff.difference_count).to eq(6)
-    expect(diff.digital_object_id).to eq("druid:jq937jp0017")
+    expect(diff.digital_object_id).to eq('druid:jq937jp0017')
   end
 end

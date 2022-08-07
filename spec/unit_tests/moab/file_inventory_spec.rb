@@ -4,7 +4,7 @@ describe Moab::FileInventory do
   let(:v1_version_inventory) { fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
   let(:parsed_file_inventory) do
     fi = described_class.parse(v1_version_inventory.read)
-    fi.inventory_datetime = "2012-04-13T13:16:54Z"
+    fi.inventory_datetime = '2012-04-13T13:16:54Z'
     fi
   end
 
@@ -14,19 +14,19 @@ describe Moab::FileInventory do
     end
 
     it 'additions' do
-      expect(described_class.xml_filename("additions")).to eq 'versionAdditions.xml'
+      expect(described_class.xml_filename('additions')).to eq 'versionAdditions.xml'
     end
 
     it 'manifests' do
-      expect(described_class.xml_filename("manifests")).to eq 'manifestInventory.xml'
+      expect(described_class.xml_filename('manifests')).to eq 'manifestInventory.xml'
     end
 
     it 'directory' do
-      expect(described_class.xml_filename("directory")).to eq 'directoryInventory.xml'
+      expect(described_class.xml_filename('directory')).to eq 'directoryInventory.xml'
     end
 
     it 'unknown type raises ArgumentError' do
-      expect { described_class.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
+      expect { described_class.xml_filename('other') }.to raise_exception(ArgumentError, /unknown inventory type/)
     end
   end
 
@@ -42,13 +42,13 @@ describe Moab::FileInventory do
         type: 'Test type',
         digital_object_id: 'Test digital_object_id',
         version_id: 81,
-        inventory_datetime: "Apr 12 19:36:07 UTC 2012"
+        inventory_datetime: 'Apr 12 19:36:07 UTC 2012'
       }
       file_inventory = described_class.new(opts)
       expect(file_inventory.type).to eq opts[:type]
       expect(file_inventory.digital_object_id).to eq opts[:digital_object_id]
       expect(file_inventory.version_id).to eq opts[:version_id]
-      expect(file_inventory.inventory_datetime).to eq "2012-04-12T19:36:07Z"
+      expect(file_inventory.inventory_datetime).to eq '2012-04-12T19:36:07Z'
     end
   end
 
@@ -66,11 +66,11 @@ describe Moab::FileInventory do
     end
 
     it '#composite_key' do
-      expect(parsed_file_inventory.composite_key).to eq "druid:jq937jp0017-v0001"
+      expect(parsed_file_inventory.composite_key).to eq 'druid:jq937jp0017-v0001'
     end
 
     it '#inventory_datetime' do
-      expect(parsed_file_inventory.inventory_datetime).to eq "2012-04-13T13:16:54Z"
+      expect(parsed_file_inventory.inventory_datetime).to eq '2012-04-13T13:16:54Z'
     end
 
     it '#file_count' do
@@ -90,11 +90,11 @@ describe Moab::FileInventory do
     end
 
     it '#human_size' do
-      expect(parsed_file_inventory.human_size).to eq "212.71 KB"
+      expect(parsed_file_inventory.human_size).to eq '212.71 KB'
     end
 
     it '#package_id' do
-      expect(parsed_file_inventory.package_id).to eq "druid:jq937jp0017-v1"
+      expect(parsed_file_inventory.package_id).to eq 'druid:jq937jp0017-v1'
     end
   end
 
@@ -125,10 +125,10 @@ describe Moab::FileInventory do
     file_id = 'title.jpg'
     signature = parsed_file_inventory.file_signature(group_id, file_id)
     expected_sig_fixity = {
-      size: "40873",
-      md5: "1a726cd7963bd6d3ceb10a8c353ec166",
-      sha1: "583220e0572640abcd3ddd97393d224e8053a6ad",
-      sha256: "8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5"
+      size: '40873',
+      md5: '1a726cd7963bd6d3ceb10a8c353ec166',
+      sha1: '583220e0572640abcd3ddd97393d224e8053a6ad',
+      sha256: '8b0cee693a3cf93cf85220dd67c5dc017a7edcdb59cde8fa7b7f697be162b0c5'
     }
     expect(signature.fixity).to eq expected_sig_fixity
   end
@@ -142,10 +142,10 @@ describe Moab::FileInventory do
   end
 
   it '#data_source' do
-    expect(parsed_file_inventory.data_source).to eq "v1"
+    expect(parsed_file_inventory.data_source).to eq 'v1'
     directory = fixtures_dir.join('derivatives/manifests/all')
-    directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, "mygroup")
-    expect(directory_inventory.data_source).to include "derivatives/manifests/all"
+    directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, 'mygroup')
+    expect(directory_inventory.data_source).to include 'derivatives/manifests/all'
   end
 
   it '#inventory_from_directory' do
@@ -177,7 +177,7 @@ describe Moab::FileInventory do
     signature_for_path = described_class.new.signatures_from_bagit_manifests(bag_pathname)
     expect(signature_for_path.size).to eq 11
     expect(signature_for_path.keys[0]).to eq packages_dir.join('v0001/data/content/intro-1.jpg')
-    expect(signature_for_path[packages_dir.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
+    expect(signature_for_path[packages_dir.join('v0001/data/content/page-2.jpg')].md5).to eq '82fc107c88446a3119a51a8663d1e955'
   end
 
   it '#write_xml_file' do
@@ -187,31 +187,31 @@ describe Moab::FileInventory do
     parsed_file_inventory.write_xml_file(parent_dir, type)
   end
 
-  describe "#summary_fields" do
+  describe '#summary_fields' do
     it '#summary' do
       hash = parsed_file_inventory.summary
-      expect(hash).to eq("type" => "version",
-                         "digital_object_id" => "druid:jq937jp0017",
-                         "version_id" => 1,
-                         "file_count" => 11,
-                         "byte_count" => 217820,
-                         "block_count" => 216,
-                         "inventory_datetime" => parsed_file_inventory.inventory_datetime,
-                         "groups" =>
+      expect(hash).to eq('type' => 'version',
+                         'digital_object_id' => 'druid:jq937jp0017',
+                         'version_id' => 1,
+                         'file_count' => 11,
+                         'byte_count' => 217820,
+                         'block_count' => 216,
+                         'inventory_datetime' => parsed_file_inventory.inventory_datetime,
+                         'groups' =>
           {
-            "metadata" =>
+            'metadata' =>
               {
-                "group_id" => "metadata",
-                "file_count" => 5,
-                "byte_count" => 11388,
-                "block_count" => 13
+                'group_id' => 'metadata',
+                'file_count' => 5,
+                'byte_count' => 11388,
+                'block_count' => 13
               },
-            "content" =>
+            'content' =>
               {
-                "group_id" => "content",
-                "file_count" => 6,
-                "byte_count" => 206432,
-                "block_count" => 203
+                'group_id' => 'content',
+                'file_count' => 6,
+                'byte_count' => 206432,
+                'block_count' => 203
               }
           })
     end

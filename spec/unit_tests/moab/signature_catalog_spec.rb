@@ -23,12 +23,12 @@ describe Moab::SignatureCatalog do
       opts = {
         digital_object_id: 'Test digital_object_id',
         version_id: 9,
-        catalog_datetime: "Apr 12 19:36:07 UTC 2012"
+        catalog_datetime: 'Apr 12 19:36:07 UTC 2012'
       }
       signature_catalog = described_class.new(opts)
       expect(signature_catalog.digital_object_id).to eq(opts[:digital_object_id])
       expect(signature_catalog.version_id).to eq(opts[:version_id])
-      expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
+      expect(signature_catalog.catalog_datetime).to eq('2012-04-12T19:36:07Z')
       expect(signature_catalog.file_count).to eq(0)
     end
   end
@@ -67,15 +67,15 @@ describe Moab::SignatureCatalog do
     end
 
     it 'composite_key' do
-      expect(@signature_catalog.composite_key).to eq("druid:jq937jp0017-v0001")
+      expect(@signature_catalog.composite_key).to eq('druid:jq937jp0017-v0001')
     end
   end
 
   describe '#catalog_datetime' do
     it 'reformats date as ISO8601 (UTC Z format)' do
       signature_catalog = described_class.new
-      signature_catalog.catalog_datetime = "Apr 12 19:36:07 UTC 2012"
-      expect(signature_catalog.catalog_datetime).to eq("2012-04-12T19:36:07Z")
+      signature_catalog.catalog_datetime = 'Apr 12 19:36:07 UTC 2012'
+      expect(signature_catalog.catalog_datetime).to eq('2012-04-12T19:36:07Z')
     end
   end
 
@@ -144,16 +144,16 @@ describe Moab::SignatureCatalog do
     expect(version_additions.block_count).to eq(37)
   end
 
-  it "#summary has fields set in #summary_fields" do
-    expect(@signature_catalog.summary).to eq("digital_object_id" => "druid:jq937jp0017",
-                                             "version_id" => 1,
-                                             "catalog_datetime" => @signature_catalog.catalog_datetime.to_s,
-                                             "file_count" => 11,
-                                             "byte_count" => 217820,
-                                             "block_count" => 216)
+  it '#summary has fields set in #summary_fields' do
+    expect(@signature_catalog.summary).to eq('digital_object_id' => 'druid:jq937jp0017',
+                                             'version_id' => 1,
+                                             'catalog_datetime' => @signature_catalog.catalog_datetime.to_s,
+                                             'file_count' => 11,
+                                             'byte_count' => 217820,
+                                             'block_count' => 216)
   end
 
-  it "Serialization to string using HappyMapper to_xml" do
+  it 'Serialization to string using HappyMapper to_xml' do
     expect(@signature_catalog.to_xml).to match(/.*<\/signatureCatalog>$/)
   end
 end

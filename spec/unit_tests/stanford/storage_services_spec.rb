@@ -103,7 +103,7 @@ describe Stanford::StorageServices do
     end
 
     it 'shelve subset' do
-      druid = "druid:dd116zh0343"
+      druid = 'druid:dd116zh0343'
       base_cm = fixtures_dir.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = File.read(fixtures_dir.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       expect(described_class)
@@ -174,7 +174,7 @@ describe Stanford::StorageServices do
     end
 
     it 'shelve subset without specified version' do
-      druid = "druid:no000non0000"
+      druid = 'druid:no000non0000'
       new_cm = File.read(fixtures_dir.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
       diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', nil)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)
@@ -272,7 +272,7 @@ describe Stanford::StorageServices do
     end
 
     it 'nil version' do
-      adds = described_class.cm_version_additions(content_metadata, "druid:no000non0000", nil)
+      adds = described_class.cm_version_additions(content_metadata, 'druid:no000non0000', nil)
       expect(adds).to be_instance_of(Moab::FileInventory)
       adds_ng_xml = Nokogiri::XML(adds.to_xml)
       adds_ng_xml.xpath('//@inventoryDatetime').remove

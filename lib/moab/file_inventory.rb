@@ -234,9 +234,9 @@ module Moab
         count += 1
       end
       if count == 0
-        format("%d B", size)
+        format('%d B', size)
       else
-        format("%.2f %s", size, %w[B KB MB GB TB][count])
+        format('%.2f %s', size, %w[B KB MB GB TB][count])
       end
     end
 
@@ -245,13 +245,13 @@ module Moab
     # @return [String] The standard name for the serialized inventory file of the given type
     def self.xml_filename(type = nil)
       case type
-      when "version"
+      when 'version'
         'versionInventory.xml'
-      when "additions"
+      when 'additions'
         'versionAdditions.xml'
-      when "manifests"
+      when 'manifests'
         'manifestInventory.xml'
-      when "directory"
+      when 'directory'
         'directoryInventory.xml'
       else
         raise ArgumentError, "unknown inventory type: #{type}"

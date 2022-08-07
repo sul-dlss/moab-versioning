@@ -23,21 +23,21 @@ describe Moab::FileInstance do
   it '#initialize' do
     opts = {
       path: temp_dir.join('path').to_s,
-      datetime: "Apr 18 21:51:31 UTC 2012"
+      datetime: 'Apr 18 21:51:31 UTC 2012'
     }
     file_instance = described_class.new(opts)
     expect(file_instance.path).to eq opts[:path]
-    expect(file_instance.datetime).to eq "2012-04-18T21:51:31Z"
+    expect(file_instance.datetime).to eq '2012-04-18T21:51:31Z'
   end
 
   it '#datetime reformats as ISO8601 (UTC Z format)' do
     fi = described_class.new
-    fi.datetime = "Wed Apr 18 21:51:31 UTC 2012"
-    expect(fi.datetime).to eq "2012-04-18T21:51:31Z"
+    fi.datetime = 'Wed Apr 18 21:51:31 UTC 2012'
+    expect(fi.datetime).to eq '2012-04-18T21:51:31Z'
   end
 
   it '#instance_from_file' do
-    expect(title_v1_instance.path).to eq "title.jpg"
+    expect(title_v1_instance.path).to eq 'title.jpg'
     expect(title_v1_instance.datetime).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
   end
 

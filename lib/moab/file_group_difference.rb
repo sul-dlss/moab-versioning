@@ -233,7 +233,7 @@ module Moab
         matching_paths.each do |path|
           fid = FileInstanceDifference.new(change: 'identical')
           fid.basis_path = path
-          fid.other_path = "same"
+          fid.other_path = 'same'
           fid.signatures << signature
           subset_hash[:identical].files << fid
         end
@@ -286,7 +286,7 @@ module Moab
       matching_keys(basis_path_hash, other_path_hash).each do |path|
         fid = FileInstanceDifference.new(change: 'modified')
         fid.basis_path = path
-        fid.other_path = "same"
+        fid.other_path = 'same'
         fid.signatures << basis_path_hash[path]
         fid.signatures << other_path_hash[path]
         subset_hash[:modified].files << fid
@@ -304,7 +304,7 @@ module Moab
     def tabulate_added_files(basis_path_hash, other_path_hash)
       other_only_keys(basis_path_hash, other_path_hash).each do |path|
         fid = FileInstanceDifference.new(change: 'added')
-        fid.basis_path = ""
+        fid.basis_path = ''
         fid.other_path = path
         fid.signatures << other_path_hash[path]
         subset_hash[:added].files << fid
@@ -323,7 +323,7 @@ module Moab
       basis_only_keys(basis_path_hash, other_path_hash).each do |path|
         fid = FileInstanceDifference.new(change: 'deleted')
         fid.basis_path = path
-        fid.other_path = ""
+        fid.other_path = ''
         fid.signatures << basis_path_hash[path]
         subset_hash[:deleted].files << fid
       end

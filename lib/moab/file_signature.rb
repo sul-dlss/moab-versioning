@@ -50,15 +50,15 @@ module Moab
 
     # @attribute
     # @return [String] The MD5 checksum value of the file
-    attribute :md5, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
+    attribute :md5, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
 
     # @attribute
     # @return [String] The SHA1 checksum value of the file
-    attribute :sha1, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
+    attribute :sha1, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
 
     # @attribute
     # @return [String] The SHA256 checksum value of the file
-    attribute :sha256, String, on_save: proc { |n| n.nil? ? "" : n.to_s }
+    attribute :sha256, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
 
     KNOWN_ALGOS = {
       md5: proc { Digest::MD5.new },
@@ -79,7 +79,7 @@ module Moab
 
       signatures = algos_to_use.to_h { |k| [k, KNOWN_ALGOS[k].call] }
 
-      pathname.open("r") do |stream|
+      pathname.open('r') do |stream|
         while (buffer = stream.read(8192))
           signatures.each_value { |digest| digest.update(buffer) }
         end
