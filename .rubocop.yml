@@ -54,7 +54,7 @@ Style/ZeroLengthPredicate:
 
 RSpec/ExampleLength:
   Exclude:
-    - 'spec/**/*' # Spec exampels may have many lines of test data, ignore ExmapleLength for tests.
+    - 'spec/**/*' # Specs may have many lines of test data
 
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
