@@ -86,7 +86,7 @@ module Stanford
       instance.path = node.attributes['id'].content
       instance.datetime = begin
         node.attributes['datetime'].content
-      rescue
+      rescue StandardError
         nil
       end
       instance
