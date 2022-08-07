@@ -52,20 +52,20 @@ module Moab
     def self.error_code_to_messages
       @error_code_to_messages ||=
         {
-          INCORRECT_DIR_CONTENTS => 'Incorrect items under %{addl} directory',
-          MISSING_DIR => 'Missing directory: %{addl}',
-          EXTRA_CHILD_DETECTED => 'Unexpected item in path: %{addl}',
-          VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: %{addl}",
-          FILES_IN_VERSION_DIR => 'Version directory %{addl} should not contain files; only the manifests and data directories',
-          NO_SIGNATURE_CATALOG => 'Version %{addl}: Missing signatureCatalog.xml',
-          NO_MANIFEST_INVENTORY => 'Version %{addl}: Missing manifestInventory.xml',
-          NO_FILES_IN_MANIFEST_DIR => 'Version %{addl}: No files present in manifest dir',
-          METADATA_SUB_DIRS_DETECTED => 'Version %{version}: metadata directory should only contain files, not directories. Found directory: %{dir}',
-          TEST_OBJECT_VERSIONS_NOT_IN_ORDER => 'Should contain only sequential version directories. Current directories: %{addl}',
-          NO_FILES_IN_METADATA_DIR => 'Version %{addl}: No files present in metadata dir',
-          NO_FILES_IN_CONTENT_DIR => 'Version %{addl}: No files present in content dir',
-          CONTENT_SUB_DIRS_DETECTED => 'Version %{version}: content directory should only contain files, not directories. Found directory: %{dir}',
-          BAD_SUB_DIR_IN_CONTENT_DIR => "Version %{addl}: content directory has forbidden sub-directory name: vnnnn or #{FORBIDDEN_CONTENT_SUB_DIRS}"
+          INCORRECT_DIR_CONTENTS => 'Incorrect items under %<addl>s directory',
+          MISSING_DIR => 'Missing directory: %<addl>s',
+          EXTRA_CHILD_DETECTED => 'Unexpected item in path: %<addl>s',
+          VERSION_DIR_BAD_FORMAT => "Version directory name not in 'v00xx' format: %<addl>s",
+          FILES_IN_VERSION_DIR => 'Version directory %<addl>s should not contain files; only the manifests and data directories',
+          NO_SIGNATURE_CATALOG => 'Version %<addl>s: Missing signatureCatalog.xml',
+          NO_MANIFEST_INVENTORY => 'Version %<addl>s: Missing manifestInventory.xml',
+          NO_FILES_IN_MANIFEST_DIR => 'Version %<addl>s: No files present in manifest dir',
+          METADATA_SUB_DIRS_DETECTED => 'Version %<version>s: metadata directory should only contain files, not directories. Found directory: %<dir>s',
+          TEST_OBJECT_VERSIONS_NOT_IN_ORDER => 'Should contain only sequential version directories. Current directories: %<addl>s',
+          NO_FILES_IN_METADATA_DIR => 'Version %<addl>s: No files present in metadata dir',
+          NO_FILES_IN_CONTENT_DIR => 'Version %<addl>s: No files present in content dir',
+          CONTENT_SUB_DIRS_DETECTED => 'Version %<version>s: content directory should only contain files, not directories. Found directory: %<dir>s',
+          BAD_SUB_DIR_IN_CONTENT_DIR => "Version %<addl>s: content directory has forbidden sub-directory name: vnnnn or #{FORBIDDEN_CONTENT_SUB_DIRS}"
         }.freeze
     end
 

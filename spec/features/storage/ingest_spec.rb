@@ -16,7 +16,7 @@ describe 'Import digital object version to SDR' do
     temp_ingests_dir.rmtree if temp_ingests_dir.exist?
   end
 
-  it "Creates a new version storage folder" do
+  it 'Creates a new version storage folder' do
     # given: A Bagit bag containing a version of a digital object
     # action: Parse the file inventory for the version,
     #       : create the new version's storage folder,

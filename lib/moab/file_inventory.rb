@@ -236,7 +236,9 @@ module Moab
       if count == 0
         format('%d B', size)
       else
+        # rubocop:disable Style/FormatStringToken
         format('%.2f %s', size, %w[B KB MB GB TB][count])
+        # rubocop:enable Style/FormatStringToken
       end
     end
 
