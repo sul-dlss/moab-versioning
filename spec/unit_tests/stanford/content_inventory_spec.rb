@@ -12,7 +12,7 @@ describe Stanford::ContentInventory do
   end
 
   before(:all) do # rubocop:disable RSpec/BeforeAfterAll
-    @content_metadata = File.read(data_dir.join('v0002/metadata/contentMetadata.xml'))
+    @content_metadata = File.read(test_object_data_dir.join('v0002/metadata/contentMetadata.xml'))
     @node = Nokogiri::XML(@content_metadata).xpath('//file').first
   end
 
@@ -175,7 +175,7 @@ describe Stanford::ContentInventory do
   end
 
   it '#generate_content_metadata' do
-    directory = data_dir.join('v0002/content')
+    directory = test_object_data_dir.join('v0002/content')
     group = Moab::FileGroup.new.group_from_directory(directory, true)
     cm = @content_inventory.generate_content_metadata(group, BARE_TEST_DRUID, 2)
     generated_ng_xml = Nokogiri::XML(cm)
@@ -246,7 +246,7 @@ describe Stanford::ContentInventory do
   describe '#remediate_content_metadata' do
     let(:cm) { fixtures_dir.join('bad_data', 'contentMetadata-missing-fixity.xml').read }
     let(:group) do
-      directory = data_dir.join('v0001/content')
+      directory = test_object_data_dir.join('v0001/content')
       Moab::FileGroup.new.group_from_directory(directory, true)
     end
 

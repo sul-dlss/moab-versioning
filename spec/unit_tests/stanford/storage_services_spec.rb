@@ -2,7 +2,7 @@
 
 describe Stanford::StorageServices do
   let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
-  let(:content_metadata) { File.read(data_dir.join('v0002/metadata/contentMetadata.xml')) }
+  let(:content_metadata) { File.read(test_object_data_dir.join('v0002/metadata/contentMetadata.xml')) }
 
   it 'only instantiates StorageRepository once for the class, even if multiple threads try to access it' do
     # Object#object_id Returns an integer identifier for obj.  The same number will be returned

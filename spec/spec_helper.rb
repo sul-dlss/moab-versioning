@@ -55,8 +55,8 @@ def temp_dir
   end
 end
 
-def data_dir
-  @data_dir ||= fixtures_dir.join('data', BARE_TEST_DRUID).freeze
+def test_object_data_dir
+  @test_object_data_dir ||= fixtures_dir.join(Moab::StorageObjectValidator::DATA_DIR, BARE_TEST_DRUID)
 end
 
 def manifests_dir
@@ -82,7 +82,7 @@ def fixture_setup
     version_manifest_dir = manifests_dir.join(TEST_OBJECT_VERSIONS[version])
     version_manifest_dir.mkpath
     inventory = Moab::FileInventory.new(type: 'version', digital_object_id: FULL_TEST_DRUID, version_id: version)
-    inventory.inventory_from_directory(data_dir.join(TEST_OBJECT_VERSIONS[version]))
+    inventory.inventory_from_directory(test_object_data_dir.join(TEST_OBJECT_VERSIONS[version]))
     inventory.write_xml_file(version_manifest_dir)
   end
 
@@ -97,7 +97,7 @@ def fixture_setup
               else
                 Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
               end
-    catalog.update(inventory, data_dir.join(TEST_OBJECT_VERSIONS[version]))
+    catalog.update(inventory, test_object_data_dir.join(TEST_OBJECT_VERSIONS[version]))
     catalog.write_xml_file(version_manifest_dir)
   end
 
@@ -131,7 +131,7 @@ def fixture_setup
   (1..3).each do |version|
     package_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
     unless package_dir.join('data').exist?
-      version_data_dir = data_dir.join(TEST_OBJECT_VERSIONS[version])
+      version_data_dir = test_object_data_dir.join(TEST_OBJECT_VERSIONS[version])
       inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]), 'version')
       catalog = case version
                 when 1
@@ -168,7 +168,7 @@ def fixture_setup
   #(1..3).each do |version|
   #  package_dir  = packages_dir.join(TEST_OBJECT_VERSIONS[version])
   #  unless package_dir.join('data').exist?
-  #    data_dir = data_dir.join(TEST_OBJECT_VERSIONS[version])
+  #    version_data_dir = test_object_data_dir.join(TEST_OBJECT_VERSIONS[version])
   #    inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]),'version')
   #    case version
   #      when 1
@@ -176,7 +176,7 @@ def fixture_setup
   #      else
   #        catalog = Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version-1]))
   #    end
-  #    Moab::StorageObject.package(inventory,catalog,data_dir,package_dir)
+  #    Moab::StorageObject.package(inventory,catalog,version_data_dir,package_dir)
   #  end
   #end
 end

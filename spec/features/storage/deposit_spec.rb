@@ -14,7 +14,7 @@ describe 'Export a digital object version from DOR' do
 
     (1..3).each do |version|
       vname = [nil, 'v0001', 'v0002', 'v0003'][version]
-      data_version_dir = data_dir.join(vname)
+      data_version_dir = test_object_data_dir.join(vname)
       inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(vname), 'version')
       catalog = case version
                 when 1
