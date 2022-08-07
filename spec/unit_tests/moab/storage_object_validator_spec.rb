@@ -7,9 +7,15 @@ describe Moab::StorageObjectValidator do
   let(:storage_obj_validator) { described_class.new(storage_obj) }
   let(:error_list) { storage_obj_validator.validation_errors }
 
-  before { described_class::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
+  before do
+    # avoid warning: already initialized constant
+    silence_warnings { described_class::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
+  end
 
-  after { described_class::IMPLICIT_DIRS = ['.', '..'].freeze }
+  after do
+    # put it back to normal and avoid warning: already initialized constant
+    silence_warnings { described_class::IMPLICIT_DIRS = ['.', '..'].freeze }
+  end
 
   describe '#initialize' do
     it 'sets storage_obj_path' do
