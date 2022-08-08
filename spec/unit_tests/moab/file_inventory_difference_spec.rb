@@ -40,7 +40,7 @@ describe Moab::FileInventoryDifference do
       expect(diff_v1_v2).to be_instance_of(described_class)
     end
 
-    context 'sets attributes' do
+    describe 'attributes set' do
       it '#digital_object_id' do
         expect(diff_v1_v2.digital_object_id).to eq 'druid:jq937jp0017'
       end

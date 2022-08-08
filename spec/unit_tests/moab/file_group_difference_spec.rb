@@ -82,7 +82,7 @@ describe Moab::FileGroupDifference do
     expect(summary.subsets.size).to eq 0
   end
 
-  context 'key comparison methods' do
+  describe 'key comparison methods' do
     let(:basis_hash) { v1_content.path_hash }
     let(:other_hash) { v3_content.path_hash }
 

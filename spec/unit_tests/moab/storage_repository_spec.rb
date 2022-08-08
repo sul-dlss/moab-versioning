@@ -48,13 +48,13 @@ describe Moab::StorageRepository do
   end
 
   describe '#search_storage_objects' do
-    context 'new storage objects' do
+    context 'with new storage objects' do
       it 'returns an empty array' do
         expect(storage_repo.search_storage_objects('abcdef')).to be_empty
       end
     end
 
-    context 'existing storage objects' do
+    context 'with existing storage objects' do
       it 'finds objects with known storage branches' do
         allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
         found_storage_objs = storage_repo.search_storage_objects('jq937jp0017')
