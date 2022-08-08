@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe "Write contentMetadata datastream" do
+describe 'Write contentMetadata datastream' do
   #  In order to: generate a contentMetadata datastream
   #  The application needs to: transform data from a file inventory's 'content' file group
 
-  it "Generate contentMetadata datastream from a Moab::FileGroup object" do
+  it 'Generate contentMetadata datastream from a Moab::FileGroup object' do
     # given: a Moab::FileGroup instance
     # action: extract the file-level metadata
     # outcome: a fully populated contentMetadata datastream
@@ -14,10 +14,10 @@ describe "Write contentMetadata datastream" do
     group = Moab::FileGroup.new.group_from_directory(directory, recursive)
     version_id = 2
     cm = Stanford::ContentInventory.new.generate_content_metadata(group, BARE_TEST_DRUID, version_id)
-    xmlObj1 = Nokogiri::XML(cm)
-    xmlObj1.xpath('//@datetime').remove
+    xml_object1 = Nokogiri::XML(cm)
+    xml_object1.xpath('//@datetime').remove
 
-    cm_test = <<-XML
+    expected_xml = <<-XML
       <contentMetadata type="sample" objectId="jq937jp0017">
         <resource type="version" sequence="1" id="version-2">
           <file publish="yes"  preserve="yes" size="32915" shelve="yes" id="page-1.jpg">
@@ -43,8 +43,7 @@ describe "Write contentMetadata datastream" do
         </resource>
       </contentMetadata>
     XML
-    xmlObj2 = Nokogiri::XML(cm_test)
     opts = { element_order: false, normalize_whitespace: true }
-    expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
+    expect(EquivalentXml.equivalent?(xml_object1, Nokogiri::XML(expected_xml), opts)).to be true
   end
 end

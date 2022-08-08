@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe "Validate inventory against directory" do
+describe 'Validate inventory against directory' do
   #  In order to: determine if a file inventory correctly describes a directory
   #  The application needs to: generate a differences report and look for zero changes
 
-  it "Generate differences report comparing inventory to directory" do
+  it 'Generate differences report comparing inventory to directory' do
     # given: a directory path and an existing inventory
     # action: generate an inventory for the directory and compare inventories
     # outcome: true or false result, depending of whether there are no differences

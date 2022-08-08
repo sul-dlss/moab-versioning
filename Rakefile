@@ -7,7 +7,7 @@ begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
   warn e.message
-  warn "Run `bundle install` to install missing gems"
+  warn 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
 
@@ -25,7 +25,7 @@ RuboCop::RakeTask.new
 
 task :clean do
   puts 'Cleaning old coverage'
-  FileUtils.rm('coverage.data') if File.exist?('coverage.data')
+  FileUtils.rm_f('coverage.data')
   FileUtils.rm_r('coverage') if File.exist?('coverage')
   FileUtils.rm_r('spec/fixtures/derivatives') if File.exist?('spec/fixtures/derivatives')
 end

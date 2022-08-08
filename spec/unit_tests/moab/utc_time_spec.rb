@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Moab::UtcTime do
-  let(:time_string) { "Apr 12 19:36:07 UTC 2012" }
+  let(:time_string) { 'Apr 12 19:36:07 UTC 2012' }
   let(:time_class_parsed_string) { Time.parse(time_string) }
 
   describe '.input' do
@@ -15,7 +15,7 @@ describe Moab::UtcTime do
     end
 
     it 'bad string data raises ArgumentError' do
-      expect { described_class.input("jgkerf") }.to raise_exception ArgumentError
+      expect { described_class.input('jgkerf') }.to raise_exception ArgumentError
     end
 
     it 'bad non-string data raises MoabRuntimeError of "unknown time format"' do
@@ -25,17 +25,17 @@ describe Moab::UtcTime do
 
   describe '.output' do
     it 'nil becomes empty string' do
-      expect(described_class.output(nil)).to eq ""
+      expect(described_class.output(nil)).to eq ''
     end
 
     it 'outputs ISO 8601 format' do
-      time_string_iso8601 = "2012-04-12T19:36:07Z"
+      time_string_iso8601 = '2012-04-12T19:36:07Z'
       expect(described_class.output(time_string)).to eq time_string_iso8601
       expect(described_class.output(time_class_parsed_string)).to eq time_string_iso8601
     end
 
     it 'bad string data raises ArgumentError' do
-      expect { described_class.output("jgkerf") }.to raise_exception ArgumentError
+      expect { described_class.output('jgkerf') }.to raise_exception ArgumentError
     end
 
     it 'bad non-string data raises MoabRuntimeError of "unknown time format"' do

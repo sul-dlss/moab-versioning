@@ -7,7 +7,7 @@ module Moab
     # @return [void] Convert input datetime to a Time object, or nil if input is empty.
     def self.input(datetime)
       case datetime
-      when nil, ""
+      when nil, ''
         nil
       when String
         Time.parse(datetime)
@@ -22,8 +22,8 @@ module Moab
     # @return [String] Convert the datetime into a ISO 8601 formatted string
     def self.output(datetime)
       case datetime
-      when nil, ""
-        ""
+      when nil, ''
+        ''
       when String
         Time.parse(datetime).utc.iso8601
       when Time

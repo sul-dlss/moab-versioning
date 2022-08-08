@@ -44,16 +44,8 @@ RSpec/NestedGroups:
     - spec/unit_tests/moab/storage_object_validator_spec.rb # Tests are more readable, all the tests should be under 1 context block
     - spec/unit_tests/stanford/storage_object_validator_spec.rb # tests are readable
 
-# Pointless change
-Style/FormatStringToken:
-  Enabled: false
-
 # Loops were easier to understand without using 'next' statement
 Style/Next:
-  Enabled: false
-
-# because ' vs " isn't a big deal for readability or maintainability or execution time
-Style/StringLiterals:
   Enabled: false
 
 Style/ZeroLengthPredicate:
@@ -61,8 +53,7 @@ Style/ZeroLengthPredicate:
     - 'lib/moab/bagger.rb' # is calling `x.size == 0` on Pathname objects, which don't have `.empty?` on old Rubies
 
 RSpec/ExampleLength:
-  Exclude:
-    - 'spec/**/*' # Spec exampels may have many lines of test data, ignore ExmapleLength for tests.
+  Enabled: false # Specs may have many lines of test data
 
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
@@ -208,4 +199,13 @@ Layout/LineContinuationSpacing: # new in 1.31
 Lint/ConstantOverwrittenInRescue: # new in 1.31
   Enabled: true
 Lint/NonAtomicFileOperation: # new in 1.31
+  Enabled: true
+
+Lint/RequireRangeParentheses: # new in 1.32
+  Enabled: true
+Style/EmptyHeredoc: # new in 1.32
+  Enabled: true
+RSpec/Capybara/SpecificMatcher: # new in 2.12
+  Enabled: true
+RSpec/Rails/HaveHttpStatus: # new in 2.12
   Enabled: true

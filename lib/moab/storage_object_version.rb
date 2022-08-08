@@ -174,7 +174,7 @@ module Moab
     # @return [void] link or copy the specified file from source location to the version directory
     def ingest_file(source_file, target_dir, use_links = true)
       if use_links
-        FileUtils.link(source_file.to_s, target_dir.to_s) #, :force => true)
+        FileUtils.link(source_file.to_s, target_dir.to_s)
       else
         FileUtils.copy(source_file.to_s, target_dir.to_s)
       end
@@ -225,7 +225,7 @@ module Moab
     # @return [VerificationResult] return true if the manifest inventory matches the actual files
     def verify_manifest_inventory
       # read/parse manifestInventory.xml
-      result = VerificationResult.new("manifest_inventory")
+      result = VerificationResult.new('manifest_inventory')
       manifest_inventory = file_inventory('manifests')
       result.subentities << VerificationResult.verify_value('composite_key', composite_key, manifest_inventory.composite_key)
       result.subentities << VerificationResult.verify_truth('manifests_group', !manifest_inventory.group_empty?('manifests'))
@@ -233,7 +233,7 @@ module Moab
       directory_inventory = FileInventory.new.inventory_from_directory(@version_pathname.join('manifests'), 'manifests')
       directory_inventory.digital_object_id = storage_object.digital_object_id
       directory_group = directory_inventory.group('manifests')
-      directory_group.remove_file_having_path("manifestInventory.xml")
+      directory_group.remove_file_having_path('manifestInventory.xml')
       # compare the measured signatures against the values in manifestInventory.xml
       diff = FileInventoryDifference.new
       diff.compare(manifest_inventory, directory_inventory)
@@ -247,7 +247,7 @@ module Moab
 
     # @return [VerificationResult]
     def verify_signature_catalog
-      result = VerificationResult.new("signature_catalog")
+      result = VerificationResult.new('signature_catalog')
       signature_catalog = self.signature_catalog
       result.subentities << VerificationResult.verify_value('signature_key', composite_key, signature_catalog.composite_key)
       found = 0
@@ -261,7 +261,7 @@ module Moab
           missing << storage_location.to_s
         end
       end
-      file_result = VerificationResult.new("storage_location")
+      file_result = VerificationResult.new('storage_location')
       file_result.verified = (found == signature_catalog.file_count)
       file_result.details = {
         'expected' => signature_catalog.file_count,
@@ -275,7 +275,7 @@ module Moab
 
     # @return [Boolean] true if files & signatures listed in version inventory can all be found
     def verify_version_inventory
-      result = VerificationResult.new("version_inventory")
+      result = VerificationResult.new('version_inventory')
       version_inventory = file_inventory('version')
       result.subentities << VerificationResult.verify_value('inventory_key', composite_key, version_inventory.composite_key)
       signature_catalog = self.signature_catalog
@@ -295,7 +295,7 @@ module Moab
           end
         end
       end
-      file_result = VerificationResult.new("catalog_entry")
+      file_result = VerificationResult.new('catalog_entry')
       file_result.verified = (found == version_inventory.file_count)
       file_result.details = {
         'expected' => version_inventory.file_count,
@@ -309,7 +309,7 @@ module Moab
 
     # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
     def verify_version_additions
-      result = VerificationResult.new("version_additions")
+      result = VerificationResult.new('version_additions')
       version_additions = file_inventory('additions')
       result.subentities << VerificationResult.verify_value('composite_key', composite_key, version_additions.composite_key)
       data_directory = @version_pathname.join('data')

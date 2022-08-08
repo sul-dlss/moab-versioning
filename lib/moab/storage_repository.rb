@@ -20,10 +20,10 @@ module Moab
     # @return [Array<Pathname>] The list of filesystem root paths in which objects are stored
     def storage_roots
       unless defined?(@storage_roots)
-        raise(MoabRuntimeError, "Moab::Config.storage_roots not found in config file") if Moab::Config.storage_roots.nil?
+        raise(MoabRuntimeError, 'Moab::Config.storage_roots not found in config file') if Moab::Config.storage_roots.nil?
 
         @storage_roots = [Moab::Config.storage_roots].flatten.collect { |filesystem| Pathname(filesystem) }
-        raise(MoabRuntimeError, "Moab::Config.storage_roots empty") if @storage_roots.empty?
+        raise(MoabRuntimeError, 'Moab::Config.storage_roots empty') if @storage_roots.empty?
 
         @storage_roots.each { |root| raise(MoabRuntimeError, "Storage root #{root} not found on system") unless root.exist? }
       end
@@ -33,7 +33,7 @@ module Moab
     # @return [String] The trunk segment of the object storage path
     def storage_trunk
       unless defined?(@storage_trunk)
-        raise(MoabRuntimeError, "Moab::Config.storage_trunk not found in config file") if Moab::Config.storage_trunk.nil?
+        raise(MoabRuntimeError, 'Moab::Config.storage_trunk not found in config file') if Moab::Config.storage_trunk.nil?
 
         @storage_trunk = Moab::Config.storage_trunk
       end
@@ -43,7 +43,7 @@ module Moab
    # @param object_id [String] The identifier of the digital object
     # @return [String] The branch segment of the object storage path
     def storage_branch(object_id)
-      #todo This method should be customized, or overridden in a subclass
+      # TODO: This method should be customized, or overridden in a subclass
       # split a object ID into 2-character segments, followed by a copy of the object ID
       # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
       path_segments = object_id.scan(/..?/) << object_id

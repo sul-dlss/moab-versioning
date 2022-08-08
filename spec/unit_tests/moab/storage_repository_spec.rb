@@ -48,13 +48,13 @@ describe Moab::StorageRepository do
   end
 
   describe '#search_storage_objects' do
-    context 'new storage objects' do
+    context 'with new storage objects' do
       it 'returns an empty array' do
         expect(storage_repo.search_storage_objects('abcdef')).to be_empty
       end
     end
 
-    context 'existing storage objects' do
+    context 'with existing storage objects' do
       it 'finds objects with known storage branches' do
         allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
         found_storage_objs = storage_repo.search_storage_objects('jq937jp0017')
@@ -107,8 +107,8 @@ describe Moab::StorageRepository do
 
   describe '#store_new_object_version' do
     it 'calls storage_object and ingest_bag' do
-      bag_pathname = double("bag_pathname")
-      object_pathname = double("object_pathname")
+      bag_pathname = double('bag_pathname')
+      object_pathname = double('object_pathname')
       storage_object = double(Moab::StorageObject)
       expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
       allow(storage_object).to receive(:object_pathname).and_return(object_pathname)

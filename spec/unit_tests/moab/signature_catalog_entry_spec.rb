@@ -27,6 +27,6 @@ describe Moab::SignatureCatalogEntry do
     sce.version_id = 5
     sce.group_id = 'content'
     sce.path = 'title.jpg'
-    expect(sce.storage_path).to eq("v0005/data/content/title.jpg")
+    expect(sce.storage_path).to eq('v0005/data/content/title.jpg')
   end
 end
