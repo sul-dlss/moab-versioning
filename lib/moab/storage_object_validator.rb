@@ -72,7 +72,7 @@ module Moab
     private
 
     def version_directories
-      @vdirs ||= directory_entries(storage_obj_path)
+      @version_directories ||= directory_entries(storage_obj_path)
     end
 
     def check_correctly_named_version_dirs
