@@ -144,9 +144,9 @@ def fixture_setup
   end
 
   # Store packages in a pseudo repository
+  object_dir = ingests_dir.join(BARE_TEST_DRUID)
+  object_dir.mkpath
   (1..3).each do |version|
-    object_dir = ingests_dir.join(BARE_TEST_DRUID)
-    object_dir.mkpath
     unless object_dir.join("v000#{version}").exist?
       bag_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
       Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
