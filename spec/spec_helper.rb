@@ -55,8 +55,8 @@ def temp_dir
   end
 end
 
-def data_dir
-  @data_dir ||= fixtures_dir.join('data', BARE_TEST_DRUID).freeze
+def test_object_data_dir
+  @test_object_data_dir ||= fixtures_dir.join(Moab::StorageObjectValidator::DATA_DIR, BARE_TEST_DRUID)
 end
 
 def manifests_dir
@@ -77,19 +77,16 @@ end
 
 # rubocop:disable Metrics/AbcSize
 def fixture_setup
-  # Inventory data directories
   (1..3).each do |version|
     version_manifest_dir = manifests_dir.join(TEST_OBJECT_VERSIONS[version])
     version_manifest_dir.mkpath
-    inventory = Moab::FileInventory.new(type: 'version', digital_object_id: FULL_TEST_DRUID, version_id: version)
-    inventory.inventory_from_directory(data_dir.join(TEST_OBJECT_VERSIONS[version]))
-    inventory.write_xml_file(version_manifest_dir)
-  end
 
-  # Derive signature catalogs from inventories
-  (1..3).each do |version|
-    version_manifest_dir = manifests_dir.join(TEST_OBJECT_VERSIONS[version])
-    version_manifest_dir.mkpath
+    # Inventory data directories
+    inventory = Moab::FileInventory.new(type: 'version', digital_object_id: FULL_TEST_DRUID, version_id: version)
+    inventory.inventory_from_directory(test_object_data_dir.join(TEST_OBJECT_VERSIONS[version]))
+    inventory.write_xml_file(version_manifest_dir)
+
+    # Derive signature catalogs from inventories
     inventory = Moab::FileInventory.read_xml_file(version_manifest_dir, 'version')
     catalog = case version
               when 1
@@ -97,29 +94,27 @@ def fixture_setup
               else
                 Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
               end
-    catalog.update(inventory, data_dir.join(TEST_OBJECT_VERSIONS[version]))
+    catalog.update(inventory, test_object_data_dir.join(TEST_OBJECT_VERSIONS[version]))
     catalog.write_xml_file(version_manifest_dir)
   end
 
-  # Generate version addition reports for all version inventories
   (2..3).each do |version|
     version_manifest_dir = manifests_dir.join(TEST_OBJECT_VERSIONS[version])
-    version_manifest_dir.mkpath
+
+    # Generate version addition reports for all version inventories
     inventory = Moab::FileInventory.read_xml_file(version_manifest_dir, 'version')
     catalog = Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
     additions = catalog.version_additions(inventory)
     additions.write_xml_file(version_manifest_dir)
-  end
 
-  # Generate difference reports
-  (2..3).each do |version|
-    version_manifest_dir = manifests_dir.join(TEST_OBJECT_VERSIONS[version])
-    version_manifest_dir.mkpath
+    # Generate difference reports
     old_inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]), 'version')
     new_inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]), 'version')
     differences = Moab::FileInventoryDifference.new.compare(old_inventory, new_inventory)
     differences.write_xml_file(manifests_dir)
   end
+
+  # Generate difference report 'all'
   manifest_all_dir = manifests_dir.join('all')
   manifest_all_dir.mkpath
   old_inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[1]), 'version')
@@ -127,11 +122,14 @@ def fixture_setup
   differences = Moab::FileInventoryDifference.new.compare(old_inventory, new_inventory)
   differences.write_xml_file(manifests_dir)
 
-  # Generate packages from inventories and signature catalogs
+  object_dir = ingests_dir.join(BARE_TEST_DRUID)
+  object_dir.mkpath
+  reconstructs_dir = derivatives_dir.join('reconstructs')
   (1..3).each do |version|
-    package_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
-    unless package_dir.join('data').exist?
-      version_data_dir = data_dir.join(TEST_OBJECT_VERSIONS[version])
+    # Generate packages from inventories and signature catalogs
+    version_package_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
+    unless version_package_dir.join('data').exist?
+      version_data_dir = test_object_data_dir.join(TEST_OBJECT_VERSIONS[version])
       inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]), 'version')
       catalog = case version
                 when 1
@@ -139,44 +137,37 @@ def fixture_setup
                 else
                   Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version - 1]))
                 end
-      Moab::Bagger.new(inventory, catalog, package_dir).fill_bag(:depositor, version_data_dir)
-    end
-  end
+      Moab::Bagger.new(inventory, catalog, version_package_dir).fill_bag(:depositor, version_data_dir)
 
-  # Store packages in a pseudo repository
-  (1..3).each do |version|
-    object_dir = ingests_dir.join(BARE_TEST_DRUID)
-    object_dir.mkpath
-    unless object_dir.join("v000#{version}").exist?
-      bag_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
-      Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
-    end
-  end
+      # Store packages in a pseudo repository
+      unless object_dir.join("v000#{version}").exist?
+        bag_dir = packages_dir.join(TEST_OBJECT_VERSIONS[version])
+        Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).ingest_bag(bag_dir)
+      end
 
-  # Generate reconstructed versions from pseudo repository
-  reconstructs_dir = derivatives_dir.join('reconstructs')
-  (1..3).each do |version|
-    bag_dir = reconstructs_dir.join(TEST_OBJECT_VERSIONS[version])
-    unless bag_dir.exist?
-      object_dir = ingests_dir.join(BARE_TEST_DRUID)
-      Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).reconstruct_version(version, bag_dir)
+      # Generate reconstructed versions from pseudo repository
+      bag_dir = reconstructs_dir.join(TEST_OBJECT_VERSIONS[version])
+      unless bag_dir.exist?
+        object_dir = ingests_dir.join(BARE_TEST_DRUID)
+        Moab::StorageObject.new(FULL_TEST_DRUID, object_dir).reconstruct_version(version, bag_dir)
+      end
     end
   end
 
   ## Re-Generate packages from inventories and signature catalogs
   ## because output contents were moved into psuedo repository
   #(1..3).each do |version|
-  #  package_dir  = packages_dir.join(TEST_OBJECT_VERSIONS[version])
-  #  unless package_dir.join('data').exist?
-  #    data_dir = data_dir.join(TEST_OBJECT_VERSIONS[version])
-  #    inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]),'version')
+  #  version_package_dir  = packages_dir.join(TEST_OBJECT_VERSIONS[version])
+  #  unless version_package_dir.join('data').exist?
+  #    version_data_dir = test_object_data_dir.join(TEST_OBJECT_VERSIONS[version])
+  #    inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version]), 'version')
   #    case version
   #      when 1
   #        catalog = Moab::SignatureCatalog.new(:digital_object_id => inventory.digital_object_id)
   #      else
   #        catalog = Moab::SignatureCatalog.read_xml_file(manifests_dir.join(TEST_OBJECT_VERSIONS[version-1]))
   #    end
-  #    Moab::StorageObject.package(inventory,catalog,data_dir,package_dir)
+  #    Moab::StorageObject.package(inventory, catalog, version_data_dir, version_package_dir)
   #  end
   #end
 end

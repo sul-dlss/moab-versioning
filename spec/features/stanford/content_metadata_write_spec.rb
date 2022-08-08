@@ -9,7 +9,7 @@ describe 'Write contentMetadata datastream' do
     # action: extract the file-level metadata
     # outcome: a fully populated contentMetadata datastream
 
-    directory = data_dir.join('v0002/content')
+    directory = test_object_data_dir.join('v0002/content')
     recursive = true
     group = Moab::FileGroup.new.group_from_directory(directory, recursive)
     version_id = 2

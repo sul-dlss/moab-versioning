@@ -33,7 +33,7 @@ describe Moab::Bagger do
   let(:submit_bag_inventory) { submit_catalog.version_additions(submit_inventory) }
   let(:submit_catalog) { Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001')) }
   let(:submit_inventory) { Moab::FileInventory.read_xml_file(manifests_dir.join('v0002'), 'version') }
-  let(:submit_source_base) { data_dir.join('v0002') }
+  let(:submit_source_base) { test_object_data_dir.join('v0002') }
 
   it '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
@@ -75,7 +75,7 @@ describe Moab::Bagger do
         vname = TEST_OBJECT_VERSIONS[version]
         package = packages_dir.join(vname)
         unless package.join('data').exist?
-          bag_data_dir = data_dir.join(vname)
+          bag_data_dir = test_object_data_dir.join(vname)
           inventory = Moab::FileInventory.read_xml_file(manifests_dir.join(vname), 'version')
           catalog = case version
                     when 1
