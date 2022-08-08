@@ -3,7 +3,7 @@
 describe Moab::SignatureCatalogEntry do
   let(:sce) { described_class.new }
 
-  specify '#initialize' do
+  it '#initialize' do
     opts = {
       version_id: 26,
       group_id: 'Test group_id',
@@ -17,13 +17,13 @@ describe Moab::SignatureCatalogEntry do
     expect(signature_catalog_entry.signature).to eq(opts[:signature])
   end
 
-  specify '#signature becomes first value if set to Array' do
+  it '#signature becomes first value if set to Array' do
     value = double(Moab::FileSignature.name)
     sce.signature = [value, 'dummy']
     expect(sce.signature).to eq value
   end
 
-  specify '#storage_path' do
+  it '#storage_path' do
     sce.version_id = 5
     sce.group_id = 'content'
     sce.path = 'title.jpg'

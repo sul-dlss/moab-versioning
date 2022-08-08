@@ -23,12 +23,12 @@ describe Serializer::Manifest do
     end
   end
 
-  specify '.xml_pathname_exist?' do
+  it '.xml_pathname_exist?' do
     expect(described_class.xml_pathname_exist?("/test/parent_dir", "dummy")).to be(false)
     expect(Moab::SignatureCatalog.xml_pathname_exist?(manifests_dir.join("v0001"))).to be(true)
   end
 
-  specify '.read_xml_file' do
+  it '.read_xml_file' do
     parent_dir = manifests_dir.join("v1")
     mock_pathname = double(Pathname.name)
     mock_xml = double("xml")
@@ -38,7 +38,7 @@ describe Serializer::Manifest do
     Moab::SignatureCatalog.read_xml_file(parent_dir)
   end
 
-  specify '.write_xml_file' do
+  it '.write_xml_file' do
     xml_object = Moab::SignatureCatalog.read_xml_file(manifests_dir.join("v0001"))
     #xml_object.should_receive(:to_xml)
     output_dir = temp_dir

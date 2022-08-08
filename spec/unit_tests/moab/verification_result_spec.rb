@@ -19,7 +19,7 @@ describe Moab::VerificationResult do
     result
   end
 
-  specify '.verify_value' do
+  it '.verify_value' do
     result = described_class.verify_value('greeting', "hello", "goodbye")
     expect(result.entity).to eq 'greeting'
     expect(result.verified).to be false
@@ -28,7 +28,7 @@ describe Moab::VerificationResult do
     expect(result.subentities.size).to eq 0
   end
 
-  specify '.verify_truth' do
+  it '.verify_truth' do
     result = described_class.verify_truth('truth', "true")
     expect(result.entity).to eq 'truth'
     expect(result.verified).to be true
@@ -37,7 +37,7 @@ describe Moab::VerificationResult do
     expect(result.subentities.size).to eq 0
   end
 
-  specify '#initialize' do
+  it '#initialize' do
     result = described_class.new('my_entity')
     expect(result.entity).to eq 'my_entity'
     expect(result.verified).to be false
@@ -45,7 +45,7 @@ describe Moab::VerificationResult do
     expect(result.subentities).to be_an_instance_of Array
   end
 
-  specify '#to_hash' do
+  it '#to_hash' do
     detail_hash = result.to_hash(true)
     expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<-JSON
 {

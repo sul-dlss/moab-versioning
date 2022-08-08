@@ -12,48 +12,48 @@ describe Moab::FileGroupDifference do
   end
 
   describe '#initialize' do
-    specify 'empty options hash' do
+    it 'empty options hash' do
       diff = described_class.new({})
       expect(diff.subsets).to be_kind_of Array
       expect(diff.subsets.size).to eq 0
     end
 
-    specify 'options passed in' do
+    it 'options passed in' do
       opts = { group_id: 'Test group_id' }
       diff = described_class.new(opts)
       expect(diff.group_id).to eq opts[:group_id]
     end
   end
 
-  specify '#group_id' do
+  it '#group_id' do
     expect(group_diff.group_id).to eq "content"
   end
 
-  specify '#difference_count' do
+  it '#difference_count' do
     expect(group_diff.difference_count).to eq 6
   end
 
-  specify '#identical' do
+  it '#identical' do
     expect(group_diff.identical).to eq 1
   end
 
-  specify '#renamed' do
+  it '#renamed' do
     expect(group_diff.renamed).to eq 2
   end
 
-  specify '#modified' do
+  it '#modified' do
     expect(group_diff.modified).to eq 1
   end
 
-  specify '#deleted' do
+  it '#deleted' do
     expect(group_diff.deleted).to eq 2
   end
 
-  specify '#added' do
+  it '#added' do
     expect(group_diff.added).to eq 1
   end
 
-  specify '#subsets' do
+  it '#subsets' do
     expect(group_diff.subsets.size).to be >= 5
   end
 
@@ -69,7 +69,7 @@ describe Moab::FileGroupDifference do
   end
   let(:new_diff) { described_class.new }
 
-  specify '#summary' do
+  it '#summary' do
     summary = new_diff.compare_file_groups(v1_content, v3_content).summary()
     expect(summary).to be_instance_of described_class
     summary.group_id = ''
@@ -87,19 +87,19 @@ describe Moab::FileGroupDifference do
     let(:other_hash) { v3_content.path_hash }
     # basis_hash.keys: ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
     # other_hash.keys: ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
-    specify '#matching_keys' do
+    it '#matching_keys' do
       matching_keys = new_diff.matching_keys(basis_hash, other_hash)
       expect(matching_keys.size).to eq 4
       expect(matching_keys).to eq ["page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
     end
 
-    specify '#basis_only_keys' do
+    it '#basis_only_keys' do
       basis_only_keys = new_diff.basis_only_keys(basis_hash, other_hash)
       expect(basis_only_keys.size).to eq 2
       expect(basis_only_keys).to eq ["intro-1.jpg", "intro-2.jpg"]
     end
 
-    specify '#other_only_keys' do
+    it '#other_only_keys' do
       other_only_keys = new_diff.other_only_keys(basis_hash, other_hash)
       expect(other_only_keys.size).to eq 1
       expect(other_only_keys).to eq ["page-4.jpg"]
@@ -112,19 +112,19 @@ describe Moab::FileGroupDifference do
     # basis_group.group_id: "content"
     # basis_group.data_source: includes "data/jq937jp0017/v0001/content"
     # other_group.data_source: includes "data/jq937jp0017/v0003/content"
-    specify 'calls compare_xxx_signatures methods' do
+    it 'calls compare_xxx_signatures methods' do
       expect(new_diff).to receive(:compare_matching_signatures).with(basis_group, other_group)
       expect(new_diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
       new_diff.compare_file_groups(basis_group, other_group)
     end
 
-    specify 'returns itself, populated object' do
+    it 'returns itself, populated object' do
       return_value = new_diff.compare_file_groups(basis_group, other_group)
       expect(return_value).to eq new_diff
       expect(new_diff.group_id).to eq basis_group.group_id
     end
 
-    specify 'with empty group' do
+    it 'with empty group' do
       empty_group = Moab::FileGroup.new(group_id: "content")
       diff = new_diff.compare_file_groups(v1_content, empty_group)
       expect(diff.difference_count).to eq 6
@@ -174,7 +174,7 @@ describe Moab::FileGroupDifference do
         new_diff.compare_file_groups(basis_file_group, other_file_group)
       end
 
-      specify 'sets attributes' do
+      it 'sets attributes' do
         expect(comp_file_groups_diff.difference_count).to eq 3
         expect(comp_file_groups_diff.identical).to eq 2
         expect(comp_file_groups_diff.copyadded).to eq 1
@@ -182,7 +182,7 @@ describe Moab::FileGroupDifference do
         expect(comp_file_groups_diff.renamed).to eq 1
       end
 
-      specify 'copyadded subset' do
+      it 'copyadded subset' do
         copyadded_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copyadded].to_xml)
         exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="copyadded" count="1">
@@ -194,7 +194,7 @@ describe Moab::FileGroupDifference do
         expect(EquivalentXml.equivalent?(copyadded_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
 
-      specify 'copydeleted subset' do
+      it 'copydeleted subset' do
         copydeleted_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:copydeleted].to_xml)
         exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="copydeleted" count="1">
@@ -206,7 +206,7 @@ describe Moab::FileGroupDifference do
         expect(EquivalentXml.equivalent?(copydeleted_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
       end
 
-      specify 'renamed subset' do
+      it 'renamed subset' do
         renamed_ng_xml = Nokogiri::XML(comp_file_groups_diff.subset_hash[:renamed].to_xml)
         exp_ng_xml = Nokogiri::XML <<-XML
           <subset change="renamed" count="1">
@@ -220,7 +220,7 @@ describe Moab::FileGroupDifference do
     end
   end
 
-  specify '#compare_matching_signatures' do
+  it '#compare_matching_signatures' do
     new_diff.compare_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 2
     expect(new_diff.subsets.collect(&:change)).to eq %w[identical renamed]
@@ -229,7 +229,7 @@ describe Moab::FileGroupDifference do
     expect(new_diff.renamed).to eq 2
   end
 
-  specify '#compare_non_matching_signatures' do
+  it '#compare_non_matching_signatures' do
     new_diff.compare_non_matching_signatures(v1_content, v3_content)
     expect(new_diff.subsets.size).to eq 3
     expect(new_diff.subsets.collect(&:change)).to eq %w[modified added deleted]
@@ -246,7 +246,7 @@ describe Moab::FileGroupDifference do
     # page-2.jpg, page-3.jpg, title.jpg
   end
 
-  specify '#tabulate_unchanged_files' do
+  it '#tabulate_unchanged_files' do
     new_diff.tabulate_unchanged_files(matching_keys_signatures, v1_content.signature_hash, v3_content.signature_hash)
     expect(new_diff.subset_hash.keys).to eq [:identical]
     unchanged_subset = new_diff.subset('identical')
@@ -267,7 +267,7 @@ describe Moab::FileGroupDifference do
     expect(unchanged_file.signatures[0].fixity).to eq title_jpg_fixity
   end
 
-  specify '#tabulate_renamed_files' do
+  it '#tabulate_renamed_files' do
     new_diff.tabulate_renamed_files(matching_keys_signatures, v1_content.signature_hash, v3_content.signature_hash)
     renamed_subset = new_diff.subset('renamed')
     expect(renamed_subset).to be_instance_of Moab::FileGroupDifferenceSubset
@@ -308,7 +308,7 @@ describe Moab::FileGroupDifference do
     v3_content.path_hash_subset(other_only_signatures)
     # NOTE: other_path_hash.keys: page-1.jpg, page-2.jpg, page-3.jpg, page-4.jpg, title.jpg
   end
-  specify '#tabulate_modified_files' do
+  it '#tabulate_modified_files' do
     new_diff.tabulate_modified_files(basis_path_hash, other_path_hash)
     modified_subset = new_diff.subset('modified')
     expect(modified_subset).to be_instance_of Moab::FileGroupDifferenceSubset
@@ -328,7 +328,7 @@ describe Moab::FileGroupDifference do
     expect(modified_file.signatures[0].fixity).to eq page_1_jpg_fixity
   end
 
-  specify '#tabulate_deleted_files' do
+  it '#tabulate_deleted_files' do
     new_diff.tabulate_deleted_files(basis_path_hash, other_path_hash)
     deleted_subset = new_diff.subset('deleted')
     expect(deleted_subset).to be_instance_of Moab::FileGroupDifferenceSubset
@@ -359,7 +359,7 @@ describe Moab::FileGroupDifference do
     expect(deleted_file2.signatures[0].fixity).to eq intro_2_jpg_fixity
   end
 
-  specify '#tabulate_added_files' do
+  it '#tabulate_added_files' do
     new_diff.tabulate_added_files(basis_path_hash, other_path_hash)
     added_subset = new_diff.subset('added')
     expect(added_subset).to be_instance_of Moab::FileGroupDifferenceSubset
@@ -379,7 +379,7 @@ describe Moab::FileGroupDifference do
     expect(added_file.signatures[0].fixity).to eq page_2_jpg_fixity
   end
 
-  specify '.parse' do
+  it '.parse' do
     fixture = ingests_dir.join('jq937jp0017', 'v0003', 'manifests', 'fileInventoryDifference.xml')
     fid = Moab::FileInventoryDifference.parse(File.read(fixture))
     fgd = fid.group_difference('content')
@@ -394,7 +394,7 @@ describe Moab::FileGroupDifference do
     expect(fgd.subset('added').files[0].other_path).to eq "page-2.jpg"
   end
 
-  specify '#file_deltas' do
+  it '#file_deltas' do
     deltas = new_diff.file_deltas
     expect(deltas).to eq(
       identical: [],
@@ -418,14 +418,14 @@ describe Moab::FileGroupDifference do
     )
   end
 
-  specify '#rename_require_temp_files' do
+  it '#rename_require_temp_files' do
     renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
     expect(new_diff.rename_require_temp_files(renamed)).to be true
     renamed = [["page-1.jpg", "page-1b.jpg"], ["page-2.jpg", "page-2b.jpg"]]
     expect(new_diff.rename_require_temp_files(renamed)).to be false
   end
 
-  specify '#rename_tempfile_triplets' do
+  it '#rename_tempfile_triplets' do
     renamed = [["page-2.jpg", "page-3.jpg"], ["page-3.jpg", "page-4.jpg"]]
     triplets = new_diff.rename_tempfile_triplets(renamed)
     expect(triplets[0][0]).to eq "page-2.jpg"

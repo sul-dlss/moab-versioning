@@ -9,35 +9,35 @@ describe Moab::FileInventory do
   end
 
   describe '.xml_filename' do
-    specify 'version' do
+    it 'version' do
       expect(described_class.xml_filename('version')).to eq 'versionInventory.xml'
     end
 
-    specify 'additions' do
+    it 'additions' do
       expect(described_class.xml_filename("additions")).to eq 'versionAdditions.xml'
     end
 
-    specify 'manifests' do
+    it 'manifests' do
       expect(described_class.xml_filename("manifests")).to eq 'manifestInventory.xml'
     end
 
-    specify 'directory' do
+    it 'directory' do
       expect(described_class.xml_filename("directory")).to eq 'directoryInventory.xml'
     end
 
-    specify 'unknown type raises ArgumentError' do
+    it 'unknown type raises ArgumentError' do
       expect { described_class.xml_filename("other") }.to raise_exception(ArgumentError, /unknown inventory type/)
     end
   end
 
   describe '#initialize' do
-    specify 'empty options hash' do
+    it 'empty options hash' do
       file_inventory = described_class.new({})
       expect(file_inventory.groups).to be_kind_of Array
       expect(file_inventory.groups.size).to eq 0
     end
 
-    specify 'options passed in' do
+    it 'options passed in' do
       opts = {
         type: 'Test type',
         digital_object_id: 'Test digital_object_id',
@@ -53,52 +53,52 @@ describe Moab::FileInventory do
   end
 
   describe '.parse sets attributes' do
-    specify '#type' do
+    it '#type' do
       expect(parsed_file_inventory.type).to eq 'version'
     end
 
-    specify '#digital_object_id' do
+    it '#digital_object_id' do
       expect(parsed_file_inventory.digital_object_id).to eq 'druid:jq937jp0017'
     end
 
-    specify '#version_id' do
+    it '#version_id' do
       expect(parsed_file_inventory.version_id).to eq 1
     end
 
-    specify '#composite_key' do
+    it '#composite_key' do
       expect(parsed_file_inventory.composite_key).to eq "druid:jq937jp0017-v0001"
     end
 
-    specify '#inventory_datetime' do
+    it '#inventory_datetime' do
       expect(parsed_file_inventory.inventory_datetime).to eq "2012-04-13T13:16:54Z"
     end
 
-    specify '#file_count' do
+    it '#file_count' do
       expect(parsed_file_inventory.file_count).to eq 11
     end
 
-    specify '#byte_count' do
+    it '#byte_count' do
       expect(parsed_file_inventory.byte_count).to eq 217820
     end
 
-    specify '#block_count' do
+    it '#block_count' do
       expect(parsed_file_inventory.block_count).to eq 216
     end
 
-    specify '#groups' do
+    it '#groups' do
       expect(parsed_file_inventory.groups.size).to eq 2
     end
 
-    specify '#human_size' do
+    it '#human_size' do
       expect(parsed_file_inventory.human_size).to eq "212.71 KB"
     end
 
-    specify '#package_id' do
+    it '#package_id' do
       expect(parsed_file_inventory.package_id).to eq "druid:jq937jp0017-v1"
     end
   end
 
-  specify '#non_empty_groups' do
+  it '#non_empty_groups' do
     expect(parsed_file_inventory.groups.size).to eq 2
     expect(parsed_file_inventory.group_ids).to eq %w[content metadata]
     parsed_file_inventory.groups << Moab::FileGroup.new(group_id: 'empty')
@@ -108,19 +108,19 @@ describe Moab::FileInventory do
     expect(parsed_file_inventory.group_ids(true)).to eq %w[content metadata]
   end
 
-  specify '#group' do
+  it '#group' do
     group_id = 'content'
     group = parsed_file_inventory.group(group_id)
     expect(group.group_id).to eq group_id
     expect(parsed_file_inventory.group('dummy')).to be_nil
   end
 
-  specify '#group_empty?' do
+  it '#group_empty?' do
     expect(parsed_file_inventory.group_empty?('content')).to be false
     expect(parsed_file_inventory.group_empty?('dummy')).to be true
   end
 
-  specify '#file_signature' do
+  it '#file_signature' do
     group_id = 'content'
     file_id = 'title.jpg'
     signature = parsed_file_inventory.file_signature(group_id, file_id)
@@ -133,7 +133,7 @@ describe Moab::FileInventory do
     expect(signature.fixity).to eq expected_sig_fixity
   end
 
-  specify '#copy_ids' do
+  it '#copy_ids' do
     new_file_inventory = described_class.new
     new_file_inventory.copy_ids(parsed_file_inventory)
     expect(new_file_inventory.digital_object_id).to eq parsed_file_inventory.digital_object_id
@@ -141,14 +141,14 @@ describe Moab::FileInventory do
     expect(new_file_inventory.inventory_datetime).to eq parsed_file_inventory.inventory_datetime
   end
 
-  specify '#data_source' do
+  it '#data_source' do
     expect(parsed_file_inventory.data_source).to eq "v1"
     directory = fixtures_dir.join('derivatives/manifests/all')
     directory_inventory = described_class.new(type: 'directory').inventory_from_directory(directory, "mygroup")
     expect(directory_inventory.data_source).to include "derivatives/manifests/all"
   end
 
-  specify '#inventory_from_directory' do
+  it '#inventory_from_directory' do
     data_dir_1 = fixtures_dir.join('data/jq937jp0017/v0001/metadata')
     group_id = 'Test group_id'
     inventory_1 = described_class.new.inventory_from_directory(data_dir_1, group_id)
@@ -164,7 +164,7 @@ describe Moab::FileInventory do
     expect(inventory_2.file_count).to eq 11
   end
 
-  specify '#inventory_from_bagit_bag' do
+  it '#inventory_from_bagit_bag' do
     bag_dir = packages_dir.join('v0001')
     inventory = described_class.new.inventory_from_bagit_bag(bag_dir)
     expect(inventory.groups.size).to eq 2
@@ -172,7 +172,7 @@ describe Moab::FileInventory do
     expect(inventory.file_count).to eq 11
   end
 
-  specify '#signatures_from_bagit_manifests' do
+  it '#signatures_from_bagit_manifests' do
     bag_pathname = packages_dir.join('v0001')
     signature_for_path = described_class.new.signatures_from_bagit_manifests(bag_pathname)
     expect(signature_for_path.size).to eq 11
@@ -180,7 +180,7 @@ describe Moab::FileInventory do
     expect(signature_for_path[packages_dir.join('v0001/data/content/page-2.jpg')].md5).to eq "82fc107c88446a3119a51a8663d1e955"
   end
 
-  specify '#write_xml_file' do
+  it '#write_xml_file' do
     parent_dir = temp_dir.join('parent_dir')
     type = 'Test type'
     expect(described_class).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
@@ -188,7 +188,7 @@ describe Moab::FileInventory do
   end
 
   describe "#summary_fields" do
-    specify '#summary' do
+    it '#summary' do
       hash = parsed_file_inventory.summary
       expect(hash).to eq("type" => "version",
                          "digital_object_id" => "druid:jq937jp0017",
@@ -216,7 +216,7 @@ describe Moab::FileInventory do
           })
     end
 
-    specify '#to_json summary' do
+    it '#to_json summary' do
       json = parsed_file_inventory.to_json(true)
       expect("#{json}\n").to eq <<-JSON
 {
