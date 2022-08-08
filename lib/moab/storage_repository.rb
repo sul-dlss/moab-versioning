@@ -43,7 +43,7 @@ module Moab
    # @param object_id [String] The identifier of the digital object
     # @return [String] The branch segment of the object storage path
     def storage_branch(object_id)
-      #todo This method should be customized, or overridden in a subclass
+      # TODO: This method should be customized, or overridden in a subclass
       # split a object ID into 2-character segments, followed by a copy of the object ID
       # for a more sophisticated pairtree implementation see https://github.com/microservices/pairtree
       path_segments = object_id.scan(/..?/) << object_id

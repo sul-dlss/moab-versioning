@@ -109,7 +109,7 @@ module Moab
 
     # @return [Hash] Serializes the data and then filters it to report only the changes
     def differences_detail
-      #return self.summary if difference_count == 0
+      # return self.summary if difference_count == 0
       inv_diff = to_hash
       inv_diff['group_differences'].each_value do |group_diff|
         delete_subsets = []

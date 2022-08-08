@@ -174,7 +174,7 @@ module Moab
     # @return [void] link or copy the specified file from source location to the version directory
     def ingest_file(source_file, target_dir, use_links = true)
       if use_links
-        FileUtils.link(source_file.to_s, target_dir.to_s) #, :force => true)
+        FileUtils.link(source_file.to_s, target_dir.to_s)
       else
         FileUtils.copy(source_file.to_s, target_dir.to_s)
       end

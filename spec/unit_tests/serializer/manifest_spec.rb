@@ -40,7 +40,6 @@ describe Serializer::Manifest do
 
   it '.write_xml_file' do
     xml_object = Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001'))
-    #xml_object.should_receive(:to_xml)
     output_dir = temp_dir
     mock_pathname = double(Pathname.name)
     expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
