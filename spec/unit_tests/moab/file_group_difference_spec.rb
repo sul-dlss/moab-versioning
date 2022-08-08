@@ -85,6 +85,7 @@ describe Moab::FileGroupDifference do
   context 'key comparison methods' do
     let(:basis_hash) { v1_content.path_hash }
     let(:other_hash) { v3_content.path_hash }
+
     # basis_hash.keys: ["intro-1.jpg", "intro-2.jpg", "page-1.jpg", "page-2.jpg", "page-3.jpg", "title.jpg"]
     # other_hash.keys: ["page-1.jpg", "page-2.jpg", "page-3.jpg", "page-4.jpg", "title.jpg"]
     it '#matching_keys' do
@@ -308,6 +309,7 @@ describe Moab::FileGroupDifference do
     v3_content.path_hash_subset(other_only_signatures)
     # NOTE: other_path_hash.keys: page-1.jpg, page-2.jpg, page-3.jpg, page-4.jpg, title.jpg
   end
+
   it '#tabulate_modified_files' do
     new_diff.tabulate_modified_files(basis_path_hash, other_path_hash)
     modified_subset = new_diff.subset('modified')
