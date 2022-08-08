@@ -13,17 +13,17 @@ describe Moab::StorageServices do
     expect(threads.map(&:value).uniq.size).to eq(1)
   end
 
-  specify '.storage_roots' do
+  it '.storage_roots' do
     expect(described_class.storage_roots).to eq([fixtures_dir.join('derivatives'),
                                                  fixtures_dir.join('derivatives2'),
                                                  fixtures_dir.join('newnode')])
   end
 
-  specify '.deposit_trunk' do
+  it '.deposit_trunk' do
     expect(described_class.deposit_trunk).to eq 'packages'
   end
 
-  specify '.deposit_branch' do
+  it '.deposit_branch' do
     expect(described_class.deposit_branch(BARE_TEST_DRUID)).to eq 'jq937jp0017'
   end
 
@@ -63,21 +63,21 @@ describe Moab::StorageServices do
     end
   end
 
-  specify '.object_path' do
+  it '.object_path' do
     expect(described_class.object_path(BARE_TEST_DRUID)).to match('spec/fixtures/derivatives/ingests/jq937jp0017')
   end
 
-  specify '.object_version_path' do
+  it '.object_version_path' do
     expect(described_class.object_version_path(BARE_TEST_DRUID, 1)).to match(
       'spec/fixtures/derivatives/ingests/jq937jp0017/v0001'
     )
   end
 
-  specify '.current_version' do
+  it '.current_version' do
     expect(described_class.current_version(BARE_TEST_DRUID)).to eq 3
   end
 
-  specify '.object_size' do
+  it '.object_size' do
     expect(described_class.object_size(BARE_TEST_DRUID)).to be_between(340000, 350000)
   end
 
@@ -121,7 +121,7 @@ describe Moab::StorageServices do
     end
   end
 
-  specify '.retrieve_file_using_signature' do
+  it '.retrieve_file_using_signature' do
     fixity_hash = {
       size: "40873",
       md5: "1a726cd7963bd6d3ceb10a8c353ec166",
@@ -162,7 +162,7 @@ describe Moab::StorageServices do
     end
   end
 
-  specify '.version_differences' do
+  it '.version_differences' do
     differences = described_class.version_differences(BARE_TEST_DRUID, 2, 3)
     diff_ng_xml = Nokogiri::XML(differences.to_xml)
     diff_ng_xml.xpath('//@reportDatetime').remove

@@ -34,39 +34,39 @@ describe Moab::SignatureCatalog do
   end
 
   describe '.parse sets attributes' do
-    specify 'digital_object_id' do
+    it 'digital_object_id' do
       expect(@signature_catalog.digital_object_id).to eq('druid:jq937jp0017')
     end
 
-    specify 'version_id' do
+    it 'version_id' do
       expect(@signature_catalog.version_id).to eq(1)
     end
 
-    specify 'catalog_datetime' do
+    it 'catalog_datetime' do
       expect(Time.parse(@signature_catalog.catalog_datetime)).to be_instance_of(Time)
     end
 
-    specify 'file_count' do
+    it 'file_count' do
       expect(@signature_catalog.file_count).to eq(11)
     end
 
-    specify 'byte_count' do
+    it 'byte_count' do
       expect(@signature_catalog.byte_count).to eq(217820)
     end
 
-    specify 'block_count' do
+    it 'block_count' do
       expect(@signature_catalog.block_count).to eq(216)
     end
 
-    specify 'entries' do
+    it 'entries' do
       expect(@signature_catalog.entries.size).to eq(11)
     end
 
-    specify 'signature_hash' do
+    it 'signature_hash' do
       expect(@signature_catalog.signature_hash.size).to eq(11)
     end
 
-    specify 'composite_key' do
+    it 'composite_key' do
       expect(@signature_catalog.composite_key).to eq("druid:jq937jp0017-v0001")
     end
   end
@@ -79,14 +79,14 @@ describe Moab::SignatureCatalog do
     end
   end
 
-  specify '#add_entry' do
+  it '#add_entry' do
     entry = double(Moab::SignatureCatalogEntry.name)
     expect(entry).to receive(:signature).and_return(double(Moab::FileSignature.name))
     @signature_catalog.add_entry(entry)
     expect(@signature_catalog.entries.count).to eq(@original_entry_count + 1)
   end
 
-  specify '#catalog_filepath' do
+  it '#catalog_filepath' do
     file_signature = @signature_catalog.entries[0].signature
     filepath = @signature_catalog.catalog_filepath(file_signature)
     expect(filepath).to eq('v0001/data/content/intro-1.jpg')
@@ -94,7 +94,7 @@ describe Moab::SignatureCatalog do
     expect { @signature_catalog.catalog_filepath(file_signature) }.to raise_exception Moab::FileNotFoundException
   end
 
-  specify '#normalize_group_signatures' do
+  it '#normalize_group_signatures' do
     @v2_inventory.groups.each do |group|
       group.data_source = @v2_inventory_pathname.parent.parent.join('data', group.group_id).to_s
       if group.group_id == 'content'
@@ -117,7 +117,7 @@ describe Moab::SignatureCatalog do
     )
   end
 
-  specify '#update' do
+  it '#update' do
     @v2_inventory.groups.each do |group|
       if group.group_id == 'metadata'
         group.files.each do |file|
@@ -136,7 +136,7 @@ describe Moab::SignatureCatalog do
     )
   end
 
-  specify '#version_additions' do
+  it '#version_additions' do
     version_additions = @signature_catalog.version_additions(@v2_inventory)
     expect(version_additions.groups.count).to eq(2)
     expect(version_additions.file_count).to eq(4)
@@ -144,7 +144,7 @@ describe Moab::SignatureCatalog do
     expect(version_additions.block_count).to eq(37)
   end
 
-  specify "#summary has fields set in #summary_fields" do
+  it "#summary has fields set in #summary_fields" do
     expect(@signature_catalog.summary).to eq("digital_object_id" => "druid:jq937jp0017",
                                              "version_id" => 1,
                                              "catalog_datetime" => @signature_catalog.catalog_datetime.to_s,
@@ -153,7 +153,7 @@ describe Moab::SignatureCatalog do
                                              "block_count" => 216)
   end
 
-  specify "Serialization to string using HappyMapper to_xml" do
+  it "Serialization to string using HappyMapper to_xml" do
     expect(@signature_catalog.to_xml).to match(/.*<\/signatureCatalog>$/)
   end
 end

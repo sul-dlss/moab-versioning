@@ -146,7 +146,7 @@ describe Serializer::Serializable do
     end
   end
 
-  specify '#array_to_hash' do
+  it '#array_to_hash' do
     array = %w[this is an array of words]
     expect(described_class.new.array_to_hash(array)).to hash_match(0 => "this",
                                                                    1 => "is",
@@ -156,7 +156,7 @@ describe Serializer::Serializable do
                                                                    5 => "words")
   end
 
-  specify '#to_hash' do
+  it '#to_hash' do
     additions = Moab::FileInventory.read_xml_file(manifests_dir.join("v0002"), 'additions')
     hash = additions.groups[0].to_hash
     hash['files'][0].delete('instances')
@@ -212,7 +212,7 @@ describe Serializer::Serializable do
     end
   end
 
-  specify '#to_json' do
+  it '#to_json' do
     adj_v1_content = @v1_content.to_json
                                 .gsub(/"datetime": ".*?"/, '"datetime": ""')
                                 .gsub(/: ".*moab-versioning/, ': "moab-versioning')

@@ -20,7 +20,7 @@ describe Moab::StorageObject do
     @ingest_object_dir = ingests_dir.join(BARE_TEST_DRUID)
   end
 
-  specify '.version_dirname' do
+  it '.version_dirname' do
     expect(described_class.version_dirname(1)).to eq "v0001"
     expect(described_class.version_dirname(22)).to eq "v0022"
     expect(described_class.version_dirname(333)).to eq "v0333"
@@ -28,13 +28,13 @@ describe Moab::StorageObject do
     expect(described_class.version_dirname(55555)).to eq "v55555"
   end
 
-  specify '#initialize' do
+  it '#initialize' do
     storage_object = described_class.new(FULL_TEST_DRUID, @temp_object_dir)
     expect(storage_object.digital_object_id).to eq FULL_TEST_DRUID
     expect(storage_object.object_pathname.to_s).to include('temp/ingests/jq937jp0017')
   end
 
-  specify '#initialize_storage' do
+  it '#initialize_storage' do
     @temp_object_dir.rmtree if @temp_object_dir.exist?
     expect(@temp_object_dir.exist?).to be false
     expect(@storage_object.exist?).to be false
@@ -43,11 +43,11 @@ describe Moab::StorageObject do
     expect(@storage_object.exist?).to be true
   end
 
-  specify '#deposit_home' do
+  it '#deposit_home' do
     expect(@storage_object.deposit_home).to eq(packages_dir)
   end
 
-  specify '#deposit_bag_pathname' do
+  it '#deposit_bag_pathname' do
     expect(@storage_object.deposit_bag_pathname).to eq(packages_dir.join('jq937jp0017'))
   end
 
@@ -213,7 +213,7 @@ describe Moab::StorageObject do
     end
   end
 
-  specify '#versionize_bag' do
+  it '#versionize_bag' do
     bag_dir = temp_dir.join('plain_bag')
     bag_dir.rmtree if bag_dir.exist?
     FileUtils.cp_r(packages_dir.join(TEST_OBJECT_VERSIONS[1]).to_s, bag_dir.to_s, preserve: true)
@@ -452,29 +452,29 @@ describe Moab::StorageObject do
     end
   end
 
-  specify '#version_id_list' do
+  it '#version_id_list' do
     expect(@storage_object.version_id_list.size).to eq 0
     expect(storage_object.version_id_list.size).to eq 3
   end
 
-  specify '#version_list' do
+  it '#version_list' do
     expect(@storage_object.version_list.size).to eq 0
     version_list = storage_object.version_list
     expect(version_list.size).to eq 3
     expect(version_list[1].version_id).to eq 2
   end
 
-  specify '#current_version_id' do
+  it '#current_version_id' do
     expect(@storage_object.current_version_id).to eq 0
     expect(storage_object.current_version_id).to eq 3
   end
 
-  specify '#current_version' do
+  it '#current_version' do
     expect(@storage_object.current_version.version_id).to eq 0
     expect(storage_object.current_version.version_id).to eq 3
   end
 
-  specify '#validate_new_inventory' do
+  it '#validate_new_inventory' do
     version_inventory_3 = double("#{Moab::FileInventory.name}3")
     expect(version_inventory_3).to receive(:version_id).twice.and_return 3
     exp_regex = /version mismatch/
@@ -532,11 +532,11 @@ describe Moab::StorageObject do
     end
   end
 
-  specify '#verify_object_storage' do
+  it '#verify_object_storage' do
     expect(storage_object.verify_object_storage.verified).to be true
   end
 
-  specify '#restore_object' do
+  it '#restore_object' do
     expect(@storage_object.version_list.size).to eq 0
     @storage_object.restore_object(@ingest_object_dir)
     expect(@storage_object.version_list.size).to eq 3

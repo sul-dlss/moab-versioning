@@ -13,13 +13,13 @@ describe Moab::FileInventoryDifference do
   let(:diff_v1_v2) { new_diff.compare(v1_inventory, v2_inventory) }
 
   describe '#initialize' do
-    specify 'empty options hash' do
+    it 'empty options hash' do
       group_diffs = new_diff.group_differences
       expect(group_diffs).to be_kind_of Array
       expect(group_diffs.size).to eq 0
     end
 
-    specify 'options passed in' do
+    it 'options passed in' do
       opts = {
         digital_object_id: 'Test digital_object_id',
         basis: 'Test basis',
@@ -36,69 +36,69 @@ describe Moab::FileInventoryDifference do
   end
 
   describe '#compare' do
-    specify 'returns instance of FileInventoryDifference' do
+    it 'returns instance of FileInventoryDifference' do
       expect(diff_v1_v2).to be_instance_of(described_class)
     end
 
     context 'sets attributes' do
-      specify '#digital_object_id' do
+      it '#digital_object_id' do
         expect(diff_v1_v2.digital_object_id).to eq 'druid:jq937jp0017'
       end
 
-      specify '#difference_count' do
+      it '#difference_count' do
         expect(diff_v1_v2.difference_count).to eq 6
       end
 
-      specify '#basis' do
+      it '#basis' do
         expect(diff_v1_v2.basis).to eq 'v1'
       end
 
-      specify '#other' do
+      it '#other' do
         expect(diff_v1_v2.other).to eq 'v2'
       end
 
-      specify '#report_datetime' do
+      it '#report_datetime' do
         expect(Time.parse(diff_v1_v2.report_datetime)).to be_instance_of(Time)
       end
 
-      specify '#group_differences' do
+      it '#group_differences' do
         expect(diff_v1_v2.group_differences.size).to eq 2
       end
     end
   end
 
   describe '#report_datetime' do
-    specify 'reformats date as ISO8601 (UTC Z format)' do
+    it 'reformats date as ISO8601 (UTC Z format)' do
       new_diff.report_datetime = 'Apr 12 19:36:07 UTC 2012'
       expect(new_diff.report_datetime).to eq '2012-04-12T19:36:07Z'
     end
   end
 
   describe '#group_difference' do
-    specify '"content" has group_id "content"' do
+    it '"content" has group_id "content"' do
       group_diff = diff_v1_v2.group_difference 'content'
       expect(group_diff.group_id).to eq 'content'
     end
 
-    specify 'unknown type returns nil' do
+    it 'unknown type returns nil' do
       expect(diff_v1_v2.group_difference('dummy')).to be_nil
     end
   end
 
   describe '#common_object_id' do
-    specify 'different ids' do
+    it 'different ids' do
       basis_inventory = Moab::FileInventory.new(digital_object_id: 'druid:aa111bb2222')
       other_inventory = Moab::FileInventory.new(digital_object_id: 'druid:cc444dd5555')
       exp_id = 'druid:aa111bb2222|druid:cc444dd5555'
       expect(new_diff.common_object_id(basis_inventory, other_inventory)).to eq exp_id
     end
 
-    specify 'same id' do
+    it 'same id' do
       expect(new_diff.common_object_id(v1_inventory, v2_inventory)).to eq 'druid:jq937jp0017'
     end
   end
 
-  specify '#summary_fields' do
+  it '#summary_fields' do
     hash = diff_v1_v2.summary
     hash.delete('report_datetime')
     expect(hash).to eq('digital_object_id' => 'druid:jq937jp0017',
@@ -131,7 +131,7 @@ describe Moab::FileInventoryDifference do
                        })
   end
 
-  specify '#differences_detail' do
+  it '#differences_detail' do
     hash = diff_v1_v2.differences_detail
     expect(hash['group_differences'].size).to eq 2
   end

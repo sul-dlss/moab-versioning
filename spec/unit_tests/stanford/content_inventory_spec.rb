@@ -98,7 +98,7 @@ describe Stanford::ContentInventory do
   end
 
   # testing boundary case where all subset attributes are no (e.g. shelve='no')
-  specify '#inventory_from_cm with empty subset' do
+  it '#inventory_from_cm with empty subset' do
     %w[shelve publish preserve].each do |subset|
       inventory = @content_inventory.inventory_from_cm(content_metadata_empty_subset, 'druid:ms205ty4764', subset, 1)
       inventory_ng_xml = Nokogiri::XML(inventory.to_xml)
@@ -169,12 +169,12 @@ describe Stanford::ContentInventory do
     end
   end
 
-  specify '#generate_instance' do
+  it '#generate_instance' do
     expect(@content_inventory.generate_instance(@node)).to hash_match("path" => "title.jpg",
                                                                       "datetime" => "2012-03-26T14:15:11Z")
   end
 
-  specify '#generate_content_metadata' do
+  it '#generate_content_metadata' do
     directory = data_dir.join('v0002/content')
     group = Moab::FileGroup.new.group_from_directory(directory, true)
     cm = @content_inventory.generate_content_metadata(group, BARE_TEST_DRUID, 2)

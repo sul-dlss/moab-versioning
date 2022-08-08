@@ -18,12 +18,12 @@ describe Moab::FileManifestation do
   end
 
   describe '#initialize' do
-    specify 'empty options hash' do
+    it 'empty options hash' do
       file_manifestation = described_class.new({})
       expect(file_manifestation.instances).to be_instance_of Array
     end
 
-    specify 'options passed in' do
+    it 'options passed in' do
       opts = {
         signature: double(Moab::FileSignature.name),
         instances: double(Moab::FileInstance.name)
@@ -37,34 +37,34 @@ describe Moab::FileManifestation do
   describe '#signature' do
     let(:value) { double(Moab::FileSignature.name) }
 
-    specify 'single value' do
+    it 'single value' do
       file_manifestation.signature = value
       expect(file_manifestation.signature).to eq value
     end
 
-    specify 'becomes first value if set to Array of values' do
+    it 'becomes first value if set to Array of values' do
       file_manifestation.signature = [value]
       expect(file_manifestation.signature).to eq value
     end
   end
 
-  specify '#paths' do
+  it '#paths' do
     expect(file_manifestation.paths).to eq ["title.jpg", "page-1.jpg"]
   end
 
-  specify '#file_count' do
+  it '#file_count' do
     expect(file_manifestation.file_count).to eq 2
   end
 
-  specify '#byte_count' do
+  it '#byte_count' do
     expect(file_manifestation.byte_count).to eq 81746
   end
 
-  specify '#block_count' do
+  it '#block_count' do
     expect(file_manifestation.block_count).to eq 80
   end
 
-  specify '#==' do
+  it '#==' do
     other = file_manifestation
     expect(file_manifestation == other).to be true
   end

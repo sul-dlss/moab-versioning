@@ -46,7 +46,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#composite_key' do
+  it '#composite_key' do
     expect(@existing_storage_object_version.composite_key).to eq("druid:jq937jp0017-v0002")
   end
 
@@ -109,7 +109,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#find_filepath_using_signature' do
+  it '#find_filepath_using_signature' do
     fixity_hash = {
       size: 40873,
       md5: "1a726cd7963bd6d3ceb10a8c353ec166",
@@ -153,12 +153,12 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#file_inventory' do
+  it '#file_inventory' do
     # TODO: test all allowed type values and disallowed type value, version_id = 0
     expect(@existing_storage_object_version.file_inventory('version')).to be_an_instance_of(Moab::FileInventory)
   end
 
-  specify '#signature_catalog' do
+  it '#signature_catalog' do
     # TODO: write better test
     expect(@existing_storage_object_version.signature_catalog).to be_instance_of(Moab::SignatureCatalog)
   end
@@ -231,7 +231,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#ingest_dir' do
+  it '#ingest_dir' do
     source_dir = packages_dir.join("v0001/data")
     temp_storage_object_version = described_class.new(@temp_storage_object, 1)
     target_dir = temp_storage_object_version.version_pathname.join('data')
@@ -292,7 +292,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#update_catalog' do
+  it '#update_catalog' do
     temp_storage_object_version = described_class.new(@temp_storage_object, 4)
     signature_catalog = double(Moab::SignatureCatalog.name)
     new_inventory = double(Moab::FileInventory.name)
@@ -302,7 +302,7 @@ describe Moab::StorageObjectVersion do
     temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
   end
 
-  specify '#generate_differences_report' do
+  it '#generate_differences_report' do
     old_inventory = double(Moab::FileInventory.name)
     new_inventory = double(Moab::FileInventory.name)
     mock_fid = double(Moab::FileInventoryDifference.name)
@@ -313,7 +313,7 @@ describe Moab::StorageObjectVersion do
     @existing_storage_object_version.generate_differences_report(old_inventory, new_inventory)
   end
 
-  specify '#generate_manifest_inventory' do
+  it '#generate_manifest_inventory' do
     temp_storage_object_version = described_class.new(@temp_storage_object, 2)
     temp_version_pathname = temp_storage_object_version.version_pathname
     temp_version_pathname.mkpath
@@ -326,7 +326,7 @@ describe Moab::StorageObjectVersion do
     expect(Moab::FileInventory.xml_pathname_exist?(temp_version_pathname.join('manifests'), 'manifests')).to be true
   end
 
-  specify '#verify_version_storage' do
+  it '#verify_version_storage' do
     result = @existing_storage_object_version.verify_version_storage
     expect(result.verified).to be true
   end
@@ -572,7 +572,7 @@ describe Moab::StorageObjectVersion do
     end
   end
 
-  specify '#deactivate' do
+  it '#deactivate' do
     # create an object version in a temp location by copying from ingests location
     @temp_object_dir.mkpath
     version_id = @existing_storage_object_version.version_id

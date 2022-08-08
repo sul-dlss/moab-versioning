@@ -14,7 +14,7 @@ describe Stanford::StorageServices do
     expect(threads.map(&:value).uniq.size).to eq(1)
   end
 
-  specify '.cm_remediate' do
+  it '.cm_remediate' do
     remediated_cm = described_class.cm_remediate(BARE_TEST_DRUID, 1)
     remediated_cm_ng_xml = Nokogiri::XML(remediated_cm)
     exp_xml = <<-XML

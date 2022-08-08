@@ -6,28 +6,28 @@ describe Moab::StorageRepository do
   let(:derivatives2_storage_root) { fixtures_dir.join('derivatives2') }
   let(:newnode_storage_root) { fixtures_dir.join('newnode') }
 
-  specify '#storage_roots' do
+  it '#storage_roots' do
     # these are set in spec_config.rb
     expect(storage_repo.storage_roots[0]).to eq derivatives_storage_root
     expect(storage_repo.storage_roots[1]).to eq derivatives2_storage_root
     expect(storage_repo.storage_roots[2]).to eq newnode_storage_root
   end
 
-  specify '#storage_trunk' do
+  it '#storage_trunk' do
     # set in spec_config.rb
     expect(storage_repo.storage_trunk).to eq 'ingests'
   end
 
-  specify '#deposit_trunk' do
+  it '#deposit_trunk' do
     # set in spec_config.rb
     expect(storage_repo.deposit_trunk).to eq 'packages'
   end
 
-  specify '#storage_branch' do
+  it '#storage_branch' do
     expect(storage_repo.storage_branch('abcdef')).to eq 'ab/cd/ef/abcdef'
   end
 
-  specify '#deposit_branch' do
+  it '#deposit_branch' do
     expect(storage_repo.deposit_branch('abcdef')).to eq 'abcdef'
   end
 
@@ -71,7 +71,7 @@ describe Moab::StorageRepository do
     end
   end
 
-  specify '#find_storage_object' do
+  it '#find_storage_object' do
     allow(storage_repo).to receive(:storage_branch).and_return('jq937jp0017')
     found_storage_obj = storage_repo.find_storage_object('jq937jp0017')
     expect(found_storage_obj.object_pathname).to eq derivatives_storage_root.join('ingests/jq937jp0017')
@@ -105,13 +105,15 @@ describe Moab::StorageRepository do
     expect(storage_repo.object_size('jq937jp0017')).to be_between(345_000, 346_000)
   end
 
-  specify "#store_new_object_version" do
-    bag_pathname = double("bag_pathname")
-    object_pathname = double("object_pathname")
-    storage_object = double(Moab::StorageObject)
-    expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
-    allow(storage_object).to receive(:object_pathname).and_return(object_pathname)
-    expect(storage_object).to receive(:ingest_bag).with(bag_pathname)
-    storage_repo.store_new_object_version(FULL_TEST_DRUID, bag_pathname)
+  describe '#store_new_object_version' do
+    it 'calls storage_object and ingest_bag' do
+      bag_pathname = double("bag_pathname")
+      object_pathname = double("object_pathname")
+      storage_object = double(Moab::StorageObject)
+      expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
+      allow(storage_object).to receive(:object_pathname).and_return(object_pathname)
+      expect(storage_object).to receive(:ingest_bag).with(bag_pathname)
+      storage_repo.store_new_object_version(FULL_TEST_DRUID, bag_pathname)
+    end
   end
 end

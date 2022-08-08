@@ -39,7 +39,7 @@ describe Moab::Bagger do
   let(:submit_inventory) { Moab::FileInventory.read_xml_file(manifests_dir.join('v0002'), 'version') }
   let(:submit_source_base) { data_dir.join('v0002') }
 
-  specify '#initialize' do
+  it '#initialize' do
     version_inventory = double(Moab::FileInventory.name)
     signature_catalog = double(Moab::SignatureCatalog.name)
     bag_pathname = temp_dir.join('bag_pathname')
@@ -49,7 +49,7 @@ describe Moab::Bagger do
     expect(bagger.bag_pathname).to eq bag_pathname
   end
 
-  specify '#delete_bag' do
+  it '#delete_bag' do
     packages = temp_dir.join('packages')
     bag_dir = packages.join('deleteme')
     bag_data_dir = bag_dir.join('data')
@@ -60,7 +60,7 @@ describe Moab::Bagger do
     expect(bag_dir.exist?).to be false
   end
 
-  specify '#delete_tarfile' do
+  it '#delete_tarfile' do
     packages = temp_dir.join('packages')
     tar_file = packages.join('deleteme.tar')
     tar_file.open('w') { |f| f.puts "delete me please" }
@@ -224,7 +224,7 @@ describe Moab::Bagger do
     end
   end
 
-  specify '#create_payload_manifests' do
+  it '#create_payload_manifests' do
     submit_bag.fill_payload(submit_source_base)
     submit_bag.create_payload_manifests
     md5 = submit_bag.bag_pathname.join('manifest-md5.txt')
@@ -245,7 +245,7 @@ describe Moab::Bagger do
     ]
   end
 
-  specify '#create_bag_info_txt' do
+  it '#create_bag_info_txt' do
     submit_bag.create_bag_info_txt
     bag_info = submit_bag.bag_pathname.join('bag-info.txt')
     expect(bag_info.exist?).to be true
@@ -256,7 +256,7 @@ describe Moab::Bagger do
     ]
   end
 
-  specify '#create_bagit_txt' do
+  it '#create_bagit_txt' do
     submit_bag.create_bagit_txt
     bagit = submit_bag.bag_pathname.join('bagit.txt')
     expect(bagit.exist?).to be true
@@ -266,7 +266,7 @@ describe Moab::Bagger do
     ]
   end
 
-  specify '#create_tagfile_manifests' do
+  it '#create_tagfile_manifests' do
     expect(submit_bag).to receive(:create_tagfile_manifests).and_call_original
     submit_bag.fill_bag(:depositor, submit_source_base)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')
@@ -294,7 +294,7 @@ describe Moab::Bagger do
     ]
   end
 
-  specify '#create_tarfile' do
+  it '#create_tarfile' do
     bag_dir = packages_dir.join('v0001')
     tarfile = temp_dir.join('test.tar')
     bagger = described_class.new(nil, nil, bag_dir)

@@ -2,12 +2,12 @@
 
 describe Moab::FileInstanceDifference do
   describe '#initialize' do
-    specify 'empty options hash' do
+    it 'empty options hash' do
       diff = described_class.new({})
       expect(diff.signatures).to eq []
     end
 
-    specify 'options passed in' do
+    it 'options passed in' do
       opts = {
         change: 'Test change',
         basis_path: 'Test basis_path',

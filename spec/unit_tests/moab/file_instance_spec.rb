@@ -20,7 +20,7 @@ describe Moab::FileInstance do
     described_class.new.instance_from_file(page1_v2_pathname, v2_base_directory)
   end
 
-  specify '#initialize' do
+  it '#initialize' do
     opts = {
       path: temp_dir.join('path').to_s,
       datetime: "Apr 18 21:51:31 UTC 2012"
@@ -30,30 +30,30 @@ describe Moab::FileInstance do
     expect(file_instance.datetime).to eq "2012-04-18T21:51:31Z"
   end
 
-  specify '#datetime reformats as ISO8601 (UTC Z format)' do
+  it '#datetime reformats as ISO8601 (UTC Z format)' do
     fi = described_class.new
     fi.datetime = "Wed Apr 18 21:51:31 UTC 2012"
     expect(fi.datetime).to eq "2012-04-18T21:51:31Z"
   end
 
-  specify '#instance_from_file' do
+  it '#instance_from_file' do
     expect(title_v1_instance.path).to eq "title.jpg"
     expect(title_v1_instance.datetime).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
   end
 
-  specify '#eql?' do
+  it '#eql?' do
     expect(title_v1_instance.eql?(title_v2_instance)).to be true
     expect(page1_v1_instance.eql?(page1_v2_instance)).to be true
     expect(title_v1_instance.eql?(page1_v2_instance)).to be false
   end
 
-  specify '#==' do
+  it '#==' do
     expect(title_v1_instance == title_v2_instance).to be true
     expect(page1_v1_instance == page1_v2_instance).to be true
     expect(title_v1_instance == page1_v2_instance).to be false
   end
 
-  specify '#hash' do
+  it '#hash' do
     expect(title_v1_instance.hash == title_v2_instance.hash).to be true
     expect(page1_v1_instance.hash == page1_v2_instance.hash).to be true
     expect(title_v1_instance.hash == page1_v2_instance.hash).to be false
