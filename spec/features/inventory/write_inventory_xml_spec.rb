@@ -14,12 +14,12 @@ describe 'Feature: File Inventory Serialization' do
     inventory_object.write_xml_file(output_dir, 'version')
     inventory_pathname = output_dir.join('versionInventory.xml')
 
-    xmlObj1 = Nokogiri::XML(inventory_pathname.read)
-    xmlObj1.xpath('//@datetime').each { |d| d.value = '' }
-    xmlObj1.xpath('//@inventoryDatetime').remove
+    xml_object1 = Nokogiri::XML(inventory_pathname.read)
+    xml_object1.xpath('//@datetime').each { |d| d.value = '' }
+    xml_object1.xpath('//@inventoryDatetime').remove
     output_dir.rmtree
 
-    xmlTest = <<-XML
+    expected_xml = <<-XML
       <fileInventory type="version" objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <fileGroup groupId="content" dataSource="#{fixtures_directory}/data/jq937jp0017/v0001/content" fileCount="6" byteCount="206432" blockCount="203">
           <file>
@@ -71,8 +71,7 @@ describe 'Feature: File Inventory Serialization' do
         </fileGroup>
       </fileInventory>
     XML
-    xmlObj2 = Nokogiri::XML(xmlTest)
     opts = { element_order: false, normalize_whitespace: true }
-    expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
+    expect(EquivalentXml.equivalent?(xml_object1, Nokogiri::XML(expected_xml), opts)).to be true
   end
 end

@@ -13,11 +13,11 @@ describe 'Feature: Manifest Serialization' do
     catalog_object = Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001'))
     catalog_object.write_xml_file(output_dir)
     catalog_pathname = output_dir.join('signatureCatalog.xml')
-    xmlObj1 = Nokogiri::XML(catalog_pathname.read)
-    xmlObj1.xpath('//@catalogDatetime').remove
+    xml_object1 = Nokogiri::XML(catalog_pathname.read)
+    xml_object1.xpath('//@catalogDatetime').remove
     output_dir.rmtree
 
-    catalog_test = <<-XML
+    expected_xml = <<-XML
       <signatureCatalog objectId="druid:jq937jp0017" versionId="1"  fileCount="11" byteCount="217820" blockCount="216">
         <entry originalVersion="1" groupId="content" storagePath="intro-1.jpg">
           <fileSignature size="41981" md5="915c0305bf50c55143f1506295dc122c" sha1="60448956fbe069979fce6a6e55dba4ce1f915178" sha256="4943c6ffdea7e33b74fd7918de900de60e9073148302b0ad1bf5df0e6cec032a"/>
@@ -54,8 +54,7 @@ describe 'Feature: Manifest Serialization' do
         </entry>
       </signatureCatalog>
     XML
-    xmlObj2 = Nokogiri::XML(catalog_test)
     opts = { element_order: false, normalize_whitespace: true }
-    expect(EquivalentXml.equivalent?(xmlObj1, xmlObj2, opts)).to be true
+    expect(EquivalentXml.equivalent?(xml_object1, Nokogiri::XML(expected_xml), opts)).to be true
   end
 end

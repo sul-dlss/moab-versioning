@@ -59,9 +59,9 @@ module Serializer
     def self.write_xml_file(xml_object, parent_dir, filename = nil)
       parent_dir.mkpath
       xml_pathname(parent_dir, filename).open('w') do |f|
-        xmlBuilder = Nokogiri::XML::Builder.new(encoding: 'UTF-8')
-        xmlBuilder = xml_object.to_xml(xmlBuilder)
-        f << xmlBuilder.to_xml
+        xml_builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8')
+        xml_builder = xml_object.to_xml(xml_builder)
+        f << xml_builder.to_xml
       end
       nil
     end
