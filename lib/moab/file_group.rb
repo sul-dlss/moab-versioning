@@ -158,6 +158,7 @@ module Moab
     end
     attr_reader :base_directory
 
+    # FIXME:  shouldn't this method be named descendent_of_base?
     # @api internal
     # @param pathname [Pathname] The file path to be tested
     # @return [Boolean] Test whether the given path is contained within the {#base_directory}
@@ -166,6 +167,7 @@ module Moab
 
       is_descendent = false
       pathname.expand_path.ascend { |ancestor| is_descendent ||= (ancestor == @base_directory) }
+      # FIXME:  shouldn't it simply return false?
       raise(MoabRuntimeError, "#{pathname} is not a descendent of #{@base_directory}") unless is_descendent
 
       is_descendent
