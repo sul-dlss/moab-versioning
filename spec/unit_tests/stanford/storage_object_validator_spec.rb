@@ -7,9 +7,15 @@ RSpec.describe Stanford::StorageObjectValidator do
   let(:storage_obj_validator) { described_class.new(storage_obj) }
   let(:error_list) { storage_obj_validator.validation_errors }
 
-  before { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
+  before do
+    # avoid warning: already initialized constant
+    silence_warnings { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
+  end
 
-  after { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..'].freeze }
+  after do
+    # put it back to normal and avoid warning: already initialized constant
+    silence_warnings { Moab::StorageObjectValidator::IMPLICIT_DIRS = ['.', '..'].freeze }
+  end
 
   describe '#validation_errors' do
     context 'when superclass has validation_errors' do
