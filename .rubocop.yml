@@ -12,22 +12,14 @@ AllCops:
     - '**/*.md'
     - 'bin/**/*'
     - 'lib/**/*.rake'
-    - 'vendor/**/*' # avoid running rubocop on travis cached bundler
+    - 'vendor/**/*' # avoid running rubocop on cached gems
 
-Metrics/ClassLength:
-  Exclude:
-    - lib/moab/deposit_bag_validator.rb # it's long but splitting it would make it worse
-
-# because this isn't 1994
 Layout/LineLength:
   Max: 130 # would like to reduce this to 120
   Exclude:
-    - lib/moab/deposit_bag_validator.rb # line 167
-    - 'lib/moab/file_manifestation.rb'
     - lib/moab/storage_object_validator.rb # long interpolated error message line
-    - 'spec/unit_tests/moab/file_group_difference_spec.rb' # remove after PR #50 merged
-    - 'spec/unit_tests/moab/storage_object_validator_spec.rb'
-    - 'spec/unit_tests/stanford/storage_object_validator_spec.rb'
+    - spec/unit_tests/moab/storage_object_validator_spec.rb
+    - spec/unit_tests/stanford/storage_object_validator_spec.rb
 
 # Code was readable with allowing higher perceived complexity
 Metrics/PerceivedComplexity:
@@ -38,6 +30,9 @@ Naming/FileName:
     - 'Gemfile'
     - 'moab-versioning.gemspec'
 
+RSpec/ExampleLength:
+  Enabled: false # Specs may have many lines of test data
+
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
@@ -47,13 +42,6 @@ RSpec/NestedGroups:
 # Loops were easier to understand without using 'next' statement
 Style/Next:
   Enabled: false
-
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'lib/moab/bagger.rb' # is calling `x.size == 0` on Pathname objects, which don't have `.empty?` on old Rubies
-
-RSpec/ExampleLength:
-  Enabled: false # Specs may have many lines of test data
 
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
