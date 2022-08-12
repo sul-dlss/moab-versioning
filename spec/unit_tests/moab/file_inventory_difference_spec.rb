@@ -42,7 +42,7 @@ describe Moab::FileInventoryDifference do
 
     describe 'attributes set' do
       it '#digital_object_id' do
-        expect(diff_v1_v2.digital_object_id).to eq 'druid:jq937jp0017'
+        expect(diff_v1_v2.digital_object_id).to eq FULL_TEST_DRUID
       end
 
       it '#difference_count' do
@@ -94,14 +94,14 @@ describe Moab::FileInventoryDifference do
     end
 
     it 'same id' do
-      expect(new_diff.common_object_id(v1_inventory, v2_inventory)).to eq 'druid:jq937jp0017'
+      expect(new_diff.common_object_id(v1_inventory, v2_inventory)).to eq FULL_TEST_DRUID
     end
   end
 
   it '#summary_fields' do
     hash = diff_v1_v2.summary
     hash.delete('report_datetime')
-    expect(hash).to eq('digital_object_id' => 'druid:jq937jp0017',
+    expect(hash).to eq('digital_object_id' => FULL_TEST_DRUID,
                        'basis' => 'v1',
                        'other' => 'v2',
                        'difference_count' => 6,

@@ -212,7 +212,7 @@ describe Stanford::ContentInventory do
 
   describe '#validate_content_metadata' do
     it 'returns true when valid data' do
-      cm = fixtures_dir.join('data', 'jq937jp0017', 'v0001', 'metadata', 'contentMetadata.xml').read
+      cm = fixtures_dir.join('data', BARE_TEST_DRUID, 'v0001', 'metadata', 'contentMetadata.xml').read
       expect(@content_inventory.validate_content_metadata(cm)).to be(true)
     end
 

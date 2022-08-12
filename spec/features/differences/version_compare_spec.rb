@@ -25,6 +25,6 @@ describe 'Compare versions' do
     expect(diff.basis).to eq('v1')
     expect(diff.other).to eq('v2')
     expect(diff.difference_count).to eq(6)
-    expect(diff.digital_object_id).to eq('druid:jq937jp0017')
+    expect(diff.digital_object_id).to eq(FULL_TEST_DRUID)
   end
 end
