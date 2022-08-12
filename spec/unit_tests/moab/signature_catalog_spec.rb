@@ -38,7 +38,7 @@ describe Moab::SignatureCatalog do
 
   describe '.parse (from HappyMapper XML to object mapping library)' do
     it 'digital_object_id assigned' do
-      expect(signature_catalog.digital_object_id).to eq('druid:jq937jp0017')
+      expect(signature_catalog.digital_object_id).to eq(FULL_TEST_DRUID)
     end
 
     it 'version_id assigned' do
@@ -186,7 +186,7 @@ describe Moab::SignatureCatalog do
 
   describe '#summary' do
     it 'returns hash of summary fields with values' do
-      expect(signature_catalog.summary).to eq('digital_object_id' => 'druid:jq937jp0017',
+      expect(signature_catalog.summary).to eq('digital_object_id' => FULL_TEST_DRUID,
                                               'version_id' => 1,
                                               'catalog_datetime' => signature_catalog.catalog_datetime.to_s,
                                               'file_count' => 11,

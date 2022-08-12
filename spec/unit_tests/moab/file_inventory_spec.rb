@@ -58,7 +58,7 @@ describe Moab::FileInventory do
     end
 
     it '#digital_object_id' do
-      expect(parsed_file_inventory.digital_object_id).to eq 'druid:jq937jp0017'
+      expect(parsed_file_inventory.digital_object_id).to eq FULL_TEST_DRUID
     end
 
     it '#version_id' do
@@ -191,7 +191,7 @@ describe Moab::FileInventory do
     it '#summary' do
       hash = parsed_file_inventory.summary
       expect(hash).to eq('type' => 'version',
-                         'digital_object_id' => 'druid:jq937jp0017',
+                         'digital_object_id' => FULL_TEST_DRUID,
                          'version_id' => 1,
                          'file_count' => 11,
                          'byte_count' => 217820,

@@ -134,7 +134,7 @@ describe Moab::StorageObjectVersion do
 
     it 'finds expected path' do
       storage_object_path = existing_storage_object_version.find_filepath_using_signature('content', file_signature).to_s
-      expected_path = File.join('ingests', 'jq937jp0017', 'v0001', 'data', 'content', 'title.jpg')
+      expected_path = File.join('ingests', BARE_TEST_DRUID, 'v0001', 'data', 'content', 'title.jpg')
       expect(storage_object_path).to include expected_path
     end
   end
@@ -159,7 +159,7 @@ describe Moab::StorageObjectVersion do
   end
 
   describe '#file_category_pathname' do
-    let(:data_path) { File.join('derivatives', 'ingests', 'jq937jp0017', 'v0002') }
+    let(:data_path) { File.join('derivatives', 'ingests', BARE_TEST_DRUID, 'v0002') }
     let(:content_path) { File.join(data_path, 'data', 'content') }
     let(:metadata_path) { File.join(data_path, 'data', 'metadata') }
     let(:manifests_path) { File.join(data_path, 'manifests') }

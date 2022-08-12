@@ -15,7 +15,7 @@ describe Stanford::StorageRepository do
       Moab::Config.configure do
         path_method :druid
       end
-      expect(storage_repository.storage_branch(FULL_TEST_DRUID).to_s).to eq('jq937jp0017')
+      expect(storage_repository.storage_branch(FULL_TEST_DRUID).to_s).to eq(BARE_TEST_DRUID)
     end
   end
 

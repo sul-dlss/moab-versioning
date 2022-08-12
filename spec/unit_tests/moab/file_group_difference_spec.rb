@@ -382,7 +382,7 @@ describe Moab::FileGroupDifference do
   end
 
   it '.parse' do
-    fixture = ingests_dir.join('jq937jp0017', 'v0003', 'manifests', 'fileInventoryDifference.xml')
+    fixture = ingests_dir.join(BARE_TEST_DRUID, 'v0003', 'manifests', 'fileInventoryDifference.xml')
     fid = Moab::FileInventoryDifference.parse(File.read(fixture))
     fgd = fid.group_difference('content')
     expect(fgd.subsets.count).to be >= 5

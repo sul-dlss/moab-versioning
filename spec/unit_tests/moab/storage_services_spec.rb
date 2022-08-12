@@ -24,7 +24,7 @@ describe Moab::StorageServices do
   end
 
   it '.deposit_branch' do
-    expect(described_class.deposit_branch(BARE_TEST_DRUID)).to eq 'jq937jp0017'
+    expect(described_class.deposit_branch(BARE_TEST_DRUID)).to eq BARE_TEST_DRUID
   end
 
   describe '.find_storage_object' do
