@@ -209,7 +209,7 @@ module Moab
         if manifest_file[type]
           manifest_file[type].close
           manifest_pathname[type].delete if
-              manifest_pathname[type].exist? && manifest_pathname[type].size == 0
+              manifest_pathname[type].exist? && manifest_pathname[type].empty?
         end
       end
     end
@@ -247,7 +247,7 @@ module Moab
         if manifest_file[type]
           manifest_file[type].close
           manifest_pathname[type].delete if
-              manifest_pathname[type].exist? && manifest_pathname[type].size == 0
+              manifest_pathname[type].exist? && manifest_pathname[type].empty?
         end
       end
     end
