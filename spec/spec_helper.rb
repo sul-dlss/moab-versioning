@@ -17,25 +17,6 @@ def fixtures_directory
   File.expand_path('fixtures', File.dirname(__FILE__))
 end
 
-# Custom matcher that returns difference between expected and actual hash
-# Note that enhancements to doing diffs in rspec are in progress:
-# @see https://github.com/rspec/rspec-expectations/pull/79
-# @see https://github.com/playup/diff_matcher
-# @see https://github.com/rspec/rspec-expectations/issues/97
-RSpec::Matchers.define :hash_match do |expected|
-  diff = nil
-  match do |actual|
-    expected = expected.is_a?(Hash) ? expected : expected.to_hash
-    detected = actual.is_a?(Hash) ? actual : actual.to_hash
-    diff = Serializer::Serializable.deep_diff(:expected, expected, :detected, detected)
-    diff == {}
-  end
-  failure_message do |_actual|
-    # ai is a kernel mixin that calls AwesomePrint::Inspector
-    "Hash difference found: \n#{diff.ai}"
-  end
-end
-
 BARE_TEST_DRUID = 'jq937jp0017'
 FULL_TEST_DRUID = "druid:#{BARE_TEST_DRUID}".freeze
 TEST_OBJECT_VERSIONS = [nil, 'v0001', 'v0002', 'v0003'].freeze
