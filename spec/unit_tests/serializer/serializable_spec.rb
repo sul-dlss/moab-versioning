@@ -114,15 +114,9 @@ describe Serializer::Serializable do
 
     context 'when subclass has attribute and element' do
       it 'contains the attribute and the element' do
-        class MyClass < Serializer::Serializable
-          include HappyMapper
-
-          attribute :my_attr, String
-          element :my_element, String
-        end
         expect(Moab::FileInstance.new.variables.first).to be_instance_of(HappyMapper::Attribute)
         expect(Moab::FileInstance.new.variables.last).to be_instance_of(HappyMapper::Attribute)
-        expect(MyClass.new.variables.size).to eq(2)
+        expect(TestSubClass.new.variables.size).to eq(2) # class defined below
       end
     end
   end
@@ -387,4 +381,11 @@ describe Serializer::Serializable do
       expect(adjusted_v1_content).to eq expected_json
     end
   end
+end
+
+class TestSubClass < Serializer::Serializable
+  include HappyMapper
+
+  attribute :my_attr, String
+  element :my_element, String
 end
