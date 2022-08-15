@@ -47,57 +47,57 @@ describe Moab::VerificationResult do
 
   it '#to_hash' do
     detail_hash = result.to_hash(true)
-    expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<-JSON
-{
-  "my_entity": {
-    "verified": false,
-    "details": {
-      "subentity_1": {
-        "verified": true,
-        "details": {
-          "all is": "good"
-        }
-      },
-      "subentity_2": {
-        "verified": false,
-        "details": {
-          "its a": "shame"
-        }
-      },
-      "subentity_3": {
-        "verified": true,
-        "details": {
-          "all is": "good"
+    expect("#{JSON.pretty_generate(detail_hash)}\n").to eq <<~JSON
+      {
+        "my_entity": {
+          "verified": false,
+          "details": {
+            "subentity_1": {
+              "verified": true,
+              "details": {
+                "all is": "good"
+              }
+            },
+            "subentity_2": {
+              "verified": false,
+              "details": {
+                "its a": "shame"
+              }
+            },
+            "subentity_3": {
+              "verified": true,
+              "details": {
+                "all is": "good"
+              }
+            }
+          }
         }
       }
-    }
-  }
-}
     JSON
   end
 
   it '#to_json' do
     detail_json = result.to_json(false)
-    expect("#{detail_json}\n").to eq <<-JSON
-{
-  "my_entity": {
-    "verified": false,
-    "details": {
-      "subentity_1": {
-        "verified": true
-      },
-      "subentity_2": {
-        "verified": false,
-        "details": {
-          "its a": "shame"
+    expect("#{detail_json}\n").to eq <<~JSON
+      {
+        "my_entity": {
+          "verified": false,
+          "details": {
+            "subentity_1": {
+              "verified": true
+            },
+            "subentity_2": {
+              "verified": false,
+              "details": {
+                "its a": "shame"
+              }
+            },
+            "subentity_3": {
+              "verified": true
+            }
+          }
         }
-      },
-      "subentity_3": {
-        "verified": true
       }
-    }
-  }
-}
     JSON
   end
 end
