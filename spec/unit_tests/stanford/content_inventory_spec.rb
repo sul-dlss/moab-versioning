@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Stanford::ContentInventory do
-  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
   let(:content_metadata_empty_subset) { File.read(fixtures_dir.join('bad_data/contentMetadata-empty-subsets.xml')) }
   let(:empty_inventory) do
     <<-XML
@@ -45,8 +44,7 @@ describe Stanford::ContentInventory do
           </fileGroup>
         </fileInventory>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(inventory_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'version_id = 1' do
@@ -92,8 +90,7 @@ describe Stanford::ContentInventory do
           </fileGroup>
         </fileInventory>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(inventory_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
   end
 
@@ -105,7 +102,7 @@ describe Stanford::ContentInventory do
       inventory_ng_xml.xpath('//@inventoryDatetime').remove
       exp_ng_xml = Nokogiri::XML(empty_inventory)
       exp_ng_xml.xpath('//@dataSource').each { |d| d.value = d.value.gsub(/subset/, subset) }
-      expect(EquivalentXml.equivalent?(inventory_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(inventory_ng_xml).to be_equivalent_to(exp_ng_xml)
     end
   end
 
@@ -206,8 +203,7 @@ describe Stanford::ContentInventory do
         </resource>
       </contentMetadata>
     XML
-    exp_ng_xml = Nokogiri::XML(exp_xml)
-    expect(EquivalentXml.equivalent?(generated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    expect(generated_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
   end
 
   describe '#validate_content_metadata' do
@@ -283,8 +279,7 @@ describe Stanford::ContentInventory do
           </resource>
         </contentMetadata>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(remediated_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(remediated_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'bad size raises exception' do

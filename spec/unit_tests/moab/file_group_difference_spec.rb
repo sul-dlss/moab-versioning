@@ -110,6 +110,7 @@ describe Moab::FileGroupDifference do
   describe '#compare_file_groups' do
     let(:basis_group) { v1_content }
     let(:other_group) { v3_content }
+
     # basis_group.group_id: "content"
     # basis_group.data_source: includes "data/jq937jp0017/v0001/content"
     # other_group.data_source: includes "data/jq937jp0017/v0003/content"
@@ -131,8 +132,6 @@ describe Moab::FileGroupDifference do
       expect(diff.difference_count).to eq 6
       expect(diff.deleted).to eq 6
     end
-
-    let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
 
     describe 'from parsed fileGroup xml' do
       let(:comp_file_groups_diff) do
@@ -192,7 +191,7 @@ describe Moab::FileGroupDifference do
             </file>
           </subset>
         XML
-        expect(EquivalentXml.equivalent?(copyadded_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+        expect(copyadded_ng_xml).to be_equivalent_to(exp_ng_xml)
       end
 
       it 'copydeleted subset' do
@@ -204,7 +203,7 @@ describe Moab::FileGroupDifference do
             </file>
           </subset>
         XML
-        expect(EquivalentXml.equivalent?(copydeleted_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+        expect(copydeleted_ng_xml).to be_equivalent_to(exp_ng_xml)
       end
 
       it 'renamed subset' do
@@ -216,7 +215,7 @@ describe Moab::FileGroupDifference do
             </file>
           </subset>
         XML
-        expect(EquivalentXml.equivalent?(renamed_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+        expect(renamed_ng_xml).to be_equivalent_to(exp_ng_xml)
       end
     end
   end

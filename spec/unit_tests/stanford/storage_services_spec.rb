@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Stanford::StorageServices do
-  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
   let(:content_metadata) { File.read(test_object_data_dir.join('v0002/metadata/contentMetadata.xml')) }
 
   it 'only instantiates StorageRepository once for the class, even if multiple threads try to access it' do
@@ -53,8 +52,7 @@ describe Stanford::StorageServices do
         </resource>
     </contentMetadata>
     XML
-    exp_ng_xml = Nokogiri::XML(exp_xml)
-    expect(EquivalentXml.equivalent?(remediated_cm_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+    expect(remediated_cm_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
   end
 
   describe '.compare_cm_to_version_inventory' do
@@ -98,8 +96,7 @@ describe Stanford::StorageServices do
           </fileGroupDifference>
         </fileInventoryDifference>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(diff_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'shelve subset' do
@@ -169,8 +166,7 @@ describe Stanford::StorageServices do
           </fileGroupDifference>
         </fileInventoryDifference>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(diff_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'shelve subset without specified version' do
@@ -217,8 +213,7 @@ describe Stanford::StorageServices do
           </fileGroupDifference>
         </fileInventoryDifference>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(diff_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'empty subset' do
@@ -246,7 +241,7 @@ describe Stanford::StorageServices do
         diff_ng_xml.xpath('//@reportDatetime').remove
         exp_ng_xml = Nokogiri::XML(inventory_diff)
         exp_ng_xml.xpath('//@other').each { |o| o.value = o.value.gsub(/xyz/, subset) }
-        expect(EquivalentXml.equivalent?(diff_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+        expect(diff_ng_xml).to be_equivalent_to(exp_ng_xml)
       end
     end
   end
@@ -267,8 +262,7 @@ describe Stanford::StorageServices do
           </fileGroup>
         </fileInventory>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(adds_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
 
     it 'nil version' do
@@ -298,8 +292,7 @@ describe Stanford::StorageServices do
           </fileGroup>
         </fileInventory>
       XML
-      exp_ng_xml = Nokogiri::XML(exp_xml)
-      expect(EquivalentXml.equivalent?(adds_ng_xml, exp_ng_xml, eq_xml_opts)).to be true
+      expect(adds_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
     end
   end
 end

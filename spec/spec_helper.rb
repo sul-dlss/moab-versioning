@@ -5,7 +5,7 @@ SimpleCov.start do
   add_filter 'spec'
 end
 
-require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 require 'moab/stanford'
 require 'spec_config'
 

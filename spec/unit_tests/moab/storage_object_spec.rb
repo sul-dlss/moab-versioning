@@ -11,7 +11,6 @@ describe Moab::StorageObject do
     storage_object_from_temp.storage_root = fixtures_dir.join('derivatives')
     storage_object_from_temp
   end
-  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
 
   before do
     temp_object_dir.rmtree if temp_object_dir.exist?
@@ -381,15 +380,11 @@ describe Moab::StorageObject do
     end
 
     it 'returns the expected fileInventory.xml' do
-      expect(EquivalentXml.equivalent?(file_inventory_version_for_comparison_ng_xml,
-                                       Nokogiri::XML(exp_file_inventory_version_xml),
-                                       eq_xml_opts)).to be true
+      expect(file_inventory_version_for_comparison_ng_xml).to be_equivalent_to(exp_file_inventory_version_xml)
     end
 
     it 'creates the expected versionAdditions.xml' do
-      expect(EquivalentXml.equivalent?(file_inventory_additions_for_comparison_ng_xml,
-                                       Nokogiri::XML(exp_file_inventory_additions_xml),
-                                       eq_xml_opts)).to be true
+      expect(file_inventory_additions_for_comparison_ng_xml).to be_equivalent_to(exp_file_inventory_additions_xml)
     end
   end
 
