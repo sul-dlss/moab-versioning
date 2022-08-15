@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'find' # for object_size
+
 module Moab
   # A class to represent the SDR repository store
   #
