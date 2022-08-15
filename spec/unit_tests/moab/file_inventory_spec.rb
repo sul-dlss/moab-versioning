@@ -218,30 +218,30 @@ describe Moab::FileInventory do
 
     it '#to_json summary' do
       json = parsed_file_inventory.to_json(true)
-      expect("#{json}\n").to eq <<-JSON
-{
-  "type": "version",
-  "digital_object_id": "druid:jq937jp0017",
-  "version_id": 1,
-  "inventory_datetime": "#{parsed_file_inventory.inventory_datetime}",
-  "file_count": 11,
-  "byte_count": 217820,
-  "block_count": 216,
-  "groups": {
-    "content": {
-      "group_id": "content",
-      "file_count": 6,
-      "byte_count": 206432,
-      "block_count": 203
-    },
-    "metadata": {
-      "group_id": "metadata",
-      "file_count": 5,
-      "byte_count": 11388,
-      "block_count": 13
-    }
-  }
-}
+      expect("#{json}\n").to eq <<~JSON
+        {
+          "type": "version",
+          "digital_object_id": "druid:jq937jp0017",
+          "version_id": 1,
+          "inventory_datetime": "#{parsed_file_inventory.inventory_datetime}",
+          "file_count": 11,
+          "byte_count": 217820,
+          "block_count": 216,
+          "groups": {
+            "content": {
+              "group_id": "content",
+              "file_count": 6,
+              "byte_count": 206432,
+              "block_count": 203
+            },
+            "metadata": {
+              "group_id": "metadata",
+              "file_count": 5,
+              "byte_count": 11388,
+              "block_count": 13
+            }
+          }
+        }
       JSON
     end
   end
