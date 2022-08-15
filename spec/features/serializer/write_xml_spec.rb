@@ -54,7 +54,6 @@ describe 'Feature: Manifest Serialization' do
         </entry>
       </signatureCatalog>
     XML
-    opts = { element_order: false, normalize_whitespace: true }
-    expect(EquivalentXml.equivalent?(xml_object1, Nokogiri::XML(expected_xml), opts)).to be true
+    expect(xml_object1).to be_equivalent_to(Nokogiri::XML(expected_xml))
   end
 end

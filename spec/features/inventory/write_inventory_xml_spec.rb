@@ -71,7 +71,6 @@ describe 'Feature: File Inventory Serialization' do
         </fileGroup>
       </fileInventory>
     XML
-    opts = { element_order: false, normalize_whitespace: true }
-    expect(EquivalentXml.equivalent?(xml_object1, Nokogiri::XML(expected_xml), opts)).to be true
+    expect(xml_object1).to be_equivalent_to(Nokogiri::XML(expected_xml))
   end
 end

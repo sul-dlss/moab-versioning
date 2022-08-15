@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 describe Moab::StorageServices do
-  let(:eq_xml_opts) { { element_order: false, normalize_whitespace: true } }
-
   it 'only instantiates StorageRepository once for the class, even if multiple threads try to access it' do
     # Object#object_id Returns an integer identifier for obj.  The same number will be returned
     # on all calls to object_id for a given object, and no two active objects will share an id.
@@ -226,6 +224,6 @@ describe Moab::StorageServices do
         </fileGroupDifference>
       </fileInventoryDifference>
     XML
-    expect(EquivalentXml.equivalent?(diff_ng_xml, Nokogiri::XML(exp_xml), eq_xml_opts)).to be true
+    expect(diff_ng_xml).to be_equivalent_to(Nokogiri::XML(exp_xml))
   end
 end
