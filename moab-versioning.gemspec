@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'Contains classes to process digital object version content and metadata'
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 3.0'
 
   # Runtime dependencies
   s.add_dependency 'druid-tools', '>= 1.0.0 ' # druid validation, druid-tree, etc.; needs 1.0.0 for strict validation
