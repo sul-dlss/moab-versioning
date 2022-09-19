@@ -15,7 +15,7 @@ describe Moab::FileInventoryDifference do
   describe '#initialize' do
     it 'empty options hash' do
       group_diffs = new_diff.group_differences
-      expect(group_diffs).to be_kind_of Array
+      expect(group_diffs).to be_a Array
       expect(group_diffs.size).to eq 0
     end
 

@@ -2,8 +2,8 @@
 
 def basic_expectations(file_group)
   expect(file_group).to be_instance_of(Moab::FileGroup)
-  expect(file_group.files).to be_kind_of(Array)
-  expect(file_group.signature_hash).to be_kind_of(Hash)
+  expect(file_group.files).to be_a(Array)
+  expect(file_group.signature_hash).to be_a(Hash)
 end
 
 describe Moab::FileGroup do
@@ -16,13 +16,13 @@ describe Moab::FileGroup do
   describe '#initialize' do
     context 'without args' do
       it 'instantiates' do
-        basic_expectations(described_class.new)
+        expect { basic_expectations(described_class.new) }.not_to raise_error
       end
     end
 
     context 'with empty hash argument' do
       it 'instantiates' do
-        basic_expectations(described_class.new({}))
+        expect { basic_expectations(described_class.new({})) }.not_to raise_error
       end
     end
 
