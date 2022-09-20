@@ -33,7 +33,7 @@ describe Moab::FileInventory do
   describe '#initialize' do
     it 'empty options hash' do
       file_inventory = described_class.new({})
-      expect(file_inventory.groups).to be_kind_of Array
+      expect(file_inventory.groups).to be_a Array
       expect(file_inventory.groups.size).to eq 0
     end
 

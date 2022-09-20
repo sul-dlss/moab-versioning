@@ -14,7 +14,7 @@ describe Moab::FileGroupDifference do
   describe '#initialize' do
     it 'empty options hash' do
       diff = described_class.new({})
-      expect(diff.subsets).to be_kind_of Array
+      expect(diff.subsets).to be_a Array
       expect(diff.subsets.size).to eq 0
     end
 

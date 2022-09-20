@@ -109,7 +109,7 @@ describe Moab::FileSignature do
   end
 
   it '#hash' do
-    expect(title_v1_signature.hash).to be_kind_of Numeric
+    expect(title_v1_signature.hash).to be_a Numeric
     expect(title_v1_signature.hash == title_v2_signature.hash).to be true
     expect(page1_v1_signature.hash == page1_v2_signature.hash).to be false
   end

@@ -12,8 +12,8 @@ describe Moab::SignatureCatalog do
       let(:sig_catalog) { described_class.new({}) }
 
       it 'entries and signature_hash are right type' do
-        expect(signature_catalog.entries).to be_kind_of(Array)
-        expect(signature_catalog.signature_hash).to be_kind_of(Hash)
+        expect(signature_catalog.entries).to be_a(Array)
+        expect(signature_catalog.signature_hash).to be_a(Hash)
       end
     end
 
