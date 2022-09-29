@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 describe Moab::FileGroupDifference do
-  let(:group_diff) do
-    v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-    v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
-    v3_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
-    v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
-    file_inventory_diff = Moab::FileInventoryDifference.new
-    file_inventory_diff.compare(v1_inventory, v3_inventory)
-    file_inventory_diff.group_differences[0]
-  end
-
   describe '#initialize' do
     it 'empty options hash' do
       diff = described_class.new({})
@@ -25,36 +15,48 @@ describe Moab::FileGroupDifference do
     end
   end
 
-  it '#group_id' do
-    expect(group_diff.group_id).to eq 'content'
-  end
+  describe '#group_differences' do
+    let(:group_diff) do
+      v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
+      v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
+      v3_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0003/manifests/versionInventory.xml')
+      v3_inventory = Moab::FileInventory.parse(v3_inventory_pathname.read)
+      file_inventory_diff = Moab::FileInventoryDifference.new
+      file_inventory_diff.compare(v1_inventory, v3_inventory)
+      file_inventory_diff.group_differences[0]
+    end
 
-  it '#difference_count' do
-    expect(group_diff.difference_count).to eq 6
-  end
+    it '#group_id' do
+      expect(group_diff.group_id).to eq 'content'
+    end
 
-  it '#identical' do
-    expect(group_diff.identical).to eq 1
-  end
+    it '#difference_count' do
+      expect(group_diff.difference_count).to eq 6
+    end
 
-  it '#renamed' do
-    expect(group_diff.renamed).to eq 2
-  end
+    it '#identical' do
+      expect(group_diff.identical).to eq 1
+    end
 
-  it '#modified' do
-    expect(group_diff.modified).to eq 1
-  end
+    it '#renamed' do
+      expect(group_diff.renamed).to eq 2
+    end
 
-  it '#deleted' do
-    expect(group_diff.deleted).to eq 2
-  end
+    it '#modified' do
+      expect(group_diff.modified).to eq 1
+    end
 
-  it '#added' do
-    expect(group_diff.added).to eq 1
-  end
+    it '#deleted' do
+      expect(group_diff.deleted).to eq 2
+    end
 
-  it '#subsets' do
-    expect(group_diff.subsets.size).to be >= 5
+    it '#added' do
+      expect(group_diff.added).to eq 1
+    end
+
+    it '#subsets' do
+      expect(group_diff.subsets.size).to be >= 5
+    end
   end
 
   let(:v1_content) do
