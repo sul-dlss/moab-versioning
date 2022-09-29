@@ -26,38 +26,50 @@ describe Moab::StorageServices do
   end
 
   describe '.find_storage_object' do
+    before do
+      allow(described_class.repository).to receive(:find_storage_object).and_call_original
+    end
+
     it 'include_deposit = false' do
-      expect(described_class.repository).to receive(:find_storage_object).with(BARE_TEST_DRUID, false)
       described_class.find_storage_object(BARE_TEST_DRUID)
+      expect(described_class.repository).to have_received(:find_storage_object).with(BARE_TEST_DRUID, false)
     end
 
     it 'include_deposit = true' do
-      expect(described_class.repository).to receive(:find_storage_object).with(BARE_TEST_DRUID, true)
       described_class.find_storage_object(BARE_TEST_DRUID, true)
+      expect(described_class.repository).to have_received(:find_storage_object).with(BARE_TEST_DRUID, true)
     end
   end
 
   describe '.search_storage_objects' do
+    before do
+      allow(described_class.repository).to receive(:search_storage_objects).and_call_original
+    end
+
     it 'include_deposit = false' do
-      expect(described_class.repository).to receive(:search_storage_objects).with(BARE_TEST_DRUID, false)
       described_class.search_storage_objects(BARE_TEST_DRUID)
+      expect(described_class.repository).to have_received(:search_storage_objects).with(BARE_TEST_DRUID, false)
     end
 
     it 'include_deposit = true' do
-      expect(described_class.repository).to receive(:search_storage_objects).with(BARE_TEST_DRUID, true)
       described_class.search_storage_objects(BARE_TEST_DRUID, true)
+      expect(described_class.repository).to have_received(:search_storage_objects).with(BARE_TEST_DRUID, true)
     end
   end
 
   describe '.storage_object' do
+    before do
+      allow(described_class.repository).to receive(:storage_object).and_call_original
+    end
+
     it 'create = false' do
-      expect(described_class.repository).to receive(:storage_object).with(BARE_TEST_DRUID, false)
       described_class.storage_object(BARE_TEST_DRUID)
+      expect(described_class.repository).to have_received(:storage_object).with(BARE_TEST_DRUID, false)
     end
 
     it 'create = true' do
-      expect(described_class.repository).to receive(:storage_object).with(BARE_TEST_DRUID, true)
       described_class.storage_object(BARE_TEST_DRUID, true)
+      expect(described_class.repository).to have_received(:storage_object).with(BARE_TEST_DRUID, true)
     end
   end
 

@@ -103,7 +103,7 @@ describe Stanford::StorageServices do
       druid = 'druid:dd116zh0343'
       base_cm = fixtures_dir.join('data/dd116zh0343/v0001/metadata/contentMetadata.xml')
       new_cm = File.read(fixtures_dir.join('data/dd116zh0343/v0002/metadata/contentMetadata.xml'))
-      expect(described_class)
+      allow(described_class)
         .to receive(:retrieve_file).with('metadata', 'contentMetadata.xml', druid, 1).and_return(base_cm)
       diff = described_class.compare_cm_to_version(new_cm, druid, 'shelve', 1)
       diff_ng_xml = Nokogiri::XML(diff.to_xml)

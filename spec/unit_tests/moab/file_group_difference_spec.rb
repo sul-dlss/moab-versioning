@@ -112,14 +112,16 @@ describe Moab::FileGroupDifference do
   describe '#compare_file_groups' do
     let(:basis_group) { v1_content }
     let(:other_group) { v3_content }
-
     # basis_group.group_id: "content"
     # basis_group.data_source: includes "data/jq937jp0017/v0001/content"
     # other_group.data_source: includes "data/jq937jp0017/v0003/content"
+
     it 'calls compare_xxx_signatures methods' do
-      expect(new_diff).to receive(:compare_matching_signatures).with(basis_group, other_group)
-      expect(new_diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
+      allow(new_diff).to receive(:compare_matching_signatures).with(basis_group, other_group)
+      allow(new_diff).to receive(:compare_non_matching_signatures).with(basis_group, other_group)
       new_diff.compare_file_groups(basis_group, other_group)
+      expect(new_diff).to have_received(:compare_matching_signatures).with(basis_group, other_group)
+      expect(new_diff).to have_received(:compare_non_matching_signatures).with(basis_group, other_group)
     end
 
     it 'returns itself, populated object' do

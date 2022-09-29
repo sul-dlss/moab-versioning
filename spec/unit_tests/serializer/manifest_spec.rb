@@ -28,39 +28,72 @@ describe Serializer::Manifest do
     expect(Moab::SignatureCatalog.xml_pathname_exist?(manifests_dir.join('v0001'))).to be(true)
   end
 
-  it '.read_xml_file' do
-    parent_dir = manifests_dir.join('v1')
-    mock_pathname = double(Pathname.name)
-    mock_xml = double('xml')
-    expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
-    expect(mock_pathname).to receive(:read).and_return(mock_xml)
-    expect(Moab::SignatureCatalog).to receive(:parse).with(mock_xml)
-    Moab::SignatureCatalog.read_xml_file(parent_dir)
+  describe '.read_xml_file' do
+    let(:parent_dir) { manifests_dir.join('v1') }
+    let(:mock_pathname) { instance_double(Pathname.name) }
+    let(:mock_xml) { 'xml' }
+
+    before do
+      allow(Moab::SignatureCatalog).to receive(:xml_pathname).with(parent_dir, nil).and_return(mock_pathname)
+      allow(Moab::SignatureCatalog).to receive(:parse).with(mock_xml)
+      allow(mock_pathname).to receive(:read).and_return(mock_xml)
+    end
+
+    it 'calls the expected methods' do
+      Moab::SignatureCatalog.read_xml_file(parent_dir)
+      expect(Moab::SignatureCatalog).to have_received(:parse).with(mock_xml)
+      expect(Moab::SignatureCatalog).to have_received(:xml_pathname).with(parent_dir, nil)
+      expect(mock_pathname).to have_received(:read)
+    end
   end
 
-  it '.write_xml_file' do
-    xml_object = Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001'))
-    output_dir = temp_dir
-    mock_pathname = double(Pathname.name)
-    expect(Moab::SignatureCatalog).to receive(:xml_pathname).with(output_dir, nil).and_return(mock_pathname)
-    expect(mock_pathname).to receive(:open).with('w').and_return(an_instance_of(IO))
-    Moab::SignatureCatalog.write_xml_file(xml_object, output_dir)
+  describe '.write_xml_file' do
+    let(:xml_object) { Moab::SignatureCatalog.read_xml_file(manifests_dir.join('v0001')) }
+    let(:output_dir) { temp_dir }
+    let(:mock_pathname) { instance_double(Pathname.name) }
+
+    before do
+      allow(Moab::SignatureCatalog).to receive(:xml_pathname).and_return(mock_pathname)
+      allow(mock_pathname).to receive(:open).with('w').and_return(an_instance_of(IO))
+      allow(mock_pathname).to receive(:read).and_return('<foo />')
+    end
+
+    it 'calls the expected methods' do
+      Moab::SignatureCatalog.write_xml_file(xml_object, output_dir)
+      expect(Moab::SignatureCatalog).to have_received(:xml_pathname).with(output_dir, nil)
+      expect(mock_pathname).to have_received(:read)
+      expect(mock_pathname).to have_received(:open).with('w')
+    end
   end
 
   describe '#write_xml_file' do
     let(:output_dir) { '/my/temp' }
 
-    it 'FileInventory.write_xml_file' do
-      pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
-      file_inventory = Moab::FileInventory.parse(pathname.read)
-      expect(Moab::FileInventory).to receive(:write_xml_file).with(file_inventory, output_dir, 'version')
-      file_inventory.write_xml_file(output_dir)
+    context 'with FileInventory' do
+      let(:pathname) { fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml') }
+      let(:file_inventory) { Moab::FileInventory.parse(pathname.read) }
+
+      before do
+        allow(Moab::FileInventory).to receive(:write_xml_file).with(file_inventory, output_dir, 'version')
+      end
+
+      it 'calls with expected arguments' do
+        file_inventory.write_xml_file(output_dir)
+        expect(Moab::FileInventory).to have_received(:write_xml_file).with(file_inventory, output_dir, 'version')
+      end
     end
 
-    it 'SignatureCatalog.write_xml_file' do
-      signatures = Moab::SignatureCatalog.new
-      expect(Moab::SignatureCatalog).to receive(:write_xml_file).with(signatures, output_dir, nil)
-      signatures.write_xml_file(output_dir)
+    context 'with SignatureCatalog' do
+      let(:signatures) { Moab::SignatureCatalog.new }
+
+      before do
+        allow(Moab::SignatureCatalog).to receive(:write_xml_file).with(signatures, output_dir, nil)
+      end
+
+      it 'calls with expected arguments' do
+        signatures.write_xml_file(output_dir)
+        expect(Moab::SignatureCatalog).to have_received(:write_xml_file).with(signatures, output_dir, nil)
+      end
     end
   end
 end

@@ -326,26 +326,38 @@ describe Moab::StorageObjectVersion do
 
   describe '#update_catalog' do
     let(:temp_storage_object_version) { described_class.new(temp_storage_object, 4) }
-    let(:signature_catalog) { double(Moab::SignatureCatalog.name) }
-    let(:new_inventory) { double(Moab::FileInventory.name) }
+    let(:signature_catalog) { instance_double(Moab::SignatureCatalog.name) }
+    let(:new_inventory) { instance_double(Moab::FileInventory.name) }
+
+    before do
+      allow(signature_catalog).to receive(:update).with(new_inventory, temp_storage_object_version.version_pathname.join('data'))
+      allow(signature_catalog).to receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
+    end
 
     it 'calls update and write_xml_file for Moab::SignatureCatalog' do
-      expect(signature_catalog).to receive(:update).with(new_inventory, temp_storage_object_version.version_pathname.join('data'))
-      expect(signature_catalog).to receive(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
       temp_storage_object_version.update_catalog(signature_catalog, new_inventory)
+      expect(signature_catalog)
+        .to have_received(:update).with(new_inventory, temp_storage_object_version.version_pathname.join('data'))
+      expect(signature_catalog)
+        .to have_received(:write_xml_file).with(temp_storage_object_version.version_pathname.join('manifests'))
     end
   end
 
   describe '#generate_differences_report' do
-    let(:old_inventory) { double(Moab::FileInventory.name) }
-    let(:new_inventory) { double(Moab::FileInventory.name) }
-    let(:mock_fid) { double(Moab::FileInventoryDifference.name) }
+    let(:old_inventory) { instance_double(Moab::FileInventory.name) }
+    let(:new_inventory) { instance_double(Moab::FileInventory.name) }
+    let(:mock_fid) { instance_double(Moab::FileInventoryDifference.name) }
+
+    before do
+      allow(Moab::FileInventoryDifference).to receive(:new).and_return(mock_fid)
+      allow(mock_fid).to receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
+      allow(mock_fid).to receive(:write_xml_file)
+    end
 
     it 'calls compare and write_xml_file for Moab::FileInventoryDifference' do
-      expect(Moab::FileInventoryDifference).to receive(:new).and_return(mock_fid)
-      expect(mock_fid).to receive(:compare).with(old_inventory, new_inventory).and_return(mock_fid)
-      expect(mock_fid).to receive(:write_xml_file)
       existing_storage_object_version.generate_differences_report(old_inventory, new_inventory)
+      expect(mock_fid).to have_received(:compare).with(old_inventory, new_inventory)
+      expect(mock_fid).to have_received(:write_xml_file)
     end
   end
 

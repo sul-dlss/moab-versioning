@@ -587,19 +587,25 @@ describe Moab::StorageObject do
 
   describe '#validate_new_inventory' do
     context 'when requested version is the next consecutive version' do
-      let(:version_inventory_4) { double("#{Moab::FileInventory.name}4") }
+      let(:version_inventory_4) { instance_double("#{Moab::FileInventory.name}4") }
+
+      before do
+        allow(version_inventory_4).to receive(:version_id).and_return 4
+      end
 
       it 'returns true' do
-        expect(version_inventory_4).to receive(:version_id).and_return 4
         expect(storage_object_from_ingests.validate_new_inventory(version_inventory_4)).to be true
       end
     end
 
     context 'when requested version already exists' do
-      let(:version_inventory_3) { double("#{Moab::FileInventory.name}3") }
+      let(:version_inventory_3) { instance_double("#{Moab::FileInventory.name}3") }
+
+      before do
+        allow(version_inventory_3).to receive(:version_id).twice.and_return 3
+      end
 
       it 'raises exception' do
-        expect(version_inventory_3).to receive(:version_id).twice.and_return 3
         expect do
           storage_object_from_ingests.validate_new_inventory(version_inventory_3)
         end.to raise_exception(Moab::MoabRuntimeError, /version mismatch - current: 3 new: 3/)

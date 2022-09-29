@@ -36,8 +36,8 @@ describe Moab::Bagger do
   let(:submit_source_base) { test_object_data_dir.join('v0002') }
 
   it '#initialize' do
-    version_inventory = double(Moab::FileInventory.name)
-    signature_catalog = double(Moab::SignatureCatalog.name)
+    version_inventory = instance_double(Moab::FileInventory.name)
+    signature_catalog = instance_double(Moab::SignatureCatalog.name)
     bag_pathname = temp_dir.join('bag_pathname')
     bagger = described_class.new(version_inventory, signature_catalog, bag_pathname)
     expect(bagger.version_inventory).to eq version_inventory
@@ -157,29 +157,58 @@ describe Moab::Bagger do
       packages_dir.rmtree if packages_dir.exist?
     end
 
-    it 'submit_bag' do
-      expect(submit_bag).to receive(:fill_payload)
-      expect(submit_bag).to receive(:create_payload_manifests)
-      expect(submit_bag).to receive(:create_bag_info_txt)
-      expect(submit_bag).to receive(:create_bagit_txt)
-      expect(submit_bag).to receive(:create_tagfile_manifests)
-      expect(submit_inventory).to receive(:write_xml_file).with(submit_bag_pathname, 'version')
-      expect(submit_catalog).to receive(:version_additions).with(submit_inventory).and_return(submit_bag_inventory)
-      expect(submit_bag_inventory).to receive(:write_xml_file).with(submit_bag_pathname, 'additions')
-      submit_bag.fill_bag(:depositor, submit_source_base)
-      expect(submit_bag.package_mode).to eq :depositor
+    context 'with :depositor' do
+      before do
+        allow(submit_bag).to receive(:fill_payload).and_call_original
+        allow(submit_bag).to receive(:create_payload_manifests).and_call_original
+        allow(submit_bag).to receive(:create_bag_info_txt).and_call_original
+        allow(submit_bag).to receive(:create_bagit_txt).and_call_original
+        allow(submit_bag).to receive(:create_tagfile_manifests).and_call_original
+        allow(submit_catalog).to receive(:version_additions).with(submit_inventory).and_return(submit_bag_inventory)
+        allow(submit_inventory).to receive(:write_xml_file).with(submit_bag_pathname, 'version')
+        allow(submit_bag_inventory).to receive(:write_xml_file).with(submit_bag_pathname, 'additions')
+
+        submit_bag.fill_bag(:depositor, submit_source_base)
+      end
+
+      it 'bag has :depositor package_mode and expected methods called' do
+        expect(submit_bag.package_mode).to eq :depositor
+
+        expect(submit_bag).to have_received(:fill_payload)
+        expect(submit_bag).to have_received(:create_payload_manifests)
+        expect(submit_bag).to have_received(:create_bag_info_txt)
+        expect(submit_bag).to have_received(:create_bagit_txt)
+        expect(submit_bag).to have_received(:create_tagfile_manifests)
+        expect(submit_inventory).to have_received(:write_xml_file).with(submit_bag_pathname, 'version')
+        expect(submit_catalog).to have_received(:version_additions).with(submit_inventory)
+        expect(submit_bag_inventory).to have_received(:write_xml_file).with(submit_bag_pathname, 'additions')
+      end
     end
 
-    it 'disseminate_bag' do
-      expect(disseminate_bag).to receive(:fill_payload)
-      expect(disseminate_bag).to receive(:create_payload_manifests)
-      expect(disseminate_bag).to receive(:create_bag_info_txt)
-      expect(disseminate_bag).to receive(:create_bagit_txt)
-      expect(disseminate_bag).to receive(:create_tagfile_manifests)
-      expect(disseminate_catalog).not_to receive(:version_additions)
-      expect(disseminate_inventory).to receive(:write_xml_file).with(disseminate_bag_pathname, 'version')
-      disseminate_bag.fill_bag(:reconstructor, disseminate_base)
-      expect(disseminate_bag.package_mode).to eq :reconstructor
+    context 'with :reconstructor' do
+      before do
+        allow(disseminate_bag).to receive(:fill_payload)
+        allow(disseminate_bag).to receive(:create_payload_manifests)
+        allow(disseminate_bag).to receive(:create_bag_info_txt)
+        allow(disseminate_bag).to receive(:create_bagit_txt)
+        allow(disseminate_bag).to receive(:create_tagfile_manifests)
+        allow(disseminate_catalog).to receive(:version_additions)
+        allow(disseminate_inventory).to receive(:write_xml_file).with(disseminate_bag_pathname, 'version')
+
+        disseminate_bag.fill_bag(:reconstructor, disseminate_base)
+      end
+
+      it 'bag has :reconstructor package_mode and expected methods called' do
+        expect(disseminate_bag.package_mode).to eq :reconstructor
+
+        expect(disseminate_bag).to have_received(:fill_payload)
+        expect(disseminate_bag).to have_received(:create_payload_manifests)
+        expect(disseminate_bag).to have_received(:create_bag_info_txt)
+        expect(disseminate_bag).to have_received(:create_bagit_txt)
+        expect(disseminate_bag).to have_received(:create_tagfile_manifests)
+        expect(disseminate_catalog).not_to have_received(:version_additions)
+        expect(disseminate_inventory).to have_received(:write_xml_file).with(disseminate_bag_pathname, 'version')
+      end
     end
   end
 
@@ -263,8 +292,9 @@ describe Moab::Bagger do
   end
 
   it '#create_tagfile_manifests' do
-    expect(submit_bag).to receive(:create_tagfile_manifests).and_call_original
+    allow(submit_bag).to receive(:create_tagfile_manifests).and_call_original
     submit_bag.fill_bag(:depositor, submit_source_base)
+    expect(submit_bag).to have_received(:create_tagfile_manifests)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')
     expect(md5.exist?).to be true
     expect(md5.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
@@ -295,7 +325,8 @@ describe Moab::Bagger do
     tarfile = temp_dir.join('test.tar')
     bagger = described_class.new(nil, nil, bag_dir)
     cmd = "cd '#{packages_dir}'; tar --dereference --force-local -cf  '#{temp_dir}/test.tar' 'v0001'"
-    expect(bagger).to receive(:shell_execute).with(cmd)
+    allow(bagger).to receive(:shell_execute).with(cmd)
     expect { bagger.create_tarfile(tarfile) }.to raise_exception(Moab::MoabRuntimeError, /^Unable to create tarfile/)
+    expect(bagger).to have_received(:shell_execute).with(cmd)
   end
 end

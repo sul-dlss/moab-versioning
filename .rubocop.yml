@@ -33,6 +33,9 @@ Naming/FileName:
 RSpec/ExampleLength:
   Enabled: false # Specs may have many lines of test data
 
+RSpec/MultipleExpectations:
+  Enabled: false
+
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 

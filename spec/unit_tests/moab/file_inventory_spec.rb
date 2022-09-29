@@ -183,8 +183,9 @@ describe Moab::FileInventory do
   it '#write_xml_file' do
     parent_dir = temp_dir.join('parent_dir')
     type = 'Test type'
-    expect(described_class).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
+    allow(described_class).to receive(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
     parsed_file_inventory.write_xml_file(parent_dir, type)
+    expect(described_class).to have_received(:write_xml_file).with(parsed_file_inventory, parent_dir, type)
   end
 
   describe '#summary_fields' do

@@ -147,22 +147,30 @@ describe Moab::FileGroup do
   end
 
   describe '#group_from_bagit_subdir' do
+    before do
+      allow(new_file_group).to receive(:group_from_directory).with('my_directory', false)
+    end
+
     it 'updates @signatures_from_bag' do
-      expect(new_file_group).to receive(:group_from_directory).with('my_directory', false)
       new_file_group.group_from_bagit_subdir('my_directory', 'my_digests', false)
       expect(new_file_group.instance_variable_get(:@signatures_from_bag)).to eq('my_digests')
+      expect(new_file_group).to have_received(:group_from_directory).with('my_directory', false)
     end
   end
 
   describe '#group_from_directory' do
     let(:directory) { base_directory.join('content') }
 
+    before do
+      allow(new_file_group).to receive(:harvest_directory).with(directory, true)
+    end
+
     it 'creates expected Moab::FileGroup' do
-      expect(new_file_group).to receive(:harvest_directory).with(directory, true)
       group = new_file_group.group_from_directory(directory, true)
       basic_expectations(group)
       expect(group.base_directory).to eq(directory.realpath)
       expect(group.data_source).to eq(directory.realpath.to_s)
+      expect(new_file_group).to have_received(:harvest_directory).with(directory, true)
     end
   end
 
@@ -204,23 +212,26 @@ describe Moab::FileGroup do
     end
 
     context 'when adding the same file again' do
-      let(:sig1) { double(Moab::FileSignature) }
-      let(:sig2) { double(Moab::FileSignature) }
-      let(:signature_for_path) { double(Hash) }
+      let(:sig1) { instance_double(Moab::FileSignature) }
+      let(:sig2) { instance_double(Moab::FileSignature) }
+      let(:signature_for_path) { instance_double(Hash) }
 
       before do
         allow(Moab::FileSignature).to receive(:new).and_return(sig1)
         allow(sig1).to receive(:signature_from_file).with(pathname)
         allow(sig2).to receive(:complete?).and_return(false)
         allow(sig2).to receive(:normalized_signature).with(pathname).and_return(sig2)
+        allow(signature_for_path).to receive(:[]).with(pathname).and_return(sig2)
+        allow(new_file_group).to receive(:add_file_instance)
+
+        new_file_group.add_physical_file(pathname)
+        new_file_group.instance_variable_set(:@signatures_from_bag, signature_for_path)
+        new_file_group.add_physical_file(pathname)
       end
 
       it 'calls add_file_instance' do
-        new_file_group.add_physical_file(pathname)
-        expect(signature_for_path).to receive(:[]).with(pathname).twice.and_return(sig2)
-        expect(new_file_group).to receive(:add_file_instance)
-        new_file_group.instance_variable_set(:@signatures_from_bag, signature_for_path)
-        new_file_group.add_physical_file(pathname)
+        expect(new_file_group).to have_received(:add_file_instance).twice
+        expect(signature_for_path).to have_received(:[]).with(pathname).twice
       end
     end
   end

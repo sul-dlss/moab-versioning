@@ -153,11 +153,3 @@ def fixture_setup
   #end
 end
 # rubocop:enable Metrics/AbcSize
-
-def silence_warnings(&block)
-  warn_level = $VERBOSE
-  $VERBOSE = nil
-  result = block.call
-  $VERBOSE = warn_level
-  result
-end
