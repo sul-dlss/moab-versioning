@@ -10,7 +10,6 @@ describe 'Compare versions' do
     #       : compare the inventories
     # outcome: a report of which files have changed
 
-   # @v1_data_directory = fixtures_dir.join('data/jq937jp0017/v0001')
     v1_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0001/manifests/versionInventory.xml')
     v1_inventory = Moab::FileInventory.parse(v1_inventory_pathname.read)
     v2_inventory_pathname = fixtures_dir.join('derivatives/ingests/jq937jp0017/v0002/manifests/versionInventory.xml')
