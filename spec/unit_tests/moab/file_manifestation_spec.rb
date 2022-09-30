@@ -25,8 +25,8 @@ describe Moab::FileManifestation do
 
     it 'options passed in' do
       opts = {
-        signature: double(Moab::FileSignature.name),
-        instances: double(Moab::FileInstance.name)
+        signature: instance_double(Moab::FileSignature.name),
+        instances: instance_double(Moab::FileInstance.name)
       }
       file_manifestation = described_class.new(opts)
       expect(file_manifestation.signature).to eq opts[:signature]
@@ -35,7 +35,7 @@ describe Moab::FileManifestation do
   end
 
   describe '#signature' do
-    let(:value) { double(Moab::FileSignature.name) }
+    let(:value) { instance_double(Moab::FileSignature.name) }
 
     it 'single value' do
       file_manifestation.signature = value

@@ -156,14 +156,20 @@ describe Serializer::Serializable do
 
   describe '#key' do
     context 'when class has HappyMapper::Attribute declared with key=true' do
-      it 'will return the value of the key attribute' do
-        file_instance = Moab::FileInstance.new
-        expect(file_instance).to receive(:path)
-        file_instance.key
+      let(:file_instance) { Moab::FileInstance.new }
+      let(:signature_catalog) { Moab::SignatureCatalog.new }
 
-        signature_catalog = Moab::SignatureCatalog.new
-        expect(signature_catalog).to receive(:version_id)
+      before do
+        allow(file_instance).to receive(:path)
+        allow(signature_catalog).to receive(:version_id)
+      end
+
+      it 'will return the value of the key attribute' do
+        file_instance.key
+        expect(file_instance).to have_received(:path)
+
         signature_catalog.key
+        expect(signature_catalog).to have_received(:version_id)
       end
     end
 

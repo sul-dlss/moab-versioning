@@ -77,8 +77,11 @@ describe Moab::StorageRepository do
     end
 
     context 'with existing storage objects' do
-      it 'finds objects with known storage branches' do
+      before do
         allow(storage_repo).to receive(:storage_branch).and_return(BARE_TEST_DRUID)
+      end
+
+      it 'finds objects with known storage branches' do
         found_storage_objs = storage_repo.search_storage_objects(BARE_TEST_DRUID)
         expect(found_storage_objs.length).to eq 2
         expect(found_storage_objs[0].object_pathname).to eq derivatives_storage_root.join('ingests/jq937jp0017')
@@ -110,13 +113,14 @@ describe Moab::StorageRepository do
   end
 
   describe '#storage_object' do
-    let(:mock_path) { double(Pathname) }
-    let(:mock_storage_obj) { double(Moab::StorageObject) }
+    let(:mock_path) { instance_double(Pathname) }
+    let(:mock_storage_obj) { instance_double(Moab::StorageObject) }
 
     before do
       allow(storage_repo).to receive(:find_storage_object).and_return(mock_storage_obj)
       allow(mock_storage_obj).to receive(:object_pathname).and_return(mock_path)
       allow(mock_path).to receive(:exist?).and_return(false)
+      allow(mock_path).to receive(:mkpath)
     end
 
     it 'raises exception when object not found' do
@@ -124,8 +128,8 @@ describe Moab::StorageRepository do
     end
 
     it 'creates path when create set to true' do
-      expect(mock_path).to receive(:mkpath)
       storage_repo.storage_object(BARE_TEST_DRUID, true)
+      expect(mock_path).to have_received(:mkpath)
     end
   end
 
@@ -145,18 +149,20 @@ describe Moab::StorageRepository do
   end
 
   describe '#store_new_object_version' do
-    let(:bag_pathname) { double('bag_pathname') }
-    let(:object_pathname) { double('object_pathname') }
-    let(:storage_object) { double(Moab::StorageObject) }
+    let(:bag_pathname) { 'bag_pathname' }
+    let(:object_pathname) { 'object_pathname' }
+    let(:storage_object) { instance_double(Moab::StorageObject) }
 
     before do
+      allow(storage_object).to receive(:ingest_bag)
       allow(storage_object).to receive(:object_pathname).and_return(object_pathname)
+      allow(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
     end
 
     it 'calls storage_object and ingest_bag' do
-      expect(storage_repo).to receive(:storage_object).with(FULL_TEST_DRUID, true).and_return(storage_object)
-      expect(storage_object).to receive(:ingest_bag).with(bag_pathname)
       storage_repo.store_new_object_version(FULL_TEST_DRUID, bag_pathname)
+      expect(storage_object).to have_received(:ingest_bag).with(bag_pathname)
+      expect(storage_repo).to have_received(:storage_object).with(FULL_TEST_DRUID, true)
     end
   end
 end

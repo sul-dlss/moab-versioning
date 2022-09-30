@@ -8,13 +8,7 @@ describe Moab::StorageObjectValidator do
   let(:error_list) { storage_obj_validator.validation_errors }
 
   before do
-    # avoid warning: already initialized constant
-    silence_warnings { described_class::IMPLICIT_DIRS = ['.', '..', '.keep'].freeze }
-  end
-
-  after do
-    # put it back to normal and avoid warning: already initialized constant
-    silence_warnings { described_class::IMPLICIT_DIRS = ['.', '..'].freeze }
+    stub_const('Moab::StorageObjectValidator::IMPLICIT_DIRS', ['.', '..', '.keep'].freeze)
   end
 
   describe '#initialize' do
@@ -220,9 +214,13 @@ describe Moab::StorageObjectValidator do
         let(:druid) { 'ee000ee0000' }
         let(:druid_path) { 'spec/fixtures/bad_root01/bad_moab_storage_trunk/ee/000/ee/0000/ee000ee0000' }
 
+        before do
+          allow(storage_obj_validator).to receive(:check_expected_data_sub_dirs)
+        end
+
         it 'does not call #check_expected_data_sub_dirs' do
-          expect(storage_obj_validator).not_to receive(:check_expected_data_sub_dirs)
           error_list
+          expect(storage_obj_validator).not_to have_received(:check_expected_data_sub_dirs)
         end
       end
     end

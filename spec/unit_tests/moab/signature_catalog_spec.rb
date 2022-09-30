@@ -87,10 +87,13 @@ describe Moab::SignatureCatalog do
   end
 
   describe '#add_entry' do
-    let(:entry) { double(Moab::SignatureCatalogEntry.name) }
+    let(:entry) { instance_double(Moab::SignatureCatalogEntry.name) }
+
+    before do
+      allow(entry).to receive(:signature).and_return(instance_double(Moab::FileSignature.name))
+    end
 
     it 'adds 1 to the entries count' do
-      expect(entry).to receive(:signature).and_return(double(Moab::FileSignature.name))
       signature_catalog.add_entry(entry)
       expect(signature_catalog.entries.count).to eq(original_entry_count + 1)
     end

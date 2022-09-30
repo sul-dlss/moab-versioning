@@ -8,7 +8,7 @@ describe Moab::SignatureCatalogEntry do
       version_id: 26,
       group_id: 'Test group_id',
       path: 'Test path',
-      signature: double(Moab::FileSignature.name)
+      signature: instance_double(Moab::FileSignature.name)
     }
     signature_catalog_entry = described_class.new(opts)
     expect(signature_catalog_entry.version_id).to eq(opts[:version_id])
@@ -18,7 +18,7 @@ describe Moab::SignatureCatalogEntry do
   end
 
   it '#signature becomes first value if set to Array' do
-    value = double(Moab::FileSignature.name)
+    value = instance_double(Moab::FileSignature.name)
     sce.signature = [value, 'dummy']
     expect(sce.signature).to eq value
   end
