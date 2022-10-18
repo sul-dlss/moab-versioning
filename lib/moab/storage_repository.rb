@@ -105,34 +105,6 @@ module Moab
       create_storage_object(object_id, root)
     end
 
-    # @param object_id [String] The identifier of the digital object
-    # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
-    # @return [Array<StorageObject>] Representations of a digitial object's storage directories, or an empty array if none found.
-    def search_storage_objects(object_id, include_deposit = false)
-      storage_objects = []
-      # Search for the object's home directory in the storage areas
-      branch = storage_branch(object_id)
-      storage_roots.each do |root|
-        root_trunk = root.join(storage_trunk)
-        raise(MoabRuntimeError, "Storage area not found at #{root_trunk}") unless root_trunk.exist?
-
-        root_trunk_branch = root_trunk.join(branch)
-        storage_objects << create_storage_object(object_id, root) if root_trunk_branch.exist?
-      end
-      # Search for the object's directory in the deposit areas
-      if include_deposit && deposit_trunk
-        branch = deposit_branch(object_id)
-        storage_roots.each do |root|
-          root_trunk = root.join(deposit_trunk)
-          raise(MoabRuntimeError, "Deposit area not found at #{root_trunk}") unless root_trunk.exist?
-
-          root_trunk_branch = root_trunk.join(branch)
-          storage_objects << create_storage_object(object_id, root) if root_trunk_branch.exist?
-        end
-      end
-      storage_objects
-    end
-
     # @param object_id [String] The identifier of the digital object whose size is desired
     # @param include_deposit [Boolean] specifies whether to look in deposit areas for objects in process of initial ingest
     # @return [Integer] the size occupied on disk by the storage object, in bytes.  this is the entire moab (all versions).

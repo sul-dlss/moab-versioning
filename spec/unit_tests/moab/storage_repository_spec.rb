@@ -3,15 +3,13 @@
 describe Moab::StorageRepository do
   let(:storage_repo) { described_class.new }
   let(:derivatives_storage_root) { derivatives_dir }
-  let(:derivatives2_storage_root) { fixtures_dir.join('derivatives2') }
   let(:newnode_storage_root) { fixtures_dir.join('newnode') }
 
   describe '#storage_roots' do
     it 'returns the configured values' do
       # these are set in spec_config.rb
       expect(storage_repo.storage_roots[0]).to eq derivatives_storage_root
-      expect(storage_repo.storage_roots[1]).to eq derivatives2_storage_root
-      expect(storage_repo.storage_roots[2]).to eq newnode_storage_root
+      expect(storage_repo.storage_roots[1]).to eq newnode_storage_root
     end
   end
 
@@ -66,34 +64,6 @@ describe Moab::StorageRepository do
       it 'raises exception when storage_trunk does not exist' do
         expect { storage_repo.find_storage_root('abcdef') }.to raise_exception(Moab::MoabRuntimeError, /Storage area not found/)
       end
-    end
-  end
-
-  describe '#search_storage_objects' do
-    context 'with new storage objects' do
-      it 'returns an empty array' do
-        expect(storage_repo.search_storage_objects('abcdef')).to be_empty
-      end
-    end
-
-    context 'with existing storage objects' do
-      before do
-        allow(storage_repo).to receive(:storage_branch).and_return(BARE_TEST_DRUID)
-      end
-
-      it 'finds objects with known storage branches' do
-        found_storage_objs = storage_repo.search_storage_objects(BARE_TEST_DRUID)
-        expect(found_storage_objs.length).to eq 2
-        expect(found_storage_objs[0].object_pathname).to eq derivatives_storage_root.join('ingests/jq937jp0017')
-        expect(found_storage_objs[1].object_pathname).to eq derivatives2_storage_root.join('ingests/jq937jp0017')
-      end
-    end
-
-    it 'exception raised when storage_trunk is bogus' do
-      allow(storage_repo).to receive(:storage_trunk).and_return('junk')
-      expect do
-        storage_repo.search_storage_objects('abcdef')
-      end.to raise_exception(Moab::MoabRuntimeError, /Storage area not found/)
     end
   end
 
