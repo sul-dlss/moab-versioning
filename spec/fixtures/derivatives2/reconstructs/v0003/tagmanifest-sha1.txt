@@ -1,6 +1,0 @@
-37675e3c2ecc0ea050f382c4f05da5e802f77d4d bagit.txt
-3eeffaf75a6bf529b547d9361b84a019d002da02 bag-info.txt
-182bdd00e28d91db8d59d69c85b59747b7fceafe manifest-sha1.txt
-3a06ba5bf730a0edd94f753015e9d869c46a6b58 manifest-md5.txt
-34fdb6701733ccc09a6818de3f6d72a0b962afa7 versionInventory.xml
-a445b322b5c3ce2480055f00eee60657a513a093 manifest-sha256.txt

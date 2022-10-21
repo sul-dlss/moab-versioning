@@ -1,9 +1,0 @@
-<provenanceMetadata xmlns:PREMIS="info:lc/xmlns/premis-v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" objectId="druid:jq937jp0017">
-  <agent name="DOR">
-  <what object="druid:jq937jp0017">
-    <event who="DOR-robot:process-content" when="2012-03-21T01:45:37-07:00">Image files JHOVE 1.4 validated</event>
-    <event who="DOR-robot:register-object" when="2012-03-20T08:21:22-0700">Google data received</event>
-    <event who="DOR-robot:google-download" when="2012-03-20T21:24:13-0700">Checksums verified</event>
-  </what>
-  </agent>
-</provenanceMetadata>

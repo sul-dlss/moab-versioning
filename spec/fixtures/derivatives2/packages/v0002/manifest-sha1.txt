@@ -1,4 +1,0 @@
-0616a0bd7927328c364b2ea0b4a79c507ce915ed data/content/page-1.jpg
-c3961c0f619a81eaf8779a122219b1f860dbc2f9 data/metadata/contentMetadata.xml
-565473bbc865b1c6f88efc99b6b5b73fd5cadbc8 data/metadata/provenanceMetadata.xml
-65ea161b5bb5578ab4a06c4cd77fe3376f5adfa6 data/metadata/versionMetadata.xml

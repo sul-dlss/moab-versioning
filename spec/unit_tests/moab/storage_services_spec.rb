@@ -13,7 +13,6 @@ describe Moab::StorageServices do
 
   it '.storage_roots' do
     expect(described_class.storage_roots).to eq([fixtures_dir.join('derivatives'),
-                                                 fixtures_dir.join('derivatives2'),
                                                  fixtures_dir.join('newnode')])
   end
 
@@ -38,22 +37,6 @@ describe Moab::StorageServices do
     it 'include_deposit = true' do
       described_class.find_storage_object(BARE_TEST_DRUID, true)
       expect(described_class.repository).to have_received(:find_storage_object).with(BARE_TEST_DRUID, true)
-    end
-  end
-
-  describe '.search_storage_objects' do
-    before do
-      allow(described_class.repository).to receive(:search_storage_objects).and_call_original
-    end
-
-    it 'include_deposit = false' do
-      described_class.search_storage_objects(BARE_TEST_DRUID)
-      expect(described_class.repository).to have_received(:search_storage_objects).with(BARE_TEST_DRUID, false)
-    end
-
-    it 'include_deposit = true' do
-      described_class.search_storage_objects(BARE_TEST_DRUID, true)
-      expect(described_class.repository).to have_received(:search_storage_objects).with(BARE_TEST_DRUID, true)
     end
   end
 
