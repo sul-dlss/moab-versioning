@@ -1,33 +1,10 @@
 # frozen_string_literal: true
 
-require 'rake'
 require 'bundler/gem_tasks'
-
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  warn e.message
-  warn 'Run `bundle install` to install missing gems'
-  exit e.status_code
-end
-
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 
+RuboCop::RakeTask.new
 RSpec::Core::RakeTask.new(:spec)
 
-RSpec::Core::RakeTask.new(:features) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/features/**/*_spec.rb']
-end
-
-require 'rubocop/rake_task'
-RuboCop::RakeTask.new
-
-task :clean do
-  puts 'Cleaning old coverage'
-  FileUtils.rm_f('coverage.data')
-  FileUtils.rm_r('coverage') if File.exist?('coverage')
-  FileUtils.rm_r('spec/fixtures/derivatives') if File.exist?('spec/fixtures/derivatives')
-end
-
-task default: %i[spec rubocop]
+task default: %i[rubocop spec]
