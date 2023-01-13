@@ -5,12 +5,12 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'moab-versioning'
-  s.version     = '5.2.0'
+  s.version     = '6.0.0.alpha'
   s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Darren Weber', 'Richard Anderson', 'Lynn McRae', 'Hannah Frost']
-  s.email       = ['darren.weber@stanford.edu']
-  s.summary     = 'Ruby implementation of digital object versioning toolkit used by the SULAIR Digital Library'
+  s.authors     = ['Naomi Dushay', 'Justin Coyne', 'Tony Zanella', 'Mike Giarlo', 'John Martin']
+  s.email       = ['ndushay@stanford.edu', 'jcoyne85@stanford.edu', 'azanella@stanford.edu', 'mjgiarlo@stanford.edu', 'suntzu@stanford.edu']
+  s.summary     = 'Ruby implementation of digital object versioning toolkit used by Stanford University Libraries'
   s.description = 'Contains classes to process digital object version content and metadata'
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
 
