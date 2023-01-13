@@ -493,7 +493,7 @@ describe Moab::StorageObject do
       end
 
       it 'does not raise error' do
-        expect { storage_obj.reconstruct_version(1, bag_dir) }.not_to raise_error(Errno::EEXIST)
+        expect { storage_obj.reconstruct_version(1, bag_dir) }.not_to raise_error
       end
     end
   end
