@@ -14,7 +14,7 @@ RSpec.describe Stanford::StorageObjectValidator do
   describe '#validation_errors' do
     context 'when superclass has validation_errors' do
       it 'returns errors' do
-        expect(error_list.count).to eq(14)
+        expect(error_list.count).to eq(9)
       end
     end
 

@@ -56,19 +56,6 @@ describe Moab::StorageObjectValidator do
             expect(error_list).to include(described_class::NO_FILES_IN_CONTENT_DIR => 'Version v0009: No files present in content dir')
           end
 
-          it 'has errors for directories with disallowed names' do
-            # vnnnn
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-            # manifests
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0012: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-            # data
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0013: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-            # content
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0014: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-            # metadata
-            expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0015: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-          end
-
           context 'when multiple level sub directories' do
             let(:druid) { 'gg000gg0000' }
             let(:druid_path) { 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000' }
@@ -96,7 +83,7 @@ describe Moab::StorageObjectValidator do
               end
             end
 
-            context 'with non-forbidden subdirectories' do
+            context 'with subdirectories' do
               let(:druid) { 'gg000gg0000' }
               let(:druid_path) { 'spec/fixtures/good_root01/moab_storage_trunk/gg/000/gg/0000/gg000gg0000' }
 
@@ -113,15 +100,7 @@ describe Moab::StorageObjectValidator do
               end
             end
 
-            context 'with forbidden subdirectories' do
-              it 'defaults to true and errors' do
-                expect(error_list).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-              end
-
-              it 'explicitly set to true and errors' do
-                expect(storage_obj_validator.validation_errors(true)).to include(described_class::BAD_SUB_DIR_IN_CONTENT_DIR => 'Version v0011: content directory has forbidden sub-directory name: vnnnn or ["data", "manifests", "content", "metadata"]')
-              end
-
+            context 'when subdirectories are disallowed' do
               it 'explicitly set to false and errors' do
                 expect(storage_obj_validator.validation_errors(false)).to include(described_class::CONTENT_SUB_DIRS_DETECTED => 'Version v0015: content directory should only contain files, not directories. Found directory: metadata')
               end
