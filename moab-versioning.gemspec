@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Naomi Dushay', 'Justin Coyne', 'Tony Zanella', 'Mike Giarlo', 'John Martin']
-  s.email       = ['ndushay@stanford.edu', 'jcoyne85@stanford.edu', 'azanella@stanford.edu', 'mjgiarlo@stanford.edu', 'suntzu@stanford.edu']
+  s.email       = ['ndushay@stanford.edu', 'jcoyne85@stanford.edu', 'azanella@stanford.edu', 'mjgiarlo@stanford.edu',
+                   'suntzu@stanford.edu']
   s.summary     = 'Ruby implementation of digital object versioning toolkit used by Stanford University Libraries'
   s.description = 'Contains classes to process digital object version content and metadata'
   s.homepage    = 'https://github.com/sul-dlss/moab-versioning'
