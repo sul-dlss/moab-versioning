@@ -87,11 +87,11 @@ module Moab
       @report_datetime = Time.now
       # get a union list of all group_ids present in either inventory
       group_ids = basis_inventory.group_ids | other_inventory.group_ids
-      group_ids.each do |group_id|
+      @group_differences = group_ids.map do |group_id|
         # get a pair of groups to compare, creating a empty group if not present in the inventory
         basis_group = basis_inventory.group(group_id) || FileGroup.new(group_id: group_id)
         other_group = other_inventory.group(group_id) || FileGroup.new(group_id: group_id)
-        @group_differences << FileGroupDifference.new.compare_file_groups(basis_group, other_group)
+        FileGroupDifference.new.compare_file_groups(basis_group, other_group)
       end
       self
     end

@@ -97,16 +97,23 @@ module Moab
 
     # @api internal
     # @param signature_subset [Array<FileSignature>] The signatures used to select the entries to return
-    # @return [Hash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file group
+    # @return [Hash<String,FileSignature>] A pathname,signature hash containing a subset of the filenames in this file
+    #                                      group, e.g., {"intro-1.jpg"=>#<Moab::FileSignature>, ...}
     def path_hash_subset(signature_subset)
-      path_hash = {}
-      signature_subset.each do |signature|
-        manifestation = signature_hash[signature]
-        manifestation.instances.each do |instance|
-          path_hash[instance.path] = signature
-        end
+      # the structure of the `signature_hash` attr is documented above
+      signature_hash
+        .filter_map do |signature, manifestation|
+        # filters out signatures not in the provided subset
+        next unless signature_subset.include?(signature)
+
+        # for each instance in the manifestation, return an array of its path and the signature from the above block
+        manifestation.instances.map { |instance| [instance.path, signature] }
       end
-      path_hash
+        # the nested map operations above return e.g.: [[["intro-1.jpg",
+        # #<Moab::FileSignature>],...]] which needs to be flattened one time to
+        # convert back into a hash
+        .flatten(1)
+        .to_h
     end
 
     # @param manifestiation_array [Array<FileManifestation>] The collection of {FileManifestation} objects
@@ -133,12 +140,11 @@ module Moab
     # @return [void] Add a single {FileSignature},{FileInstance} key/value pair to this group.
     #   Data is actually stored in the {#signature_hash}
     def add_file_instance(signature, instance)
-      if signature_hash.key?(signature)
-        manifestation = signature_hash[signature]
-      else
-        manifestation = FileManifestation.new
-        manifestation.signature = signature
-        signature_hash[signature] = manifestation
+      manifestation = signature_hash[signature] || begin
+        FileManifestation.new.tap do |file_manifestation|
+          file_manifestation.signature = signature
+          signature_hash[signature] = file_manifestation
+        end
       end
       manifestation.instances << instance
     end

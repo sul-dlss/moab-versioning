@@ -45,20 +45,20 @@ module Moab
     tag 'fileSignature'
 
     # @attribute
-    # @return [Integer] The size of the file in bytes
+    # @return [String] The size of the file in bytes (can be empty)
     attribute :size, Integer, on_save: proc { |n| n.to_s }
 
     # @attribute
-    # @return [String] The MD5 checksum value of the file
-    attribute :md5, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
+    # @return [String] The MD5 checksum value of the file (can be empty)
+    attribute :md5, String, on_save: proc { |n| n.to_s }
 
     # @attribute
-    # @return [String] The SHA1 checksum value of the file
-    attribute :sha1, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
+    # @return [String] The SHA1 checksum value of the file (can be empty)
+    attribute :sha1, String, on_save: proc { |n| n.to_s }
 
     # @attribute
-    # @return [String] The SHA256 checksum value of the file
-    attribute :sha256, String, on_save: proc { |n| n.nil? ? '' : n.to_s }
+    # @return [String] The SHA256 checksum value of the file (can be empty)
+    attribute :sha256, String, on_save: proc { |n| n.to_s }
 
     KNOWN_ALGOS = {
       md5: proc { Digest::MD5.new },
@@ -106,11 +106,11 @@ module Moab
 
    # @return [Hash<Symbol,String>] A hash of the checksum data
     def checksums
-      {
-        md5: md5,
-        sha1: sha1,
-        sha256: sha256
-      }.reject { |_key, value| value.nil? || value.empty? }
+      @checksums ||= {}.tap do |checksum_hash|
+        checksum_hash[:md5] = md5 unless md5.to_s.empty?
+        checksum_hash[:sha1] = sha1 unless sha1.to_s.empty?
+        checksum_hash[:sha256] = sha256 unless sha256.to_s.empty?
+      end
     end
 
     # @return [Boolean] The signature contains all of the 3 desired checksums
@@ -128,7 +128,6 @@ module Moab
     # @param other [FileSignature] The other file signature being compared to this signature
     # @return [Boolean] Returns true if self and other have comparable fixity data.
     def eql?(other)
-      return false unless other.respond_to?(:size) && other.respond_to?(:checksums)
       return false if size.to_i != other.size.to_i
 
       self_checksums = checksums
@@ -140,6 +139,8 @@ module Moab
         return false if self_checksums[key] != other_checksums[key]
       end
       true
+    rescue NoMethodError
+      false
     end
 
     # @api internal
