@@ -72,7 +72,7 @@ describe Moab::FileGroupDifference do
   let(:new_diff) { described_class.new }
 
   it '#summary' do
-    summary = new_diff.compare_file_groups(v1_content, v3_content).summary()
+    summary = new_diff.compare_file_groups(v1_content, v3_content).summary
     expect(summary).to be_instance_of described_class
     summary.group_id = ''
     summary.difference_count = 1
