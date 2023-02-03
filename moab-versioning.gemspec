@@ -5,7 +5,7 @@ $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'moab-versioning'
-  s.version     = '6.0.0'
+  s.version     = '6.1.0'
   s.licenses    = ['Apache-2.0']
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Naomi Dushay', 'Justin Coyne', 'Tony Zanella', 'Mike Giarlo', 'John Martin']

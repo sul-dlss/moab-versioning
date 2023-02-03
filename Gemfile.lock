@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    moab-versioning (6.0.0)
+    moab-versioning (6.1.0)
       druid-tools (>= 1.0.0)
       json
       nokogiri
