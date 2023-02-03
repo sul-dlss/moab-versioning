@@ -124,7 +124,7 @@ module Stanford
       cm.to_xml
     end
 
-    # @param content_metadata [String,Nokogiri::XML::Document] The contentMetadata as a string or XML doc
+    # @param content_metadata [String, Nokogiri::XML::Document] The contentMetadata as a string or XML doc
     # @return [Boolean] True if contentMetadata has essential file attributes, else raise exception
     def validate_content_metadata(content_metadata)
       result = validate_content_metadata_details(content_metadata)
