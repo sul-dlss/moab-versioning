@@ -297,27 +297,17 @@ describe Moab::Bagger do
     expect(submit_bag).to have_received(:create_tagfile_manifests)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')
     expect(md5.exist?).to be true
-    expect(md5.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
-      "bag-info.txt\n",
-      "bagit.txt\n",
-      "manifest-md5.txt\n",
-      "manifest-sha1.txt\n",
-      "manifest-sha256.txt\n",
-      "versionAdditions.xml\n",
-      "versionInventory.xml\n"
-    ]
+    expect(md5.readlines.collect do |line|
+             line.split(/ /)[1]
+           end).to contain_exactly("bag-info.txt\n", "bagit.txt\n", "manifest-md5.txt\n", "manifest-sha1.txt\n",
+                                   "manifest-sha256.txt\n", "versionAdditions.xml\n", "versionInventory.xml\n")
 
     sha1 = submit_bag.bag_pathname.join('tagmanifest-sha1.txt')
     expect(sha1.exist?).to be true
-    expect(sha1.readlines.collect { |line| line.split(/ /)[1] }).to match_array [
-      "bag-info.txt\n",
-      "bagit.txt\n",
-      "manifest-md5.txt\n",
-      "manifest-sha1.txt\n",
-      "manifest-sha256.txt\n",
-      "versionAdditions.xml\n",
-      "versionInventory.xml\n"
-    ]
+    expect(sha1.readlines.collect do |line|
+             line.split(/ /)[1]
+           end).to contain_exactly("bag-info.txt\n", "bagit.txt\n", "manifest-md5.txt\n", "manifest-sha1.txt\n",
+                                   "manifest-sha256.txt\n", "versionAdditions.xml\n", "versionInventory.xml\n")
   end
 
   it '#create_tarfile' do
