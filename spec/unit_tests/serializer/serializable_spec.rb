@@ -13,8 +13,8 @@ describe Serializer::Serializable do
   end
 
   describe '.deep_diff' do
-    let(:hash1) { v1_content.files[0].to_hash }
-    let(:hash3) { v3_content.files[0].to_hash }
+    let(:v1_files_hash) { v1_content.files[0].to_hash }
+    let(:v3_files_hash) { v3_content.files[0].to_hash }
 
     context 'with names provided' do
       let(:expected_signature_deep_diff) do
@@ -39,7 +39,7 @@ describe Serializer::Serializable do
       end
 
       it 'uses provided names as keys' do
-        diff = described_class.deep_diff('v0001', hash1, 'v0003', hash3)
+        diff = described_class.deep_diff('v0001', v1_files_hash, 'v0003', v3_files_hash)
         expect(diff['signature']).to match(expected_signature_deep_diff)
         expect(diff['instances']['intro-1.jpg']['v0001']['path']).to eq('intro-1.jpg')
       end
@@ -68,13 +68,13 @@ describe Serializer::Serializable do
       end
 
       it 'uses left and right as keys' do
-        diff = described_class.deep_diff(hash1, hash3)
+        diff = described_class.deep_diff(v1_files_hash, v3_files_hash)
         expect(diff['signature']).to match(expected_signature_deep_diff)
       end
     end
 
     it 'single argument raises ArgumentError' do
-      expect { described_class.deep_diff(hash1) }.to raise_exception ArgumentError
+      expect { described_class.deep_diff(v1_files_hash) }.to raise_exception ArgumentError
     end
   end
 
@@ -264,14 +264,14 @@ describe Serializer::Serializable do
 
     context 'when comparing Moab::FileInstance objects' do
       let(:opts) { { path: temp_dir.join('path1').to_s, datetime: 'Apr 18 21:51:31 UTC 2012' } }
-      let(:file_instance1) { Moab::FileInstance.new(opts) }
-      let(:file_instance2) do
+      let(:path1_file_instance) { Moab::FileInstance.new(opts) }
+      let(:path2_file_instance) do
         opts[:path] = temp_dir.join('path2').to_s
         Moab::FileInstance.new(opts)
       end
 
       it 'returns hash containing differences between "old" and "new" files' do
-        diff = file_instance1.diff(file_instance2)
+        diff = path1_file_instance.diff(path2_file_instance)
         expect(diff.keys.size).to eq 1
         expect(diff.keys[0]).to eq('path')
         expect(diff['path']).to be_instance_of Hash
