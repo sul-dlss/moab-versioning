@@ -212,8 +212,8 @@ describe Moab::FileGroup do
     end
 
     context 'when adding the same file again' do
-      let(:sig1) { instance_double(Moab::FileSignature) }
-      let(:sig2) { instance_double(Moab::FileSignature) }
+      let(:sig1) { instance_double(Moab::FileSignature) } # rubocop:disable RSpec/IndexedLet
+      let(:sig2) { instance_double(Moab::FileSignature) } # rubocop:disable RSpec/IndexedLet
       let(:signature_for_path) { instance_double(Hash) }
 
       before do
