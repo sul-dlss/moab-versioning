@@ -19,6 +19,10 @@ module Stanford
       @@repository
     end
 
+    # NOTE: `ShelvingService.content_diff` in dor-services-app implements similar logic, but in a way that
+    # uses XML retrieved via preservation-client instead of reading the XML from disk.  This allows DSA to
+    # perform the potentially time expensive diff without requiring access to preservation disk mounts.
+    # See https://github.com/sul-dlss/dor-services-app/pull/4492 and https://github.com/sul-dlss/dor-services-app/issues/4359
     # @param new_content_metadata [String] The content metadata to be compared to the base
     # @param object_id [String] The digital object identifier of the object whose version inventory is the basis of the
     #  comparison
