@@ -300,3 +300,52 @@ RSpec/Rails/MinitestAssertions: # new in 2.17
   Enabled: true
 RSpec/Rails/TravelAround: # new in 2.19
   Enabled: true
+
+Lint/ItWithoutArgumentsInBlock: # new in 1.59
+  Enabled: true
+Lint/LiteralAssignmentInCondition: # new in 1.58
+  Enabled: true
+Lint/MixedCaseRange: # new in 1.53
+  Enabled: true
+Lint/RedundantRegexpQuantifiers: # new in 1.53
+  Enabled: true
+Style/RedundantCurrentDirectoryInPath: # new in 1.53
+  Enabled: true
+Style/ReturnNilInPredicateMethodDefinition: # new in 1.53
+  Enabled: true
+Style/SingleLineDoEndBlock: # new in 1.57
+  Enabled: true
+Style/SuperWithArgsParentheses: # new in 1.58
+  Enabled: true
+Style/YAMLFileRead: # new in 1.53
+  Enabled: true
+Capybara/ClickLinkOrButtonStyle: # new in 2.19
+  Enabled: true
+Capybara/RedundantWithinFind: # new in 2.20
+  Enabled: true
+Capybara/RSpec/HaveSelector: # new in 2.19
+  Enabled: true
+Capybara/RSpec/PredicateMatcher: # new in 2.19
+  Enabled: true
+FactoryBot/ExcessiveCreateList: # new in 2.25
+  Enabled: true
+FactoryBot/IdSequence: # new in 2.24
+  Enabled: true
+RSpec/EmptyMetadata: # new in 2.24
+  Enabled: true
+RSpec/Eq: # new in 2.24
+  Enabled: true
+RSpec/MetadataStyle: # new in 2.24
+  Enabled: true
+RSpec/ReceiveMessages: # new in 2.23
+  Enabled: true
+RSpec/RedundantPredicateMatcher: # new in 2.26
+  Enabled: true
+RSpec/RemoveConst: # new in 2.26
+  Enabled: true
+RSpec/SpecFilePathFormat: # new in 2.24
+  Enabled: true
+RSpec/SpecFilePathSuffix: # new in 2.24
+  Enabled: true
+RSpec/Rails/NegationBeValid: # new in 2.23
+  Enabled: true
