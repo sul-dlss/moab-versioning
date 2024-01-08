@@ -164,7 +164,7 @@ describe Serializer::Serializable do
         allow(signature_catalog).to receive(:version_id)
       end
 
-      it 'will return the value of the key attribute' do
+      it 'returns the value of the key attribute' do
         file_instance.key
         expect(file_instance).to have_received(:path)
 
