@@ -8,8 +8,8 @@ module Moab
       @checksum_algos = [:md5, :sha1, :sha256]
     end
 
-    def configure(&block)
-      instance_eval(&block)
+    def configure(...)
+      instance_eval(...)
     end
 
     def storage_roots(new_value = nil)
