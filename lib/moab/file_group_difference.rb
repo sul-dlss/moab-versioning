@@ -64,7 +64,7 @@ module Moab
     # @attribute
     # @return [Integer] the total number of differences found between the two inventories that were
     #   compared  (dynamically calculated)
-    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc { |i| i.to_s }
+    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc(&:to_s)
 
     def difference_count
       count = 0
@@ -76,49 +76,49 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were unchanged
-    attribute :identical, Integer, on_save: proc { |n| n.to_s }
+    attribute :identical, Integer, on_save: proc(&:to_s)
     def identical
       subset_hash[:identical].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were added
-    attribute :copyadded, Integer, on_save: proc { |n| n.to_s }
+    attribute :copyadded, Integer, on_save: proc(&:to_s)
     def copyadded
       subset_hash[:copyadded].count
     end
 
     # @attribute
     # @return [Integer] How many duplicate copies of files were deleted
-    attribute :copydeleted, Integer, on_save: proc { |n| n.to_s }
+    attribute :copydeleted, Integer, on_save: proc(&:to_s)
     def copydeleted
       subset_hash[:copydeleted].count
     end
 
     # @attribute
     # @return [Integer] How many files were renamed
-    attribute :renamed, Integer, on_save: proc { |n| n.to_s }
+    attribute :renamed, Integer, on_save: proc(&:to_s)
     def renamed
       subset_hash[:renamed].count
     end
 
     # @attribute
     # @return [Integer] How many files were modified
-    attribute :modified, Integer, on_save: proc { |n| n.to_s }
+    attribute :modified, Integer, on_save: proc(&:to_s)
     def modified
       subset_hash[:modified].count
     end
 
     # @attribute
     # @return [Integer] How many files were added
-    attribute :added, Integer, on_save: proc { |n| n.to_s }
+    attribute :added, Integer, on_save: proc(&:to_s)
     def added
       subset_hash[:added].count
     end
 
     # @attribute
     # @return [Integer] How many files were deleted
-    attribute :deleted, Integer, on_save: proc { |n| n.to_s }
+    attribute :deleted, Integer, on_save: proc(&:to_s)
     def deleted
       subset_hash[:deleted].count
     end

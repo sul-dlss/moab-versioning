@@ -30,7 +30,7 @@ module Moab
 
     # @attribute
     # @return [Integer] How many files were changed
-    attribute :count, Integer, on_save: proc { |n| n.to_s }
+    attribute :count, Integer, on_save: proc(&:to_s)
 
     def count
       files.size

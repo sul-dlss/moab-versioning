@@ -38,7 +38,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files (dynamically calculated)
-    attribute :file_count, Integer, tag: 'fileCount', on_save: proc { |i| i.to_s }
+    attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
@@ -46,7 +46,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
-    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc { |i| i.to_s }
+    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
@@ -54,7 +54,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, tag: 'blockCount', on_save: proc { |i| i.to_s }
+    attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
       files.inject(0) { |sum, manifestation| sum + manifestation.block_count }
