@@ -50,7 +50,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc { |n| n.to_s }
+    attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc(&:to_s)
 
     # @return [String] The unique identifier concatenating digital object id with version id
     def composite_key
@@ -71,7 +71,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total number of data files in the inventory (dynamically calculated)
-    attribute :file_count, Integer, tag: 'fileCount', on_save: proc { |t| t.to_s }
+    attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       groups.inject(0) { |sum, group| sum + group.file_count }
@@ -79,7 +79,7 @@ module Moab
 
      # @attribute
     # @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
-    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc { |t| t.to_s }
+    attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       groups.inject(0) { |sum, group| sum + group.byte_count }
@@ -87,7 +87,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
-    attribute :block_count, Integer, tag: 'blockCount', on_save: proc { |t| t.to_s }
+    attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
       groups.inject(0) { |sum, group| sum + group.block_count }

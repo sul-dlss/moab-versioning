@@ -25,7 +25,7 @@ module Moab
 
     # @attribute
     # @return [Integer] The ordinal version number
-    attribute :version_id, Integer, tag: 'originalVersion', key: true, on_save: proc { |n| n.to_s }
+    attribute :version_id, Integer, tag: 'originalVersion', key: true, on_save: proc(&:to_s)
 
     # @attribute
     # @return [String] The name of the file group

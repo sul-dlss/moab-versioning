@@ -38,11 +38,11 @@ module Moab
 
     # @attribute
     # @return [String] The file's path in the basis inventory (usually for an old version)
-    attribute :basis_path, String, tag: 'basisPath', on_save: proc { |s| s.to_s }
+    attribute :basis_path, String, tag: 'basisPath', on_save: proc(&:to_s)
 
     # @attribute
     # @return [String] The file's path in the other inventory (usually for an new version) compared against the basis
-    attribute :other_path, String, tag: 'otherPath', on_save: proc { |s| s.to_s }
+    attribute :other_path, String, tag: 'otherPath', on_save: proc(&:to_s)
 
     # @attribute
     # @return [Array<FileSignature>] The fixity data of the file manifestation(s) (plural if change was a content modification)

@@ -34,7 +34,7 @@ module Moab
 
     # @attribute
     # @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
-    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc { |i| i.to_s }
+    attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc(&:to_s)
 
     def difference_count
       @group_differences.inject(0) { |sum, group| sum + group.difference_count }
