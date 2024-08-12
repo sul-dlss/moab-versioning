@@ -29,8 +29,8 @@ GEM
       racc (~> 1.4)
     nokogiri-happymapper (0.10.0)
       nokogiri (~> 1.5)
-    parallel (1.25.1)
-    parser (3.3.4.0)
+    parallel (1.26.2)
+    parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
     pry (0.14.2)
@@ -43,7 +43,7 @@ GEM
     rainbow (3.1.1)
     rake (13.2.1)
     regexp_parser (2.9.2)
-    rexml (3.3.4)
+    rexml (3.3.5)
       strscan
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -69,7 +69,7 @@ GEM
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.31.3)
+    rubocop-ast (1.32.0)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
