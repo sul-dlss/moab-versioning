@@ -18,7 +18,7 @@ GEM
     druid-tools (3.0.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    json (2.7.2)
+    json (2.7.4)
     language_server-protocol (3.17.0.3)
     method_source (1.1.0)
     nokogiri (1.16.7-arm64-darwin)
