@@ -1,8 +1,7 @@
 # moab-versioning
 
 [![CircleCI](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main.svg?style=svg)](https://circleci.com/gh/sul-dlss/moab-versioning/tree/main)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/3d76361a6463c70bed30/test_coverage)](https://codeclimate.com/github/sul-dlss/moab-versioning/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/3d76361a6463c70bed30/maintainability)](https://codeclimate.com/github/sul-dlss/moab-versioning/maintainability)
+[![codecov](https://codecov.io/github/sul-dlss/moab-versioning/graph/badge.svg?token=nJClne3Z7i)](https://codecov.io/github/sul-dlss/moab-versioning)
 [![Gem Version](https://badge.fury.io/rb/moab-versioning.svg)](https://badge.fury.io/rb/moab-versioning)
 
 ## Usage
@@ -205,7 +204,7 @@ object_validator = Stanford::StorageObjectValidator.new(moab)
 validation_errors = object_validator.validation_errors # Returns an array of hashes with error codes
 puts "\nChecking stuctural validition of #{druid}\n"
 if validation_errors.empty?
-  puts "\nYay! Moab #{moab.digital_object_id} passed structural validation.\n"  
+  puts "\nYay! Moab #{moab.digital_object_id} passed structural validation.\n"
 else
   p validation_errors
 end
