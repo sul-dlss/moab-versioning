@@ -3,6 +3,12 @@
 require 'simplecov'
 SimpleCov.start do
   add_filter 'spec'
+
+  if ENV['CI']
+    require 'simplecov_json_formatter'
+
+    formatter SimpleCov::Formatter::JSONFormatter
+  end
 end
 
 require 'equivalent-xml/rspec_matchers'

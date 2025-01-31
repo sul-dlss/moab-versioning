@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  ruby-rails: sul-dlss/ruby-rails@4.2.3
+  ruby-rails: sul-dlss/ruby-rails@4.4.0
 workflows:
   build:
     jobs:
@@ -8,3 +8,5 @@ workflows:
           name: lint
       - ruby-rails/test-gem:
           name: test
+          context: dlss
+          use-codecov: true
