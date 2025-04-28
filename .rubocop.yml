@@ -358,3 +358,12 @@ Style/SendWithLiteralMethodName: # new in 1.64
   Enabled: true
 Style/SuperArguments: # new in 1.64
   Enabled: true
+
+Style/ComparableBetween: # new in 1.74
+  Enabled: true
+Style/HashFetchChain: # new in 1.75
+  Enabled: true
+Style/ItBlockParameter: # new in 1.75
+  Enabled: true
+RSpec/IncludeExamples: # new in 3.6
+  Enabled: true

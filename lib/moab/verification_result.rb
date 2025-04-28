@@ -31,7 +31,7 @@ module Moab
     # @return [VerificationResult] The result of comparing the expected and found values
     def self.verify_value(entity, expected, found)
       details = { 'expected' => expected, 'found' => found }
-      new(entity, (expected == found), details)
+      new(entity, (expected == found), details) # rubocop:disable Style/RedundantParentheses
     end
 
     # @deprecated Just use the constructor
