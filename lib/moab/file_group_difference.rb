@@ -256,7 +256,7 @@ module Moab
         basis_only_paths = basis_paths - other_paths
         other_only_paths = other_paths - basis_paths
         maxsize = [basis_only_paths.size, other_only_paths.size].max
-        (0..maxsize - 1).each do |n|
+        (0..maxsize - 1).each do |n| # rubocop:disable Lint/AmbiguousRange
           fid = FileInstanceDifference.new
           fid.basis_path = basis_only_paths[n]
           fid.other_path = other_only_paths[n]
