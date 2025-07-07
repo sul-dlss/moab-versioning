@@ -68,12 +68,7 @@ module Moab
     def delete_bag
       # make sure this looks like a bag before deleting
       if bag_pathname.join('bagit.txt').exist?
-        if bag_pathname.join('data').exist?
-          bag_pathname.rmtree
-        else
-          bag_pathname.children.each(&:delete)
-          bag_pathname.rmdir
-        end
+        bag_pathname.rmtree
       end
       nil
     end
