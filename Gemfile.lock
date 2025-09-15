@@ -22,11 +22,11 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     method_source (1.1.0)
-    nokogiri (1.18.9-arm64-darwin)
+    nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-darwin)
+    nokogiri (1.18.10-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-linux-gnu)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     nokogiri-happymapper (0.10.0)
       nokogiri (~> 1.5)
@@ -34,7 +34,7 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
-    prism (1.4.0)
+    prism (1.5.1)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -44,7 +44,7 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.3.0)
-    regexp_parser (2.11.2)
+    regexp_parser (2.11.3)
     rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -82,9 +82,9 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    unicode-display_width (3.1.5)
-      unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.1.0)
 
 PLATFORMS
   arm64-darwin-23
@@ -105,4 +105,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.7.1
+   2.7.2
