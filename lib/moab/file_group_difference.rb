@@ -364,7 +364,7 @@ module Moab
       end
       # Are any of the filenames the same in set of oldnames and set of newnames?
       intersection = oldnames & newnames
-      intersection.count > 0
+      intersection.any?
     end
 
     # @param [Array<Array<String>>] filepairs The set of oldname, newname pairs for all files being renamed

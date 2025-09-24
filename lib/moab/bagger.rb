@@ -227,12 +227,12 @@ module Moab
         manifest_file[type] = manifest_pathname[type].open('w')
       end
       bag_pathname.children.each do |file|
-        unless file.directory? || file.basename.to_s[0, 11] == 'tagmanifest'
-          signature = FileSignature.new.signature_from_file(file)
-          fixity = signature.fixity
-          DEFAULT_CHECKSUM_TYPES.each do |type|
-            manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
-          end
+        next unless include_in_tagfile_manifests?(file)
+
+        signature = FileSignature.new.signature_from_file(file)
+        fixity = signature.fixity
+        DEFAULT_CHECKSUM_TYPES.each do |type|
+          manifest_file[type].puts("#{fixity[type]} #{file.basename}") if fixity[type]
         end
       end
     ensure
@@ -243,6 +243,13 @@ module Moab
               manifest_pathname[type].exist? && manifest_pathname[type].empty?
         end
       end
+    end
+
+    def include_in_tagfile_manifests?(file)
+      basename = file.basename.to_s
+      return false if file.directory? || basename.start_with?('tagmanifest') || basename.match?(/\A\.nfs\w+\z/)
+
+      true
     end
 
     # @return [Boolean] Create a tar file containing the bag

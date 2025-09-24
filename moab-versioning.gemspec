@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'nokogiri-happymapper' # Object to XML Mapping Library, using Nokogiri
 
   s.add_development_dependency 'equivalent-xml'
-  s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop', '~> 1.7'

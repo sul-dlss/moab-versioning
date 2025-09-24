@@ -293,6 +293,8 @@ describe Moab::Bagger do
 
   it '#create_tagfile_manifests' do
     allow(submit_bag).to receive(:create_tagfile_manifests).and_call_original
+    # Add an NFS temp file to be ignored.
+    submit_bag.bag_pathname.join('.nfs000000000000000000001').open('w') {} # rubocop:disable Lint/EmptyBlock
     submit_bag.fill_bag(:depositor, submit_source_base)
     expect(submit_bag).to have_received(:create_tagfile_manifests)
     md5 = submit_bag.bag_pathname.join('tagmanifest-md5.txt')

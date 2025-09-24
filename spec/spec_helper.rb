@@ -14,6 +14,7 @@ end
 require 'equivalent-xml/rspec_matchers'
 require 'moab/stanford'
 require 'spec_config'
+require 'debug'
 
 RSpec.configure do |config|
   config.before(:all) { fixture_setup }
