@@ -75,7 +75,7 @@ module Moab
 
     def check_correctly_named_version_dirs
       errors = []
-      errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.count > 0
+      errors << result_hash(MISSING_DIR, 'no versions exist') unless version_directories.any?
       version_directories.each do |version_dir|
         errors << result_hash(VERSION_DIR_BAD_FORMAT, version_dir) unless VERSION_DIR_PATTERN.match?(version_dir)
       end
