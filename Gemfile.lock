@@ -12,7 +12,7 @@ GEM
   specs:
     ast (2.4.3)
     date (3.5.1)
-    debug (1.11.0)
+    debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
@@ -20,9 +20,9 @@ GEM
     druid-tools (3.0.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    erb (6.0.0)
+    erb (6.0.1)
     io-console (0.8.2)
-    irb (1.15.3)
+    irb (1.16.0)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -44,14 +44,14 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.6.0)
-    psych (5.3.0)
+    prism (1.7.0)
+    psych (5.3.1)
       date
       stringio
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.17.0)
+    rdoc (7.0.2)
       erb
       psych (>= 4.0.0)
       tsort
@@ -71,7 +71,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.6)
-    rubocop (1.81.7)
+    rubocop (1.82.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -79,7 +79,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.47.1, < 2.0)
+      rubocop-ast (>= 1.48.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.48.0)
@@ -95,11 +95,11 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    stringio (3.1.9)
+    stringio (3.2.0)
     tsort (0.2.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
-    unicode-emoji (4.1.0)
+    unicode-emoji (4.2.0)
 
 PLATFORMS
   arm64-darwin-23
@@ -120,4 +120,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-  4.0.1
+  4.0.2
