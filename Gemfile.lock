@@ -38,20 +38,20 @@ GEM
     nokogiri-happymapper (0.10.1)
       nokogiri (~> 1.5)
     parallel (1.27.0)
-    parser (3.3.10.0)
+    parser (3.3.10.1)
       ast (~> 2.4.1)
       racc
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.7.0)
+    prism (1.8.0)
     psych (5.3.1)
       date
       stringio
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (7.0.3)
+    rdoc (7.1.0)
       erb
       psych (>= 4.0.0)
       tsort
@@ -120,4 +120,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-  4.0.3
+  4.0.4
