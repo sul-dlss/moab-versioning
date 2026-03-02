@@ -103,11 +103,11 @@ module Moab
       # the structure of the `signature_hash` attr is documented above
       signature_hash
         .filter_map do |signature, manifestation|
-          # filters out signatures not in the provided subset
-          next unless signature_subset.include?(signature)
+        # filters out signatures not in the provided subset
+        next unless signature_subset.include?(signature)
 
-          # for each instance in the manifestation, return an array of its path and the signature from the above block
-          manifestation.instances.map { |instance| [instance.path, signature] }
+        # for each instance in the manifestation, return an array of its path and the signature from the above block
+        manifestation.instances.map { |instance| [instance.path, signature] }
       end
         # the nested map operations above return e.g.: [[["intro-1.jpg",
         # #<Moab::FileSignature>],...]] which needs to be flattened one time to
