@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  ruby-rails: sul-dlss/ruby-rails@4.6.0
+  ruby-rails: sul-dlss/ruby-rails@4.7.0
 workflows:
   build:
     jobs:
