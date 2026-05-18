@@ -9,7 +9,7 @@ module Stanford
 
     def validation_errors(allow_content_subdirs = true)
       errors = []
-      errors.concat super(allow_content_subdirs)
+      errors.concatsuper(allow_content_subdirs)
       errors.concat(identify_druid) if errors.empty?
       errors
     end
