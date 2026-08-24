@@ -58,6 +58,7 @@ describe Moab::Bagger do
 
   it '#delete_tarfile' do
     packages = temp_dir.join('packages')
+    packages.mkpath
     tar_file = packages.join('deleteme.tar')
     tar_file.open('w') { |f| f.puts 'delete me please' }
     expect(tar_file.exist?).to be true
