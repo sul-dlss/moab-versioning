@@ -4,6 +4,14 @@ describe Stanford::StorageRepository do
   let(:storage_repository) { described_class.new }
 
   describe '#storage_branch' do
+    # Moab::Config is a global singleton, so these examples must put it back the way they found it,
+    # otherwise they leak a path_method into whatever examples run after them.
+    around do |example|
+      original_path_method = Moab::Config.path_method
+      example.run
+      Moab::Config.configure { path_method original_path_method }
+    end
+
     it 'Moab::Config.path_method :druid_tree' do
       Moab::Config.configure do
         path_method :druid_tree
