@@ -1,0 +1,12 @@
+---
+include:
+  - "lib/**/*.rb"
+exclude:
+  - "spec/**/*"
+  - "vendor/**/*"
+  - ".bundle/**/*"
+# Editor diagnostics; keep the typecheck level in sync with the default in the Rakefile's typecheck task
+reporters:
+  - rubocop
+  - require_not_found
+  - typecheck:typed
