@@ -179,7 +179,7 @@ module Moab
       is_descendent
     end
 
-    # @param  directory [Pathame,String] The directory whose children are to be added to the file group
+    # @param  directory [Pathname,String] The directory whose children are to be added to the file group
     # @param signatures_from_bag [Hash<Pathname,Signature>] The fixity data already calculated for the files
     # @param recursive [Boolean] if true, descend into child directories
     # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
@@ -205,7 +205,7 @@ module Moab
     # @api internal
     # @param path [Pathname,String] pathname of the directory to be harvested
     # @param recursive [Boolean] if true, also harvest subdirectories
-    # @param validated [Boolean] if true, path is verified to be descendant of (#base_directory)
+    # @param validated [Boolean, nil] if true, path is verified to be descendant of (#base_directory)
     # @return [void]  Traverse a directory tree and add all files to the file group
     #   Note that unlike Find.find and Dir.glob, Pathname passes through symbolic links
     # @see http://stackoverflow.com/questions/3974087/how-to-make-rubys-find-find-follow-symlinks
@@ -227,7 +227,7 @@ module Moab
 
     # @api internal
     # @param pathname [Pathname, String] The location of the file to be added
-    # @param _validated (unused; kept here for backwards compatibility)
+    # @param _validated [Object] unused; kept here for backwards compatibility
     # @return [void] Add a single physical file's data to the array of files in this group.
     #   If fixity data was supplied in bag manifests, then utilize that data.
     def add_physical_file(pathname, _validated = nil)

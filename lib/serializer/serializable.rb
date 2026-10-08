@@ -50,7 +50,7 @@ module Serializer
     end
 
     # @api internal
-    # @return [String] Determine which attribute was marked as an object instance key.
+    # @return [String, nil] Determine which attribute was marked as an object instance key.
     #   Keys are indicated by option :key=true when declaring the object's variables.
     #   This follows the same convention as used by DataMapper
     # @see http://datamapper.org/docs/properties.html
@@ -68,7 +68,7 @@ module Serializer
     end
 
     # @api internal
-    # @return [String] For the current object instance, return the string to use as a hash key
+    # @return [String, nil] For the current object instance, return the string to use as a hash key
     def key
       return send(key_name) if key_name
 

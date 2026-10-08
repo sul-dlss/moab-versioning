@@ -14,8 +14,8 @@ module Stanford
     # @param content_metadata [String] The content metadata to be transformed into a versionInventory
     # @param object_id [String] The identifier of the digital object
     # @param subset [String] Speciifes which subset of files to list (all|preserve|publish|shelve)
-    # @param version_id [Integer] The ID of the version whosen content metadata is to be transformed
-    # @return [FileInventory] The versionInventory equivalent of the contentMetadata
+    # @param version_id [Integer, nil] The ID of the version whosen content metadata is to be transformed
+    # @return [Moab::FileInventory] The versionInventory equivalent of the contentMetadata
     #   if the supplied content_metadata is blank or empty, then a skeletal FileInventory will be returned
     def inventory_from_cm(content_metadata, object_id, subset, version_id = nil)
       # The contentMetadata datastream is not required for ingest, since some object types, such as collection
@@ -32,7 +32,7 @@ module Stanford
     # @api external
     # @param content_metadata [String] The contentMetadata as a string
     # @param subset [String] Speciifes which subset of files to list (all|preserve|publish|shelve)
-    # @return [FileGroup] The {FileGroup} object generated from a contentMetadata instance
+    # @return [Moab::FileGroup] The {FileGroup} object generated from a contentMetadata instance
     # @example {include:file:spec/features/stanford/content_metadata_read_spec.rb}
     def group_from_cm(content_metadata, subset)
       ng_doc = Nokogiri::XML(content_metadata)
@@ -60,7 +60,7 @@ module Stanford
 
     # @api internal
     # @param node [Nokogiri::XML::Node] The XML node containing file information
-    # @return [FileSignature] The {FileSignature} object generated from the XML data
+    # @return [Moab::FileSignature] The {FileSignature} object generated from the XML data
     def generate_signature(node)
       signature = Moab::FileSignature.new
       signature.size = node.attributes['size'].content
@@ -80,7 +80,7 @@ module Stanford
 
     # @api internal
     # @param node (see #generate_signature)
-    # @return [FileInstance] The {FileInstance} object generated from the XML data
+    # @return [Moab::FileInstance] The {FileInstance} object generated from the XML data
     def generate_instance(node)
       instance = Moab::FileInstance.new
       instance.path = node.attributes['id'].content
@@ -93,7 +93,7 @@ module Stanford
     end
 
     # @api external
-    # @param file_group [FileGroup] The {FileGroup} object used as the data source
+    # @param file_group [Moab::FileGroup] The {FileGroup} object used as the data source
     # @return [String] The contentMetadata instance generated from the FileGroup
     # @example {include:file:spec/features/stanford/content_metadata_write_spec.rb}
     def generate_content_metadata(file_group, object_id, version_id)
@@ -173,7 +173,7 @@ module Stanford
     end
 
     # @param content_metadata [String] The contentMetadata as a string
-    # @param content_group [FileGroup] The {FileGroup} object used as the fixity data source
+    # @param content_group [Moab::FileGroup] The {FileGroup} object used as the fixity data source
     # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
     # @see http://blog.slashpoundbang.com/post/1454850669/how-to-pretty-print-xml-with-nokogiri
     def remediate_content_metadata(content_metadata, content_group)
@@ -195,7 +195,7 @@ module Stanford
     end
 
     # @param [Nokogiri::XML::Element] file_node the File stanza being remediated
-    # @param [FileSignature] signature the fixity data for the file from the FileGroup
+    # @param [Moab::FileSignature] signature the fixity data for the file from the FileGroup
     # @return [void] update the file size attribute if missing, raise exception if inconsistent
     def remediate_file_size(file_node, signature)
       file_size = file_node['size']
@@ -207,7 +207,7 @@ module Stanford
     end
 
     # @param [Nokogiri::XML::Element] file_node the File stanza being remediated
-    # @param [FileSignature] signature the fixity data for the file from the FileGroup
+    # @param [Moab::FileSignature] signature the fixity data for the file from the FileGroup
     # @return [void] update the file's checksum elements if data missing, raise exception if inconsistent
     def remediate_checksum_nodes(file_node, signature)
       # collect <checksum> elements for checksum types that are already present

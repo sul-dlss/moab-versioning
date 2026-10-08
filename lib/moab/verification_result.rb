@@ -17,7 +17,7 @@ module Moab
 
     # @param entity [#to_s] The name of the entity being verified
     # @param verified [Boolean]
-    # @param details [Hash]
+    # @param details [Hash, nil]
     def initialize(entity, verified = false, details = nil)
       @entity = entity.to_s  # force to string
       @verified = !!verified # rubocop:disable Style/DoubleNegation
