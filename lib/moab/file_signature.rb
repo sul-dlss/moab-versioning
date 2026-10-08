@@ -85,6 +85,7 @@ module Moab
         end
       end
 
+      # @sg-ignore Solargraph resolves this to HappyMapper.new; at runtime it is Class#new -> Serializer::Serializable#initialize(opts)
       new(signatures.transform_values(&:hexdigest).merge(size: pathname.size))
     end
 

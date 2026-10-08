@@ -233,6 +233,7 @@ module Moab
 
     def object_id_from_manifest_inventory
       latest_manifest_inventory = File.join(storage_obj_path, version_directories.last, MANIFEST_INVENTORY_PATH)
+      # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
       Nokogiri::XML(File.open(latest_manifest_inventory)).at_xpath('//fileInventory/@objectId').value
     end
   end

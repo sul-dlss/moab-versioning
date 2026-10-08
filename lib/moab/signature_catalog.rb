@@ -34,6 +34,7 @@ module Moab
     def initialize(opts = {})
       @entries = []
       @signature_hash = {}
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 

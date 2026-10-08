@@ -25,6 +25,7 @@ module Moab
       @signature_hash = {}
       @data_source = ''
       @signatures_from_bag = nil # prevents later warning: instance variable @signatures_from_bag not initialized
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 

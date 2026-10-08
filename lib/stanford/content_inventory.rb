@@ -35,6 +35,7 @@ module Stanford
     # @return [Moab::FileGroup] The {FileGroup} object generated from a contentMetadata instance
     # @example {include:file:spec/features/stanford/content_metadata_read_spec.rb}
     def group_from_cm(content_metadata, subset)
+      # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
       ng_doc = Nokogiri::XML(content_metadata)
       validate_content_metadata(ng_doc)
       nodeset = case subset.to_s.downcase
@@ -140,8 +141,10 @@ module Stanford
       content_metadata_doc =
         case content_metadata.class.name
         when 'String'
+          # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
           Nokogiri::XML(content_metadata)
         when 'Pathname'
+          # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
           Nokogiri::XML(content_metadata.read)
         when 'Nokogiri::XML::Document'
           content_metadata
@@ -183,6 +186,7 @@ module Stanford
       signature_for_path = content_group.path_hash
       @type_for_name = Moab::FileSignature.checksum_type_for_name
       @names_for_type = Moab::FileSignature.checksum_names_for_type
+      # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
       ng_doc = Nokogiri::XML(content_metadata, &:noblanks)
       nodeset = ng_doc.xpath('//file')
       nodeset.each do |file_node|
