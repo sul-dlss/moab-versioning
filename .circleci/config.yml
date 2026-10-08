@@ -1,6 +1,15 @@
 version: 2.1
 orbs:
   ruby-rails: sul-dlss/ruby-rails@4.13.1
+jobs:
+  typecheck:
+    executor: ruby-rails/ruby
+    steps:
+      - checkout
+      - ruby-rails/gem-install-deps
+      - run:
+          name: Typecheck
+          command: bundle exec rake typecheck
 workflows:
   build:
     jobs:
@@ -9,3 +18,4 @@ workflows:
       - ruby-rails/test-gem:
           name: test
           context: dlss
+      - typecheck
