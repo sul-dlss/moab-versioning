@@ -25,35 +25,37 @@ module Moab
       @signature_hash = {}
       @data_source = ''
       @signatures_from_bag = nil # prevents later warning: instance variable @signatures_from_bag not initialized
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The name of the file group
+    # @!attribute [rw] group_id
+    #   @return [String] The name of the file group
     attribute :group_id, String, tag: 'groupId', key: true
 
-    # @attribute
-    # @return [String] The directory location or other source of this groups file data
+    # @!attribute [rw] data_source
+    #   @return [String] The directory location or other source of this groups file data
     attribute :data_source, String, tag: 'dataSource'
 
-    # @attribute
-    # @return [Integer] The total number of data files (dynamically calculated)
+    # @!attribute [rw] file_count
+    #   @return [Integer] The total number of data files (dynamically calculated)
     attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
     end
 
-    # @attribute
-    # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
+    # @!attribute [rw] byte_count
+    #   @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
     attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
     end
 
-    # @attribute
-    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @!attribute [rw] block_count
+    #   @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    #     (dynamically calculated)
     attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
@@ -65,8 +67,8 @@ module Moab
       %w[group_id file_count byte_count block_count]
     end
 
-    # @attribute
-    # @return [Array<FileManifestation>] The set of files comprising the group
+    # @!attribute [rw] files
+    #   @return [Array<FileManifestation>] The set of files comprising the group
     has_many :files, FileManifestation, tag: 'file'
 
     def files
@@ -179,7 +181,7 @@ module Moab
       is_descendent
     end
 
-    # @param  directory [Pathame,String] The directory whose children are to be added to the file group
+    # @param  directory [Pathname,String] The directory whose children are to be added to the file group
     # @param signatures_from_bag [Hash<Pathname,Signature>] The fixity data already calculated for the files
     # @param recursive [Boolean] if true, descend into child directories
     # @return [FileGroup] Harvest a directory (using digest hash for fixity data) and add all files to the file group
@@ -205,7 +207,7 @@ module Moab
     # @api internal
     # @param path [Pathname,String] pathname of the directory to be harvested
     # @param recursive [Boolean] if true, also harvest subdirectories
-    # @param validated [Boolean] if true, path is verified to be descendant of (#base_directory)
+    # @param validated [Boolean, nil] if true, path is verified to be descendant of (#base_directory)
     # @return [void]  Traverse a directory tree and add all files to the file group
     #   Note that unlike Find.find and Dir.glob, Pathname passes through symbolic links
     # @see http://stackoverflow.com/questions/3974087/how-to-make-rubys-find-find-follow-symlinks
@@ -227,7 +229,7 @@ module Moab
 
     # @api internal
     # @param pathname [Pathname, String] The location of the file to be added
-    # @param _validated (unused; kept here for backwards compatibility)
+    # @param _validated [Object] unused; kept here for backwards compatibility
     # @return [void] Add a single physical file's data to the array of files in this group.
     #   If fixity data was supplied in bag manifests, then utilize that data.
     def add_physical_file(pathname, _validated = nil)

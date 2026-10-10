@@ -34,15 +34,16 @@ module Moab
     def initialize(opts = {})
       @entries = []
       @signature_hash = {}
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The object ID (druid)
+    # @!attribute [rw] digital_object_id
+    #   @return [String] The object ID (druid)
     attribute :digital_object_id, String, tag: 'objectId'
 
-    # @attribute
-    # @return [Integer] The ordinal version number
+    # @!attribute [rw] version_id
+    #   @return [Integer] The ordinal version number
     attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc(&:to_s)
 
     # @return [String] The unique identifier concatenating digital object id with version id
@@ -50,36 +51,37 @@ module Moab
       "#{@digital_object_id}-#{StorageObject.version_dirname(@version_id)}"
     end
 
-    # @attribute
-    # @return [String] The datetime at which the catalog was updated
     attribute :catalog_datetime, Time, tag: 'catalogDatetime'
 
+    # @param datetime [Time, String, nil] The datetime at which the catalog was updated
     def catalog_datetime=(datetime)
       @catalog_datetime = Moab::UtcTime.input(datetime)
     end
 
+    # @return [String] The datetime at which the catalog was updated, in ISO 8601 format
     def catalog_datetime
       Moab::UtcTime.output(@catalog_datetime)
     end
 
-    # @attribute
-    # @return [Integer] The total number of data files (dynamically calculated)
+    # @!attribute [rw] file_count
+    #   @return [Integer] The total number of data files (dynamically calculated)
     attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       entries.size
     end
 
-    # @attribute
-    # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
+    # @!attribute [rw] byte_count
+    #   @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
     attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       entries.inject(0) { |sum, entry| sum + entry.signature.size.to_i }
     end
 
-    # @attribute
-    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @!attribute [rw] block_count
+    #   @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    #     (dynamically calculated)
     attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
@@ -92,8 +94,8 @@ module Moab
       %w[digital_object_id version_id catalog_datetime file_count byte_count block_count]
     end
 
-    # @attribute
-    # @return [Array<SignatureCatalogEntry>] The set of data groups comprising the version
+    # @!attribute [rw] entries
+    #   @return [Array<SignatureCatalogEntry>] The set of data groups comprising the version
     has_many :entries, SignatureCatalogEntry, tag: 'entry'
 
     def entries=(entry_array)
@@ -125,7 +127,7 @@ module Moab
     end
 
     # @param group [FileGroup] A group of the files from a file inventory
-    # @param group_pathname [Pathname] The location of the directory containing the group's files
+    # @param group_pathname [Pathname, String, nil] The location of the directory containing the group's files
     # @return [void] Inspect and upgrade the group's signature data to include all desired checksums
     def normalize_group_signatures(group, group_pathname = nil)
       unless group_pathname.nil?

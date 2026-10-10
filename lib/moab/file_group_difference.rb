@@ -54,16 +54,17 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @subset_hash = Hash.new { |hash, key| hash[key] = FileGroupDifferenceSubset.new(change: key.to_s) }
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The name of the file group
+    # @!attribute [rw] group_id
+    #   @return [String] The name of the file group
     attribute :group_id, String, tag: 'groupId', key: true
 
-    # @attribute
-    # @return [Integer] the total number of differences found between the two inventories that were
-    #   compared  (dynamically calculated)
+    # @!attribute [rw] difference_count
+    #   @return [Integer] the total number of differences found between the two inventories that were
+    #     compared  (dynamically calculated)
     attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc(&:to_s)
 
     def difference_count
@@ -74,58 +75,58 @@ module Moab
       count
     end
 
-    # @attribute
-    # @return [Integer] How many files were unchanged
+    # @!attribute [rw] identical
+    #   @return [Integer] How many files were unchanged
     attribute :identical, Integer, on_save: proc(&:to_s)
     def identical
       subset_hash[:identical].count
     end
 
-    # @attribute
-    # @return [Integer] How many duplicate copies of files were added
+    # @!attribute [rw] copyadded
+    #   @return [Integer] How many duplicate copies of files were added
     attribute :copyadded, Integer, on_save: proc(&:to_s)
     def copyadded
       subset_hash[:copyadded].count
     end
 
-    # @attribute
-    # @return [Integer] How many duplicate copies of files were deleted
+    # @!attribute [rw] copydeleted
+    #   @return [Integer] How many duplicate copies of files were deleted
     attribute :copydeleted, Integer, on_save: proc(&:to_s)
     def copydeleted
       subset_hash[:copydeleted].count
     end
 
-    # @attribute
-    # @return [Integer] How many files were renamed
+    # @!attribute [rw] renamed
+    #   @return [Integer] How many files were renamed
     attribute :renamed, Integer, on_save: proc(&:to_s)
     def renamed
       subset_hash[:renamed].count
     end
 
-    # @attribute
-    # @return [Integer] How many files were modified
+    # @!attribute [rw] modified
+    #   @return [Integer] How many files were modified
     attribute :modified, Integer, on_save: proc(&:to_s)
     def modified
       subset_hash[:modified].count
     end
 
-    # @attribute
-    # @return [Integer] How many files were added
+    # @!attribute [rw] added
+    #   @return [Integer] How many files were added
     attribute :added, Integer, on_save: proc(&:to_s)
     def added
       subset_hash[:added].count
     end
 
-    # @attribute
-    # @return [Integer] How many files were deleted
+    # @!attribute [rw] deleted
+    #   @return [Integer] How many files were deleted
     attribute :deleted, Integer, on_save: proc(&:to_s)
     def deleted
       subset_hash[:deleted].count
     end
 
-    # @attribute
-    # @return [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type),
-    #    each of which contains an collection of file-level differences having that change type.
+    # @!attribute [rw] subsets
+    #   @return [Array<FileGroupDifferenceSubset>] A set of Arrays (one for each change type),
+    #      each of which contains an collection of file-level differences having that change type.
     has_many :subsets, FileGroupDifferenceSubset, tag: 'subset'
 
     def subsets

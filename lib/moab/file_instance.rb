@@ -20,15 +20,16 @@ module Moab
 
     # (see Serializable#initialize)
     def initialize(opts = {})
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The id is the filename path, relative to the file group's base directory
+    # @!attribute [rw] path
+    #   @return [String] The id is the filename path, relative to the file group's base directory
     attribute :path, String, key: true
 
-    # @attribute
-    # @return [String] gsub(/\n/,' ')
+    # @!attribute [rw] datetime
+    #   @return [String] gsub(/\n/,' ')
     attribute :datetime, String
 
     def datetime=(event_datetime)

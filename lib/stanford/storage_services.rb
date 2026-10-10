@@ -28,8 +28,8 @@ module Stanford
     #  comparison
     # @param subset [String] Speciifes which subset of files to list in the inventories extracted from the
     #  contentMetadata (all|preserve|publish|shelve)
-    # @param base_version [Integer] The ID of the version whose inventory is the basis of, if nil use latest version
-    # @return [FileInventoryDifference] The report of differences between the content metadata and the specified version
+    # @param base_version [Integer, nil] The ID of the version whose inventory is the basis of, if nil use latest version
+    # @return [Moab::FileInventoryDifference] The report of differences between the content metadata and the specified version
     def self.compare_cm_to_version(new_content_metadata, object_id, subset, base_version = nil)
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, subset)
       begin
@@ -52,8 +52,8 @@ module Stanford
 
     # @param new_content_metadata [String] The content metadata to be compared to the current signtature catalog
     # @param object_id [String] The digital object identifier of the object whose signature catalog is to be used
-    # @param version_id [Integer] The ID of the version whose signature catalog is to be used, if nil use latest version
-    # @return [FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
+    # @param version_id [Integer, nil] The ID of the version whose signature catalog is to be used, if nil use latest version
+    # @return [Moab::FileInventory] The versionAddtions report showing which files are new or modified in the content metadata
     def self.cm_version_additions(new_content_metadata, object_id, version_id = nil)
       new_inventory = Stanford::ContentInventory.new.inventory_from_cm(new_content_metadata, object_id, 'preserve')
       begin
@@ -70,7 +70,7 @@ module Stanford
     end
 
     # @param object_id [String] The digital object identifier of the object whose contentMetadata is to be remediated
-    # @param version_id [Integer] The ID of the version whose file data is to be used, if nil use latest version
+    # @param version_id [Integer, nil] The ID of the version whose file data is to be used, if nil use latest version
     # @return [String] Returns a remediated copy of the contentMetadata with fixity data filled in
     def self.cm_remediate(object_id, version_id = nil)
       cm = retrieve_file('metadata', 'contentMetadata.xml', object_id, version_id)

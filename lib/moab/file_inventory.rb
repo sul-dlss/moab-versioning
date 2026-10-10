@@ -37,19 +37,20 @@ module Moab
     def initialize(opts = {})
       @groups = []
       @inventory_datetime = Time.now
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The type of inventory (version|additions|manifests|directory)
+    # @!attribute [rw] type
+    #   @return [String] The type of inventory (version|additions|manifests|directory)
     attribute :type, String
 
-    # @attribute
-    # @return [String] The digital object identifier (druid)
+    # @!attribute [rw] digital_object_id
+    #   @return [String] The digital object identifier (druid)
     attribute :digital_object_id, String, tag: 'objectId'
 
-    # @attribute
-    # @return [Integer] The ordinal version number
+    # @!attribute [rw] version_id
+    #   @return [Integer] The ordinal version number
     attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc(&:to_s)
 
     # @return [String] The unique identifier concatenating digital object id with version id
@@ -57,8 +58,8 @@ module Moab
       "#{digital_object_id}-#{StorageObject.version_dirname(version_id)}"
     end
 
-    # @attribute
-    # @return [String] The datetime at which the inventory was created
+    # @!attribute [rw] inventory_datetime
+    #   @return [String] The datetime at which the inventory was created
     attribute :inventory_datetime, String, tag: 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
@@ -69,40 +70,41 @@ module Moab
       Moab::UtcTime.output(@inventory_datetime)
     end
 
-    # @attribute
-    # @return [Integer] The total number of data files in the inventory (dynamically calculated)
+    # @!attribute [rw] file_count
+    #   @return [Integer] The total number of data files in the inventory (dynamically calculated)
     attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       groups.inject(0) { |sum, group| sum + group.file_count }
     end
 
-     # @attribute
-    # @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
+    # @!attribute [rw] byte_count
+    #   @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
     attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       groups.inject(0) { |sum, group| sum + group.byte_count }
     end
 
-    # @attribute
-    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @!attribute [rw] block_count
+    #   @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    #     (dynamically calculated)
     attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
       groups.inject(0) { |sum, group| sum + group.block_count }
     end
 
-    # @attribute
-    # @return [Array<FileGroup>] The set of data groups comprising the version
+    # @!attribute [rw] groups
+    #   @return [Array<FileGroup>] The set of data groups comprising the version
     has_many :groups, FileGroup, tag: 'fileGroup'
 
-    # @return [Array<FileGroup] The set of data groups that contain files
+    # @return [Array<FileGroup>] The set of data groups that contain files
     def non_empty_groups
       groups.reject { |group| group.files.empty? }
     end
 
-    # @param non_empty [Boolean] if true, return group_id's only for groups having files
+    # @param non_empty [Boolean, nil] if true, return group_id's only for groups having files
     # @return [Array<String>] group identifiers contained in this file inventory
     def group_ids(non_empty = nil)
       my_groups = non_empty ? non_empty_groups : groups
@@ -171,7 +173,7 @@ module Moab
 
     # @api external
     # @param data_dir [Pathname,String] The location of files to be inventoried
-    # @param group_id [String] if specified, is used to set the group ID of the FileGroup created from the directory
+    # @param group_id [String, nil] if specified, is used to set the group ID of the FileGroup created from the directory
     #   if nil, then the directory is assumed to contain both content and metadata subdirectories
     # @return [FileInventory] Traverse a directory and return an inventory of the files it contains
     # @example {include:file:spec/features/inventory/harvest_inventory_spec.rb}
@@ -243,7 +245,7 @@ module Moab
     end
 
     # @api internal
-    # @param type [String] Specifies the type of inventory, and thus the filename used for storage
+    # @param type [String, nil] Specifies the type of inventory, and thus the filename used for storage
     # @return [String] The standard name for the serialized inventory file of the given type
     def self.xml_filename(type = nil)
       case type
@@ -262,7 +264,7 @@ module Moab
 
     # @api external
     # @param parent_dir [Pathname,String] The parent directory in which the xml file is to be stored
-    # @param type [String] The inventory type, which governs the filename used for serialization
+    # @param type [String, nil] The inventory type, which governs the filename used for serialization
     # @return [void] write the {FileInventory} instance to a file
     # @example {include:file:spec/features/inventory/write_inventory_xml_spec.rb}
     def write_xml_file(parent_dir, type = nil)

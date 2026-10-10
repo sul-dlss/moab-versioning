@@ -21,23 +21,24 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @files = []
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The type of change (identical|renamed|modified|deleted|added)
+    # @!attribute [rw] change
+    #   @return [String] The type of change (identical|renamed|modified|deleted|added)
     attribute :change, String, key: true
 
-    # @attribute
-    # @return [Integer] How many files were changed
+    # @!attribute [rw] count
+    #   @return [Integer] How many files were changed
     attribute :count, Integer, on_save: proc(&:to_s)
 
     def count
       files.size
     end
 
-    # @attribute
-    # @return [Array<FileInstanceDifference>] The set of file instances having this type of change
+    # @!attribute [rw] files
+    #   @return [Array<FileInstanceDifference>] The set of file instances having this type of change
     has_many :files, FileInstanceDifference, tag: 'file'
   end
 end

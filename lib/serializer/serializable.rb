@@ -14,6 +14,10 @@ module Serializer
   class Serializable
     include HappyMapper
 
+    # HappyMapper extends including classes with its DSL (attribute, element, has_many, ...) via an `included` hook,
+    # which Solargraph can't follow
+    # @!parse extend HappyMapper::ClassMethods
+
     # A flexible initializer based on the DataMapper "create factory" design pattern.
     # @see http://datamapper.org/docs/create_and_destroy.html
     # @see Serializable#initialize
@@ -50,7 +54,7 @@ module Serializer
     end
 
     # @api internal
-    # @return [String] Determine which attribute was marked as an object instance key.
+    # @return [String, nil] Determine which attribute was marked as an object instance key.
     #   Keys are indicated by option :key=true when declaring the object's variables.
     #   This follows the same convention as used by DataMapper
     # @see http://datamapper.org/docs/properties.html
@@ -68,7 +72,7 @@ module Serializer
     end
 
     # @api internal
-    # @return [String] For the current object instance, return the string to use as a hash key
+    # @return [String, nil] For the current object instance, return the string to use as a hash key
     def key
       return send(key_name) if key_name
 

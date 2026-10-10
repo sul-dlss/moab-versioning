@@ -25,23 +25,24 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @instances = []
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [FileSignature] The fixity data of the file instance
     element :signature, FileSignature, tag: 'fileSignature'
 
+    # @return [FileSignature] The fixity data of the file instance
     def signature
       @signature.is_a?(Array) ? @signature[0] : @signature
     end
 
+    # @param signature [FileSignature, Array<FileSignature>] The fixity data of the file instance
     def signature=(signature)
       @signature = signature.is_a?(Array) ? signature[0] : signature
     end
 
-    # @attribute
-    # @return [Array<FileInstance>] The location(s) of the file manifestation's file instances
+    # @!attribute [rw] instances
+    #   @return [Array<FileInstance>] The location(s) of the file manifestation's file instances
     has_many :instances, FileInstance, tag: 'fileInstance'
 
     # @api internal

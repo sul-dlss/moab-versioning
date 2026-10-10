@@ -167,7 +167,7 @@ Style/StringConcatenation:
   Exclude:
     - 'spec/unit_tests/serializer/serializable_spec.rb'
 
-# Offense count: 12
+# Offense count: 11
 # This cop supports safe autocorrection (--autocorrect).
 Style/SuperArguments:
   Exclude:
@@ -181,7 +181,6 @@ Style/SuperArguments:
     - 'lib/moab/file_manifestation.rb'
     - 'lib/moab/signature_catalog.rb'
     - 'lib/moab/signature_catalog_entry.rb'
-    - 'lib/moab/version_metadata_entry.rb'
     - 'lib/stanford/storage_object_validator.rb'
 
 # Offense count: 2

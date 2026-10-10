@@ -25,43 +25,44 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @group_differences = []
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The digital object ID (druid)
+    # @!attribute [rw] digital_object_id
+    #   @return [String] The digital object ID (druid)
     attribute :digital_object_id, String, tag: 'objectId'
 
-    # @attribute
-    # @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
+    # @!attribute [rw] difference_count
+    #   @return [Integer] the number of differences found between the two inventories that were compared (dynamically calculated)
     attribute :difference_count, Integer, tag: 'differenceCount', on_save: proc(&:to_s)
 
     def difference_count
       @group_differences.inject(0) { |sum, group| sum + group.difference_count }
     end
 
-    # @attribute
-    # @return [String] Id information from the version inventory used as the basis for comparison
+    # @!attribute [rw] basis
+    #   @return [String] Id information from the version inventory used as the basis for comparison
     attribute :basis, String
 
-    # @attribute
-    # @return [String] Id information about the version inventory compared to the basis
+    # @!attribute [rw] other
+    #   @return [String] Id information about the version inventory compared to the basis
     attribute :other, String
 
-    # @attribute
-    # @return [String] The datetime at which the report was run
     attribute :report_datetime, String, tag: 'reportDatetime'
 
+    # @param datetime [Time, String, nil] The datetime at which the report was run
     def report_datetime=(datetime)
       @report_datetime = Moab::UtcTime.input(datetime)
     end
 
+    # @return [String] The datetime at which the report was run, in ISO 8601 format
     def report_datetime
       Moab::UtcTime.output(@report_datetime)
     end
 
-    # @attribute
-    # @return [Array<FileGroupDifference>] The set of data groups comprising the version
+    # @!attribute [rw] group_differences
+    #   @return [Array<FileGroupDifference>] The set of data groups comprising the version
     has_many :group_differences, FileGroupDifference, tag: 'fileGroupDifference'
 
     # @return [Array<String>] The data fields to include in summary reports
