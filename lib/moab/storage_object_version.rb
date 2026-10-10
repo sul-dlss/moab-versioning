@@ -21,7 +21,7 @@ module Moab
     # @return [Pathname] The location of the version inside the home directory
     attr_accessor :version_pathname
 
-    # @return [Pathname] The location of the object's home directory
+    # @return [StorageObject] The object representing the digital object's storage location
     attr_accessor :storage_object
 
     # @return [Hash<FileInventory>] Cached copies of versionInventory, versionAdditions, or manifestInventory
@@ -80,7 +80,7 @@ module Moab
       @storage_object.storage_filepath(catalog_filepath)
     end
 
-  # @param _file_category (unused; kept here for backwards compatibility)
+  # @param _file_category [Object] unused; kept here for backwards compatibility
   # @param [FileSignature] file_signature The signature of the file
   # @return [Pathname] Pathname object containing the full path for the specified file
     def find_filepath_using_signature(_file_category, file_signature)
@@ -273,7 +273,7 @@ module Moab
       result
     end
 
-    # @return [Boolean] true if files & signatures listed in version inventory can all be found
+    # @return [VerificationResult] verified is true if files & signatures listed in version inventory can all be found
     def verify_version_inventory
       result = VerificationResult.new('version_inventory')
       version_inventory = file_inventory('version')
@@ -307,7 +307,7 @@ module Moab
       result
     end
 
-    # @return [Boolean] returns true if files in data folder match files listed in version addtions inventory
+    # @return [VerificationResult] verified is true if files in data folder match files listed in version addtions inventory
     def verify_version_additions
       result = VerificationResult.new('version_additions')
       version_additions = file_inventory('additions')
@@ -325,7 +325,7 @@ module Moab
     end
 
     # @param timestamp [Time] The time at which the deactivation was initiated.  Used to name the inactive directory
-    # @return [null] Deactivate this object version by moving it to another directory.  (Used by restore operation)
+    # @return [void] Deactivate this object version by moving it to another directory.  (Used by restore operation)
     def deactivate(timestamp)
       return unless @version_pathname.exist?
 

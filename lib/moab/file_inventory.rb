@@ -37,6 +37,7 @@ module Moab
     def initialize(opts = {})
       @groups = []
       @inventory_datetime = Time.now
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
@@ -97,12 +98,12 @@ module Moab
     # @return [Array<FileGroup>] The set of data groups comprising the version
     has_many :groups, FileGroup, tag: 'fileGroup'
 
-    # @return [Array<FileGroup] The set of data groups that contain files
+    # @return [Array<FileGroup>] The set of data groups that contain files
     def non_empty_groups
       groups.reject { |group| group.files.empty? }
     end
 
-    # @param non_empty [Boolean] if true, return group_id's only for groups having files
+    # @param non_empty [Boolean, nil] if true, return group_id's only for groups having files
     # @return [Array<String>] group identifiers contained in this file inventory
     def group_ids(non_empty = nil)
       my_groups = non_empty ? non_empty_groups : groups
@@ -171,7 +172,7 @@ module Moab
 
     # @api external
     # @param data_dir [Pathname,String] The location of files to be inventoried
-    # @param group_id [String] if specified, is used to set the group ID of the FileGroup created from the directory
+    # @param group_id [String, nil] if specified, is used to set the group ID of the FileGroup created from the directory
     #   if nil, then the directory is assumed to contain both content and metadata subdirectories
     # @return [FileInventory] Traverse a directory and return an inventory of the files it contains
     # @example {include:file:spec/features/inventory/harvest_inventory_spec.rb}
@@ -243,7 +244,7 @@ module Moab
     end
 
     # @api internal
-    # @param type [String] Specifies the type of inventory, and thus the filename used for storage
+    # @param type [String, nil] Specifies the type of inventory, and thus the filename used for storage
     # @return [String] The standard name for the serialized inventory file of the given type
     def self.xml_filename(type = nil)
       case type
@@ -262,7 +263,7 @@ module Moab
 
     # @api external
     # @param parent_dir [Pathname,String] The parent directory in which the xml file is to be stored
-    # @param type [String] The inventory type, which governs the filename used for serialization
+    # @param type [String, nil] The inventory type, which governs the filename used for serialization
     # @return [void] write the {FileInventory} instance to a file
     # @example {include:file:spec/features/inventory/write_inventory_xml_spec.rb}
     def write_xml_file(parent_dir, type = nil)

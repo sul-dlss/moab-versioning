@@ -202,8 +202,8 @@ module Moab
     end
 
     # @param [Integer] response_code one of the recognized values in error_code_to_messages
-    # @param [Hash<Symbol => String>, String] msg_args Value(s) folded into the error message
-    # @return [Hash<Integer => String>] single key/value Hash
+    # @param [Hash{Symbol => String}, String, nil] msg_args Value(s) folded into the error message
+    # @return [Hash{Integer => String}] single key/value Hash
     # @example Usage
     #  sov.result_hash(10, '/some/dir')
     #  sov.result_hash(10, addl: '/some/dir') # equivalent
@@ -233,6 +233,7 @@ module Moab
 
     def object_id_from_manifest_inventory
       latest_manifest_inventory = File.join(storage_obj_path, version_directories.last, MANIFEST_INVENTORY_PATH)
+      # @sg-ignore Solargraph thinks Nokogiri.XML takes no arguments; nokogiri >= 1.19 defines it as XML(*, **, &)
       Nokogiri::XML(File.open(latest_manifest_inventory)).at_xpath('//fileInventory/@objectId').value
     end
   end

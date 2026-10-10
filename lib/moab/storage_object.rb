@@ -173,7 +173,7 @@ module Moab
     end
 
     # @api external
-    # @param version_id [Integer] The existing version to return.  If nil, return latest version
+    # @param version_id [Integer, nil] The existing version to return.  If nil, return latest version
     # @return [StorageObjectVersion] The representation of an existing version's storage area
     def find_object_version(version_id = nil)
       current = current_version_id
@@ -210,7 +210,7 @@ module Moab
     end
 
     # @param recovery_path [Pathname, String] The location of the recovered object versions
-    # @return [Boolean] Restore all recovered versions to online storage and verify results
+    # @return [StorageObject] self, after restoring all recovered versions to online storage
     def restore_object(recovery_path)
       timestamp = Time.now
       recovery_object = StorageObject.new(@digital_object_id, recovery_path, false)

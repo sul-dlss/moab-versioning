@@ -19,6 +19,7 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @events = []
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 

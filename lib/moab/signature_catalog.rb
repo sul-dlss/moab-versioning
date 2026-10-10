@@ -34,6 +34,7 @@ module Moab
     def initialize(opts = {})
       @entries = []
       @signature_hash = {}
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 
@@ -125,7 +126,7 @@ module Moab
     end
 
     # @param group [FileGroup] A group of the files from a file inventory
-    # @param group_pathname [Pathname] The location of the directory containing the group's files
+    # @param group_pathname [Pathname, String, nil] The location of the directory containing the group's files
     # @return [void] Inspect and upgrade the group's signature data to include all desired checksums
     def normalize_group_signatures(group, group_pathname = nil)
       unless group_pathname.nil?

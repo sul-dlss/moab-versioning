@@ -54,6 +54,7 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @subset_hash = Hash.new { |hash, key| hash[key] = FileGroupDifferenceSubset.new(change: key.to_s) }
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 

@@ -25,6 +25,7 @@ module Moab
     # (see Serializable#initialize)
     def initialize(opts = {})
       @group_differences = []
+      # @sg-ignore Solargraph resolves this to HappyMapper#initialize; at runtime it is Serializer::Serializable#initialize(opts)
       super(opts)
     end
 

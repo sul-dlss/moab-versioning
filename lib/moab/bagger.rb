@@ -64,7 +64,7 @@ module Moab
       end
     end
 
-    # @return [NilClass] Delete the bagit files
+    # @return [nil] Delete the bagit files
     def delete_bag
       # make sure this looks like a bag before deleting
       bag_pathname.rmtree if bag_pathname.join('bagit.txt').exist?
