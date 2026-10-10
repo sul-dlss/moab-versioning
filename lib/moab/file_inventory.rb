@@ -41,16 +41,16 @@ module Moab
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The type of inventory (version|additions|manifests|directory)
+    # @!attribute [rw] type
+    #   @return [String] The type of inventory (version|additions|manifests|directory)
     attribute :type, String
 
-    # @attribute
-    # @return [String] The digital object identifier (druid)
+    # @!attribute [rw] digital_object_id
+    #   @return [String] The digital object identifier (druid)
     attribute :digital_object_id, String, tag: 'objectId'
 
-    # @attribute
-    # @return [Integer] The ordinal version number
+    # @!attribute [rw] version_id
+    #   @return [Integer] The ordinal version number
     attribute :version_id, Integer, tag: 'versionId', key: true, on_save: proc(&:to_s)
 
     # @return [String] The unique identifier concatenating digital object id with version id
@@ -58,8 +58,8 @@ module Moab
       "#{digital_object_id}-#{StorageObject.version_dirname(version_id)}"
     end
 
-    # @attribute
-    # @return [String] The datetime at which the inventory was created
+    # @!attribute [rw] inventory_datetime
+    #   @return [String] The datetime at which the inventory was created
     attribute :inventory_datetime, String, tag: 'inventoryDatetime'
 
     def inventory_datetime=(datetime)
@@ -70,32 +70,33 @@ module Moab
       Moab::UtcTime.output(@inventory_datetime)
     end
 
-    # @attribute
-    # @return [Integer] The total number of data files in the inventory (dynamically calculated)
+    # @!attribute [rw] file_count
+    #   @return [Integer] The total number of data files in the inventory (dynamically calculated)
     attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       groups.inject(0) { |sum, group| sum + group.file_count }
     end
 
-     # @attribute
-    # @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
+    # @!attribute [rw] byte_count
+    #   @return [Integer] The total size (in bytes) in all files of all files in the inventory (dynamically calculated)
     attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       groups.inject(0) { |sum, group| sum + group.byte_count }
     end
 
-    # @attribute
-    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @!attribute [rw] block_count
+    #   @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    #     (dynamically calculated)
     attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
       groups.inject(0) { |sum, group| sum + group.block_count }
     end
 
-    # @attribute
-    # @return [Array<FileGroup>] The set of data groups comprising the version
+    # @!attribute [rw] groups
+    #   @return [Array<FileGroup>] The set of data groups comprising the version
     has_many :groups, FileGroup, tag: 'fileGroup'
 
     # @return [Array<FileGroup>] The set of data groups that contain files

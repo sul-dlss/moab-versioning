@@ -24,12 +24,12 @@ module Moab
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The id is the filename path, relative to the file group's base directory
+    # @!attribute [rw] path
+    #   @return [String] The id is the filename path, relative to the file group's base directory
     attribute :path, String, key: true
 
-    # @attribute
-    # @return [String] gsub(/\n/,' ')
+    # @!attribute [rw] datetime
+    #   @return [String] gsub(/\n/,' ')
     attribute :datetime, String
 
     def datetime=(event_datetime)

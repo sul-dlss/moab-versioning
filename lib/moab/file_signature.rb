@@ -44,20 +44,20 @@ module Moab
     # The name of the XML element used to serialize this objects data
     tag 'fileSignature'
 
-    # @attribute
-    # @return [String] The size of the file in bytes (can be empty)
+    # @!attribute [rw] size
+    #   @return [String] The size of the file in bytes (can be empty)
     attribute :size, Integer, on_save: proc(&:to_s)
 
-    # @attribute
-    # @return [String] The MD5 checksum value of the file (can be empty)
+    # @!attribute [rw] md5
+    #   @return [String] The MD5 checksum value of the file (can be empty)
     attribute :md5, String, on_save: proc(&:to_s)
 
-    # @attribute
-    # @return [String] The SHA1 checksum value of the file (can be empty)
+    # @!attribute [rw] sha1
+    #   @return [String] The SHA1 checksum value of the file (can be empty)
     attribute :sha1, String, on_save: proc(&:to_s)
 
-    # @attribute
-    # @return [String] The SHA256 checksum value of the file (can be empty)
+    # @!attribute [rw] sha256
+    #   @return [String] The SHA256 checksum value of the file (can be empty)
     attribute :sha256, String, on_save: proc(&:to_s)
 
     KNOWN_ALGOS = {

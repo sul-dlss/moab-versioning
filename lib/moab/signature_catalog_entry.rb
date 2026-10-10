@@ -24,27 +24,27 @@ module Moab
       super(opts)
     end
 
-    # @attribute
-    # @return [Integer] The ordinal version number
+    # @!attribute [rw] version_id
+    #   @return [Integer] The ordinal version number
     attribute :version_id, Integer, tag: 'originalVersion', key: true, on_save: proc(&:to_s)
 
-    # @attribute
-    # @return [String] The name of the file group
+    # @!attribute [rw] group_id
+    #   @return [String] The name of the file group
     attribute :group_id, String, tag: 'groupId', key: true
 
-    # @attribute
-    # @return [String] The id is the filename path, relative to the file group's base directory
+    # @!attribute [rw] path
+    #   @return [String] The id is the filename path, relative to the file group's base directory
     attribute :path, String, key: true, tag: 'storagePath'
 
-    # @attribute
-    # @return [FileSignature] The fixity data of the file instance
     element :signature, FileSignature, tag: 'fileSignature'
 
+    # @return [FileSignature] The fixity data of the file instance
     def signature
       # HappyMapper's parser tries to put an array of signatures in the signature field
       @signature.is_a?(Array) ? @signature[0] : @signature
     end
 
+    # @param signature [FileSignature, Array<FileSignature>] The fixity data of the file instance
     def signature=(signature)
       @signature = signature.is_a?(Array) ? signature[0] : signature
     end

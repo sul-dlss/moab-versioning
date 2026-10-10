@@ -29,32 +29,33 @@ module Moab
       super(opts)
     end
 
-    # @attribute
-    # @return [String] The name of the file group
+    # @!attribute [rw] group_id
+    #   @return [String] The name of the file group
     attribute :group_id, String, tag: 'groupId', key: true
 
-    # @attribute
-    # @return [String] The directory location or other source of this groups file data
+    # @!attribute [rw] data_source
+    #   @return [String] The directory location or other source of this groups file data
     attribute :data_source, String, tag: 'dataSource'
 
-    # @attribute
-    # @return [Integer] The total number of data files (dynamically calculated)
+    # @!attribute [rw] file_count
+    #   @return [Integer] The total number of data files (dynamically calculated)
     attribute :file_count, Integer, tag: 'fileCount', on_save: proc(&:to_s)
 
     def file_count
       files.inject(0) { |sum, manifestation| sum + manifestation.file_count }
     end
 
-    # @attribute
-    # @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
+    # @!attribute [rw] byte_count
+    #   @return [Integer] The total size (in bytes) of all data files (dynamically calculated)
     attribute :byte_count, Integer, tag: 'byteCount', on_save: proc(&:to_s)
 
     def byte_count
       files.inject(0) { |sum, manifestation| sum + manifestation.byte_count }
     end
 
-    # @attribute
-    # @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result) (dynamically calculated)
+    # @!attribute [rw] block_count
+    #   @return [Integer] The total disk usage (in 1 kB blocks) of all data files (estimating du -k result)
+    #     (dynamically calculated)
     attribute :block_count, Integer, tag: 'blockCount', on_save: proc(&:to_s)
 
     def block_count
@@ -66,8 +67,8 @@ module Moab
       %w[group_id file_count byte_count block_count]
     end
 
-    # @attribute
-    # @return [Array<FileManifestation>] The set of files comprising the group
+    # @!attribute [rw] files
+    #   @return [Array<FileManifestation>] The set of files comprising the group
     has_many :files, FileManifestation, tag: 'file'
 
     def files

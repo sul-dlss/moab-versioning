@@ -14,6 +14,10 @@ module Serializer
   class Serializable
     include HappyMapper
 
+    # HappyMapper extends including classes with its DSL (attribute, element, has_many, ...) via an `included` hook,
+    # which Solargraph can't follow
+    # @!parse extend HappyMapper::ClassMethods
+
     # A flexible initializer based on the DataMapper "create factory" design pattern.
     # @see http://datamapper.org/docs/create_and_destroy.html
     # @see Serializable#initialize

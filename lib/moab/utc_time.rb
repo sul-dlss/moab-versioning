@@ -4,7 +4,7 @@ module Moab
   # Timestamp conversion methods.
   class UtcTime
     # @param datetime [Time,String,Nil] The input datetime
-    # @return [void] Convert input datetime to a Time object, or nil if input is empty.
+    # @return [Time, nil] Convert input datetime to a Time object, or nil if input is empty.
     def self.input(datetime)
       case datetime
       when nil, ''

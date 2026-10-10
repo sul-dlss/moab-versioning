@@ -22,6 +22,7 @@ require 'psych'
 require 'pathname'
 require 'fileutils'
 require 'time'
+require 'digest'
 require 'digest/md5'
 require 'digest/sha1'
 
