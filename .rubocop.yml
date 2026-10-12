@@ -4,7 +4,7 @@ inherit_from: .rubocop_todo.yml
 plugins: rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 4.0
   DisplayCopNames: true
   SuggestExtensions: false
   Exclude:
@@ -13,6 +13,11 @@ AllCops:
     - 'bin/**/*'
     - 'lib/**/*.rake'
     - 'vendor/**/*' # avoid running rubocop on cached gems
+
+# Development uses Ruby 4, but the gem still supports older consumers.
+Gemspec/RequiredRubyVersion:
+  Exclude:
+    - moab-versioning.gemspec
 
 Layout/LineLength:
   Max: 130 # would like to reduce this to 120
