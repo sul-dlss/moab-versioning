@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module Moab
   # Given a druid path, are the contents actually a well-formed Moab?
   # Shameless green: repetitious code included.
